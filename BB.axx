@@ -1589,6 +1589,7 @@ qtjynoplyr	subk	1,a8
 delay_sparks
 	.ref	stick_spark
 	.ref	stick_spark2
+	.ref	plyr_smoketrail
 	SLEEPK	10
 	move	@plyrproc_t,a0,L
 	move	*a0(plyr_attrib_p),a0,L
@@ -1602,9 +1603,12 @@ delay_sparks
 qtjydoit1	clr	a11
 	movi	P1DATA,a10
 	CREATE	ARWPID,stick_spark
+;	CREATE0	plyr_smoketrail
+;	move	a13,*a0(PA10),L
 	clr	a11
 	movi	P1DATA,a10
 	CREATE	ARWPID,stick_spark2
+
 qtjyck2
 	move	@plyrproc_t+32,a0,L
 	move	*a0(plyr_attrib_p),a0,L
@@ -1618,9 +1622,13 @@ qtjyck2
 qtjydoit2	movk	1,a11
 	movi	P2DATA,a10
 	CREATE	ARWPID,stick_spark
+;	CREATE	ARWPID,plyr_smoketrail
+	move	a13,*a0(PA10),L
 	movk	1,a11
 	movi	P2DATA,a10
 	CREATE	ARWPID,stick_spark2
+;	CREATE	ARWPID,plyr_smoketrail
+;	move	a13,*a0(PA10),L
 qtjyck3
 	move	@plyrproc_t+64,a0,L
 	move	*a0(plyr_attrib_p),a0,L
@@ -1632,11 +1640,15 @@ qtjyck3
 
 
 qtjydoit3	movk	2,a11
-	movi	P3DATA,a10
+	movi	P3DATA,a10 
 	CREATE	ARWPID,stick_spark
+;	CREATE	ARWPID,plyr_smoketrail
+;	move	a13,*a0(PA10),L
 	movk	2,a11
 	movi	P3DATA,a10
 	CREATE	ARWPID,stick_spark2
+;	CREATE	ARWPID,plyr_smoketrail
+;	move	a13,*a0(PA10),L
 qtjyck4
 	move	@plyrproc_t+96,a0,L
 	move	*a0(plyr_attrib_p),a0,L
@@ -1650,9 +1662,13 @@ qtjyck4
 qtjydoit4	movk	3,a11
 	movi	P4DATA,a10
 	CREATE	ARWPID,stick_spark
+;	CREATE	ARWPID,plyr_smoketrail
+;	move	a13,*a0(PA10),L
 	movk	3,a11
 	movi	P4DATA,a10
 	CREATE	ARWPID,stick_spark2
+;	CREATE	ARWPID,plyr_smoketrail
+;	move	a13,*a0(PA10),L
 qtjyck5
 	DIE
 
