@@ -1,0 +1,592 @@
+#**************************************************************
+*
+* Software:		Shawn Liptak, Mark Turmell
+* Initiated:		10/8/92
+*
+* Modified:		Shawn Liptak, 10/24/92	-Split from plyrseq.asm
+*
+* COPYRIGHT (C) 1992 WILLIAMS ELECTRONICS GAMES, INC.
+*
+*.Last mod - 12/21/92 15:06
+**************************************************************
+	.file	"plyrlseq.asm"
+	.title	"basketball plyr sequence code"
+	.width	132
+	.option	b,d,l,t
+	.mnolist
+
+
+	.include	"mproc.equ"
+	.include	"disp.equ"
+	.include	"sys.equ"
+	.include	"imgtbl.glo"
+	.include	"imgtbl2.glo"
+	.include	"game.equ"
+	.include	"shawn.hdr"
+	.asg		0,SEQT
+	.include	"plyr.equ"
+	.include	"layup.tbl"
+	.include	"plyrd2se.tbl"
+
+
+;sounds external
+
+;symbols externally defined
+
+	.ref	plyr_shoot
+	.ref	plyr_pass
+	.ref	seq_newdir
+	.ref	seq_slamball
+	.ref	seq_strtdunk
+	.ref	seq_jump
+	.ref	seq_resetseq
+	.ref	seq_stand
+	.ref	seq_snd
+
+	.ref	w3desp1
+	.ref	seq_lay_up_start
+	.ref	seq_jam_speech
+	.ref	seq_call_name
+
+
+JAM_NONE	equ	0
+JAM_EASY	equ	1
+JAM_MED		equ	2
+JAM_GOOD	equ	3
+JAM_GREAT	equ	4
+
+;symbols defined in this file
+
+	.def	w2fgrl3,w2fgrl2,w2fgrl1
+	.def	T2DUNK3,T2DUNK4,T2DUNK5
+	.def	T2DUNK6,T2DUNK7,T2DUNK8,T2DUNK9
+	.def	T2DUNK10
+
+;uninitialized ram definitions
+
+
+
+;equates for this file
+
+M_YF	.equ	08000H	;Y free (OFLAGS)
+
+
+	.text
+
+ohmy	.word	0f981H,98,081eaH,0	;OH....MY!!!
+fancy	.word	0f981H,76,0812fH,0	;fancy move
+airb	.word	0f981H,89,081a4H,0	;goes airborne!
+torim	.word	0f981H,50,081a6H,0	;to the rim
+hangt	.word	0f981H,59,081a7H,0	;hangtime
+lookout	.word	0f981H,57,081b0H,0	;lookout!
+showt	.word	0f981H,70,081b7H,0	;showtime!
+thawk	.word	0f981H,30,081c0H,0	;tomahawks one home!
+facial	.word	0f981H,93,081eeH,0	;delivers the facial!
+spectd	.word	0f981H,94,081f5H,0	;spectacular dunk
+inface	.word	0f981H,81,081abH,0	;in your face
+mnstjam	.word	0f981H,90,081b2H,0	;monster jam
+
+jet	.word	0fd81H,110,08158H,0	;jet sound
+yell	.word	0fd91H,88,08167H,0	;aaaaaaaaaaaaaaaahhhhhhhhhhh
+tarzan	.word	0fd91H,158,08177H,0	;tarzan yell!
+
+	.asg	M_WRNONZ,F
+	.asg	M_WRNONZ|M_FLIPH,FF
+	.asg	DUNK_M|NOJUMP_M|NOJOY_M|NOCOLLP_M,DFLGS
+
+
+layup_t
+	.word	NOJUMP_M|SHOOT_M|NOJOY_M
+	.long	seq_stand
+	.long	#1,#2,#3,#4,#5,#4,#3,#2
+	.asg	3,N
+
+#2
+	WLW	1,w2fgrl1,F
+	WL	-1,seq_jump
+	WLW	4,w2fgrl1,F
+	WLW	4,w2fgrl2,F
+	WLW	1,w2fgrl3,F
+	WL	-1,plyr_shoot
+	WLW	50,w2fgrl3,F
+	WLW	5,w2fgrl4,F
+	WLW	-1,seq_newdir,1*16
+#1	W0
+#3
+	WLW	1,w3fgrl2,F
+	WL	-1,seq_jump
+	WLW	4,w3fgrl2,F
+;	WLW	1,w3fgrl3,F
+;	WL	-1,plyr_shoot
+	WLW	4,w3fgrl3,F
+	WLW	1,w3fgrl4,F
+	WL	-1,plyr_shoot
+	WLW	4,w3fgrl4,F
+	WLW	50,w3fgrl5,F
+	WLW	4,w3fgrl6,F
+	WLW	-1,seq_newdir,2*16
+	W0
+#4
+	WLW	1,w4fgrl1,F
+	WL	-1,seq_jump
+	WLW	4,w4fgrl1,F
+	WLW	4,w4fgrl2,F
+	WLW	1,w4fgrl3,F
+	WL	-1,plyr_shoot
+	WLW	50,w4fgrl3,F
+	WLW	-1,seq_newdir,3*16
+	W0
+#5
+	WLW	1,w5fgrl1,F
+	WL	-1,seq_jump
+	WLW	4,w5fgrl1,F
+	WLW	4,w5fgrl2,F
+	WLW	1,w5fgrl3,F
+	WL	-1,plyr_shoot
+	WLW	50,w5fgrl3,F
+	WLW	5,w5fgrl4,F
+	WLW	-1,seq_newdir,4*16
+	W0
+
+#*
+layupreb_t
+	.word	NOJUMP_M|SHOOT_M|NOJOY_M
+	.long	seq_stand
+	.long	#2,#2,#3,#4,#5,#4,#3,#2
+	.asg	3,N
+
+#2
+	WLW	4,w2fgrl1,F
+	WLW	4,w2fgrl2,F
+	WLW	1,w2fgrl3,F
+	WL	-1,plyr_shoot
+	WLW	50,w2fgrl3,F
+	WLW	5,w2fgrl4,F
+	WLW	-1,seq_newdir,1*16
+	W0
+#3
+	WLW	4,w3fgrl2,F
+	WLW	4,w3fgrl3,F
+	WLW	1,w3fgrl4,F
+	WL	-1,plyr_shoot
+	WLW	4,w3fgrl4,F
+	WLW	50,w3fgrl5,F
+	WLW	4,w3fgrl6,F
+	WLW	-1,seq_newdir,2*16
+	W0
+#4
+	WLW	4,w4fgrl1,F
+	WLW	4,w4fgrl2,F
+	WLW	1,w4fgrl3,F
+	WL	-1,plyr_shoot
+	WLW	50,w4fgrl3,F
+	WLW	-1,seq_newdir,3*16
+	W0
+#5
+	WLW	4,w5fgrl1,F
+	WLW	4,w5fgrl2,F
+	WLW	1,w5fgrl3,F
+	WL	-1,plyr_shoot
+	WLW	50,w5fgrl3,F
+	WLW	5,w5fgrl4,F
+	WLW	-1,seq_newdir,4*16
+	W0
+
+
+#*
+dunklay_t		;2,3,4,5 directions
+	.word	DFLGS|LAYUP_M
+	.long	seq_stand
+	.long	#1,#2,#3,#4
+	.long	#5,#4,#3,#2
+
+#2
+	WLW	1,w2fgrl1,F
+	WLLW	-1,seq_strtdunk,w2fgrl3,03aH
+	WLW	22,w2fgrl1,F
+	WL	-1,seq_lay_up_start			;RJR
+	WLW	4,w2fgrl2,F
+	WLW	1,w2fgrl3,F
+	WL	-1,plyr_shoot
+	WLW	50,w2fgrl3,F
+	WLW	5,w2fgrl4,F
+	WLW	-1,seq_newdir,1*16
+#1	W0
+#3
+	WLW	1,w3fgrl2,F
+	WLLW	-1,seq_strtdunk,w3fgrl4,03aH
+	WLW	22,w3fgrl2,F
+	WL	-1,seq_lay_up_start			;RJR
+	WLW	4,w3fgrl3,F
+	WLW	1,w3fgrl4,F
+	WL	-1,plyr_shoot
+	WLW	3,w3fgrl4,F
+	WLW	50,w3fgrl5,F
+	WLW	4,w3fgrl6,F
+	WLW	-1,seq_newdir,2*16
+	W0
+#4
+	WLW	1,w4fgrl1,F
+	WLLW	-1,seq_strtdunk,w4fgrl3,03aH
+	WLW	22,w4fgrl1,F
+	WL	-1,seq_lay_up_start			;RJR
+	WLW	4,w4fgrl2,F
+	WLW	1,w4fgrl3,F
+	WL	-1,plyr_shoot
+	WLW	50,w4fgrl3,F
+	WLW	-1,seq_newdir,3*16
+	W0
+#5
+	WLW	1,w5fgrl1,F
+	WLLW	-1,seq_strtdunk,w5fgrl3,03aH
+	WLW	22,w5fgrl1,F
+	WL	-1,seq_lay_up_start			;RJR
+	WLW	4,w5fgrl2,F
+	WLW	1,w5fgrl3,F
+	WL	-1,plyr_shoot
+	WLW	50,w5fgrl3,F
+	WLW	5,w5fgrl4,F
+	WLW	-1,seq_newdir,4*16
+	W0
+
+#*
+dunklay6_t		;1,2 directions
+	.word	DFLGS|LAYUP_M
+	.long	seq_stand
+	.long	#1,#2,#3,#3
+	.long	#3,#3,#3,#2
+
+#1
+	WLW	3,w1splay1,F
+	WLW	3,w1splay2,F
+	WLW	3,w1splay3,F
+	WLLW	-1,seq_strtdunk,w1splay10,040H
+	WLW	1,w1splay4,F
+	WL	-1,seq_lay_up_start
+	WLW	3,w1splay4,F
+	WLW	4,w1splay5,F
+	WLW	4,w1splay6,F
+	WLW	4,w1splay7,F
+	WLW	18h,w1splay8,F
+	WL	-1,plyr_shoot
+	WLW	1ch,w1splay9,F
+	WLW	8,w1splay10,F
+	WLW	80,w1splay11,F
+	WLW	-1,seq_newdir,1*16
+	W0
+#2
+	WLW	3,w1splay1,F
+	WLW	3,w1splay2,F
+	WLW	3,w1splay3,F
+	WLLW	-1,seq_strtdunk,w1splay10,040H
+	WLW	3,w1splay4,F
+	WL	-1,seq_lay_up_start
+	WLW	30,w1splay4,F
+	WLW	4,w1splay5,F
+	WLW	4,w1splay6,F
+	WLW	4,w1splay7,F
+	WLW	1,w1splay8,F
+	WL	-1,plyr_shoot
+	WLW	4,w1splay8,F
+	WLW	30,w1splay9,F
+	WLW	10,w1splay10,F
+	WLW	50,w1splay11,F
+	WLW	-1,seq_newdir,1*16
+#3
+	W0
+
+********************************
+
+dunkx_t		;3 direction
+
+	.word	DFLGS
+	.long	seq_stand
+	.long	#DD,#DD,#dx3_l,#DD
+	.long	#DD,#DD,#dx3_l,#DD
+
+#DD	W0
+
+#dx3_l
+	WLW	4,CANB1,F
+	WLLW	-1,seq_strtdunk,CANB13,066H-16
+	WLW	3,CANB2,F
+	WLL	-1,seq_snd,jet			;RJR
+
+	WLW	3,canroll2,F
+	WLL	-1,seq_snd,ohmy			;RJR
+	WLW	3,canroll3,F
+	WLW	3,canroll4,F
+	WLW	3,canroll5,F
+	WLW	-1,seq_jam_speech,JAM_GREAT	;RJR
+	WLW	3,canroll6,F
+	WLW	3,canroll7,F
+	WLW	3,canroll8,F
+	WLW	3,canroll1,F
+
+;	WLW	3,canroll2,F
+;	WLW	3,canroll3,F
+;	WLW	3,canroll4,F
+;	WLW	3,canroll5,F
+;	WLW	3,canroll6,F
+;	WLW	3,canroll7,F
+;	WLW	3,canroll8,F
+;	WLW	3,canroll1,F
+;
+;	WLW	3,canroll2,F
+;	WLW	3,canroll3,F
+;	WLW	3,canroll4,F
+;	WLW	3,canroll5,F
+;	WLW	3,canroll6,F
+;	WLW	3,canroll7,F
+;	WLW	3,canroll8,F
+;	WLW	3,canroll1,F
+
+	WLW	3,canroll2,F
+	WLW	3,canroll3,F
+	WLW	3,canroll4,F
+	WLW	3,canroll5,F
+	WLW	3,canroll6,F
+	WLW	3,canroll7,F
+	WLW	3,canroll8,F
+	WLW	3,canroll1,F
+
+
+
+	WLW	3,CANB3,F
+	WLW	3,CANB4,F
+	WLW	3,CANB5,F
+	WLW	3,CANB6,F
+	WLW	3,CANB7,F
+	WLW	3,CANB8,F
+	WLW	3,CANB9,F
+	WLW	3,CANB10,F
+	WLW	3,CANB11,F
+	WLW	3,CANB12,F
+	WLW	1,CANB13,F
+
+	WLW	-1,seq_slamball,020H
+
+
+	WLW	4,T1HANG1,F
+	WLW	4,T1HANG2,F
+	WLW	4,T1HANG3,F
+	WLW	4,T1HANG4,F
+	WLW	4,T1HANG5,F
+	WLW	8,T1HANG6,F
+	WLW	4,T1HANG7,F
+	WLW	4,T1HANG8,F
+	WLW	10h,T1HANG9,F
+	WLW	6,T1HANG10,F
+
+
+
+;	WLW	8,CANB13,F
+;	WLW	18h,CANB14,F
+;	WLW	24h,CANB15,F
+;	WLW	8,CANB16,F
+	WLW	-1,seq_newdir,2*16
+	W0
+
+dunkx2_t		;3 direction
+
+	.word	DFLGS
+	.long	seq_stand
+	.long	#DD,#DD,#dx4_l,#DD
+	.long	#DD,#DD,#dx4_l,#DD
+
+#dx4_l
+	WLW	4,CANB1,F
+	WLLW	-1,seq_strtdunk,CANB13,066H
+	WLW	3,CANB2,F
+	WLL	-1,seq_snd,jet			;RJR
+
+	WLW	2,canroll2,F
+	WLW	2,canroll3,F
+	WLW	2,canroll4,F
+	WLW	2,canroll5,F
+	WLW	2,canroll6,F
+	WLW	2,canroll7,F
+	WLW	2,canroll8,F
+	WLW	2,canroll1,F
+
+	WLL	-1,seq_snd,ohmy			;RJR
+	WLW	-1,seq_jam_speech,JAM_GREAT	;RJR
+	WLW	2,canroll2,F
+	WLW	2,canroll3,F
+	WLW	2,canroll4,F
+	WLW	2,canroll5,F
+	WLW	2,canroll6,F
+	WLW	2,canroll7,F
+	WLW	2,canroll8,F
+	WLW	2,canroll1,F
+
+	WLW	2,canroll2,F
+	WLW	2,canroll3,F
+	WLW	2,canroll4,F
+	WLW	2,canroll5,F
+	WLW	2,canroll6,F
+	WLW	2,canroll7,F
+	WLW	2,canroll8,F
+	WLW	2,canroll1,F
+
+	WLW	2,canroll2,F
+	WLW	2,canroll3,F
+	WLW	2,canroll4,F
+	WLW	2,canroll5,F
+	WLW	2,canroll6,F
+	WLW	2,canroll7,F
+	WLW	2,canroll8,F
+	WLW	2,canroll1,F
+
+	WLW	2,CANB3,F
+	WLW	2,CANB4,F
+	WLW	2,CANB5,F
+	WLW	3,CANB6,F
+	WLW	3,CANB7,F
+	WLW	3,CANB8,F
+	WLW	3,CANB9,F
+	WLW	4,CANB10,F
+	WLW	4,CANB11,F
+	WLW	4,CANB12,F
+	WLW	4,CANB13,F
+
+	WLW	-1,seq_slamball,020H
+;	WLW	4,CANB13,F
+
+
+
+	WLW	4,T1HANG1,F
+	WLW	4,T1HANG2,F
+	WLW	4,T1HANG3,F
+	WLW	4,T1HANG4,F
+	WLW	4,T1HANG5,F
+	WLW	8,T1HANG6,F
+	WLW	4,T1HANG7,F
+	WLW	4,T1HANG8,F
+	WLW	10h,T1HANG9,F
+	WLW	6,T1HANG10,F
+
+
+;	WLW	18h,CANB14,F
+;	WLW	24h,CANB15,F
+;	WLW	8,CANB16,F
+	WLW	-1,seq_newdir,2*16
+	W0
+
+dunkx3_t		;3 direction
+
+	.word	DFLGS
+	.long	seq_stand
+	.long	#DD,#DD,#dx5_l,#DD
+	.long	#DD,#DD,#dx5_l,#DD
+
+#dx5_l
+	WLW	4,CANB1,F
+	WLLW	-1,seq_strtdunk,CANB13,05cH
+
+	WLW	4,CANB2,F
+	WLL	-1,seq_snd,jet			;RJR
+	WLW	4,CANB3,F
+	WLL	-1,seq_snd,ohmy			;RJR
+	WLW	4,CANB4,F
+	WLW	4,CANB5,F
+	WLW	-1,seq_jam_speech,JAM_GREAT	;RJR
+	WLW	4,CANB6,F
+	WLW	4,CANB7,F
+	WLW	4,CANB8,F
+	WLW	4,CANB9,F
+	WLW	4,CANB10,F
+	WLW	4,CANB11,F
+	WLW	30h,CANB12,F
+	WLW	1,CANB13,F
+
+	WLW	-1,seq_slamball,020H
+
+
+	WLW	4,T1HANG1,F
+	WLW	4,T1HANG2,F
+	WLW	4,T1HANG3,F
+	WLW	4,T1HANG4,F
+	WLW	4,T1HANG5,F
+	WLW	8,T1HANG6,F
+	WLW	4,T1HANG7,F
+	WLW	4,T1HANG8,F
+	WLW	10h,T1HANG9,F
+	WLW	6,T1HANG10,F
+
+
+
+;	WLW	8,CANB13,F
+;	WLW	18h,CANB14,F
+;	WLW	24h,CANB15,F
+;	WLW	8,CANB16,F
+	WLW	-1,seq_newdir,2*16
+	W0
+
+
+dunkz_t		;2,3 directions
+	.word	DFLGS
+	.long	seq_stand
+	.long	#DD,#dz2a_l,#dz1a_l,#DD
+	.long	#DD,#DD,#dz1a_l,#dz2a_l
+
+#dz1a_l
+	WLW	4,T2DUNK1,F
+#dz2a_l
+	WLW	4,T2DUNK2,F
+	
+	WLLW	-1,seq_strtdunk,T2DUNK6,050H
+	WLW	4,T2DUNK3,F
+	WLL	-1,seq_snd,yell			;RJR
+	WLW	-1,seq_jam_speech,JAM_GOOD	;RJR
+	WLW	042H,T2DUNK4,F
+	WLW	4,T2DUNK5,F
+	WLW	1,T2DUNK6,F
+
+	WLW	-1,seq_slamball,10
+
+	WLW	4,T2DUNK6,F
+	WLW	4,T2DUNK7,F
+	WLW	15,T2DUNK8,F
+	WLW	10,T2DUNK9,F
+	WLW	6,T2DUNK10,F
+
+	WLW	-1,seq_newdir,0
+	W0
+
+dunkz2_t		;2,3 directions
+	.word	DFLGS
+	.long	seq_stand
+	.long	#DD,#dz12a_l,#dz11a_l,#DD
+	.long	#DD,#DD,#dz11a_l,#dz12a_l
+
+#dz11a_l
+	WLW	4,T2DUNK1,F
+#dz12a_l
+	WLW	4,T2DUNK2,F
+	WLLW	-1,seq_strtdunk,T2DUNK6,048H
+
+	WLW	4,T2DUNK3,F
+	WLL	-1,seq_snd,yell			;RJR
+	WLW	-1,seq_jam_speech,JAM_GOOD	;RJR
+	WLW	042H-12,T2DUNK3,F
+
+	WLW	4,T2DUNK4,F
+	WLW	4,T2DUNK5,F
+	WLW	1,T2DUNK6,F
+
+	WLW	-1,seq_slamball,10
+
+	WLW	4,T2DUNK6,F
+	WLW	4,T2DUNK7,F
+	WLW	15,T2DUNK8,F
+	WLW	10,T2DUNK9,F
+	WLW	6,T2DUNK10,F
+
+	WLW	-1,seq_newdir,0
+	W0
+
+
+	.end
+
+

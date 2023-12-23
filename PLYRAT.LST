@@ -1,0 +1,1306 @@
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:03 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE    1
+
+       1                            .file   "plyrat.asm"
+       3                            .width  132
+       4                            .option b,d,l,t
+       5                            .mnolist
+       6                    
+       7                    
+       8                            .include        "mproc.equ"             ;Mproc equates
+       9                            .include        "disp.equ"              ;Display proc equates
+      10                            .include        "gsp.equ"               ;Gsp asm equates
+      11                            .include        "sys.equ"
+      12                            .include        "shawn.hdr"             ;Macros
+      13                            .asg            0,SEQT
+      14                            .include        "plyr.equ"
+      15                            .include        "imgpalp.asm"
+      16                            .include        "imgpal3.asm"
+      17                            .include        "imgtbl4.glo"
+      18                            .include        "plyrhd4.tbl"
+      19                    
+      20                    
+      21                    
+      22                    
+      23                    
+      24                            .ref    scale74f_t,scale59_t,scale61f_t,scale63f_t
+      25                            .ref    scale57_t,scale58_t,scale60_t,scale61_t,scale61t_t,scale62_t
+      26                            .ref    scale62t_t,scale63_t,scale65_t,scale64t_t,scale64_t,scale67_t
+      27                            .ref    scale66_t,scale65t_t,scale67t_t,scale66t_t,scale65f_t
+      28                            .ref    scale67f_t,scale66f_t,scale69_t,scale69f_t,scale68f_t
+      29                            .ref    scale68t_t,scale68_t,scale611_t,scale610_t,scale611t_t
+      30                            .ref    scale610t_t,scale611f_t,scale610f_t,scale70t_t,scale70f_t
+      31                            .ref    scale70_t,scale71_t,scale72_t,scale76et_t,scale74_t,scale72f_t
+      32                    
+      33                            .ref    team1,team2
+      34                            .ref    Lohaus_h,Gug_h,Edwrd_h
+      35                            .ref    Worthy_h,Laetner_h,Hawkins_h,LJohnson_h,Divac_h,Seikaly_h
+      36                            .ref    KMalone_h,Stockton_h,Ewing_h,RHarper_h
+      37                            .ref    Seikaly_h,Price_h,Rice_h,Miller_h,Mutumbo_h,Oakley_h,Olajuwon_h
+      38                            .ref    Skiles_h,Porter_h,Schrempf_h,Robinson_h,Tisdale_h
+      39                            .ref    Webb_h,Smith_h,Thomas_h
+      40                            .ref    Kemp_h,Pippen_h,Gill_h,Daughert_h,Mullin_h,Wilkins_h
+      41                            .ref    Person_h,Augmon_h,Benjamin_h,Barkley_h,Coleman_h,Drexler_h
+      42                            .ref    Ellis_h,Elliot_h,Hardaway_h,DHarper_h,HCGrant_h,HVGrant_h
+      43                            .ref    Hornacek_h,Majerle_h,Manning_h
+      44                    
+      45                            .ref    McDan_h,Brown_h,KAnderson_h
+      46                            .ref    Willis_h,Gamble_h,Mourn_h,Armstrng_h,Kukoc_h,Nance_h,Jack_h
+      47                            .ref    Dumars_h,Rodman_h,Hunter_h,Webber_h,Maxwell_h,Horry_h,Smits_h
+      48                            .ref    Roberts_h,Peeler_h,Campbell_h,Miner_h,Baker_h,Day_h
+      49                            .ref    Mason_h,Starks_h,AHard_h,NAnders_h,Weath_h,Brad_h,KJohn_h
+      50                            .ref    Hurley_h,Rich_h,DEllis_h,Payton_h,Mckey_h,Benoit_h,Ellison_h
+      51                            .ref    Mash_h,Rogers_h,Cheaney_h,CRobin_h,Simmons_h,Rider_h,Morris_h
+      52                            .ref    Sealy_h
+      53                    
+      54                    
+      55                    
+      56                            .def    EB_H,JTO_H      ;RA_H
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:03 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball player code                                               PAGE    2
+
+      57                            .def    spechds_t
+      58                            .def    ATL_t
+      59                    
+      60                            .def    lighten1
+      61                            .def    lighten2
+      62                            .def    lighten3
+      63                            .def    lighten4
+      64                            .def    lighten5
+      65                            .def    lighten6
+      66                            .def    lighten7
+      67                    
+      68                    
+      69                    
+      70                    
+      71                    
+      72                    
+      73                    
+      74 00000000                   .text
+      75                    
+      76                    
+      77                            .asg    01040H-080H+042H*1,BV
+      78                            .asg    01040H-080H+042H*2,BV1
+      79                            .asg    01040H-080H+042H*3,BV2
+      80                            .asg    01040H-080H+042H*4,BV3
+      81                            .asg    01040H-080H+042H*5,BV4
+      82                            .asg    01040H-080H+042H*6,BV5
+      83                            .asg    01040H-080H+042H*7,BV6
+      84                            .asg    01040H-080H+042H*8,BV7
+      85                            .asg    01040H-080H+042H*10+020H,BV8
+      86                            .asg    01040H-080H+042H*11+030H,BV9
+      87                            .asg    01040H-080H+042H*12+040H,BV10
+      88                    
+      89                            .asg    0,DSKL0
+      90                            .asg    1,DSKL1
+      91                            .asg    2,DSKL2
+      92                            .asg    3,DSKL3
+      93                            .asg    4,DSKL4
+      94                            .asg    5,DSKL5
+      95                            .asg    -1,DSKL_1
+      96                            .asg    -2,DSKL_2
+      97                            .asg    -3,DSKL_3
+      98                            .asg    -4,DSKL_4
+      99                            .asg    -5,DSKL_5
+     100                            .asg    -6,DSKL_6
+     101                            .asg    -7,DSKL_7
+     102                            .asg    -8,DSKL_8
+     103                            .asg    -9,DSKL_9
+     104                            .asg    -10,DSKL_10
+     105                            .asg    -11,DSKL_11
+     106                    
+     107                    
+     108                    
+     109                            .asg    860,SHT0                ;890
+     110                            .asg    890,SHT1                ;910
+     111                            .asg    920,SHT2                ;960
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:03 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball player code                                               PAGE    3
+
+     112                            .asg    970,SHT3                ;980
+     113                            .asg    1040,SHT4               ;1000
+     114                            .asg    1070,SHT5               ;1020
+     115                            .asg    1080,SHT6               ;1040
+     116                            .asg    1100,SHT7
+     117                            .asg    1130,SHT8
+     118                            .asg    1150,SHT9
+     119                            .asg    1200,SHT10
+     120                    
+     121                            .asg    1201,SHT11              ;MK SPECIAL FLAG
+     122                    
+     123                            .asg    0,DNK0
+     124                            .asg    1,DNK1
+     125                            .asg    2,DNK2
+     126                            .asg    3,DNK3
+     127                            .asg    4,DNK4
+     128                            .asg    5,DNK5
+     129                            .asg    6,DNK6
+     130                            .asg    7,DNK7
+     131                            .asg    8,DNK8
+     132                            .asg    9,DNK9
+     133                            .asg    10,DNK10
+     134                    
+     135                            .asg    0,DEF0
+     136                            .asg    1,DEF1
+     137                            .asg    2,DEF2
+     138                            .asg    3,DEF3
+     139                            .asg    4,DEF4
+     140                            .asg    5,DEF5
+     141                            .asg    6,DEF6
+     142                            .asg    7,DEF7
+     143                            .asg    8,DEF8
+     144                            .asg    9,DEF9
+     145                            .asg    10,DEF10
+     146                    
+     147                    
+     148                    
+     149                            .asg    0,SDEF0
+     150                            .asg    1,SDEF1
+     151                            .asg    2,SDEF2         ;Old normal
+     152                            .asg    3,SDEF3
+     153                            .asg    4,SDEF4
+     154                            .asg    5,SDEF5
+     155                            .asg    6,SDEF6
+     156                            .asg    7,SDEF7
+     157                            .asg    8,SDEF8
+     158                            .asg    9,SDEF9
+     159                            .asg    10,SDEF10
+     160                    
+     161                    
+     162                    
+     163 00000000           ATL_t
+     164 00000000                   LWWWWWW scale610f_t,BV7,SHT7,DNK7,DEF5,SDEF4,DSKL0
+     165 00000080 000134b0"         .long   FL28_p, Un4_p,Un14_p, TR1_p,TR4_p,Manning_h
+     166 00000140     0002          .word   2,6,7   
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:03 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball player code                                               PAGE    4
+
+     167 00000170                   LWWWWWW scale66t_t,BV10,SHT7,DNK2,DEF2,SDEF4,DSKL0
+     168 000001f0 00007b10"         .long   FL1_p, Un4_p,Un14_p, TR1_p,TR4_p,Augmon_h
+     169 000002b0     0005          .word   5,1,5
+     170 000002e0                   LWWWWWW scale70f_t,BV6,SHT4,DNK6,DEF9,SDEF0,DSKL0
+     171 00000360 00007b10"         .long   FL1_p, Un4_p,Un14_p, TR1_p,TR4_p,Willis_h
+     172 00000420     0004          .word   4,9,1
+     173                    
+     174                    
+     175 00000450                   LWWWWWW scale61_t,BV8,SHT7,DNK8,DEF2,SDEF6,DSKL0
+     176 000004d0 00012010"         .long   FL25_p, Un13_p,Un14_p, TR2_p,TR6_p,Brown_h
+     177 00000590     0006          .word   6,1,5   
+     178 000005c0                   LWWWWWW scale67_t,BV5,SHT5,DNK5,DEF9,SDEF3,DSKL0
+     179 00000640 00012010"         .long   FL25_p, Un13_p,Un14_p, TR2_p,TR6_p,McDan_h
+     180 00000700     0001          .word   1,8,8   
+     181 00000730                   LWWWWWW scale65t_t,BV3,SHT7,DNK2,DEF4,SDEF4,DSKL0
+     182 000007b0 0000eff0"         .long   FL18_p, Un13_p,Un14_p, TR2_p,TR6_p,Gamble_h
+     183 00000870     0005          .word   5,5,4
+     184                    
+     185                    
+     186 000008a0                   LWWWWWW scale610f_t,BV7,SHT7,DNK9,DEF5,SDEF3,DSKL0      ;Can shatter
+     187 00000920 00012010"         .long   FL25_p, Un12_p,Un14_p, TR2_p,TR7_p,LJohnson_h
+     188 000009e0     0003          .word   3,9,7   
+     189 00000a10                   LWWWWWW scale65t_t,BV7,SHT7,DNK0,DEF3,SDEF4,DSKL0
+     190 00000a90 0000eff0"         .long   FL18_p, Un12_p,Un14_p, TR2_p,TR7_p,Hawkins_h
+     191 00000b50     0005          .word   5,2,6   
+     192 00000b80                   LWWWWWW scale71_t,BV7,SHT5,DNK8,DEF9,SDEF4,DSKL0
+     193 00000c00 00015df0"         .long   FL34_p, Un12_p,Un14_p, TR2_p,TR7_p,Mourn_h
+     194 00000cc0     0005          .word   5,9,9   
+     195                    
+     196                    
+     197 00000cf0                   LWWWWWW scale68_t,BV8,SHT6,DNK10,DEF5,SDEF9,DSKL5       ;Can shatter
+     198 00000d70 00017970"         .long   FL38_p, Un4_p,Un14_p, TR2_p,TR4_p,Pippen_h
+     199 00000e30     0007          .word   7,3,5   
+     200 00000e60                   LWWWWWW scale62_t,BV8,SHT9,DNK0,DEF0,SDEF4,DSKL5
+     201 00000ee0 0000db50"         .long   FL15_p, Un4_p,Un14_p, TR2_p,TR4_p,Armstrng_h
+     202 00000fa0     0005          .word   5,0,9   
+     203 00000fd0                   LWWWWWW scale611t_t,BV6,SHT5,DNK2,DEF7,SDEF4,DSKL5
+     204 00001050 00018730"         .long   FL40_p, Un4_p,Un14_p, TR2_p,TR4_p,Kukoc_h
+     205 00001110     0009          .word   9,4,4
+     206 00001140                   LWWWWWW scale611_t,BV6,SHT1,DNK5,DEF9,SDEF2,DSKL5
+     207 000011c0 0000db50"         .long   FL15_p, Un4_p,Un14_p, TR2_p,TR4_p,HCGrant_h
+     208 00001280     0002          .word   2,9,4   
+     209                    
+     210                    
+     211 000012b0                   LWWWWWW scale60_t,BV8,SHT9,DNK0,DEF0,SDEF10,DSKL0
+     212 00001330 00018730"         .long   FL40_p, Un8_p,Un14_p, TR5_p,TR7_p,Price_h
+     213 000013f0     0008          .word   8,2,9   
+     214 00001420                   LWWWWWW scale70_t,BV7,SHT3,DNK8,DEF7,SDEF3,DSKL0
+     215 000014a0 00009d70"         .long   FL6_p,  Un8_p,Un14_p, TR5_p,TR7_p,Daughert_h
+     216 00001560     0004          .word   4,6,6   
+     217 00001590                   LWWWWWW scale610_t,BV3,SHT4,DNK7,DEF9,SDEF3,DSKL0
+     218 00001610 00009d70"         .long   FL6_p,  Un8_p,Un14_p, TR5_p,TR7_p,Nance_h
+     219 000016d0     0003          .word   3,7,2   
+     220                    
+     221                    
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:03 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball player code                                               PAGE    5
+
+     222 00001700                   LWWWWWW scale66_t,BV8,SHT6,DNK1,DEF3,SDEF5,DSKL_11
+     223 00001780 00015df0"         .long   FL34_p, Un5_p,Un14_p, TR6_p,TR6_p,Jack_h
+     224 00001840     0009          .word   9,5,6   
+     225 00001870                   LWWWWWW scale68t_t,BV8,SHT8,DNK7,DEF6,SDEF3,DSKL_11
+     226 000018f0 0000cd90"         .long   FL13_p, Un5_p,Un14_p, TR6_p,TR6_p,Mash_h
+     227 000019b0     0004          .word   4,8,6   
+     228                    
+     229                    
+     230 000019e0                   LWWWWWW scale72_t,BV5,SHT1,DNK8,DEF9,SDEF2,DSKL_7       ;Can shatter
+     231 00001a60 00015030"         .long   FL32_p, Un8_p,Un14_p, TR8_p,TR7_p,Mutumbo_h
+     232 00001b20     0001          .word   1,8,2   
+     233 00001b50                   LWWWWWW scale69f_t,BV6,SHT5,DNK6,DEF5,SDEF2,DSKL_7
+     234 00001bd0 0000c6b0"         .long   FL12_p, Un8_p,Un14_p, TR8_p,TR7_p,Ellis_h
+     235 00001c90     0003          .word   3,5,3   
+     236 00001cc0                   LWWWWWW scale67_t,BV7,SHT5,DNK3,DEF3,SDEF3,DSKL_7
+     237 00001d40 0000c6b0"         .long   FL12_p, Un8_p,Un14_p, TR8_p,TR7_p,Rogers_h
+     238 00001e00     0004          .word   4,7,1   
+     239                    
+     240                    
+     241 00001e30                   LWWWWWW scale60_t,BV10,SHT8,DNK0,DEF0,SDEF7,DSKL1
+     242 00001eb0 0001cbf0"         .long   FL50_p, Un9_p,Un14_p, TR4_p,TR7_p,Thomas_h
+     243 00001f70     0008          .word   8,1,9
+     244 00001fa0                   LWWWWWW scale63_t,BV8,SHT7,DNK0,DEF2,SDEF4,DSKL1
+     245 00002020 00016bb0"         .long   FL36_p, Un9_p,Un14_p, TR4_p,TR7_p,Dumars_h
+     246 000020e0     0005          .word   5,3,8
+     247 00002110                   LWWWWWW scale69_t,BV7,SHT6,DNK6,DEF6,SDEF5,DSKL_3
+     248 00002190 0000b8f0"         .long   FL10_p, Un9_p,Un14_p, TR4_p,TR7_p,Elliot_h
+     249 00002250     0005          .word   5,4,5
+     250 00002280                   LWWWWWW scale62t_t,BV10,SHT5,DNK0,DEF0,SDEF4,DSKL1
+     251 00002300 000194f0"         .long   FL42_p, Un9_p,Un14_p, TR4_p,TR7_p,Hunter_h
+     252 000023c0     0006          .word   6,2,2
+     253                    
+     254                    
+     255 000023f0                   LWWWWWW scale62_t,BV9,SHT6,DNK0,DEF0,SDEF8,DSKL_4
+     256 00002470 0000e910"         .long   FL17_p, Un5_p,Un14_p, TR9_p,TR7_p,Hardaway_h
+     257 00002530     0005          .word   5,4,6   
+     258 00002560                   LWWWWWW scale67_t,BV4,SHT10,DNK3,DEF3,SDEF4,DSKL_4
+     259 000025e0 00014950"         .long   FL31_p, Un5_p,Un14_p, TR9_p,TR7_p,Mullin_h
+     260 000026a0     0005          .word   5,5,9   
+     261 000026d0                   LWWWWWW scale610f_t,BV8,SHT4,DNK8,DEF8,SDEF3,DSKL_4
+     262 00002750 0000e910"         .long   FL17_p, Un5_p,Un14_p, TR9_p,TR7_p,Webber_h
+     263 00002810     0007          .word   7,9,0   
+     264                    
+     265                    
+     266 00002840                   LWWWWWW scale71_t,BV8,SHT2,DNK9,DEF9,SDEF3,DSKL1
+     267 000028c0 000164d0"         .long   FL35_p, Un4_p,Un14_p, TR9_p,TR4_p,Olajuwon_h
+     268 00002980     0004          .word   4,8,8
+     269 000029b0                   LWWWWWW scale64t_t,BV6,SHT4,DNK1,DEF3,SDEF2,DSKL1
+     270 00002a30 0001be30"         .long   FL48_p, Un4_p,Un14_p, TR9_p,TR4_p,Maxwell_h
+     271 00002af0     0007          .word   7,0,2   
+     272 00002b20                   LWWWWWW scale610t_t,BV7,SHT6,DNK7,DEF7,SDEF4,DSKL1
+     273 00002ba0 0001be30"         .long   FL48_p, Un4_p,Un14_p, TR9_p,TR4_p,Horry_h
+     274 00002c60     0005          .word   5,6,4   
+     275 00002c90                   LWWWWWW scale63_t,BV7,SHT8,DNK1,DEF3,SDEF4,DSKL1
+     276 00002d10 0001be30"         .long   FL48_p, Un4_p,Un14_p, TR9_p,TR4_p,Smith_h
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:03 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball player code                                               PAGE    6
+
+     277 00002dd0     0007          .word   7,2,4   
+     278                    
+     279                    
+     280 00002e00                   LWWWWWW scale67t_t,BV7,SHT9,DNK5,DEF4,SDEF5,DSKL0
+     281 00002e80 00014270"         .long   FL30_p, Un10_p,Un14_p, TR9_p,TR7_p,Miller_h
+     282 00002f40     0006          .word   6,4,8   
+     283 00002f70                   LWWWWWW scale68t_t,BV6,SHT4,DNK5,DEF6,SDEF1,DSKL0
+     284 00002ff0 00014270"         .long   FL30_p, Un10_p,Un14_p, TR9_p,TR7_p,Sealy_h
+     285 000030b0     0004          .word   4,5,2   
+     286 000030e0                   LWWWWWW scale74_t,BV2,SHT2,DNK4,DEF8,SDEF1,DSKL0
+     287 00003160 0001a990"         .long   FL45_p, Un10_p,Un14_p, TR9_p,TR7_p,Smits_h
+     288 00003220     0003          .word   3,7,6
+     289                    
+     290                    
+     291 00003250                   LWWWWWW scale610_t,BV8,SHT6,DNK10,DEF8,SDEF4,DSKL0      ;Can shatter
+     292 000032d0 0001e090"         .long   FL53_p, Un4_p,Un14_p, TR2_p,TR4_p,Wilkins_h
+     293 00003390     0002          .word   2,3,8   
+     294 000033c0                   LWWWWWW scale66_t,BV8,SHT7,DNK4,DEF7,SDEF8,DSKL0
+     295 00003440 00018e10"         .long   FL41_p, Un4_p,Un14_p, TR2_p,TR4_p,RHarper_h
+     296 00003500     0003          .word   3,4,6   
+     297 00003530                   LWWWWWW scale70f_t,BV1,SHT4,DNK3,DEF8,SDEF2,DSKL0
+     298 000035b0 00018e10"         .long   FL41_p, Un4_p,Un14_p, TR2_p,TR4_p,Roberts_h
+     299 00003670     0003          .word   3,9,2   
+     300                    
+     301                    
+     302 000036a0                   LWWWWWW scale64_t,BV8,SHT7,DNK4,DEF2,SDEF4,DSKL1
+     303 00003720 0001e770"         .long   FL54_p, Un2_p,Un15_p, TR3_p,TR10_p,Peeler_h
+     304 000037e0     0004          .word   4,0,8   
+     305 00003810                   LWWWWWW scale71_t,BV3,SHT5,DNK7,DEF7,SDEF4,DSKL1
+     306 00003890 0000ab30"         .long   FL8_p, Un2_p,Un15_p, TR3_p,TR10_p,Divac_h
+     307 00003950     0002          .word   2,6,8   
+     308 00003980                   LWWWWWW scale70t_t,BV7,SHT4,DNK6,DEF9,SDEF2,DSKL1
+     309 00003a00 0001e770"         .long   FL54_p, Un2_p,Un15_p, TR3_p,TR10_p,Campbell_h
+     310 00003ac0     0002          .word   2,8,6   
+     311                    
+     312                    
+     313 00003af0                   LWWWWWW scale69_t,BV5,SHT7,DNK7,DEF5,SDEF5,DSKL1
+     314 00003b70 0001e770"         .long   FL54_p, Un2_p,Un15_p, TR3_p,TR10_p,Worthy_h
+     315 00003c30     0005          .word   5,4,6   
+     316                    
+     317                    
+     318 00003c60                   LWWWWWW scale68f_t,BV7,SHT9,DNK5,DEF4,SDEF4,DSKL_6
+     319 00003ce0 000194f0"         .long   FL42_p, Un1_p,Un14_p, TR4_p,TR4_p,Rice_h
+     320 00003da0     0002          .word   2,3,8   
+     321 00003dd0                   LWWWWWW scale70_t,BV3,SHT3,DNK8,DEF8,SDEF3,DSKL_6
+     322 00003e50 0001b070"         .long   FL46_p, Un1_p,Un14_p, TR4_p,TR4_p,Seikaly_h
+     323 00003f10     0004          .word   4,6,3   
+     324 00003f40                   LWWWWWW scale65f_t,BV9,SHT5,DNK9,DEF6,SDEF7,DSKL_6
+     325 00003fc0 0001a2b0"         .long   FL44_p, Un1_p,Un14_p, TR4_p,TR4_p,Miner_h
+     326 00004080     0007          .word   7,2,8   
+     327                    
+     328                    
+     329 000040b0                   LWWWWWW scale611t_t,BV7,SHT4,DNK7,DEF9,SDEF2,DSKL_2
+     330 00004130 000081f0"         .long   FL2_p, Un11_p,Un14_p, TR6_p,TR6_p,Baker_h
+     331 000041f0     0001          .word   1,2,2   
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:03 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball player code                                               PAGE    7
+
+     332 00004220                   LWWWWWW scale68_t,BV4,SHT4,DNK3,DEF4,SDEF4,DSKL_2
+     333 000042a0 000081f0"         .long   FL2_p, Un11_p,Un14_p, TR6_p,TR6_p,Edwrd_h
+     334 00004360     0005          .word   5,5,5   
+     335 00004390                   LWWWWWW scale66_t,BV6,SHT4,DNK5,DEF5,SDEF6,DSKL_2
+     336 00004410 000081f0"         .long   FL2_p, Un11_p,Un14_p, TR6_p,TR6_p,Day_h
+     337 000044d0     0006          .word   6,4,5   
+     338 00004500                   LWWWWWW scale611_t,BV2,SHT4,DNK2,DEF8,SDEF1,DSKL_2
+     339 00004580 00017290"         .long   FL37_p, Un11_p,Un14_p, TR6_p,TR6_p,Lohaus_h
+     340 00004640     0001          .word   1,8,5   
+     341                    
+     342                    
+     343 00004670                   LWWWWWW scale611_t,BV5,SHT6,DNK4,DEF6,SDEF3,DSKL_10
+     344 000046f0 00011930"         .long   FL24_p, Un5_p,Un14_p, TR2_p,TR7_p,Laetner_h
+     345 000047b0     0000          .word   0,4,8   
+     346 000047e0                   LWWWWWW scale68f_t,BV5,SHT9,DNK5,DEF3,SDEF4,DSKL_10
+     347 00004860 00016bb0"         .long   FL36_p, Un5_p,Un14_p, TR2_p,TR7_p,Person_h
+     348 00004920     0000          .word   0,7,9   
+     349 00004950                   LWWWWWW scale65_t,BV9,SHT4,DNK9,DEF5,SDEF5,DSKL_10
+     350 000049d0 00016bb0"         .long   FL36_p, Un5_p,Un14_p, TR2_p,TR7_p,Rider_h
+     351 00004a90     0005          .word   5,6,5
+     352                    
+     353                    
+     354 00004ac0                   LWWWWWW scale610f_t,BV7,SHT7,DNK8,DEF8,SDEF2,DSKL0
+     355 00004b40 00008fb0"         .long   FL4_p, Un14_p,Un5_p, TR4_p,TR4_p,Coleman_h
+     356 00004c00     0002          .word   2,9,8
+     357 00004c30                   LWWWWWW scale61t_t,BV9,SHT7,DNK0,DEF1,SDEF7,DSKL0
+     358 00004cb0 00016bb0"         .long   FL36_p, Un14_p,Un5_p, TR4_p,TR4_p,KAnderson_h
+     359 00004d70     0009          .word   9,2,5
+     360 00004da0                   LWWWWWW scale68f_t,BV2,SHT4,DNK4,DEF8,SDEF2,DSKL0
+     361 00004e20 000088d0"         .long   FL3_p, Un14_p,Un5_p, TR4_p,TR4_p,Morris_h
+     362 00004ee0     0004          .word   4,9,2
+     363 00004f10                   LWWWWWW scale72f_t,BV2,SHT4,DNK4,DEF6,SDEF2,DSKL0
+     364 00004f90 000088d0"         .long   FL3_p, Un14_p,Un5_p, TR4_p,TR4_p,Benjamin_h
+     365 00005050     0003          .word   3,9,2
+     366                    
+     367                    
+     368 00005080                   LWWWWWW scale72f_t,BV7,SHT4,DNK9,DEF9,SDEF4,DSKL2       ;Shatter
+     369 00005100 0000cd90"         .long   FL13_p, Un5_p,Un14_p, TR5_p,TR5_p,Ewing_h
+     370 000051c0     0002          .word   2,8,9   
+     371 000051f0                   LWWWWWW scale68f_t,BV4,SHT2,DNK4,DEF7,SDEF3,DSKL2
+     372 00005270 00015df0"         .long   FL34_p, Un5_p,Un14_p, TR5_p,TR5_p,Mason_h
+     373 00005330     0006          .word   6,9,3   
+     374 00005360                   LWWWWWW scale65t_t,BV8,SHT6,DNK3,DEF1,SDEF6,DSKL2
+     375 000053e0 00015df0"         .long   FL34_p, Un5_p,Un14_p, TR5_p,TR5_p,Starks_h
+     376 000054a0     0006          .word   6,2,6   
+     377 000054d0                   LWWWWWW scale610f_t,BV3,SHT1,DNK5,DEF8,SDEF1,DSKL2
+     378 00005550 00015df0"         .long   FL34_p, Un5_p,Un14_p, TR5_p,TR5_p,Oakley_h
+     379 00005610     0004          .word   4,9,1
+     380 00005640                   LWWWWWW scale64_t,BV5,SHT5,DNK2,DEF3,SDEF4,DSKL_11
+     381 000056c0 00009690"         .long   FL5_p,  Un5_p,Un14_p, TR5_p,TR5_p,DHarper_h
+     382 00005780     0005          .word   5,5,6
+     383                    
+     384                    
+     385                    
+     386 000057b0                   LWWWWWW scale67t_t,BV10,SHT8,DNK3,DEF4,SDEF7,DSKL2
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:03 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball player code                                               PAGE    8
+
+     387 00005830 00015df0"         .long   FL34_p, Un1_p,Un14_p, TR7_p,TR7_p,AHard_h
+     388 000058f0     0008          .word   8,2,5
+     389 00005920                   LWWWWWW scale66_t,BV7,SHT9,DNK5,DEF6,SDEF8,DSKL2
+     390 000059a0 00015710"         .long   FL33_p, Un1_p,Un14_p, TR7_p,TR7_p,NAnders_h
+     391 00005a60     0005          .word   5,6,4   
+     392 00005a90                   LWWWWWW scale61_t,BV7,SHT9,DNK0,DEF1,SDEF8,DSKL2
+     393 00005b10 0001b750"         .long   FL47_p, Un1_p,Un14_p, TR7_p,TR7_p,Skiles_h
+     394 00005bd0     0007          .word   7,1,6   
+     395                    
+     396                    
+     397 00005c00                   LWWWWWW scale67f_t,BV5,SHT6,DNK6,DEF8,SDEF3,DSKL_9
+     398 00005c80 0000eff0"         .long   FL18_p, Un4_p,Un14_p, TR7_p,TR4_p,Weath_h
+     399 00005d40     0002          .word   2,8,2   
+     400 00005d70                   LWWWWWW scale76et_t,BV7,SHT3,DNK9,DEF9,SDEF7,DSKL_9
+     401 00005df0 00012dd0"         .long   FL27_p, Un4_p,Un14_p, TR7_p,TR4_p,Brad_h
+     402 00005eb0     0006          .word   6,5,1   
+     403                    
+     404                    
+     405 00005ee0                   LWWWWWW scale610f_t,BV7,SHT7,DNK9,DEF7,SDEF7,DSKL3
+     406 00005f60 000081f0"         .long   FL2_p, Un3_p,Un14_p, TR2b_p,TR2b_p,Barkley_h
+     407 00006020     0006          .word   6,9,9   
+     408 00006050                   LWWWWWW scale66_t,BV5,SHT8,DNK4,DEF3,SDEF3,DSKL3
+     409 000060d0 00012dd0"         .long   FL27_p, Un3_p,Un14_p, TR2b_p,TR2b_p,Majerle_h
+     410 00006190     0004          .word   4,5,9   
+     411 000061c0                   LWWWWWW scale61_t,BV8,SHT7,DNK0,DEF0,SDEF7,DSKL3
+     412 00006240 000081f0"         .long   FL2_p, Un3_p,Un14_p, TR2b_p,TR2b_p,KJohn_h
+     413 00006300     0008          .word   8,1,1   
+     414                    
+     415                    
+     416 00006330                   LWWWWWW scale610t_t,BV7,SHT6,DNK9,DEF6,SDEF5,DSKL3      ;Can shatter
+     417 000063b0 0000b210"         .long   FL9_p, Un1_p,Un14_p, TR4_p,TR4_p,Drexler_h
+     418 00006470     0005          .word   5,4,6   
+     419 000064a0                   LWWWWWW scale63_t,BV8,SHT8,DNK1,DEF0,SDEF8,DSKL3
+     420 00006520 00018050"         .long   FL39_p, Un1_p,Un14_p, TR4_p,TR4_p,Porter_h
+     421 000065e0     0008          .word   8,4,3   
+     422 00006610                   LWWWWWW scale610_t,BV5,SHT3,DNK7,DEF9,SDEF3,DSKL3
+     423 00006690 00018050"         .long   FL39_p, Un1_p,Un14_p, TR4_p,TR4_p,CRobin_h
+     424 00006750     0004          .word   4,9,2   
+     425 00006780                   LWWWWWW scale69_t,BV5,SHT4,DNK6,DEF7,SDEF3,DSKL_5
+     426 00006800 0000e230"         .long   FL16_p, Un1_p,Un14_p, TR4_p,TR4_p,HVGrant_h
+     427 000068c0     0004          .word   4,7,6   
+     428                    
+     429                    
+     430 000068f0                   LWWWWWW scale67_t,BV5,SHT1,DNK5,DEF5,SDEF6,DSKL_8       ;Can shatter
+     431 00006970 0001d9b0"         .long   FL52_p, Un5_p,Un14_p, TR2_p,TR7_p,Simmons_h
+     432 00006a30     0006          .word   6,3,4   
+     433 00006a60                   LWWWWWW scale60_t,BV9,SHT6,DNK0,DEF0,SDEF9,DSKL_8
+     434 00006ae0 0001b750"         .long   FL47_p, Un5_p,Un14_p, TR2_p,TR7_p,Hurley_h
+     435 00006ba0     0008          .word   8,2,8   
+     436 00006bd0                   LWWWWWW scale65_t,BV7,SHT9,DNK3,DEF2,SDEF5,DSKL_8
+     437 00006c50 00015df0"         .long   FL34_p, Un5_p,Un14_p, TR2_p,TR7_p,Rich_h
+     438 00006d10     0006          .word   6,8,7   
+     439 00006d40                   LWWWWWW scale610f_t,BV3,SHT3,DNK8,DEF5,SDEF2,DSKL_8
+     440 00006dc0 0001d2d0"         .long   FL51_p, Un5_p,Un14_p, TR2_p,TR7_p,Tisdale_h
+     441 00006e80     0004          .word   4,9,6   
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:03 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball player code                                               PAGE    9
+
+     442 00006eb0                   LWWWWWW scale57_t,BV10,SHT6,DNK10,DEF0,SDEF7,DSKL_8
+     443 00006f30 0001d9b0"         .long   FL52_p, Un5_p,Un14_p, TR2_p,TR7_p,Webb_h
+     444 00006ff0     0003          .word   3,0,4   
+     445                    
+     446                    
+     447 00007020                   LWWWWWW scale71_t,BV7,SHT3,DNK8,DEF9,SDEF3,DSKL_3
+     448 000070a0 00019bd0"         .long   FL43_p, Un1_p,Un14_p, TR2_p,TR11_p,Robinson_h
+     449 00007160     0005          .word   5,7,7   
+     450 00007190                   LWWWWWW scale610_t,BV8,SHT5,DNK7,DEF9,SDEF7,DSKL1
+     451 00007210 00010b70"         .long   FL22_p, Un1_p,Un14_p, TR2_p,TR11_p,Rodman_h
+     452 000072d0     0005          .word   5,9,4
+     453 00007300                   LWWWWWW scale67_t,BV4,SHT9,DNK2,DEF5,SDEF5,DSKL_3
+     454 00007380 0000b8f0"         .long   FL10_p, Un1_p,Un14_p, TR2_p,TR11_p,DEllis_h
+     455 00007440     0005          .word   5,5,5
+     456                    
+     457                    
+     458 00007470                   LWWWWWW scale611_t,BV8,SHT5,DNK10,DEF8,SDEF3,DSKL0
+     459 000074f0 00010b70"         .long   FL22_p, Un6_p,Un14_p, TR3_p,TR6_p,Kemp_h
+     460 000075b0     0003          .word   3,8,6   
+     461 000075e0                   LWWWWWW scale64_t,BV8,SHT5,DNK1,DEF1,SDEF7,DSKL0
+     462 00007660 00010b70"         .long   FL22_p, Un6_p,Un14_p, TR3_p,TR6_p,Payton_h
+     463 00007720     0008          .word   8,5,4   
+     464 00007750                   LWWWWWW scale65_t,BV7,SHT7,DNK7,DEF7,SDEF7,DSKL0
+     465 000077d0 0000d470"         .long   FL14_p, Un6_p,Un14_p, TR3_p,TR6_p,Gill_h
+     466 00007890     0006          .word   6,6,6
+     467 000078c0                   LWWWWWW scale610t_t,BV3,SHT6,DNK4,DEF6,SDEF4,DSKL0
+     468 00007940 0001a990"         .long   FL45_p, Un6_p,Un14_p, TR3_p,TR6_p,Schrempf_h
+     469 00007a00     0005          .word   5,8,6   
+     470                    
+     471                    
+     472 00007a30                   LWWWWWW scale610f_t,BV7,SHT4,DNK9,DEF8,SDEF3,DSKL4      ;Can shatter
+     473 00007ab0 00010490"         .long   FL21_p, Un7_p,Un14_p, TR2_p,TR10_p,KMalone_h
+     474 00007b70     0005          .word   5,9,8   
+     475 00007ba0                   LWWWWWW scale61_t,BV8,SHT9,DNK0,DEF0,SDEF10,DSKL4
+     476 00007c20 0001c510"         .long   FL49_p, Un7_p,Un14_p, TR2_p,TR10_p,Stockton_h
+     477 00007ce0     0009          .word   9,0,6   
+     478 00007d10                   LWWWWWW scale68_t,BV5,SHT4,DNK4,DEF6,SDEF4,DSKL4
+     479 00007d90 00010490"         .long   FL21_p, Un7_p,Un14_p, TR2_p,TR10_p,Benoit_h
+     480 00007e50     0003          .word   3,4,3   
+     481 00007e80                   LWWWWWW scale65_t,BV6,SHT8,DNK0,DEF4,SDEF4,DSKL_9
+     482 00007f00 0000f6d0"         .long   FL19_p, Un7_p,Un14_p, TR2_p,TR10_p,Hornacek_h
+     483 00007fc0     0007          .word   7,3,6   
+     484                    
+     485                    
+     486 00007ff0                   LWWWWWW scale610_t,BV7,SHT7,DNK7,DEF5,SDEF4,DSKL_5
+     487 00008070 00012dd0"         .long   FL27_p, Un4_p,Un14_p, TR7_p,TR7_p,Gug_h
+     488 00008130     0005          .word   5,8,4
+     489 00008160                   LWWWWWW scale610f_t,BV5,SHT2,DNK6,DEF9,SDEF1,DSKL_5
+     490 000081e0 0000e230"         .long   FL16_p, Un4_p,Un14_p, TR7_p,TR7_p,Ellison_h
+     491 000082a0     0003          .word   3,8,5
+     492 000082d0                   LWWWWWW scale67_t,BV8,SHT8,DNK3,DEF4,SDEF7,DSKL_5
+     493 00008350 0000e230"         .long   FL16_p, Un4_p,Un14_p, TR7_p,TR7_p,Cheaney_h
+     494 00008410     0005          .word   5,2,8
+     495                    
+     496                    
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:03 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball player code                                               PAGE   10
+
+     497 00008440                   LWWWWWW scale610f_t,BV7,SHT4,DNK9,DEF8,SDEF3,DSKL4      ;Can shatter
+     498 000084c0 00010490"         .long   FL21_p, Un7_p,Un14_p, TR2_p,TR10_p,KMalone_h
+     499 00008580     0005          .word   5,9,8   
+     500 000085b0                   LWWWWWW scale611_t,BV8,SHT5,DNK10,DEF8,SDEF3,DSKL0
+     501 00008630 00010b70"         .long   FL22_p, Un6_p,Un14_p, TR3_p,TR6_p,Kemp_h
+     502 000086f0     0003          .word   3,8,6   
+     503 00008720                   LWWWWWW scale71_t,BV7,SHT3,DNK8,DEF9,SDEF3,DSKL_3
+     504 000087a0 00019bd0"         .long   FL43_p, Un1_p,Un14_p, TR2_p,TR11_p,Robinson_h
+     505 00008860     0005          .word   5,7,7   
+     506                    
+     507 00008890                   LWWWWWW scale610f_t,BV7,SHT7,DNK9,DEF5,SDEF5,DSKL3
+     508 00008910 000081f0"         .long   FL2_p, Un3_p,Un14_p, TR2b_p,TR2b_p,Barkley_h
+     509 000089d0     0005          .word   5,9,9   
+     510                    
+     511 00008a00                   LWWWWWW scale610t_t,BV7,SHT6,DNK9,DEF6,SDEF5,DSKL3      ;Can shatter
+     512 00008a80 0000b210"         .long   FL9_p, Un1_p,Un14_p, TR4_p,TR4_p,Drexler_h
+     513 00008b40     0005          .word   5,4,6   
+     514 00008b70                   LWWWWWW scale67t_t,BV10,SHT8,DNK3,DEF4,SDEF7,DSKL2
+     515 00008bf0 00015df0"         .long   FL34_p, Un1_p,Un14_p, TR7_p,TR7_p,AHard_h
+     516 00008cb0     0008          .word   8,2,5
+     517 00008ce0                   LWWWWWW scale72f_t,BV7,SHT4,DNK9,DEF9,SDEF4,DSKL2       ;Shatter
+     518 00008d60 0000cd90"         .long   FL13_p, Un5_p,Un14_p, TR5_p,TR5_p,Ewing_h
+     519 00008e20     0002          .word   2,8,9   
+     520 00008e50                   LWWWWWW scale61t_t,BV9,SHT7,DNK0,DEF1,SDEF7,DSKL0
+     521 00008ed0 00016bb0"         .long   FL36_p, Un14_p,Un5_p, TR4_p,TR4_p,KAnderson_h
+     522 00008f90     0009          .word   9,2,5
+     523 00008fc0                   LWWWWWW scale610f_t,BV7,SHT7,DNK8,DEF8,SDEF2,DSKL0
+     524 00009040 00008fb0"         .long   FL4_p, Un14_p,Un5_p, TR4_p,TR4_p,Coleman_h
+     525 00009100     0002          .word   2,9,8
+     526 00009130                   LWWWWWW scale66_t,BV7,SHT9,DNK5,DEF6,SDEF8,DSKL2
+     527 000091b0 00015710"         .long   FL33_p, Un1_p,Un14_p, TR7_p,TR7_p,NAnders_h
+     528 00009270     0005          .word   5,6,4   
+     529 000092a0                   LWWWWWW scale61_t,BV8,SHT9,DNK0,DEF0,SDEF10,DSKL4
+     530 00009320 0001c510"         .long   FL49_p, Un7_p,Un14_p, TR2_p,TR10_p,Stockton_h
+     531 000093e0     0009          .word   9,0,6   
+     532 00009410                   LWWWWWW scale61_t,BV8,SHT7,DNK0,DEF0,SDEF7,DSKL3
+     533 00009490 000081f0"         .long   FL2_p, Un3_p,Un14_p, TR2b_p,TR2b_p,KJohn_h
+     534 00009550     0008          .word   8,1,1   
+     535 00009580                   LWWWWWW scale65_t,BV7,SHT7,DNK7,DEF7,SDEF7,DSKL0
+     536 00009600 0000d470"         .long   FL14_p, Un6_p,Un14_p, TR3_p,TR6_p,Gill_h
+     537 000096c0     0006          .word   6,6,6
+     538 000096f0                   LWWWWWW scale65_t,BV7,SHT9,DNK3,DEF2,SDEF5,DSKL_8
+     539 00009770 00015df0"         .long   FL34_p, Un5_p,Un14_p, TR2_p,TR7_p,Rich_h
+     540 00009830     0006          .word   6,8,7   
+     541 00009860                   LWWWWWW scale76et_t,BV7,SHT3,DNK9,DEF9,SDEF7,DSKL_9
+     542 000098e0 00012dd0"         .long   FL27_p, Un4_p,Un14_p, TR7_p,TR4_p,Brad_h
+     543 000099a0     0006          .word   6,5,1   
+     544 000099d0                   LWWWWWW scale57_t,BV10,SHT6,DNK10,DEF0,SDEF7,DSKL_8
+     545 00009a50 0001d9b0"         .long   FL52_p, Un5_p,Un14_p, TR2_p,TR7_p,Webb_h
+     546 00009b10     0003          .word   3,0,4   
+     547 00009b40                   LWWWWWW scale63_t,BV8,SHT7,DNK0,DEF2,SDEF4,DSKL1
+     548 00009bc0 00016bb0"         .long   FL36_p, Un9_p,Un14_p, TR4_p,TR7_p,Dumars_h
+     549 00009c80     0005          .word   5,3,8
+     550 00009cb0                   LWWWWWW scale65t_t,BV8,SHT6,DNK3,DEF1,SDEF6,DSKL2
+     551 00009d30 00015df0"         .long   FL34_p, Un5_p,Un14_p, TR5_p,TR5_p,Starks_h
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:03 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball player code                                               PAGE   11
+
+     552 00009df0     0006          .word   6,2,6   
+     553 00009e20                   LWWWWWW scale72_t,BV5,SHT1,DNK8,DEF9,SDEF2,DSKL_7       ;Can shatter
+     554 00009ea0 00015030"         .long   FL32_p, Un8_p,Un14_p, TR8_p,TR7_p,Mutumbo_h
+     555 00009f60     0001          .word   1,8,2   
+     556 00009f90                   LWWWWWW scale610_t,BV8,SHT6,DNK10,DEF8,SDEF4,DSKL0      ;Can shatter
+     557 0000a010 0001e090"         .long   FL53_p, Un4_p,Un14_p, TR2_p,TR4_p,Wilkins_h
+     558 0000a0d0     0002          .word   2,3,8   
+     559 0000a100                   LWWWWWW scale66_t,BV8,SHT7,DNK4,DEF7,SDEF8,DSKL0
+     560 0000a180 00018e10"         .long   FL41_p, Un4_p,Un14_p, TR2_p,TR4_p,RHarper_h
+     561 0000a240     0003          .word   3,4,6   
+     562 0000a270                   LWWWWWW scale65_t,BV9,SHT4,DNK9,DEF5,SDEF5,DSKL_10
+     563 0000a2f0 00016bb0"         .long   FL36_p, Un5_p,Un14_p, TR2_p,TR7_p,Rider_h
+     564 0000a3b0     0005          .word   5,6,5
+     565 0000a3e0                   LWWWWWW scale67t_t,BV7,SHT9,DNK5,DEF4,SDEF5,DSKL0
+     566 0000a460 00014270"         .long   FL30_p, Un10_p,Un14_p, TR9_p,TR7_p,Miller_h
+     567 0000a520     0006          .word   6,4,8   
+     568 0000a550                   LWWWWWW scale610f_t,BV7,SHT7,DNK9,DEF5,SDEF3,DSKL0      ;Can shatter
+     569 0000a5d0 00012010"         .long   FL25_p, Un12_p,Un14_p, TR2_p,TR7_p,LJohnson_h
+     570 0000a690     0003          .word   3,9,7   
+     571 0000a6c0                   LWWWWWW scale71_t,BV8,SHT2,DNK9,DEF9,SDEF3,DSKL1
+     572 0000a740 000164d0"         .long   FL35_p, Un4_p,Un14_p, TR9_p,TR4_p,Olajuwon_h
+     573 0000a800     0004          .word   4,8,8
+     574 0000a830                   LWWWWWW scale611t_t,BV7,SHT4,DNK7,DEF9,SDEF2,DSKL_2
+     575 0000a8b0 000081f0"         .long   FL2_p, Un11_p,Un14_p, TR6_p,TR6_p,Baker_h
+     576 0000a970     0001          .word   1,2,2   
+     577 0000a9a0                   LWWWWWW scale62_t,BV8,SHT9,DNK0,DEF0,SDEF4,DSKL5
+     578 0000aa20 0000db50"         .long   FL15_p, Un4_p,Un14_p, TR2_p,TR4_p,Armstrng_h
+     579 0000aae0     0005          .word   5,0,9   
+     580 0000ab10                   LWWWWWW scale64t_t,BV6,SHT4,DNK1,DEF3,SDEF2,DSKL1
+     581 0000ab90 0001be30"         .long   FL48_p, Un4_p,Un14_p, TR9_p,TR4_p,Maxwell_h
+     582 0000ac50     0007          .word   7,0,2   
+     583 0000ac80                   LWWWWWW scale71_t,BV7,SHT5,DNK8,DEF9,SDEF4,DSKL0
+     584 0000ad00 00015df0"         .long   FL34_p, Un12_p,Un14_p, TR2_p,TR7_p,Mourn_h
+     585 0000adc0     0005          .word   5,9,9   
+     586 0000adf0                   LWWWWWW scale68f_t,BV7,SHT9,DNK5,DEF4,SDEF4,DSKL_6
+     587 0000ae70 000194f0"         .long   FL42_p, Un1_p,Un14_p, TR4_p,TR4_p,Rice_h
+     588 0000af30     0002          .word   2,3,8   
+     589 0000af60                   LWWWWWW scale62_t,BV9,SHT6,DNK0,DEF0,SDEF8,DSKL_4
+     590 0000afe0 0000e910"         .long   FL17_p, Un5_p,Un14_p, TR9_p,TR7_p,Hardaway_h
+     591 0000b0a0     0005          .word   5,4,6   
+     592 0000b0d0                   LWWWWWW scale66_t,BV8,SHT6,DNK1,DEF3,SDEF5,DSKL_11
+     593 0000b150 00015df0"         .long   FL34_p, Un5_p,Un14_p, TR6_p,TR6_p,Jack_h
+     594 0000b210     0009          .word   9,5,6   
+     595 0000b240                   LWWWWWW scale68_t,BV8,SHT6,DNK10,DEF5,SDEF9,DSKL5       ;Can shatter
+     596 0000b2c0 00017970"         .long   FL38_p, Un4_p,Un14_p, TR2_p,TR4_p,Pippen_h
+     597 0000b380     0007          .word   7,3,5   
+     598 0000b3b0                   LWWWWWW scale65f_t,BV9,SHT5,DNK9,DEF6,SDEF7,DSKL_6
+     599 0000b430 0001a2b0"         .long   FL44_p, Un1_p,Un14_p, TR4_p,TR4_p,Miner_h
+     600 0000b4f0     0007          .word   7,2,8   
+     601 0000b520                   LWWWWWW scale60_t,BV10,SHT8,DNK0,DEF0,SDEF7,DSKL1
+     602 0000b5a0 0001cbf0"         .long   FL50_p, Un9_p,Un14_p, TR4_p,TR7_p,Thomas_h
+     603 0000b660     0008          .word   8,1,9
+     604 0000b690                   LWWWWWW scale610f_t,BV8,SHT4,DNK8,DEF8,SDEF3,DSKL_4
+     605 0000b710 0000e910"         .long   FL17_p, Un5_p,Un14_p, TR9_p,TR7_p,Webber_h
+     606 0000b7d0     0007          .word   7,9,0   
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:03 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball player code                                               PAGE   12
+
+     607 0000b800                   LWWWWWW scale68t_t,BV8,SHT8,DNK7,DEF6,SDEF3,DSKL_11
+     608 0000b880 0000cd90"         .long   FL13_p, Un5_p,Un14_p, TR6_p,TR6_p,Mash_h
+     609 0000b940     0004          .word   4,8,6   
+     610 0000b970                   LWWWWWW scale69_t,BV5,SHT7,DNK7,DEF5,SDEF5,DSKL1
+     611 0000b9f0 0001e770"         .long   FL54_p, Un2_p,Un15_p, TR3_p,TR10_p,Worthy_h
+     612 0000bab0     0005          .word   5,4,6   
+     613 0000bae0                   LWWWWWW scale67_t,BV4,SHT10,DNK3,DEF3,SDEF4,DSKL_4
+     614 0000bb60 00014950"         .long   FL31_p, Un5_p,Un14_p, TR9_p,TR7_p,Mullin_h
+     615 0000bc20     0005          .word   5,5,9   
+     616 0000bc50                   LWWWWWW scale610f_t,BV7,SHT7,DNK7,DEF5,SDEF4,DSKL0
+     617 0000bcd0 000134b0"         .long   FL28_p, Un4_p,Un14_p, TR1_p,TR4_p,Manning_h
+     618 0000bd90     0002          .word   2,6,7   
+     619                    
+     620                    
+     621                    
+     622                    
+     623                    
+     624 0000bdc0           spechds_t
+     625 0000bdc0                   LWWWWWW scale610_t,BV10,SHT10,DNK10,DEF8,SDEF6,DSKL5
+     626 0000be40 0001c510"         .long   FL49_p, Un1_p,Un14_p, TR7_p,TR7_p,tg_h
+     627 0000bf00     0002          .word   2,3,8   
+     628 0000bf30                   LWWWWWW scale66_t,BV10,SHT10,DNK10,DEF8,SDEF6,DSKL5
+     629 0000bfb0 0001b750"         .long   FL47_p, Un6_p,Un6_p, TR2b_p,TR2b_p,jr_h
+     630 0000c070     0002          .word   2,3,8
+     631 0000c0a0                   LWWWWWW scale58_t,BV10,SHT10,DNK10,DEF8,SDEF6,DSKL5
+     632 0000c120 0001c510"         .long   FL49_p, Un4_p,Un1_p, TR2_p,TR1_p,jc_h
+     633 0000c1e0     0002          .word   2,3,8   
+     634 0000c210                   LWWWWWW scale610_t,BV10,SHT10,DNK10,DEF8,SDEF6,DSKL5
+     635 0000c290 0001c510"         .long   FL49_p, Un1_p,Un1_p, TR4_p,TR4_p,sd_h
+     636 0000c350     0009          .word   9,9,8   
+     637 0000c380                   LWWWWWW scale72_t,BV10,SHT10,DNK10,DEF8,SDEF6,DSKL5
+     638 0000c400 0001c510"         .long   FL49_p, Un6_p,Un6_p, TR2b_p,TR2b_p,sl_h
+     639 0000c4c0     0002          .word   2,3,8   
+     640 0000c4f0                   LWWWWWW scale70_t,BV10,SHT11,DNK10,DEF8,SDEF6,DSKL5
+     641 0000c570 00012dd0"         .long   FL27_p, Un14_p,Un14_p, TR2_p,TR2_p,mt_h
+     642 0000c630     0009          .word   9,9,8   
+     643 0000c660                   LWWWWWW scale63_t,BV10,SHT10,DNK10,DEF8,SDEF6,DSKL5
+     644 0000c6e0 0001c510"         .long   FL49_p, Un6_p,Un6_p, TR2b_p,TR2b_p,jh_h
+     645 0000c7a0     0002          .word   2,3,8
+     646 0000c7d0                   LWWWWWW scale66_t,BV10,SHT10,DNK10,DEF8,SDEF6,DSKL5
+     647 0000c850 00012dd0"         .long   FL27_p, Un2_p,Un2_p, TR3_p,TR3_p,gp_h
+     648 0000c910     0002          .word   2,3,8
+     649 0000c940                   LWWWWWW scale610f_t,BV10,SHT10,DNK10,DEF8,SDEF6,DSKL5
+     650 0000c9c0 0001b750"         .long   FL47_p, Un2_p,Un2_p, TR3_p,TR3_p,jn_h
+     651 0000ca80     0002          .word   2,3,8   
+     652 0000cab0                   LWWWWWW scale66f_t,BV10,SHT10,DNK10,DEF8,SDEF6,DSKL5
+     653 0000cb30 00012dd0"         .long   FL27_p, Un2_p,Un2_p, TR3_p,TR3_p,so_h
+     654 0000cbf0     0002          .word   2,3,8   
+     655 0000cc20                   LWWWWWW scale64_t,BV7,SHT5,DNK4,DEF8,SDEF6,DSKL5
+     656 0000cca0 0001b750"         .long   FL47_p, Un7_p,Un14_p, TR2_p,TR2_p,AL_H          ;LASKO
+     657 0000cd60     0002          .word   2,3,8   
+     658 0000cd90                   LWWWWWW scale610t_t,BV9,SHT10,DNK10,DEF8,SDEF6,DSKL5
+     659 0000ce10 00016bb0"         .long   FL36_p, Un4_p,Un1_p, TR2_p,TR1_p,wi_h
+     660 0000ced0     0002          .word   2,3,8   
+     661 0000cf00                   LWWWWWW scale64_t,BV7,SHT10,DNK10,DEF8,SDEF6,DSKL5
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:03 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball player code                                               PAGE   13
+
+     662 0000cf80 0001b750"         .long   FL47_p, Un7_p,Un14_p, TR2_p,TR2_p,CM_H
+     663 0000d040     0002          .word   2,3,8   
+     664 0000d070                   LWWWWWW scale62_t,BV8,SHT10,DNK10,DEF8,SDEF6,DSKL5
+     665 0000d0f0 00012dd0"         .long   FL27_p, Un7_p,Un14_p, TR2_p,TR2_p,DF_H
+     666 0000d1b0     0002          .word   2,3,8   
+     667 0000d1e0                   LWWWWWW scale62t_t,BV8,SHT10,DNK10,DEF8,SDEF6,DSKL5
+     668 0000d260 0001b750"         .long   FL47_p, Un7_p,Un14_p, TR2_p,TR2_p,EK_H
+     669 0000d320     0002          .word   2,3,8   
+     670 0000d350                   LWWWWWW scale67_t,BV8,SHT10,DNK10,DEF8,SDEF6,DSKL5
+     671 0000d3d0 0001a990"         .long   FL45_p, Un7_p,Un14_p, TR2_p,TR2_p,EJ_H
+     672 0000d490     0002          .word   2,3,8   
+     673                    
+     674 0000d4c0                   LWWWWWW scale610_t,BV8,SHT11,DNK10,DEF8,SDEF6,DSKL5
+     675 0000d540 0001b750"         .long   FL47_p, Un8_p,Un8_p, TR_BLK_P,TR_BLK_P,SZ_H
+     676 0000d600     0002          .word   2,3,8   
+     677                    
+     678 0000d630                   LWWWWWW scale65f_t,BV8,SHT9,DNK10,DEF8,SDEF6,DSKL5
+     679 0000d6b0 0001a990"         .long   FL45_p, Un7_p,Un14_p, TR2_p,TR2_p,JH_H
+     680 0000d770     0002          .word   2,3,8   
+     681 0000d7a0                   LWWWWWW scale64_t,BV8,SHT9,DNK10,DEF8,SDEF6,DSKL5
+     682 0000d820 00012dd0"         .long   FL27_p, Un7_p,Un14_p, TR2_p,TR2_p,JS_H
+     683 0000d8e0     0002          .word   2,3,8   
+     684 0000d910                   LWWWWWW scale65f_t,BV8,SHT11,DNK10,DEF8,SDEF6,DSKL5
+     685 0000d990 0001a990"         .long   FL45_p, Un7_p,Un14_p, TR2_p,TR2_p,JG_H
+     686 0000da50     0002          .word   2,3,8   
+     687 0000da80                   LWWWWWW scale64_t,BV8,SHT8,DNK10,DEF8,SDEF6,DSKL5
+     688 0000db00 00012dd0"         .long   FL27_p, Un7_p,Un14_p, TR2_p,TR2_p,JGE_H
+     689 0000dbc0     0002          .word   2,3,8   
+     690 0000dbf0                   LWWWWWW scale65f_t,BV7,SHT10,DNK10,DEF8,SDEF6,DSKL5
+     691 0000dc70 0001b750"         .long   FL47_p, Un7_p,Un14_p, TR2_p,TR2_p,JD_H
+     692 0000dd30     0002          .word   2,3,8   
+     693 0000dd60                   LWWWWWW scale62_t,BV7,SHT10,DNK10,DEF8,SDEF6,DSKL5
+     694 0000dde0 0001a990"         .long   FL45_p, Un7_p,Un14_p, TR2_p,TR2_p,JL_H
+     695 0000dea0     0002          .word   2,3,8   
+     696 0000ded0                   LWWWWWW scale66t_t,BV7,SHT10,DNK10,DEF8,SDEF6,DSKL5
+     697 0000df50 00012dd0"         .long   FL27_p, Un7_p,Un14_p, TR2_p,TR2_p,JV_H
+     698 0000e010     0002          .word   2,3,8   
+     699 0000e040                   LWWWWWW scale64t_t,BV10,SHT10,DNK10,DEF8,SDEF6,DSKL5
+     700 0000e0c0 0001b750"         .long   FL47_p, Un7_p,Un14_p, TR2_p,TR2_p,JT_H
+     701 0000e180     0002          .word   2,3,8   
+     702 0000e1b0                   LWWWWWW scale65f_t,BV7,SHT10,DNK10,DEF8,SDEF6,DSKL5
+     703 0000e230 00012dd0"         .long   FL27_p, Un7_p,Un14_p, TR2_p,TR2_p,LD_H
+     704 0000e2f0     0002          .word   2,3,8   
+     705 0000e320                   LWWWWWW scale60_t,BV7,SHT10,DNK10,DEF8,SDEF6,DSKL5
+     706 0000e3a0 0001b750"         .long   FL47_p, Un7_p,Un14_p, TR2_p,TR2_p,LDE_H
+     707 0000e460     0002          .word   2,3,8   
+     708 0000e490                   LWWWWWW scale65f_t,BV8,SHT8,DNK10,DEF8,SDEF6,DSKL5
+     709 0000e510 00012dd0"         .long   FL27_p, Un7_p,Un14_p, TR2_p,TR2_p,MB_H
+     710 0000e5d0     0002          .word   2,3,8   
+     711 0000e600                   LWWWWWW scale66f_t,BV8,SHT10,DNK10,DEF8,SDEF6,DSKL5
+     712 0000e680 0001b750"         .long   FL47_p, Un7_p,Un14_p, TR2_p,TR2_p,ML_H
+     713 0000e740     0002          .word   2,3,8   
+     714 0000e770                   LWWWWWW scale65_t,BV8,SHT10,DNK10,DEF8,SDEF6,DSKL5
+     715 0000e7f0 0001a990"         .long   FL45_p, Un7_p,Un14_p, TR2_p,TR2_p,MP_H
+     716 0000e8b0     0002          .word   2,3,8   
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:03 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball player code                                               PAGE   14
+
+     717 0000e8e0                   LWWWWWW scale65_t,BV8,SHT10,DNK10,DEF8,SDEF6,DSKL5
+     718 0000e960 0001b750"         .long   FL47_p, Un7_p,Un14_p, TR2_p,TR2_p,PB_H
+     719 0000ea20     0002          .word   2,3,8   
+     720 0000ea50                   LWWWWWW scale65t_t,BV8,SHT10,DNK10,DEF8,SDEF6,DSKL5
+     721 0000ead0 00012dd0"         .long   FL27_p, Un7_p,Un14_p, TR2_p,TR2_p,PC_H
+     722 0000eb90     0002          .word   2,3,8
+     723                    
+     724 0000ebc0                   LWWWWWW scale610_t,BV8,SHT11,DNK10,DEF8,SDEF6,DSKL5
+     725 0000ec40 00014950"         .long   FL31_p, Un14_p,Un14_p, TR2_p,TR2_p,RA_H
+     726 0000ed00     0002          .word   2,3,8
+     727 0000ed30                   LWWWWWW scale72f_t,BV9,SHT10,DNK10,DEF8,SDEF6,DSKL5
+     728 0000edb0 00020be0"         .long   FL_RPR_P, Un7_p,Un14_p, TR2_p,TR2_p,RE_H
+     729 0000ee70     0002          .word   2,3,8
+     730                    
+     731 0000eea0                   LWWWWWW scale66_t,BV7,SHT10,DNK10,DEF8,SDEF6,DSKL5
+     732 0000ef20 0001a990"         .long   FL45_p, Un7_p,Un14_p, TR2_p,TR2_p,RM_H
+     733 0000efe0     0002          .word   2,3,8
+     734 0000f010                   LWWWWWW scale64_t,BV8,SHT10,DNK10,DEF8,SDEF6,DSKL5
+     735 0000f090 00012dd0"         .long   FL27_p, Un7_p,Un14_p, TR2_p,TR2_p,RS_H
+     736 0000f150     0002          .word   2,3,8   
+     737 0000f180                   LWWWWWW scale610t_t,BV8,SHT10,DNK10,DEF8,SDEF6,DSKL5
+     738 0000f200 0001a990"         .long   FL45_p, Un7_p,Un14_p, TR2_p,TR2_p,SB_H
+     739 0000f2c0     0002          .word   2,3,8   
+     740 0000f2f0                   LWWWWWW scale74f_t,BV10,SHT10,DNK10,DEF8,SDEF6,DSKL5
+     741 0000f370 00011250"         .long   FL23_p, Un7_p,Un14_p, TR2_p,TR2_p,KO_H
+     742 0000f430     0002          .word   2,3,8   
+     743                    
+     744 0000f460                   LWWWWWW scale60_t,BV8,SHT10,DNK10,DEF8,SDEF6,DSKL5
+     745 0000f4e0 00012dd0"         .long   FL27_p, Un7_p,Un14_p, TR2_p,TR2_p,VP_H
+     746 0000f5a0     0002          .word   2,3,8
+     747                    
+     748 0000f5d0                   LWWWWWW scale67t_t,BV9,SHT10,DNK10,DEF8,SDEF6,DSKL5
+     749 0000f650 0001b750"         .long   FL47_p, Un7_p,Un14_p, TR2_p,TR2_p,EL_H
+     750 0000f710     0002          .word   2,3,8   
+     751                    
+     752 0000f740                   LWWWWWW scale66f_t,BV7,SHT10,DNK10,DEF8,SDEF6,DSKL5
+     753 0000f7c0 00012dd0"         .long   FL27_p, Un7_p,Un14_p, TR2_p,TR2_p,WD_H
+     754 0000f880     0002          .word   2,3,8   
+     755 0000f8b0                   LWWWWWW scale66_t,BV8,SHT10,DNK10,DEF8,SDEF6,DSKL5
+     756 0000f930 0001a990"         .long   FL45_p, Un7_p,Un14_p, TR2_p,TR2_p,EB_H
+     757 0000f9f0     0002          .word   2,3,8   
+     758 0000fa20                   LWWWWWW scale63_t,BV8,SHT10,DNK10,DEF8,SDEF6,DSKL5
+     759 0000faa0 0001a990"         .long   FL45_p, Un7_p,Un14_p, TR2_p,TR2_p,JTO_H
+     760 0000fb60     0002          .word   2,3,8   
+     761 0000fb90                   LWWWWWW scale66f_t,BV3,SHT11,DNK1,DEF1,SDEF1,DSKL5
+     762 0000fc10 0001a990"         .long   FL45_p, Un8_p,Un8_p, TR_BLK_P,TR_BLK_P,PH_H
+     763 0000fcd0     0002          .word   2,3,8   
+     764 0000fd00                   LWWWWWW scale610t_t,BV8,SHT10,DNK10,DEF8,SDEF6,DSKL5
+     765 0000fd80 00012dd0"         .long   FL27_p, Un7_p,Un14_p, TR2_p,TR2_p,BD_H
+     766 0000fe40     0002          .word   2,3,8   
+     767 0000fe70                   LWWWWWW scale65f_t,BV6,SHT10,DNK10,DEF8,SDEF6,DSKL5
+     768 0000fef0 0001b750"         .long   FL47_p, Un7_p,Un14_p, TR2_p,TR2_p,MM_H
+     769 0000ffb0     0002          .word   2,3,8   
+     770 0000ffe0                   LWWWWWW scale60_t,BV6,SHT10,DNK10,DEF8,SDEF6,DSKL5
+     771 00010060 0001a990"         .long   FL45_p, Un7_p,Un14_p, TR2_p,TR2_p,RD_H
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:03 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball player code                                               PAGE   15
+
+     772 00010120     0002          .word   2,3,8   
+     773 00010150                   LWWWWWW scale62t_t,BV8,SHT10,DNK10,DEF8,SDEF6,DSKL5
+     774 000101d0 00012dd0"         .long   FL27_p, Un7_p,Un14_p, TR2_p,TR2_p,KH_H
+     775 00010290     0002          .word   2,3,8   
+     776 000102c0                   LWWWWWW scale62_t,BV9,SHT10,DNK10,DEF8,SDEF6,DSKL5
+     777 00010340 000088d0"         .long   FL3_p, Un7_p,Un14_p, TR2_p,TR2_p,OL_H
+     778 00010400     0002          .word   2,3,8   
+     779                    
+     780 00010430                   LWWWWWW scale610_t,BV9,SHT11,DNK10,DEF8,SDEF6,DSKL5
+     781 000104b0 00014950"         .long   FL31_p, UNI_SCO_P,UNI_SCO_P, TR_BLK_P,TR_BLK_P,SC_H
+     782 00010570     0002          .word   2,3,8   
+     783 000105a0                   LWWWWWW scale610_t,BV9,SHT11,DNK10,DEF8,SDEF6,DSKL5
+     784 00010620 00014950"         .long   FL31_p, Un6_p,Un6_p, TR_BLK_P,TR_BLK_P,RP_H
+     785 000106e0     0002          .word   2,3,8
+     786                    
+     787 00010710                   LWWWWWW scale65f_t,BV8,SHT10,DNK10,DEF8,SDEF6,DSKL5
+     788 00010790 0001b750"         .long   FL47_p, Un7_p,Un14_p, TR2_p,TR2_p,CG_H
+     789 00010850     0002          .word   2,3,8   
+     790                    
+     791 00010880                   LWWWWWW scale610_t,BV9,SHT9,DNK9,DEF7,SDEF7,DSKL3
+     792 00010900 00015df0"         .long   FL34_p, Un12_p,Un14_p, TR2_p,TR7_p,KG_H
+     793 000109c0     0006          .word   6,9,9   
+     794                    
+     795 000109f0                   LWWWWWW scale67t_t,BV8,SHT11,DNK10,DEF8,SDEF6,DSKL5
+     796 00010a70 0001b750"         .long   FL47_p, Un6_p,Un6_p, TR_BLK_P,TR_BLK_P,JSK_H
+     797 00010b30     0009          .word   9,9,8
+     798 00010b60                   LWWWWWW scale62t_t,BV8,SHT10,DNK10,DEF8,SDEF6,DSKL5
+     799 00010be0 00012dd0"         .long   FL27_p, Un7_p,Un14_p, TR2_p,TR2_p,JLI_H
+     800 00010ca0     0002          .word   2,3,8
+     801                    
+     802                    
+     803                    
+     804 00010cd0                   LWWWWWW scale610_t,BV7,SHT11,DNK10,DEF8,SDEF4,DSKL0     ;Can shatter
+     805 00010d50 0001e090"         .long   FL53_p, Un4_p,Un14_p, TR1_p,TR4_p,Wilkins_h
+     806 00010e10     0002          .word   2,3,8   
+     807 00010e40                   LWWWWWW scale61_t,BV8,SHT11,DNK8,DEF2,SDEF6,DSKL0
+     808 00010ec0 00012010"         .long   FL25_p, Un13_p,Un14_p, TR2_p,TR6_p,Brown_h
+     809 00010f80     0006          .word   6,1,5   
+     810 00010fb0                   LWWWWWW scale71_t,BV7,SHT11,DNK8,DEF9,SDEF4,DSKL0
+     811 00011030 00015df0"         .long   FL34_p, Un12_p,Un14_p, TR2_p,TR7_p,Mourn_h
+     812 000110f0     0005          .word   5,9,9   
+     813 00011120                   LWWWWWW scale68_t,BV8,SHT11,DNK10,DEF5,SDEF9,DSKL5      ;Can shatter
+     814 000111a0 00017970"         .long   FL38_p, Un4_p,Un14_p, TR2_p,TR4_p,Pippen_h
+     815 00011260     0007          .word   7,3,5   
+     816                    
+     817 00011290                   LWWWWWW scale64_t,BV9,SHT9,DNK9,DEF9,SDEF9,DSKL0
+     818 00011310 00010b70"         .long   FL22_p, Un6_p,Un14_p, TR3_p,TR6_p,Payton_h
+     819 000113d0     0009          .word   9,9,9   
+     820                    
+     821 00011400                   LWWWWWW scale610f_t,BV7,SHT11,DNK8,DEF8,SDEF3,DSKL_4
+     822 00011480 0000e910"         .long   FL17_p, Un5_p,Un14_p, TR9_p,TR7_p,Webber_h
+     823 00011540     0005          .word   5,8,0   
+     824 00011570                   LWWWWWW scale71_t,BV8,SHT11,DNK9,DEF9,SDEF3,DSKL1
+     825 000115f0 000164d0"         .long   FL35_p, Un4_p,Un14_p, TR9_p,TR4_p,Olajuwon_h
+     826 000116b0     0004          .word   4,8,8
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:03 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball player code                                               PAGE   16
+
+     827 000116e0                   LWWWWWW scale610f_t,BV7,SHT11,DNK8,DEF8,SDEF2,DSKL0
+     828 00011760 00008fb0"         .long   FL4_p, Un14_p,Un5_p, TR4_p,TR4_p,Coleman_h
+     829 00011820     0002          .word   2,9,8
+     830 00011850                   LWWWWWW scale72f_t,BV7,SHT11,DNK9,DEF9,SDEF4,DSKL2      ;Shatter
+     831 000118d0 0000cd90"         .long   FL13_p, Un5_p,Un14_p, TR5_p,TR5_p,Ewing_h
+     832 00011990     0002          .word   2,8,9   
+     833                    
+     834 000119c0                   LWWWWWW scale610f_t,BV6,SHT11,DNK9,DEF5,SDEF5,DSKL3
+     835 00011a40 000081f0"         .long   FL2_p, Un3_p,Un14_p, TR2b_p,TR2b_p,Barkley_h
+     836 00011b00     0005          .word   5,9,9   
+     837                    
+     838 00011b30                   LWWWWWW scale71_t,BV7,SHT11,DNK8,DEF9,SDEF3,DSKL_3
+     839 00011bb0 00019bd0"         .long   FL43_p, Un1_p,Un14_p, TR2_p,TR11_p,Robinson_h
+     840 00011c70     0005          .word   5,7,7   
+     841 00011ca0                   LWWWWWW scale611_t,BV8,SHT11,DNK10,DEF8,SDEF3,DSKL0
+     842 00011d20 00010b70"         .long   FL22_p, Un6_p,Un14_p, TR3_p,TR6_p,Kemp_h
+     843 00011de0     0003          .word   3,8,6   
+     844 00011e10                   LWWWWWW scale610f_t,BV6,SHT11,DNK9,DEF8,SDEF3,DSKL4     ;Can shatter
+     845 00011e90 00010490"         .long   FL21_p, Un7_p,Un14_p, TR2_p,TR10_p,KMalone_h
+     846 00011f50     0005          .word   5,9,8   
+     847                    
+     848                    
+     849 00011f80           AL_H    ;LASKO
+     850 00011f80 00042f90"         .long   ALLASC01
+     851 00011fa0 00042f90"         .long   ALLASC01,ALLASC02,ALLASC03,ALLASC04,ALLASC05
+     852 00012040 00042f90"         .long   ALLASC01,ALLASC02,ALLASC03,ALLASC04,ALLASC05
+     853 000120e0 00042f90"         .long   ALLASC01,ALLASC02,ALLASC03,ALLASC04,ALLASC05
+     854 00012180 000431d0"         .long   ALLASC03
+     855 000121a0           CM_H    ;MEDNICK
+     856 000121a0 0003fe10"         .long   CARMED01
+     857 000121c0 0003fe10"         .long   CARMED01,CARMED02,CARMED03,CARMED04,CARMED05
+     858 00012260 0003fe10"         .long   CARMED01,CARMED02,CARMED03,CARMED04,CARMED05
+     859 00012300 0003fe10"         .long   CARMED01,CARMED02,CARMED03,CARMED04,CARMED05
+     860 000123a0 000403b0"         .long   CARMED16
+     861 000123c0           DF_H    ;FORDEN
+     862 000123c0 00043bf0"         .long   DANFOR01
+     863 000123e0 00043bf0"         .long   DANFOR01,DANFOR02,DANFOR03,DANFOR04,DANFOR05
+     864 00012480 00043bf0"         .long   DANFOR01,DANFOR02,DANFOR03,DANFOR04,DANFOR05
+     865 00012520 00043bf0"         .long   DANFOR01,DANFOR02,DANFOR03,DANFOR04,DANFOR05
+     866 000125c0 00044190"         .long   DANFOR16
+     867 000125e0           EK_H    ;KINKEAD
+     868 000125e0 000442b0"         .long   ERCKIN01
+     869 00012600 000442b0"         .long   ERCKIN01,ERCKIN02,ERCKIN03,ERCKIN04,ERCKIN05
+     870 000126a0 000442b0"         .long   ERCKIN01,ERCKIN02,ERCKIN03,ERCKIN04,ERCKIN05
+     871 00012740 000442b0"         .long   ERCKIN01,ERCKIN02,ERCKIN03,ERCKIN04,ERCKIN05
+     872 000127e0 00044850"         .long   ERCKIN16
+     873 00012800           EJ_H    ;JARVIS
+     874 00012800 00044970"         .long   EUGENE01
+     875 00012820 00044970"         .long   EUGENE01,EUGENE02,EUGENE03,EUGENE04,EUGENE05
+     876 000128c0 00044970"         .long   EUGENE01,EUGENE02,EUGENE03,EUGENE04,EUGENE05
+     877 00012960 00044970"         .long   EUGENE01,EUGENE02,EUGENE03,EUGENE04,EUGENE05
+     878 00012a00 00044f10"         .long   EUGENE16
+     879 00012a20           SZ_H    ;SUBZERO
+     880 00012a20 0003f090"         .long   SUBZER01
+     881 00012a40 0003f090"         .long   SUBZER01,SUBZER02,SUBZER03,SUBZER04,SUBZER05
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:03 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball player code                                               PAGE   17
+
+     882 00012ae0 0003f090"         .long   SUBZER01,SUBZER02,SUBZER03,SUBZER04,SUBZER05
+     883 00012b80 0003f090"         .long   SUBZER01,SUBZER02,SUBZER03,SUBZER04,SUBZER05
+     884 00012c20 0003f630"         .long   SUBZER16
+     885 00012c40           JH_H    ;HAEGER
+     886 00012c40 00045030"         .long   JACHAG01
+     887 00012c60 00045030"         .long   JACHAG01,JACHAG02,JACHAG03,JACHAG04,JACHAG05
+     888 00012d00 00045030"         .long   JACHAG01,JACHAG02,JACHAG03,JACHAG04,JACHAG05
+     889 00012da0 00045030"         .long   JACHAG01,JACHAG02,JACHAG03,JACHAG04,JACHAG05
+     890 00012e40 000455d0"         .long   JACHAG16
+     891 00012e60           JS_H    ;SIMPSON
+     892 00012e60 000404d0"         .long   JAKSIM01
+     893 00012e80 000404d0"         .long   JAKSIM01,JAKSIM02,JAKSIM03,JAKSIM04,JAKSIM05
+     894 00012f20 000404d0"         .long   JAKSIM01,JAKSIM02,JAKSIM03,JAKSIM04,JAKSIM05
+     895 00012fc0 000404d0"         .long   JAKSIM01,JAKSIM02,JAKSIM03,JAKSIM04,JAKSIM05
+     896 00013060 00040a70"         .long   JAKSIM16
+     897 00013080           JG_H    ;GREEN
+     898 00013080 00045db0"         .long   JGREEN01
+     899 000130a0 00045db0"         .long   JGREEN01,JGREEN02,JGREEN03,JGREEN04,JGREEN05
+     900 00013140 00045db0"         .long   JGREEN01,JGREEN02,JGREEN03,JGREEN04,JGREEN05
+     901 000131e0 00045db0"         .long   JGREEN01,JGREEN02,JGREEN03,JGREEN04,JGREEN05
+     902 00013280 00046350"         .long   JGREEN16
+     903 000132a0           JGE_H   ;GENTILE
+     904 000132a0 000429f0"         .long   JIMGEN01
+     905 000132c0 000429f0"         .long   JIMGEN01,JIMGEN02,JIMGEN03,JIMGEN04,JIMGEN05
+     906 00013360 000429f0"         .long   JIMGEN01,JIMGEN02,JIMGEN03,JIMGEN04,JIMGEN05
+     907 00013400 000429f0"         .long   JIMGEN01,JIMGEN02,JIMGEN03,JIMGEN04,JIMGEN05
+     908 000134a0 00042c30"         .long   JIMGEN03
+     909 000134c0           JD_H    ;DILLON
+     910 000134c0 00046470"         .long   JOEDIL01
+     911 000134e0 00046470"         .long   JOEDIL01,JOEDIL02,JOEDIL03,JOEDIL04,JOEDIL05
+     912 00013580 00046470"         .long   JOEDIL01,JOEDIL02,JOEDIL03,JOEDIL04,JOEDIL05
+     913 00013620 00046470"         .long   JOEDIL01,JOEDIL02,JOEDIL03,JOEDIL04,JOEDIL05
+     914 000136c0 00046a10"         .long   JOEDIL16
+     915 000136e0           JLI_H   ;LINHOFF
+     916 000136e0 00046b30"         .long   JOELIN01
+     917 00013700 00046b30"         .long   JOELIN01,JOELIN02,JOELIN03,JOELIN04,JOELIN05
+     918 000137a0 00046b30"         .long   JOELIN01,JOELIN02,JOELIN03,JOELIN04,JOELIN05
+     919 00013840 00046b30"         .long   JOELIN01,JOELIN02,JOELIN03,JOELIN04,JOELIN05
+     920 000138e0 000470d0"         .long   JOELIN16
+     921 00013900           JL_H    ;LOWES
+     922 00013900 00040b90"         .long   JONLOW01
+     923 00013920 00040b90"         .long   JONLOW01,JONLOW02,JONLOW03,JONLOW04,JONLOW05
+     924 000139c0 00040b90"         .long   JONLOW01,JONLOW02,JONLOW03,JONLOW04,JONLOW05
+     925 00013a60 00040b90"         .long   JONLOW01,JONLOW02,JONLOW03,JONLOW04,JONLOW05
+     926 00013b00 00040dd0"         .long   JONLOW03
+     927 00013b20           JV_H    ;VOGEL
+     928 00013b20 000471f0"         .long   JONVOG01
+     929 00013b40 000471f0"         .long   JONVOG01,JONVOG02,JONVOG03,JONVOG04,JONVOG05
+     930 00013be0 000471f0"         .long   JONVOG01,JONVOG02,JONVOG03,JONVOG04,JONVOG05
+     931 00013c80 000471f0"         .long   JONVOG01,JONVOG02,JONVOG03,JONVOG04,JONVOG05
+     932 00013d20 00047790"         .long   JONVOG16
+     933 00013d40           JT_H    ;TSUI
+     934 00013d40 000478b0"         .long   JOSTSU01
+     935 00013d60 000478b0"         .long   JOSTSU01,JOSTSU02,JOSTSU03,JOSTSU04,JOSTSU05
+     936 00013e00 000478b0"         .long   JOSTSU01,JOSTSU02,JOSTSU03,JOSTSU04,JOSTSU05
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:03 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball player code                                               PAGE   18
+
+     937 00013ea0 000478b0"         .long   JOSTSU01,JOSTSU02,JOSTSU03,JOSTSU04,JOSTSU05
+     938 00013f40 00047e50"         .long   JOSTSU16
+     939 00013f60           LD_H    ;DEMAR
+     940 00013f60 00047f70"         .long   LARDUM01
+     941 00013f80 00047f70"         .long   LARDUM01,LARDUM02,LARDUM03,LARDUM04,LARDUM05
+     942 00014020 00047f70"         .long   LARDUM01,LARDUM02,LARDUM03,LARDUM04,LARDUM05
+     943 000140c0 00047f70"         .long   LARDUM01,LARDUM02,LARDUM03,LARDUM04,LARDUM05
+     944 00014160 00048510"         .long   LARDUM16
+     945 00014180           LDE_H   ;DEAL
+     946 00014180 00048630"         .long   LINDEL01
+     947 000141a0 00048630"         .long   LINDEL01,LINDEL02,LINDEL03,LINDEL04,LINDEL05
+     948 00014240 00048630"         .long   LINDEL01,LINDEL02,LINDEL03,LINDEL04,LINDEL05
+     949 000142e0 00048630"         .long   LINDEL01,LINDEL02,LINDEL03,LINDEL04,LINDEL05
+     950 00014380 00048bd0"         .long   LINDEL16
+     951 000143a0           MB_H    ;BOOTY
+     952 000143a0 00048cf0"         .long   MATBUT01
+     953 000143c0 00048cf0"         .long   MATBUT01,MATBUT02,MATBUT03,MATBUT04,MATBUT05
+     954 00014460 00048cf0"         .long   MATBUT01,MATBUT02,MATBUT03,MATBUT04,MATBUT05
+     955 00014500 00048cf0"         .long   MATBUT01,MATBUT02,MATBUT03,MATBUT04,MATBUT05
+     956 000145a0 00049290"         .long   MATBUT16
+     957 000145c0           ML_H    ;LOFFE
+     958 000145c0 000493b0"         .long   MRKLOF01
+     959 000145e0 000493b0"         .long   MRKLOF01,MRKLOF02,MRKLOF03,MRKLOF04,MRKLOF05
+     960 00014680 000493b0"         .long   MRKLOF01,MRKLOF02,MRKLOF03,MRKLOF04,MRKLOF05
+     961 00014720 000493b0"         .long   MRKLOF01,MRKLOF02,MRKLOF03,MRKLOF04,MRKLOF05
+     962 000147c0 00049950"         .long   MRKLOF16
+     963 000147e0           MP_H    ;PENACHO
+     964 000147e0 00049a70"         .long   MRKPEN01
+     965 00014800 00049a70"         .long   MRKPEN01,MRKPEN02,MRKPEN03,MRKPEN04,MRKPEN05
+     966 000148a0 00049a70"         .long   MRKPEN01,MRKPEN02,MRKPEN03,MRKPEN04,MRKPEN05
+     967 00014940 00049a70"         .long   MRKPEN01,MRKPEN02,MRKPEN03,MRKPEN04,MRKPEN05
+     968 000149e0 0004a010"         .long   MRKPEN16
+     969 00014a00           PB_H    ;BARKER
+     970 00014a00 0004a130"         .long   PALBAR01
+     971 00014a20 0004a130"         .long   PALBAR01,PALBAR02,PALBAR03,PALBAR04,PALBAR05
+     972 00014ac0 0004a130"         .long   PALBAR01,PALBAR02,PALBAR03,PALBAR04,PALBAR05
+     973 00014b60 0004a130"         .long   PALBAR01,PALBAR02,PALBAR03,PALBAR04,PALBAR05
+     974 00014c00 0004a6d0"         .long   PALBAR16
+     975 00014c20           PC_H    ;COX
+     976 00014c20 0004a7f0"         .long   PATCOX01
+     977 00014c40 0004a7f0"         .long   PATCOX01,PATCOX02,PATCOX03,PATCOX04,PATCOX05
+     978 00014ce0 0004a7f0"         .long   PATCOX01,PATCOX02,PATCOX03,PATCOX04,PATCOX05
+     979 00014d80 0004a7f0"         .long   PATCOX01,PATCOX02,PATCOX03,PATCOX04,PATCOX05
+     980 00014e20 0004aa30"         .long   PATCOX03
+     981 00014e40           RA_H    ;RAIDEN
+     982 00014e40 0004ad90"         .long   RAIDEN01
+     983 00014e60 0004ad90"         .long   RAIDEN01,RAIDEN02,RAIDEN03,RAIDEN04,RAIDEN05
+     984 00014f00 0004b330"         .long   RAIDEN06,RAIDEN07,RAIDEN08,RAIDEN09,RAIDEN10
+     985 00014fa0 0004b8d0"         .long   RAIDEN11,RAIDEN12,RAIDEN13,RAIDEN14,RAIDEN15
+     986 00015040 0004be70"         .long   RAIDEN16
+     987 00015060           RE_H    ;REAPER
+     988 00015060 0004c650"         .long   REAPER01
+     989 00015080 0004c650"         .long   REAPER01,REAPER02,REAPER03,REAPER04,REAPER05
+     990 00015120 0004c650"         .long   REAPER01,REAPER02,REAPER03,REAPER04,REAPER05
+     991 000151c0 0004c650"         .long   REAPER01,REAPER02,REAPER03,REAPER04,REAPER05
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:03 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball player code                                               PAGE   19
+
+     992 00015260 0004cbf0"         .long   REAPER16
+     993 00015280           RM_H    ;MACIKA
+     994 00015280 0004bf90"         .long   RAYMOS01
+     995 000152a0 0004bf90"         .long   RAYMOS01,RAYMOS02,RAYMOS03,RAYMOS04,RAYMOS05
+     996 00015340 0004bf90"         .long   RAYMOS01,RAYMOS02,RAYMOS03,RAYMOS04,RAYMOS05
+     997 000153e0 0004bf90"         .long   RAYMOS01,RAYMOS02,RAYMOS03,RAYMOS04,RAYMOS05
+     998 00015480 0004c530"         .long   RAYMOS16
+     999 000154a0           RS_H    ;SHARPE
+    1000 000154a0 0004cd10"         .long   ROGSHR01
+    1001 000154c0 0004cd10"         .long   ROGSHR01,ROGSHR02,ROGSHR03,ROGSHR04,ROGSHR05
+    1002 00015560 0004cd10"         .long   ROGSHR01,ROGSHR02,ROGSHR03,ROGSHR04,ROGSHR05
+    1003 00015600 0004cd10"         .long   ROGSHR01,ROGSHR02,ROGSHR03,ROGSHR04,ROGSHR05
+    1004 000156a0 0004d2b0"         .long   ROGSHR16
+    1005 000156c0           SB_H    ;BERAN
+    1006 000156c0 0004d3d0"         .long   STVBER01
+    1007 000156e0 0004d3d0"         .long   STVBER01,STVBER02,STVBER03,STVBER04,STVBER05
+    1008 00015780 0004d3d0"         .long   STVBER01,STVBER02,STVBER03,STVBER04,STVBER05
+    1009 00015820 0004d3d0"         .long   STVBER01,STVBER02,STVBER03,STVBER04,STVBER05
+    1010 000158c0 0004d970"         .long   STVBER16
+    1011 000158e0           TC_H    ;COMAN
+    1012 000158e0 0004da90"         .long   TIMCOM01
+    1013 00015900 0004da90"         .long   TIMCOM01,TIMCOM02,TIMCOM03,TIMCOM04,TIMCOM05
+    1014 000159a0 0004da90"         .long   TIMCOM01,TIMCOM02,TIMCOM03,TIMCOM04,TIMCOM05
+    1015 00015a40 0004da90"         .long   TIMCOM01,TIMCOM02,TIMCOM03,TIMCOM04,TIMCOM05
+    1016 00015ae0 0004e030"         .long   TIMCOM16
+    1017 00015b00           KO_H    ;KING KONG
+    1018 00015b00 0004e150"         .long   VIKAPE01
+    1019 00015b20 0004e150"         .long   VIKAPE01,VIKAPE02,VIKAPE03,VIKAPE04,VIKAPE05
+    1020 00015bc0 0004e6f0"         .long   VIKAPE06,VIKAPE07,VIKAPE08,VIKAPE09,VIKAPE10
+    1021 00015c60 0004ec90"         .long   VIKAPE11,VIKAPE12,VIKAPE13,VIKAPE14,VIKAPE15
+    1022 00015d00 0004f230"         .long   VIKAPE16
+    1023 00015d20           VP_H    ;VINCE
+    1024 00015d20 0004f350"         .long   VNCPON01
+    1025 00015d40 0004f350"         .long   VNCPON01,VNCPON02,VNCPON03,VNCPON04,VNCPON05
+    1026 00015de0 0004f350"         .long   VNCPON01,VNCPON02,VNCPON03,VNCPON04,VNCPON05
+    1027 00015e80 0004f350"         .long   VNCPON01,VNCPON02,VNCPON03,VNCPON04,VNCPON05
+    1028 00015f20 0004f8f0"         .long   VNCPON16
+    1029 00015f40           EL_H    ;ELVIS
+    1030 00015f40 00041130"         .long   VOGHED01
+    1031 00015f60 00041130"         .long   VOGHED01,VOGHED02,VOGHED03,VOGHED04,VOGHED05
+    1032 00016000 00041130"         .long   VOGHED01,VOGHED02,VOGHED03,VOGHED04,VOGHED05
+    1033 000160a0 00041130"         .long   VOGHED01,VOGHED02,VOGHED03,VOGHED04,VOGHED05
+    1034 00016140 000416d0"         .long   VOGHED16
+    1035 00016160           WD_H    ;DAVIS
+    1036 00016160 0004fa10"         .long   WARDAV01
+    1037 00016180 0004fa10"         .long   WARDAV01,WARDAV02,WARDAV03,WARDAV04,WARDAV05
+    1038 00016220 0004fa10"         .long   WARDAV01,WARDAV02,WARDAV03,WARDAV04,WARDAV05
+    1039 000162c0 0004fa10"         .long   WARDAV01,WARDAV02,WARDAV03,WARDAV04,WARDAV05
+    1040 00016360 0004fc50"         .long   WARDAV03
+    1041 00016380           EB_H    ;BOON
+    1042 00016380 000417f0"         .long   EDBOON01
+    1043 000163a0 000417f0"         .long   EDBOON01,EDBOON02,EDBOON03,EDBOON04,EDBOON05
+    1044 00016440 000417f0"         .long   EDBOON01,EDBOON02,EDBOON03,EDBOON04,EDBOON05
+    1045 000164e0 000417f0"         .long   EDBOON01,EDBOON02,EDBOON03,EDBOON04,EDBOON05
+    1046 00016580 00041d90"         .long   EDBOON16
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:03 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball player code                                               PAGE   20
+
+    1047 000165a0           JTO_H   ;TOBIAS
+    1048 000165a0 0004ffb0"         .long   TOBIAS01
+    1049 000165c0 0004ffb0"         .long   TOBIAS01,TOBIAS02,TOBIAS03,TOBIAS04,TOBIAS05
+    1050 00016660 0004ffb0"         .long   TOBIAS01,TOBIAS02,TOBIAS03,TOBIAS04,TOBIAS05
+    1051 00016700 0004ffb0"         .long   TOBIAS01,TOBIAS02,TOBIAS03,TOBIAS04,TOBIAS05
+    1052 000167a0 00050550"         .long   TOBIAS16
+    1053 000167c0           PH_H    ;HEITSCH
+    1054 000167c0 00050670"         .long   PALHEI01
+    1055 000167e0 00050670"         .long   PALHEI01,PALHEI02,PALHEI03,PALHEI04,PALHEI05
+    1056 00016880 00050670"         .long   PALHEI01,PALHEI02,PALHEI03,PALHEI04,PALHEI05
+    1057 00016920 00050670"         .long   PALHEI01,PALHEI02,PALHEI03,PALHEI04,PALHEI05
+    1058 000169c0 00050c10"         .long   PALHEI16
+    1059 000169e0           BD_H    ;DABELS
+    1060 000169e0 00050d30"         .long   BILDAB01
+    1061 00016a00 00050d30"         .long   BILDAB01,BILDAB02,BILDAB03,BILDAB04,BILDAB05
+    1062 00016aa0 00050d30"         .long   BILDAB01,BILDAB02,BILDAB03,BILDAB04,BILDAB05
+    1063 00016b40 00050d30"         .long   BILDAB01,BILDAB02,BILDAB03,BILDAB04,BILDAB05
+    1064 00016be0 000512d0"         .long   BILDAB16
+    1065 00016c00           MM_H    ;MARTIN
+    1066 00016c00 00041eb0"         .long   MARMAR01
+    1067 00016c20 00041eb0"         .long   MARMAR01,MARMAR02,MARMAR03,MARMAR04,MARMAR05
+    1068 00016cc0 00041eb0"         .long   MARMAR01,MARMAR02,MARMAR03,MARMAR04,MARMAR05
+    1069 00016d60 00041eb0"         .long   MARMAR01,MARMAR02,MARMAR03,MARMAR04,MARMAR05
+    1070 00016e00 000420f0"         .long   MARMAR03
+    1071 00016e20           RD_H    ;RACHEL
+    1072 00016e20 000513f0"         .long   RACDAV01
+    1073 00016e40 000513f0"         .long   RACDAV01,RACDAV02,RACDAV03,RACDAV04,RACDAV05
+    1074 00016ee0 000513f0"         .long   RACDAV01,RACDAV02,RACDAV03,RACDAV04,RACDAV05
+    1075 00016f80 000513f0"         .long   RACDAV01,RACDAV02,RACDAV03,RACDAV04,RACDAV05
+    1076 00017020 00051630"         .long   RACDAV03
+    1077 00017040           KH_H    ;HOSKINS
+    1078 00017040 0003dc50"         .long   KARHOS01
+    1079 00017060 0003dc50"         .long   KARHOS01,KARHOS02,KARHOS03,KARHOS04,KARHOS05
+    1080 00017100 0003dc50"         .long   KARHOS01,KARHOS02,KARHOS03,KARHOS04,KARHOS05
+    1081 000171a0 0003dc50"         .long   KARHOS01,KARHOS02,KARHOS03,KARHOS04,KARHOS05
+    1082 00017240 0003e1f0"         .long   KARHOS16
+    1083 00017260           OL_H    ;OLIVIA
+    1084 00017260 0003e310"         .long   LOROLI01
+    1085 00017280 0003e310"         .long   LOROLI01,LOROLI02,LOROLI03,LOROLI04,LOROLI05
+    1086 00017320 0003e310"         .long   LOROLI01,LOROLI02,LOROLI03,LOROLI04,LOROLI05
+    1087 000173c0 0003e310"         .long   LOROLI01,LOROLI02,LOROLI03,LOROLI04,LOROLI05
+    1088 00017460 0003e8b0"         .long   LOROLI16
+    1089 00017480           SC_H    ;SCORPION
+    1090 00017480 0003e9d0"         .long   SCORPI01
+    1091 000174a0 0003e9d0"         .long   SCORPI01,SCORPI02,SCORPI03,SCORPI04,SCORPI05
+    1092 00017540 0003e9d0"         .long   SCORPI01,SCORPI02,SCORPI03,SCORPI04,SCORPI05
+    1093 000175e0 0003e9d0"         .long   SCORPI01,SCORPI02,SCORPI03,SCORPI04,SCORPI05
+    1094 00017680 0003ef70"         .long   SCORPI16
+    1095 000176a0           RP_H    ;REPTILE
+    1096 000176a0 0003f750"         .long   REPTIL01
+    1097 000176c0 0003f750"         .long   REPTIL01,REPTIL02,REPTIL03,REPTIL04,REPTIL05
+    1098 00017760 0003f750"         .long   REPTIL01,REPTIL02,REPTIL03,REPTIL04,REPTIL05
+    1099 00017800 0003f750"         .long   REPTIL01,REPTIL02,REPTIL03,REPTIL04,REPTIL05
+    1100 000178a0 0003fcf0"         .long   REPTIL16
+    1101 000178c0           CG_H    ;GRANNER
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:03 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball player code                                               PAGE   21
+
+    1102 000178c0 00043530"         .long   CHRGRA01
+    1103 000178e0 00043530"         .long   CHRGRA01,CHRGRA02,CHRGRA03,CHRGRA04,CHRGRA05
+    1104 00017980 00043530"         .long   CHRGRA01,CHRGRA02,CHRGRA03,CHRGRA04,CHRGRA05
+    1105 00017a20 00043530"         .long   CHRGRA01,CHRGRA02,CHRGRA03,CHRGRA04,CHRGRA05
+    1106 00017ac0 00043ad0"         .long   CHRGRA16
+    1107                    
+    1108                    
+    1109 00017ae0           KG_H    ;GRIFFEY
+    1110 00017ae0 00051ab0"         .long   KGRIF01
+    1111 00017b00 00051ab0"         .long   KGRIF01,KGRIF02,KGRIF03,KGRIF04,KGRIF05
+    1112 00017ba0 00051ab0"         .long   KGRIF01,KGRIF02,KGRIF03,KGRIF04,KGRIF05
+    1113 00017c40 00051ab0"         .long   KGRIF01,KGRIF02,KGRIF03,KGRIF04,KGRIF05
+    1114 00017ce0 00051cf0"         .long   KGRIF03
+    1115                    
+    1116                    
+    1117 00017d00           JSK_H   ;SKILES
+    1118 00017d00 000456f0"         .long   JASFLA01
+    1119 00017d20 000456f0"         .long   JASFLA01,JASFLA02,JASFLA03,JASFLA04,JASFLA05
+    1120 00017dc0 000456f0"         .long   JASFLA01,JASFLA02,JASFLA03,JASFLA04,JASFLA05
+    1121 00017e60 000456f0"         .long   JASFLA01,JASFLA02,JASFLA03,JASFLA04,JASFLA05
+    1122 00017f00 00045c90"         .long   JASFLA16
+    1123                    
+    1124 00017f20           tg_h
+    1125 00017f20 000386d0"         .long   TG01
+    1126 00017f40 000386d0"         .long   TG01,TG02,TG03,TG04,TG05
+    1127 00017fe0 00038c70"         .long   TG06,TG07,TG08,TG09,TG10
+    1128 00018080 00039210"         .long   TG11,TG12,TG13,TG14,TG15
+    1129 00018120 000397b0"         .long   TG16
+    1130 00018140           jr_h
+    1131 00018140 0003bcd0"         .long   jamie1
+    1132 00018160 0003bcd0"         .long   jamie1,jamie2,jamie3,jamie4,jamie5
+    1133 00018200 0003c270"         .long   jamie6,jamie7,jamie8,jamie9,jamie10
+    1134 000182a0 0003c810"         .long   jamie11,jamie12,jamie13,jamie14,jamie15
+    1135 00018340 0003cdb0"         .long   jamie16
+    1136 00018360           jc_h
+    1137 00018360 000398d0"         .long   JC1
+    1138 00018380 000398d0"         .long   JC1,JC2,JC3,JC4,JC5
+    1139 00018420 0003a650"         .long   JC6,JC7,JC8,JC9,JC10
+    1140 000184c0 00039b10"         .long   JC11,JC12,JC13,JC14,JC15
+    1141 00018560 0003a0b0"         .long   JC16
+    1142 00018580           sd_h
+    1143 00018580 000374d0"         .long   SAL1
+    1144 000185a0 000374d0"         .long   SAL1,SAL2,SAL3,SAL4,SAL5
+    1145 00018640 00037a70"         .long   SAL6,SAL7,SAL8,SAL9,SAL10
+    1146 000186e0 00038010"         .long   SAL11,SAL12,SAL13,SAL14,SAL15
+    1147 00018780 000385b0"         .long   SAL16
+    1148 000187a0           sl_h
+    1149 000187a0 0003aad0"         .long   SHAW1
+    1150 000187c0 0003aad0"         .long   SHAW1,SHAW2,SHAW3,SHAW4,SHAW5
+    1151 00018860 0003b070"         .long   SHAW6,SHAW7,SHAW8,SHAW9,SHAW10
+    1152 00018900 0003b610"         .long   SHAW11,SHAW12,SHAW13,SHAW14,SHAW15
+    1153 000189a0 0003bbb0"         .long   SHAW16
+    1154 000189c0           mt_h
+    1155 000189c0 000362d0"         .long   MT01
+    1156 000189e0 000362d0"         .long   MT01,MT02,MT03,MT04,MT05
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:03 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball player code                                               PAGE   22
+
+    1157 00018a80 00036870"         .long   MT06,MT07,MT08,MT09,MT10
+    1158 00018b20 00036e10"         .long   MT11,MT12,MT13,MT14,MT15
+    1159 00018bc0 000373b0"         .long   MT16
+    1160 00018be0 000362d0"         .long   MT01,MT02,MT03,MT04,MT05
+    1161 00018c80           jh_h
+    1162 00018c80 000350d0"         .long   JONH1
+    1163 00018ca0 000350d0"         .long   JONH1,JONH2,JONH3,JONH4,JONH5
+    1164 00018d40 00035670"         .long   JONH6,JONH7,JONH8,JONH9,JONH10
+    1165 00018de0 00035c10"         .long   JONH11,JONH12,JONH13,JONH14,JONH15
+    1166 00018e80 000361b0"         .long   JONH16
+    1167 00018ea0           gp_h
+    1168 00018ea0 0003ced0"         .long   GEOR1
+    1169 00018ec0 0003ced0"         .long   GEOR1,GEOR2,GEOR3,GEOR4,GEOR5
+    1170 00018f60 0003ced0"         .long   GEOR1,GEOR2,GEOR3,GEOR4,GEOR5
+    1171 00019000 0003ced0"         .long   GEOR1,GEOR2,GEOR3,GEOR4,GEOR5
+    1172 000190a0 0003d470"         .long   GEOR16
+    1173 000190c0           jn_h
+    1174 000190c0 00042450"         .long   JOHNN01
+    1175 000190e0 00042450"         .long   JOHNN01,JOHNN02,JOHNN03,JOHNN04,JOHNN05
+    1176 00019180 00042450"         .long   JOHNN01,JOHNN02,JOHNN03,JOHNN04,JOHNN05
+    1177 00019220 00042450"         .long   JOHNN01,JOHNN02,JOHNN03,JOHNN04,JOHNN05
+    1178 000192c0 00042690"         .long   JOHNN03
+    1179 000192e0           so_h
+    1180 000192e0 0003d590"         .long   SHER1
+    1181 00019300 0003d590"         .long   SHER1,SHER2,SHER3,SHER4,SHER5
+    1182 000193a0 0003d590"         .long   SHER1,SHER2,SHER3,SHER4,SHER5
+    1183 00019440 0003d590"         .long   SHER1,SHER2,SHER3,SHER4,SHER5
+    1184 000194e0 0003db30"         .long   SHER16
+    1185 00019500           wi_h
+    1186 00019500 00034b30"         .long   wil1
+    1187 00019520 00034b30"         .long   wil1,wil2,wil3,wil4,wil5
+    1188 000195c0 00034b30"         .long   wil1,wil2,wil3,wil4,wil5
+    1189 00019660 00034b30"         .long   wil1,wil2,wil3,wil4,wil5
+    1190 00019700 00034d70"         .long   wil3
+    1191 00019720 00034b30"         .long   wil1,wil2,wil3,wil4,wil5
+    1192                    
+    1193                    
+    1194                    
+    1195                            .end
+
+ No Errors,  No Warnings

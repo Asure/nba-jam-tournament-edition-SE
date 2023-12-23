@@ -1,0 +1,193 @@
+	.DATA
+ATL:
+	.word   89,19,0,0
+	.long   05411624H
+	.word   03000h
+	.long   MD_16
+BOST:
+	.word   78,19,0,0
+	.long   054129f5H
+	.word   03000h
+	.long   MD_16
+CHAR:
+	.word   111,19,0,0
+	.long   05413b53H
+	.word   03000h
+	.long   MD_16
+CHI:
+	.word   81,19,0,0
+	.long   0541540aH
+	.word   03000h
+	.long   MD_16
+CLEV:
+	.word   107,19,0,0
+	.long   05416613H
+	.word   03000h
+	.long   MD_16
+DAL:
+	.word   74,19,0,0
+	.long   05417de6H
+	.word   03000h
+	.long   MD_16
+DEN:
+	.word   74,19,0,0
+	.long   05418e60H
+	.word   03000h
+	.long   MD_16
+DET:
+	.word   83,19,0,0
+	.long   05419edaH
+	.word   03000h
+	.long   MD_16
+GOLDN:
+	.word   145,19,0,0
+	.long   0541b155H
+	.word   03000h
+	.long   MD_16
+HOU:
+	.word   91,19,0,0
+	.long   0541d19eH
+	.word   03000h
+	.long   MD_16
+IND:
+	.word   79,19,0,0
+	.long   0541e5e1H
+	.word   03000h
+	.long   MD_16
+LA_CLIP:
+	.word   139,19,0,0
+	.long   0541f778H
+	.word   03000h
+	.long   MD_16
+LA_LAKS:
+	.word   121,19,0,0
+	.long   0542166bH
+	.word   03000h
+	.long   MD_16
+MIAMI:
+	.word   65,19,0,0
+	.long   0542315cH
+	.word   03000h
+	.long   MD_16
+MILW:
+	.word   117,19,0,0
+	.long   05423fd5H
+	.word   03000h
+	.long   MD_16
+MINN:
+	.word   115,19,0,0
+	.long   054259e2H
+	.word   03000h
+	.long   MD_16
+NJ:
+	.word   122,19,0,0
+	.long   0542737dH
+	.word   03000h
+	.long   MD_16
+NY:
+	.word   103,19,0,0
+	.long   05428ea7H
+	.word   03000h
+	.long   MD_16
+ORL:
+	.word   89,19,0,0
+	.long   0542a596H
+	.word   03000h
+	.long   MD_16
+PHIL:
+	.word   138,19,0,0
+	.long   0542b967H
+	.word   03000h
+	.long   MD_16
+PHX:
+	.word   83,19,0,0
+	.long   0542d821H
+	.word   03000h
+	.long   MD_16
+PORT:
+	.word   102,19,0,0
+	.long   0542ea9cH 
+	.word   03000h
+	.long   MD_16
+SAC:
+	.word   132,19,0,0
+	.long   05430152H
+	.word   03000h
+	.long   MD_16
+SANANT:
+	.word   132,19,0,0
+	.long   05431eb6H
+	.word   03000h
+	.long   MD_16
+SEA:
+	.word   85,19,0,0
+	.long   05433c1aH
+	.word   03000h
+	.long   MD_16
+UTAH:
+	.word   52,19,0,0
+	.long   05434f07H
+	.word   03000h
+	.long   MD_16
+WASH:
+	.word   130,19,0,0
+	.long   05435a9bH
+	.word   03000h
+	.long   MD_16
+SMD16_0:
+	.word   14,19,0,0
+	.long   0543778dH
+	.word   03000h
+	.long   MD_16
+SMD16_1:
+	.word   8,19,-3,0
+	.long   05437aabH
+	.word   03000h
+	.long   MD_16
+SMD16_2:
+	.word   14,19,0,0
+	.long   05437c73H
+	.word   03000h
+	.long   MD_16
+SMD16_3:
+	.word   14,19,0,0
+	.long   05437f91H
+	.word   03000h
+	.long   MD_16
+SMD16_4:
+	.word   14,19,0,0
+	.long   054382afH
+	.word   03000h
+	.long   MD_16
+SMD16_5:
+	.word   14,19,0,0
+	.long   054385cdH
+	.word   03000h
+	.long   MD_16
+SMD16_6:
+	.word   14,19,0,0
+	.long   054388ebH
+	.word   03000h
+	.long   MD_16
+SMD16_7:
+	.word   14,19,0,0
+	.long   05438c09H
+	.word   03000h
+	.long   MD_16
+SMD16_8:
+	.word   14,19,0,0
+	.long   05438f27H
+	.word   03000h
+	.long   MD_16
+SMD16_9:
+	.word   14,19,0,0
+	.long   05439245H
+	.word   03000h
+	.long   MD_16
+SMD16_9r:
+	.word   14,19,0,0
+	.long   05439245H
+	.word   03000h
+	.long   MD_16r
+	.TEXT
+

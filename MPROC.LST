@@ -1,0 +1,525 @@
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE    1
+
+       1                            .file   "mproc.asm"
+       3                            .width  132
+       4                            .option b,d,l,t
+       5                            .mnolist
+       6                    
+       7                    
+       8                            .include        gsp.equ
+       9                            .include        sys.equ
+      10                            .include        mproc.equ
+      11                            .include        disp.equ
+      12                            .include        game.equ
+      13                            .include        "shawn.hdr"
+      14                    
+      15                    
+      16                            .ref    dirqtimer
+      17                            
+      18                            .ref    obj_yzsort
+      19                            .ref    L_TIMER                 ;Audit
+      20                    
+      21                            .if     DEBUG
+      22                            .ref    SLDEBUG
+      23                            .ref    slowmotion
+      24                            .endif
+      25                    
+      26                    
+      27                    
+      28 00000000                   .bss    PRCSTR  ,NPROC*PRCSIZ   ;Process data blocks
+      29                    
+      30                    
+      31                    
+      32 00000000                   .sect   "FIXED"
+      33 00000000 00000000  ACTIVE  .long   0
+      34 00000020 00000000  FREE    .long   0
+      35                    
+      36                    
+      37 00000000                   .text
+      38                    
+      39                    
+      40                    
+      41 00000000            SUBR   process_init
+      42                    
+      43 00000000     09ed          movi    ACTIVE,a13      ;Init A13
+         00000010 00000000+ 
+      44 00000030     5600          clr     a0
+      45 00000040     820d          move    a0,*a13,L       ;Empty list
+      46                    
+      47 00000050     09e1          movi    PRCSTR,a1
+         00000060 00000000- 
+      48 00000080     0781          move    a1,@FREE,L      ;Full free list
+         00000090 00000020+ 
+      49                    
+      50 000000b0     09d0          movi    NPROC,b0        ;# of processes
+         000000c0     00be  
+      51 000000d0     4c2e  nkzelp  move    a1,a14
+      52 000000e0     0b01          addi    PRCSIZ,a1
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+GSP multi-processing system                                          PAGE    2
+
+         000000f0     05b0  
+      53 00000100     822e          move    a1,*a14,L       ;Set link
+      54 00000110     3cb0          dsj     b0,nkzelp
+      55                    
+      56 00000120     820e          move    a0,*a14,L       ;Null last link
+      57                    
+      58 00000130     0960          rets
+      59                    
+      60                    
+      61                    
+      62 00000140            SUBR   process_dispatch
+      63                    
+      64                            .if     DEBUG
+      65                            move    @SLDEBUG,a0
+      66                            jrnn    xcjvnoline
+      67                    
+      68                            movi    31*32,a0                ;Proc usage
+      69                            move    a0,@ERASELOC
+      70                    
+      71                    xcjvdmawt       move    b13,b13
+      72                            jrge    xcjvdmawt
+      73                            movk    6,a0                    ;DMA usage
+      74                            move    a0,@ERASELOC
+      75                    xcjvnoline
+      76                            move    @slowmotion,a0
+      77                    xcjvsmlp        move    @dirqtimer,a1
+      78                            cmp     a1,a0
+      79                            jrge    xcjvsmlp
+      80                    
+      81                            .endif
+      82                    
+      83 00000140     09ed          movi    ACTIVE,a13              ;*Proc list
+         00000150 00000000+ 
+      84 00000170     5600          clr     a0
+      85 00000180     0580          move    a0,@dirqtimer           ;Tell DIRQ to flip and draw
+         00000190 00000000! 
+      86                    
+      87 000001b0     0d5f  xcjvlp  calla   obj_yzsort              ;Sort display list
+         000001c0 00000000! 
+      88 000001e0     05a0          move    @dirqtimer,a0
+         000001f0 00000000! 
+      89 00000210     caf9          jrz     xcjvlp                  ;Wait?
+      90                    
+      91                    
+      92 00000220     0d5f          calla   L_TIMER                 ;Linky timer
+         00000230 00000000! 
+      93                    
+      94 00000250     c007          jruc    prcd1
+      95                    
+      96                    
+      97 00000260           PRCSLP
+      98 00000260                   PULL    a7                      ;Get *Wakeup
+      99                    
+     100 00000270     4da1  PRCLSP  move    a13,a1
+     101 00000280     0b01          addi    PDATA,a1
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+GSP multi-processing system                                          PAGE    3
+
+         00000290     0100  
+     102 000002a0     0981          mmtm    a1,a7,a8,a9,a10,a11,a12 ;*Wakeup, regs, *stack
+         000002b0     01f8  
+     103 000002c0     a001          move    a0,-*a1                 ;sleep
+     104                    
+     105                    
+     106                    
+     107                    
+     108                    
+     109                            .if     DEBUG
+     110                            move    a13,a0
+     111                            addi    PSDATA,a0
+     112                            cmp     a0,a12
+     113                            jrlt    $                       ;stick on stack overflow
+     114                            addi    PRCSIZ-PSDATA,a0
+     115                            cmp     a0,a12
+     116                            jrgt    $                       ;stick on stack underflow
+     117                            .endif
+     118                    
+     119 000002d0           prcd1
+     120 000002d0     87ad          move    *a13,a13,L
+     121 000002e0     ca0c          jrz     prcdx                   ;End?
+     122 000002f0     b5a0          move    *a13(PTIME),a0          ;Get count
+         00000300     0030  
+     123 00000310     1420          subk    1,a0
+     124 00000320     b00d          move    a0,*a13(PTIME)          ;Put it back
+         00000330     0030  
+     125 00000340     c7f8          jrgt    prcd1                   ;Not ready?
+     126                    
+     127                    
+     128 00000350     4da1          move    a13,a1                  ;0DHispatch
+     129 00000360     0b01          addi    040H,a1
+         00000370     0040  
+     130 00000380     09a1          mmfm    a1,a7,a8,a9,a10,a11,a12 ;*Wake, regs, *stack
+         00000390     1f80  
+     131 000003a0     0167          jump    a7                      ;Do process
+     132                    
+     133                    
+     134 000003b0     0960  prcdx   rets
+     135                    
+     136                    
+     137                    
+     138 000003c0           SUCIDE
+     139 000003c0     09e1          movi    ACTIVE,a1
+         000003d0 00000000+ 
+     140 000003f0     4c22  suclp   move    a1,a2           ;save previous
+     141 00000400     8621          move    *a1,a1,L
+     142 00000410     ca0c          jrz     sucerr
+     143                    
+     144 00000420     482d          cmp     a1,a13
+     145 00000430     cbfb          jrne    suclp           ;!Us
+     146                    
+     147                    
+     148                    
+     149                            .if     DEBUG
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+GSP multi-processing system                                          PAGE    4
+
+     150                    
+     151                            PUSH    a5
+     152                            move    *a1(PROCID),a5
+     153                            cmpi    takepid,a5
+     154                            jrz     udkocaught
+     155                    
+     156                    
+     157                            jruc    udkonocaught
+     158                    
+     159                    udkocaught
+     160                            LOCKUP
+     161                    
+     162                    udkonocaught
+     163                    
+     164                            PULL    a5
+     165                    
+     166                            .endif
+     167                    
+     168                    
+     169                    
+     170                    
+     171                    
+     172                    
+     173 00000440     8a22          move    *a1,*a2,L       ;Unlink
+     174 00000450     d601          move    @FREE,*a1+,L    ;Link into free list at start
+         00000460 00000020+ 
+     175 00000480     1401          subk    32,a1
+     176 00000490     0781          move    a1,@FREE,L
+         000004a0 00000020+ 
+     177                    
+     178 000004c0     4c4d          move    a2,a13          ;Set current process to previous
+     179 000004d0     c0df          jruc    prcd1           ;Continue with dispatch
+     180                    
+     181 000004e0           sucerr
+     182                            .if     DEBUG
+     183                            LOCKUP
+     184                            eint
+     185                            .else
+     186 000004e0                   CALLERR 5,0
+     187                            .endif
+     188 00000590     09ed          movi    ACTIVE,a13      ;*Proc list
+         000005a0 00000000+ 
+     189 000005c0     c0d0          jruc    prcd1
+     190                    
+     191                    
+     192                    
+     193 000005d0           KILL
+     194 000005d0     480d          cmp     a0,a13
+     195 000005e0     ca10          jreq    augvx           ;Killing self?
+     196                    
+     197 000005f0     09e1          movi    ACTIVE,a1
+         00000600 00000000+ 
+     198                    
+     199 00000620     4c2e  augvlp  move    a1,a14          ;Save previous
+     200 00000630     8621          move    *a1,a1,L
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+GSP multi-processing system                                          PAGE    5
+
+     201 00000640     ca0b          jrz     killerr         ;Can't find?
+     202 00000650     4820          cmp     a1,a0
+     203 00000660     cbfb          jrne    augvlp          ;Not the one?
+     204                    
+     205                    
+     206                            .if     DEBUG
+     207                    
+     208                            PUSH    a2
+     209                            move    *a1(PROCID),a2,L
+     210                            cmpi    takepid,a2
+     211                            jrnz    augvok
+     212                            LOCKUP
+     213                    augvok  PULL    a2
+     214                    
+     215                            .endif
+     216                    
+     217                    
+     218                    
+     219                    
+     220                    
+     221 00000670     8a0e          move    *a0,*a14,L      ;Unlink from active
+     222 00000680     d600          move    @FREE,*a0+,L    ;Link into free list at start
+         00000690 00000020+ 
+     223 000006b0     1400          subk    32,a0
+     224 000006c0     0780          move    a0,@FREE,L
+         000006d0 00000020+ 
+     225                    
+     226 000006f0     0960  augvx   rets
+     227                    
+     228 00000700           killerr
+     229                            .if     DEBUG
+     230                            LOCKUP
+     231                            eint
+     232                            .else
+     233 00000700                   CALLERR 6,0
+     234                            .endif
+     235 000007b0     c0f3          jruc    augvx
+     236                    
+     237                    
+     238                    
+     239 000007c0           GETPRC
+     240 000007c0     4f80          move    a12,b0
+     241                    
+     242 000007d0     07a0          move    @FREE,a0,L
+         000007e0 00000020+ 
+     243 00000800     ca07          jrz     nonelft         ;No more?
+     244 00000810     860e          move    *a0,a14,L
+     245 00000820     078e          move    a14,@FREE,L     ;Unlink from free list
+         00000830 00000020+ 
+     246 00000850     8ba0          move    *a13,*a0,L      ;Link into active list after current process
+     247 00000860     820d          move    a0,*a13,L
+     248 00000870     c00d          jruc    xferprc0
+     249                    
+     250 00000880           nonelft
+     251                            .if     DEBUG
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+GSP multi-processing system                                          PAGE    6
+
+     252                            LOCKUP
+     253                            eint
+     254                            .else
+     255 00000880                   CALLERR 4,2
+     256                            .endif
+     257 00000930     c010          jruc    getpx
+     258                    
+     259                    
+     260 00000940           XFERPROC
+     261 00000940     4f80          move    a12,b0
+     262 00000950           xferprc0
+     263 00000950     0b67          cmpi    ROM,a7
+         00000960 007fffff  
+     264 00000980     c80d          jrlo    procwakeerr             ;Error?
+     265                    
+     266                    
+     267                            .if     DEBUG
+     268                    
+     269                            PUSH    a1
+     270                            calla   process_exist
+     271                            jrnz    augvfound
+     272                            PULL    a1
+     273                          
+     274                            LOCKUP
+     275                            jruc    augvcont
+     276                    augvfound
+     277                            PULL    a1
+     278                    augvcont
+     279                    
+     280                            move    *a0(PROCID),a14
+     281                            cmpi    takepid,a14
+     282                            jrnz    augvtag2
+     283                    
+     284                            LOCKUP
+     285                    augvtag2
+     286                            .endif
+     287                    
+     288                    
+     289                    
+     290                    
+     291 00000990     4c0e          move    a0,a14
+     292 000009a0     0b0e          addi    PDATA,a14
+         000009b0     0100  
+     293 000009c0     4c0c          move    a0,a12                  ;Reset process stack pointer
+     294 000009d0     0b0c          addi    PRCSIZ,a12
+         000009e0     05b0  
+     295 000009f0     098e          mmtm    a14,a7,a8,a9,a10,a11,a12 ;Stuff wake, regs, p stack ptr
+         00000a00     01f8  
+     296 00000a10     182c          movk    1,a12
+     297 00000a20     a18e          move    a12,-*a14               ;Wakeup next time
+     298 00000a30     a02e          move    a1,-*a14                ;ID
+     299                    
+     300 00000a40     4e1c  getpx   move    b0,a12
+     301 00000a50     0960          rets                            ;Flags are trashed!!!
+     302                    
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+GSP multi-processing system                                          PAGE    7
+
+     303 00000a60           procwakeerr
+     304                            .if     DEBUG
+     305                            LOCKUP
+     306                            eint
+     307                            .else
+     308 00000a60                   CALLERR 7,0
+     309                            .endif
+     310 00000b10     c0f2          jruc    getpx
+     311                    
+     312                    
+     313                    
+     314 00000b20           KILALL
+     315 00000b20     03e1          not     a1
+     316 00000b30     c001          jruc    KILALLN
+     317                    
+     318                    
+     319                    
+     320 00000b40           KIL1C
+     321 00000b40     5621          clr     a1
+     322                    
+     323                    
+     324 00000b50           KILALLN
+     325 00000b50     4e40          move    a2,b0
+     326 00000b60     4e61          move    a3,b1
+     327                    
+     328 00000b70     0521          zext    a1              ;Won't kill PIDS 08000H+
+     329 00000b80     5220          andn    a1,a0           ;Form match
+     330 00000b90     09e2          movi    ACTIVE,a2
+         00000ba0 00000000+ 
+     331                    
+     332 00000bc0     4c43  bqaelp  move    a2,a3           ;Save previous
+     333 00000bd0     8642          move    *a2,a2,L
+     334 00000be0     ca11          jrz     bqaex           ;Done?
+     335 00000bf0     b44e          move    *a2(PROCID),a14
+         00000c00     0020  
+     336 00000c10     522e          andn    a1,a14          ;Apply mask
+     337 00000c20     480e          cmp     a0,a14
+     338 00000c30     cbf8          jrne    bqaelp          ;No match?
+     339                    
+     340 00000c40     484d          cmp     a2,a13
+     341 00000c50     caf6          jreq    bqaelp          ;Current proecess?
+     342                    
+     343                    
+     344                            .if     DEBUG
+     345                    
+     346                            PUSH    a4
+     347                            move    *a2(PROCID),a4,L
+     348                            cmpi    takepid,a4
+     349                            jrnz    bqaeok
+     350                            LOCKUP
+     351                    bqaeok  PULL    a4
+     352                    
+     353                            .endif
+     354                    
+     355                    
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+GSP multi-processing system                                          PAGE    8
+
+     356                    
+     357                    
+     358                    
+     359                    
+     360                    
+     361 00000c60     8a43          move    *a2,*a3,L       ;Unlink
+     362 00000c70     07ae          move    @FREE,a14,L     ;Link into free list at start
+         00000c80 00000020+ 
+     363 00000ca0     83c2          move    a14,*a2,L
+     364 00000cb0     0782          move    a2,@FREE,L
+         00000cc0 00000020+ 
+     365 00000ce0     4c62          move    a3,a2
+     366 00000cf0     c0ec          jruc    bqaelp
+     367                    
+     368 00000d00     4e12  bqaex   move    b0,a2
+     369 00000d10     4e33          move    b1,a3
+     370 00000d20     0960          rets
+     371                    
+     372                    
+     373                    
+     374 00000d30           KOP_1C
+     375 00000d30     5621          clr     a1
+     376                    
+     377                    
+     378 00000d40           KOP_ALL
+     379 00000d40     4e60          move    a3,b0
+     380 00000d50     5220          andn    a1,a0           ;Form match
+     381 00000d60     09e3          movi    ACTIVE,a3,L
+         00000d70 00000000+ 
+     382                    
+     383 00000d90     8663  tuzolp  move    *a3,a3,L        ;Get next
+     384 00000da0     ca0b          jrz     tuzox           ;End?
+     385 00000db0     b46e          move    *a3(PROCID),a14
+         00000dc0     0020  
+     386 00000dd0     522e          andn    a1,a14          ;Mask
+     387 00000de0     480e          cmp     a0,a14
+     388 00000df0     cbf9          jrnz    tuzolp          ;No match?
+     389                    
+     390 00000e00     b46e          move    *a3(PTIME),a14  ;Add sleep
+         00000e10     0030  
+     391 00000e20     404e          add     a2,a14
+     392 00000e30     b1c3          move    a14,*a3(PTIME)
+         00000e40     0030  
+     393 00000e50     c0f3          jruc    tuzolp
+     394                    
+     395 00000e60     4e13  tuzox   move    b0,a3
+     396 00000e70     0960          rets
+     397                    
+     398                    
+     399                    
+     400 00000e80           process_exist
+     401 00000e80     09e1          movi    ACTIVE,a1
+         00000e90 00000000+ 
+     402                    
+     403 00000eb0     8621  vskrlp  move    *a1,a1,L
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+GSP multi-processing system                                          PAGE    9
+
+     404 00000ec0     ca03          jrz     vskrx           ;End?
+     405 00000ed0     4801          cmp     a0,a1
+     406 00000ee0     cbfc          jrne    vskrlp          ;!Match?
+     407 00000ef0     4c00          move    a0,a0           ;Clr Z
+     408                    
+     409 00000f00     0960  vskrx   rets
+     410                    
+     411                    
+     412                    
+     413 00000f10           EXISTP
+     414 00000f10                   PUSH    a1,a2,a4
+     415                    
+     416 00000f30     0500          sext    a0
+     417 00000f40     5020          and     a1,a0           ;form match
+     418 00000f50     09e2          movi    ACTIVE,a2
+         00000f60 00000000+ 
+     419                    
+     420 00000f80     8642  gbzflp  move    *a2,a2,L
+     421 00000f90     ca07          jrz     gbzfx           ;End?
+     422 00000fa0     b444          move    *a2(PROCID),a4
+         00000fb0     0020  
+     423 00000fc0     5024          and     a1,a4
+     424 00000fd0     4804          cmp     a0,a4
+     425 00000fe0     cbf9          jrne    gbzflp          ;!Match?
+     426                    
+     427 00000ff0     484d          cmp     a2,a13
+     428 00001000     caf7          jreq    gbzflp          ;Self?
+     429                    
+     430 00001010     4c40  gbzfx   move    a2,a0
+     431                    
+     432 00001020                   PULL    a1,a2,a4
+     433 00001040     0960          rets
+     434                    
+     435                    
+     436                    
+     437                    
+     438                    
+     439                            .end
+
+ No Errors,  No Warnings

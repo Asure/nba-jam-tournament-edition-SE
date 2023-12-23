@@ -1,0 +1,20 @@
+- crash in 3rd!
+- wrong player name during play. GRIFFEY image?
+- wrong during halftime
+	.word   04000H ? 
+	.word   05000H = ok during select. bad ingame
+	.word   06000H = bad everywhere.
+- if using subs it's ok everywhere.
+XOF>
+PPP> 6 is ok ingame. XOF
+PPP> 5 is ok ingame. XOF
+PPP> 4 is ok ingame. XOF
+PPP> 3 is ok ingame. XOF
+- dallas mavericks heads wrong.
+mashburn
+jackson
+** fixed using new plyrhd3.tbl
+
+- wrong dunks (the one with the explosion)
+cannonball etc. in PLYRD2SE?
+

@@ -1,0 +1,2764 @@
+
+	.file	"record.asm"
+	.title	"CMOS records etc"
+	.width	132
+	.option	b,d,l,t
+	.mnolist
+
+
+	.include	"mproc.equ"
+	.include	"disp.equ"
+	.include	"sys.equ"
+	.include	"gsp.equ"
+	.include	"mac2.asm"
+	.include	"game.equ"
+	.include	"audit.equ"
+	.include	"link.equ"
+	.include	"shawn.hdr"
+	.include	"imgtbl.glo"
+	.include	"bgndtbl.glo"
+
+
+	.global	sort_wins
+	.global	save_player_records
+
+	.global	get_player_record
+	.global	find_record
+	.global	player1_data,player2_data,player3_data,player4_data
+	.global	show_player_records
+	.global	clear_player_records
+
+	.global	message_palette
+	.global	mess_space_width
+	.global	print_string,print_string2
+	.global	print_string_C,print_string_C2
+	.global	message_ascii
+	.global	mess_spacing
+	.global	mess_objid
+	.global	mess_cursx,mess_cursy
+	.global	lgmd_ascii,osgemd_ascii,sgmd8_ascii
+	.global	setup_message
+	.global	message_buffer
+	.global	get_initials_string
+	.global	dec_to_asc,dec_to_pct
+	.global	copy_string,copy_rom_string
+	.global	concat_string,concat_rom_string
+	.global	print_string_R,print_string_R2
+
+
+	.ref	pal_getf
+	.ref	morf_pal
+	.ref	morfpal1,morfpal2
+	.ref	morfpal3,morfpal4
+	.ref	morfpal5,morfpal6
+	.ref	morfpal7,morfpal8
+	.ref	morfpal9,morfpal10
+	.ref	morfpal11
+
+	.ref	CYCLE_TABLE
+
+	.ref	get_teams_pop,sorted_teams
+	.ref	BAKMODS
+	.ref	BGND_UD1
+	.ref	SET_PAGE
+	.ref	WC_BYTE,RC_BYTE
+	.ref	WC_BYTEI,RC_BYTEI
+	.ref	WC_WORD,RC_WORD
+	.ref	WC_WORDI,RC_WORD
+	.ref	WC_LONG,RC_LONG
+	.ref	WC_LONGI,RC_LONG
+
+	.ref	dpageflip
+	.ref	IRQSKYE
+	.ref	KILBGND
+	.ref	get_all_buttons_cur
+	.ref	get_all_buttons_cur2
+
+	.ref	get_all_sticks_down2
+	.ref	get_all_buttons_cur2
+
+	.ref	WIPEOUT
+	.ref	CLR_SCRN
+	.ref	COLRTEMP
+	.ref	obj_del1c
+	.ref	get_all_sticks_down
+	.ref	get_all_sticks_cur,get_all_sticks_cur2
+
+	.ref	team1,team2
+	.ref	PSTATUS,PSTATUS2
+	.ref	scores
+
+
+ .if 0
+
+PR_COUNT	equ	0
+PR_WON		equ	PR_COUNT+16
+PR_LOST		equ	PR_WON+16
+PR_LASTPLAY	equ	PR_LOST+16
+PR_INIT1	equ	PR_LASTPLAY+16
+PR_INIT2	equ	PR_INIT1+16
+PR_INIT3	equ	PR_INIT2+16
+PR_MONTH	equ	PR_INIT3+16
+PR_DAY		equ	PR_MONTH+16
+PR_TMATEINIT1	equ	PR_DAY+16
+PR_TMATEINIT2	equ	PR_TMATEINIT1+16
+PR_TMATEINIT3	equ	PR_TMATEINIT2+16
+PR_OP1INIT1	equ	PR_TMATEINIT3+16
+PR_OP1INIT2	equ	PR_OP1INIT1+16
+PR_OP1INIT3	equ	PR_OP1INIT2+16
+PR_OP2INIT1	equ	PR_OP1INIT3+16
+PR_OP2INIT2	equ	PR_OP2INIT1+16
+PR_OP2INIT3	equ	PR_OP2INIT2+16
+PR_PTEAM	equ	PR_OP2INIT3+16
+PR_OTEAM	equ	PR_PTEAM+16
+PR_OSCORE	equ	PR_OTEAM+16
+PR_PSCORE	equ	PR_OSCORE+16
+PR_TEAMSDEF	equ	PR_PSCORE+16
+PR_NUMDEF	equ	PR_TEAMSDEF+32
+PR_NUMDEFOLD	equ	PR_NUMDEF+16
+PR_WINSTREAK	equ	PR_NUMDEFOLD+16
+PR_RANK		equ	PR_WINSTREAK+16
+PR_CHECKSUM	equ	PR_RANK+16
+PR_SIZE		equ	PR_CHECKSUM+16
+
+
+PKDPR_COUNT	equ	0			;11 bits
+PKDPR_WON	equ	PKDPR_COUNT+11		;11 bits
+
+PKDPR_LASTPLAY	equ	PKDPR_WON+11		;11 bits
+PKDPR_INIT1	equ	PKDPR_LASTPLAY+11	; 5 bits
+
+PKDPR_INIT2	equ	PKDPR_INIT1+5		; 5 bits
+PKDPR_INIT3	equ	PKDPR_INIT2+5		; 5 bits
+PKDPR_MONTH	equ	PKDPR_INIT3+5		; 4 bits
+PKDPR_DAY	equ	PKDPR_MONTH+4		; 5 bits
+PKDPR_TMATEINIT1 equ	PKDPR_DAY+5		; 5 bits
+PKDPR_TMATEINIT2 equ	PKDPR_TMATEINIT1+5	; 5 bits
+PKDPR_TMATEINIT3 equ	PKDPR_TMATEINIT2+5	; 5 bits
+PKDPR_OP1INIT1	equ	PKDPR_TMATEINIT3+5	; 5 bits
+PKDPR_OP1INIT2	equ	PKDPR_OP1INIT1+5	; 5 bits
+PKDPR_OP1INIT3	equ	PKDPR_OP1INIT2+5	; 5 bits
+PKDPR_OP2INIT1	equ	PKDPR_OP1INIT3+5	; 5 bits
+PKDPR_OP2INIT2	equ	PKDPR_OP2INIT1+5	; 5 bits
+PKDPR_OP2INIT3	equ	PKDPR_OP2INIT2+5	; 5 bits
+PKDPR_PTEAM	equ	PKDPR_OP2INIT3+5	; 5 bits
+PKDPR_OTEAM	equ	PKDPR_PTEAM+5		; 5 bits
+PKDPR_OSCORE	equ	PKDPR_OTEAM+5		; 8 bits
+PKDPR_PSCORE	equ	PKDPR_OSCORE+8		; 8 bits
+PKDPR_TEAMSDEF	equ	PKDPR_PSCORE+8		;27 bits
+
+PKDPR_WINSTREAK	equ	PKDPR_TEAMSDEF+27	; 6 bits
+PKDPR_CHECKSUM	equ	PKDPR_WINSTREAK+6	; 8 bits  (168 bits total)
+
+PKDPR_SIZE	equ	((PKDPR_CHECKSUM+8+7)/8)*8 ;must be on byte boundary
+
+RS_RECORD_NUM	equ	0
+RS_GAMES_PLAYED	equ	RS_RECORD_NUM+10h
+RS_WINS		equ	RS_GAMES_PLAYED+10h
+RS_AVERAGE	equ	RS_WINS+10h
+RS_TEAMSDEF	equ	RS_AVERAGE+10h
+RS_STREAK	equ	RS_TEAMSDEF+10h
+RS_SIZE		equ	RS_STREAK+10h
+
+ .endif
+
+_27BITS		equ	7ffffffh
+_11BITS		equ	011111111111b
+_10BITS		equ	01111111111b
+_8BITS		equ	011111111b
+_6BITS		equ	0111111b
+_5BITS		equ	011111b
+_4BITS		equ	01111b
+
+_ATL	equ 0
+_BOS	equ 1
+_CHA	equ 2
+_CHI	equ 3
+_CLE	equ 4
+_DAL	equ 5
+_DEN	equ 6
+_DET	equ 7
+_GOL	equ 8
+_HOU	equ 9
+_IND	equ 10
+_LAC	equ 11
+_LAL	equ 12
+_MI	equ 13
+_MIL	equ 14
+_MIN	equ 15
+_NJ	equ 16
+_NY	equ 17
+_ORL	equ 18
+_PHI	equ 19
+_PHX	equ 20
+_POR	equ 21
+_SAC	equ 22
+_SAN	equ 23
+_SEA	equ 24
+_UTA	equ 25
+_WAS	equ 26
+
+	.bss	player1_data,	PR_SIZE
+	.bss	player2_data,	PR_SIZE
+	.bss	player3_data,	PR_SIZE
+	.bss	player4_data,	PR_SIZE
+	.bss	temp_record,	PR_SIZE
+	.bss	packed_record,	((PKDPR_SIZE+15)/16)*16+32
+				;word align & pad 32 bits at end
+
+	.bss	player_stats,	PS_SIZE*10h*4
+	.global	player_stats
+
+
+	.bss	record_sort_ptrs,	32*NUM_PRECORDS
+
+record_sort_ram	equ	SCRATCH+8*256*1024
+
+
+	.bss	hiscore_type,	16
+	.global	hiscore_type
+	.text
+
+bounce_snd	.word	0fc80H,10,08129H,0	;Ball bounce
+
+
+ SUBRP	save_player_records
+
+	move	@team1,a0
+	move	a0,@player1_data+PR_PTEAM
+	move	a0,@player2_data+PR_PTEAM
+	move	a0,@player3_data+PR_OTEAM
+	move	a0,@player4_data+PR_OTEAM
+
+	move	@team2,a0
+	move	a0,@player1_data+PR_OTEAM
+	move	a0,@player2_data+PR_OTEAM
+	move	a0,@player3_data+PR_PTEAM
+	move	a0,@player4_data+PR_PTEAM
+
+	movi	player1_data,a4		;fill player 1's initials
+	movi	player2_data,a5
+	movi	player3_data,a6
+	movi	player4_data,a7
+	callr	copy_inits
+
+	movi	player2_data,a4		;fill player 2's initials
+	movi	player1_data,a5
+	movi	player3_data,a6
+	movi	player4_data,a7
+	callr	copy_inits
+
+	movi	player3_data,a4		;fill player 3's initials
+	movi	player4_data,a5
+	movi	player1_data,a6
+	movi	player2_data,a7
+	callr	copy_inits
+
+	movi	player4_data,a4		;fill player 4's initials
+	movi	player3_data,a5
+	movi	player1_data,a6
+	movi	player2_data,a7
+	callr	copy_inits
+
+	move	@scores,a0
+	move	@scores+10h,a1
+
+	move	a0,@player1_data+PR_PSCORE
+	move	a1,@player1_data+PR_OSCORE
+	move	a0,@player2_data+PR_PSCORE
+	move	a1,@player2_data+PR_OSCORE
+
+	move	a1,@player3_data+PR_PSCORE
+	move	a0,@player3_data+PR_OSCORE
+	move	a1,@player4_data+PR_PSCORE
+	move	a0,@player4_data+PR_OSCORE
+
+	cmp	a0,a1
+	jrgt	dplqt2_wins
+	move	@player1_data+PR_WON,a0
+	inc	a0
+	move	a0,@player1_data+PR_WON
+	move	@player1_data+PR_WINSTREAK,a0
+	inc	a0
+	andi	_6BITS,a0
+	jrz	dplqno_wrap1
+	move	a0,@player1_data+PR_WINSTREAK
+dplqno_wrap1
+
+	move	@player2_data+PR_WON,a0
+	inc	a0
+	move	a0,@player2_data+PR_WON
+	move	@player2_data+PR_WINSTREAK,a0
+	inc	a0
+	andi	_6BITS,a0
+	jrz	dplqno_wrap2
+	move	a0,@player2_data+PR_WINSTREAK
+dplqno_wrap2
+
+	clr	a0
+	move	a0,@player3_data+PR_WINSTREAK
+	move	a0,@player4_data+PR_WINSTREAK
+
+	move	@team2,a0
+	movk	1,a1
+	sll	a0,a1
+
+	move	@PSTATUS2,a0		;if opponent is human then don't
+	andi	01100b,a0		;count wins for top five teams
+	jrz	dplqt2cpu
+	andni	(1<<_UTA) | (1<<_NY) | (1<<_POR) | (1<<_PHX) | (1<<_CHI),a1
+dplqt2cpu
+	move	@player1_data+PR_TEAMSDEF,a0,L
+	or	a1,a0
+	move	a0,@player1_data+PR_TEAMSDEF,L
+	move	@player2_data+PR_TEAMSDEF,a0,L
+	or	a1,a0
+	move	a0,@player2_data+PR_TEAMSDEF,L
+	jruc	dplqcont1
+dplqt2_wins
+	move	@player3_data+PR_WON,a0
+	inc	a0
+	move	a0,@player3_data+PR_WON
+	move	@player3_data+PR_WINSTREAK,a0
+	inc	a0
+	andi	_6BITS,a0
+	jrz	dplqno_wrap3
+	move	a0,@player3_data+PR_WINSTREAK
+dplqno_wrap3
+
+	move	@player4_data+PR_WON,a0
+	inc	a0
+	move	a0,@player4_data+PR_WON
+	move	@player4_data+PR_WINSTREAK,a0
+	inc	a0
+	andi	_6BITS,a0
+	jrz	dplqno_wrap4
+	move	a0,@player4_data+PR_WINSTREAK
+dplqno_wrap4
+
+	clr	a0
+	move	a0,@player1_data+PR_WINSTREAK
+	move	a0,@player2_data+PR_WINSTREAK
+
+	move	@team1,a0
+	movk	1,a1
+	sll	a0,a1
+
+	move	@PSTATUS2,a0		;if opponent is human then don't
+	andi	011b,a0			;count wins for top five teams
+	jrz	dplqt1cpu
+	andni	(1<<_UTA) | (1<<_NY) | (1<<_POR) | (1<<_PHX) | (1<<_CHI),a1
+dplqt1cpu
+	move	@player3_data+PR_TEAMSDEF,a0,L
+	or	a1,a0
+	move	a0,@player3_data+PR_TEAMSDEF,L
+	move	@player4_data+PR_TEAMSDEF,a0,L
+	or	a1,a0
+	move	a0,@player4_data+PR_TEAMSDEF,L
+dplqcont1
+
+	calla	dec_lastplay
+
+	move	*a13(PC_DATADDR),a0,L
+	PUSHP	a0
+
+	move	@PSTATUS,a0
+	btst	0,a0
+	jrz	dplqno1
+	move	@player1_data+PR_INIT1,a0
+	jrn	dplqno1
+	movi	player1_data,a6
+	calla	save_record
+dplqno1
+	move	@PSTATUS,a0
+	btst	1,a0
+	jrz	dplqno2
+	move	@player2_data+PR_INIT1,a0
+	jrn	dplqno2
+	movi	player2_data,a6
+	calla	save_record
+dplqno2
+	move	@PSTATUS,a0
+	btst	2,a0
+	jrz	dplqno3
+	move	@player3_data+PR_INIT1,a0
+	jrn	dplqno3
+	movi	player3_data,a6
+	calla	save_record
+dplqno3
+	move	@PSTATUS,a0
+	btst	3,a0
+	jrz	dplqno4
+	move	@player4_data+PR_INIT1,a0
+	jrn	dplqno4
+	movi	player4_data,a6
+	calla	save_record
+dplqno4
+
+	calla	get_all_records			;resort players
+	calla	sort_wins			;for new ranking
+
+
+	move	@PSTATUS,a0
+	btst	0,a0
+	jrz	dplqno1b
+	move	@player1_data+PR_INIT1,a0
+	jrn	dplqno1b
+	movi	player1_data,a0
+	move	a0,*a13(PC_DATADDR),L		;start of player data
+	callr	get_player_record		;re-calc rank etc..
+dplqno1b
+
+	move	@PSTATUS,a0
+	btst	1,a0
+	jrz	dplqno2b
+	move	@player2_data+PR_INIT1,a0
+	jrn	dplqno2b
+	movi	player2_data,a0
+	move	a0,*a13(PC_DATADDR),L		;start of player data
+	callr	get_player_record		;re-calc rank etc..
+dplqno2b
+
+	move	@PSTATUS,a0
+	btst	2,a0
+	jrz	dplqno3b
+	move	@player3_data+PR_INIT1,a0
+	jrn	dplqno3b
+	movi	player3_data,a0
+	move	a0,*a13(PC_DATADDR),L		;start of player data
+	callr	get_player_record		;re-calc rank etc..
+dplqno3b
+
+	move	@PSTATUS,a0
+	btst	3,a0
+	jrz	dplqno4b
+	move	@player4_data+PR_INIT1,a0
+	jrn	dplqno4b
+	movi	player4_data,a0
+	move	a0,*a13(PC_DATADDR),L		;start of player data
+	callr	get_player_record		;re-calc rank etc..
+dplqno4b
+
+
+	PULLP	a0
+	move	a0,*a13(PC_DATADDR),L
+	rets
+
+copy_inits
+	move	*a5(PR_INIT1),a0		;get teammates initials
+	jrnn	dplqnot_cpu1
+	movi	'C'-'A',a0
+	move	a0,*a4(PR_TMATEINIT1)
+	movi	'P'-'A',a0
+	move	a0,*a4(PR_TMATEINIT2)
+	movi	'U'-'A',a0
+	move	a0,*a4(PR_TMATEINIT3)
+	jruc	dplqcont01
+dplqnot_cpu1
+	move	a0,*a4(PR_TMATEINIT1)
+	move	*a5(PR_INIT2),a0
+	move	a0,*a4(PR_TMATEINIT2)
+	move	*a5(PR_INIT3),a0
+	move	a0,*a4(PR_TMATEINIT3)
+dplqcont01
+
+
+	move	*a6(PR_INIT1),a0		;get 1st opponents initials
+	jrnn	dplqnot_cpu2
+	movi	'C'-'A',a0
+	move	a0,*a4(PR_OP1INIT1)
+	movi	'P'-'A',a0
+	move	a0,*a4(PR_OP1INIT2)
+	movi	'U'-'A',a0
+	move	a0,*a4(PR_OP1INIT3)
+	jruc	dplqcont02
+dplqnot_cpu2
+	move	a0,*a4(PR_OP1INIT1)
+	move	*a6(PR_INIT2),a0
+	move	a0,*a4(PR_OP1INIT2)
+	move	*a6(PR_INIT3),a0
+	move	a0,*a4(PR_OP1INIT3)
+dplqcont02
+
+	move	*a7(PR_INIT1),a0		;get 2nd opponents initials
+	jrnn	dplqnot_cpu3
+	movi	'C'-'A',a0
+	move	a0,*a4(PR_OP2INIT1)
+	movi	'P'-'A',a0
+	move	a0,*a4(PR_OP2INIT2)
+	movi	'U'-'A',a0
+	move	a0,*a4(PR_OP2INIT3)
+	rets
+dplqnot_cpu3
+	move	a0,*a4(PR_OP2INIT1)
+	move	*a7(PR_INIT2),a0
+	move	a0,*a4(PR_OP2INIT2)
+	move	*a7(PR_INIT3),a0
+	move	a0,*a4(PR_OP2INIT3)
+	rets
+
+
+
+ SUBR	clear_player_stats
+
+	clr	a0
+	movi	player_stats,a1
+	movi	PS_SIZE*4,b0
+scfoclear_next
+	move	a0,*a1+
+	dsj	b0,scfoclear_next
+	rets
+
+
+
+ SUBR	inc_player_stat
+
+	movi	PS_SIZE,a14
+	mpyu	a14,a1			;player number * PS_SIZE
+	add	a1,a0			;+ stat offset
+	sll	4,a0			;x 16 bits
+	addi	player_stats,a0		;+ base address
+	move	*a0,a14
+	inc	a14
+	move	a14,*a0
+	rets
+
+
+ SUBR	dec_player_stat
+
+	movi	PS_SIZE,a14
+	mpyu	a14,a1			;player number * PS_SIZE
+	add	a1,a0			;+ stat offset
+	sll	4,a0			;x 16 bits
+	addi	player_stats,a0		;+ base address
+	move	*a0,a14
+	dec	a14
+	move	a14,*a0
+	rets
+
+
+
+
+ SUBRP	calc_checksum
+
+	PUSH	a1
+	clr	a0
+
+	move	*a6(PR_COUNT),a1
+	xor	a1,a0
+	move	*a6(PR_WON),a1
+	xor	a1,a0
+	move	*a6(PR_LOST),a1
+	xor	a1,a0
+	move	*a6(PR_LASTPLAY),a1
+	xor	a1,a0
+	move	*a6(PR_INIT1),a1
+	xor	a1,a0
+	move	*a6(PR_INIT2),a1
+	xor	a1,a0
+	move	*a6(PR_INIT3),a1
+	xor	a1,a0
+	move	*a6(PR_MONTH),a1
+	xor	a1,a0
+	move	*a6(PR_DAY),a1
+	xor	a1,a0
+	move	*a6(PR_TMATEINIT1),a1
+	xor	a1,a0
+	move	*a6(PR_TMATEINIT2),a1
+	xor	a1,a0
+	move	*a6(PR_TMATEINIT3),a1
+	xor	a1,a0
+	move	*a6(PR_OP1INIT1),a1
+	xor	a1,a0
+	move	*a6(PR_OP1INIT2),a1
+	xor	a1,a0
+	move	*a6(PR_OP1INIT3),a1
+	xor	a1,a0
+	move	*a6(PR_OP2INIT1),a1
+	xor	a1,a0
+	move	*a6(PR_OP2INIT2),a1
+	xor	a1,a0
+	move	*a6(PR_OP2INIT3),a1
+	xor	a1,a0
+	move	*a6(PR_PTEAM),a1
+	xor	a1,a0
+	move	*a6(PR_OTEAM),a1
+	xor	a1,a0
+	move	*a6(PR_OSCORE),a1
+	xor	a1,a0
+	move	*a6(PR_PSCORE),a1
+	xor	a1,a0
+	move	*a6(PR_TEAMSDEF),a1
+	xor	a1,a0
+	move	*a6(PR_TEAMSDEF+10h),a1
+	xor	a1,a0
+	move	*a6(PKDPR_WINSTREAK),a1
+	xor	a1,a0
+	andi	_8BITS,a0
+	PULL	a1
+	rets
+
+
+
+
+ SUBRP	get_temp_record
+
+	PUSH	a6,a7
+ 	movi	temp_record,a6
+	jruc	ehrcstart
+
+ SUBRP	get_plr_record
+
+	PUSH	a6,a7				;a6 = * player data
+ehrcstart
+	movi	RECORD_SELECT,A1
+	calla	SET_PAGE
+
+	move	a10,a7
+
+	movi	PKDPR_SIZE/8,a3			;number bytes to fetch
+	movi	packed_record,a2
+ehrcnext_word
+	calla	RC_BYTEI
+	movb	a0,*a2
+	addk	8,a2
+	dsj	a3,ehrcnext_word
+
+	movi	packed_record,a2
+
+
+
+	move	*a2(PKDPR_COUNT),a1		;total plays count
+	andi	_11BITS,a1
+	move	a1,*a6(PR_COUNT)
+
+	move	*a2(PKDPR_WON),a0
+	andi	_10BITS,a0
+	move	a0,*a6(PR_WON)
+
+	sub	a0,a1				;total plays - wins = losses
+
+	move	a1,*a6(PR_LOST)
+
+	move	*a2(PKDPR_LASTPLAY),a0
+	andi	_11BITS,a0
+	move	a0,*a6(PR_LASTPLAY)
+
+	move	*a2(PKDPR_INIT1),a0
+	andi	_5BITS,a0
+	move	a0,*a6(PR_INIT1)
+
+	move	*a2(PKDPR_INIT2),a0
+	andi	_5BITS,a0
+	move	a0,*a6(PR_INIT2)
+
+	move	*a2(PKDPR_INIT3),a0
+	andi	_5BITS,a0
+	move	a0,*a6(PR_INIT3)
+
+	move	*a2(PKDPR_MONTH),a0
+	andi	_4BITS,a0
+	move	a0,*a6(PR_MONTH)
+
+	move	*a2(PKDPR_DAY),a0
+	andi	_5BITS,a0
+	move	a0,*a6(PR_DAY)
+
+	move	*a2(PKDPR_TMATEINIT1),a0
+	andi	_5BITS,a0
+	move	a0,*a6(PR_TMATEINIT1)
+
+	move	*a2(PKDPR_TMATEINIT2),a0
+	andi	_5BITS,a0
+	move	a0,*a6(PR_TMATEINIT2)
+
+	move	*a2(PKDPR_TMATEINIT3),a0
+	andi	_5BITS,a0
+	move	a0,*a6(PR_TMATEINIT3)
+
+	move	*a2(PKDPR_OP1INIT1),a0
+	andi	_5BITS,a0
+	move	a0,*a6(PR_OP1INIT1)
+
+	move	*a2(PKDPR_OP1INIT2),a0
+	andi	_5BITS,a0
+	move	a0,*a6(PR_OP1INIT2)
+
+	move	*a2(PKDPR_OP1INIT3),a0
+	andi	_5BITS,a0
+	move	a0,*a6(PR_OP1INIT3)
+
+	move	*a2(PKDPR_OP2INIT1),a0
+	andi	_5BITS,a0
+	move	a0,*a6(PR_OP2INIT1)
+
+	move	*a2(PKDPR_OP2INIT2),a0
+	andi	_5BITS,a0
+	move	a0,*a6(PR_OP2INIT2)
+
+	move	*a2(PKDPR_OP2INIT3),a0
+	andi	_5BITS,a0
+	move	a0,*a6(PR_OP2INIT3)
+
+	move	*a2(PKDPR_PTEAM),a0
+	andi	_5BITS,a0
+	move	a0,*a6(PR_PTEAM)
+
+	move	*a2(PKDPR_OTEAM),a0
+	andi	_5BITS,a0
+	move	a0,*a6(PR_OTEAM)
+
+	move	*a2(PKDPR_OSCORE),a0
+	andi	_8BITS,a0
+	move	a0,*a6(PR_OSCORE)
+
+	move	*a2(PKDPR_PSCORE),a0
+	andi	_8BITS,a0
+	move	a0,*a6(PR_PSCORE)
+
+	move	*a2(PKDPR_TEAMSDEF),a1,L
+	andi	_27BITS,a1
+	move	a1,*a6(PR_TEAMSDEF),L
+
+	move	*a2(PKDPR_WINSTREAK),a0
+	andi	_6BITS,a0
+	move	a0,*a6(PR_WINSTREAK)
+
+	PUSH	a2
+	clr	a0
+	movk	27,a2
+ehrcnext_team
+	srl	1,a1
+	jrnc	ehrcnot_def
+	inc	a0			;teams defeated count ++
+ehrcnot_def
+	dsj	a2,ehrcnext_team
+	move	a0,*a6(PR_NUMDEF)	;number teams defeated
+	PULL	a2
+
+	move	*a2(PKDPR_CHECKSUM),a0
+	andi	_8BITS,a0
+	move	a0,*a6(PR_CHECKSUM)
+	move	a0,a1
+	callr	calc_checksum
+	cmp	a0,a1
+	jreq	ehrcchecksum_ok
+
+	.if	DEBUG
+	LOCKUP
+	eint
+	.endif
+
+	callr	clear_record		;bad checksum, so delete record
+ehrcchecksum_ok
+	PULL	a6,a7
+	rets
+
+
+
+
+ SUBRP	put_temp_record
+
+	PUSH	a6
+	movi	temp_record,a6
+	jruc	gawostart
+
+ SUBRP	put_plr_record
+
+	PUSH	a6
+gawostart
+
+	movi	RECORD_SELECT,A1
+	calla	SET_PAGE
+
+	movi	packed_record,a2
+
+	move	*a6(PR_COUNT),a1
+	andi	_11BITS,a1
+	move	a1,*a2(PKDPR_COUNT)
+
+	move	*a6(PR_WON),a0
+	andi	_10BITS,a0
+	move	a0,*a2(PKDPR_WON)
+
+	sub	a0,a1
+	move	a1,*a6(PR_LOST)			;used for calc checksum
+
+	move	*a6(PR_LASTPLAY),a0
+	andi	_11BITS,a0
+	move	a0,*a2(PKDPR_LASTPLAY)
+
+	move	*a6(PR_INIT1),a0
+	andi	_5BITS,a0
+	move	a0,*a2(PKDPR_INIT1)
+
+	move	*a6(PR_INIT2),a0
+	andi	_5BITS,a0
+	move	a0,*a2(PKDPR_INIT2)
+
+	move	*a6(PR_INIT3),a0
+	andi	_5BITS,a0
+	move	a0,*a2(PKDPR_INIT3)
+
+	move	*a6(PR_MONTH),a0
+	andi	_4BITS,a0
+	move	a0,*a2(PKDPR_MONTH)
+
+	move	*a6(PR_DAY),a0
+	andi	_5BITS,a0
+	move	a0,*a2(PKDPR_DAY)
+
+	move	*a6(PR_TMATEINIT1),a0
+	andi	_5BITS,a0
+	move	a0,*a2(PKDPR_TMATEINIT1)
+
+	move	*a6(PR_TMATEINIT2),a0
+	andi	_5BITS,a0
+	move	a0,*a2(PKDPR_TMATEINIT2)
+
+	move	*a6(PR_TMATEINIT3),a0
+	andi	_5BITS,a0
+	move	a0,*a2(PKDPR_TMATEINIT3)
+
+	move	*a6(PR_OP1INIT1),a0
+	andi	_5BITS,a0
+	move	a0,*a2(PKDPR_OP1INIT1)
+
+	move	*a6(PR_OP1INIT2),a0
+	andi	_5BITS,a0
+	move	a0,*a2(PKDPR_OP1INIT2)
+
+	move	*a6(PR_OP1INIT3),a0
+	andi	_5BITS,a0
+	move	a0,*a2(PKDPR_OP1INIT3)
+
+	move	*a6(PR_OP2INIT1),a0
+	andi	_5BITS,a0
+	move	a0,*a2(PKDPR_OP2INIT1)
+
+	move	*a6(PR_OP2INIT2),a0
+	andi	_5BITS,a0
+	move	a0,*a2(PKDPR_OP2INIT2)
+
+	move	*a6(PR_OP2INIT3),a0
+	andi	_5BITS,a0
+	move	a0,*a2(PKDPR_OP2INIT3)
+
+	move	*a6(PR_PTEAM),a0
+	andi	_5BITS,a0
+	move	a0,*a2(PKDPR_PTEAM)
+
+	move	*a6(PR_OTEAM),a0
+	andi	_5BITS,a0
+	move	a0,*a2(PKDPR_OTEAM)
+
+	move	*a6(PR_OSCORE),a0
+	andi	_8BITS,a0
+	move	a0,*a2(PKDPR_OSCORE)
+
+	move	*a6(PR_PSCORE),a0
+	andi	_8BITS,a0
+	move	a0,*a2(PKDPR_PSCORE)
+
+	move	*a6(PR_TEAMSDEF),a0,L
+	andi	_27BITS,a0
+	move	a0,*a2(PKDPR_TEAMSDEF),L
+
+	move	*a6(PR_WINSTREAK),a0
+	andi	_6BITS,a0
+	move	a0,*a2(PKDPR_WINSTREAK)
+
+	callr	calc_checksum			;8 bit xor checksum
+	andi	_8BITS,a0
+	move	a0,*a2(PKDPR_CHECKSUM)
+
+	PUSH	a7
+	move	a10,a7
+
+	movi	PKDPR_SIZE/8,a3			;number bytes to write
+	movi	packed_record,a2
+gawonext_word
+	movb	*a2,a0
+	calla	WC_BYTEI
+	addk	8,a2
+	dsj	a3,gawonext_word
+
+	PULL	a7
+	PULL	a6
+	rets
+
+
+
+ SUBRP	find_record
+
+	movi	RECORD_SELECT,A1
+	calla	SET_PAGE
+
+	movi	NUM_PRECORDS,a11
+	movi	RECORD_ORIGIN,a10
+wzkssearch_loop
+	callr	get_temp_record		;data in temp_record
+	callr	compare_record
+	jrne	wzksno_match
+	rets
+
+wzksno_match
+	addi	PKDPR_SIZE*2,a10	;cmos words
+	dsj	a11,wzkssearch_loop
+	clr	a10
+ 	rets
+
+
+
+ SUBRP	get_free_record
+
+	movi	RECORD_SELECT,A1
+	calla	SET_PAGE
+
+	movi	2048,a8			;last play count (max)
+	movi	NUM_PRECORDS,a11
+	movi	RECORD_ORIGIN,a10
+	move	a10,a9			;least used record to date
+efwisearch_loop
+	callr	get_temp_record
+	move	@temp_record+PR_COUNT,a0
+	jrz	efwifree_record
+	move	@temp_record+PR_LASTPLAY,a0
+
+	cmp	a8,a0			;a0-a8
+	jrhs	efwiskip			;skip if a0 >= a8
+	move	a0,a8
+	move	a10,a9			;least used record to date
+efwiskip					;(lowest lastplay count)
+	addi	PKDPR_SIZE*2,a10	;cmos words
+	dsj	a11,efwisearch_loop
+	move	a9,a10
+	rets
+
+efwifree_record
+ 	rets
+
+
+
+ SUBRP	compare_record
+
+	move	@temp_record+PR_COUNT,a1	;valid record?
+	jrz	ijasno_match
+
+	move	*a6(PR_INIT1),a0
+	move	@temp_record+PR_INIT1,a1
+	cmp	a0,a1
+	jrne	ijasno_match
+
+	move	*a6(PR_INIT2),a0
+	move	@temp_record+PR_INIT2,a1
+	cmp	a0,a1
+	jrne	ijasno_match
+
+	move	*a6(PR_INIT3),a0
+	move	@temp_record+PR_INIT3,a1
+	cmp	a0,a1
+	jrne	ijasno_match
+
+	move	*a6(PR_MONTH),a0
+	move	@temp_record+PR_MONTH,a1
+	cmp	a0,a1
+	jrne	ijasno_match
+
+	move	*a6(PR_DAY),a0
+	move	@temp_record+PR_DAY,a1
+	cmp	a0,a1
+	jrne	ijasno_match
+	rets					;Z set
+
+ijasno_match
+	movi	1,a0				;clear Z
+	rets
+
+
+ SUBRP	get_plr_rank
+
+	PUSH	a8
+	movk	1,a2
+	movi	record_sort_ptrs,a9
+lpatloop
+	move	*a9,a8,L
+	move	*a8(RS_RECORD_NUM),a0
+	cmp	a4,a0
+	jreq	lpatfound_match
+
+	addi	20h,a9
+	inc	a2
+	cmpi	NUM_PRECORDS,a2
+	jrls	lpatloop
+lpatfound_match
+	PULL	a8
+	rets
+
+
+ SUBRP	get_player_record
+
+	move	*a13(PC_DATADDR),a6,L		;start of player data
+
+	callr	find_record
+	move	a10,a10
+	jrz	wafono_match
+	callr	get_plr_record
+
+	movi	NUM_PRECORDS,a4
+	sub	a11,a4				;record number
+	callr	get_plr_rank
+	move	*a13(PC_DATADDR),a6,L		;start of player data
+	move	a2,*a6(PR_RANK)
+	rets
+
+wafono_match
+	clr	a0
+	move	a0,*a6(PR_COUNT)
+	move	a0,*a6(PR_WON)
+	move	a0,*a6(PR_LOST)
+	move	a0,*a6(PR_LASTPLAY)
+	move	a0,*a6(PR_OSCORE)
+	move	a0,*a6(PR_PSCORE)
+	move	a0,*a6(PR_TEAMSDEF),L
+	move	a0,*a6(PR_WINSTREAK)
+	move	a0,*a6(PR_NUMDEF)
+	move	a0,*a6(PR_NUMDEFOLD)
+
+	movi	300,a0
+	move	a0,*a6(PR_RANK)
+	rets
+
+
+
+ SUBRP	save_record
+
+	callr	find_record
+	move	a10,a10
+	jrnz	gkzjfound_match
+
+	movk	1,a0			;1st game
+	move	a0,*a6(PR_COUNT)
+
+	movi	50,a0
+	move	a0,*a6(PR_LASTPLAY)
+
+	callr	get_free_record
+	callr	put_plr_record
+
+	rets
+
+gkzjfound_match
+
+	move	*a6(PR_COUNT),a0
+	cmpi	2047,a0
+	jrhs	gkzjat_max
+	inc	a0			;play count (check for wrap!!!)
+	move	a0,*a6(PR_COUNT)
+gkzjat_max
+	move	*a6(PR_LASTPLAY),a0
+	addi	50,a0
+	cmpi	2047,a0
+	jrle	gkzjok
+	movi	2047,a0
+gkzjok
+	move	a0,*a6(PR_LASTPLAY)	;zero lastplay count
+
+	move	*a6(PR_NUMDEF),a0
+	move	a0,*a6(PR_NUMDEFOLD)
+
+	callr	put_plr_record
+
+	rets
+
+
+
+ SUBRP	dec_lastplay
+
+	movi	NUM_PRECORDS,a11
+	movi	RECORD_ORIGIN,a10
+xeondec_loop
+	PUSH	a10,a11
+
+	callr	get_temp_record		;read record
+	move	@temp_record+PR_LASTPLAY,a0
+	jrz	xeonat_min
+	dec	a0
+	move	a0,@temp_record+PR_LASTPLAY
+	callr	put_temp_record		;write out record
+xeonat_min
+
+	PULL	a10,a11
+	addi	PKDPR_SIZE*2,a10	;cmos words
+	dsj	a11,xeondec_loop
+	rets
+
+
+ SUBR	get_all_records
+
+	PUSH	a12
+
+	movi	record_sort_ptrs,a12
+	clr	a11
+	movi	RECORD_ORIGIN,a10
+	movi	record_sort_ram,a9
+kepwget_next
+	PUSH	a9,a10,a11,a12
+
+	callr	get_temp_record		;read record
+
+	PULL	a9,a10,a11,a12
+
+	move	a11,*a9(RS_RECORD_NUM)
+
+	move	@temp_record+PR_WON,a0		;wins
+	move	a0,*a9(RS_WINS)
+	jrnz	kepwhas_wins
+
+	move	@temp_record+PR_COUNT,a0	;games played
+	move	a0,*a9(RS_GAMES_PLAYED)
+	clr	a0
+	move	a0,*a9(RS_AVERAGE)
+	move	a0,*a9(RS_TEAMSDEF)
+	move	a0,*a9(RS_STREAK)
+	jruc	kepwcont1
+
+kepwhas_wins
+	movi	1000,a1
+	mpyu	a0,a1				;wins*1000
+	move	@temp_record+PR_COUNT,a0	;games played
+	move	a0,*a9(RS_GAMES_PLAYED)
+	divu	a0,a1				;wins*1000/played
+	move	a1,*a9(RS_AVERAGE)
+
+
+	move	@temp_record+PR_NUMDEF,a0	;number teams defeated
+	move	a0,*a9(RS_TEAMSDEF)
+kepwcont1
+	move	@temp_record+PR_WINSTREAK,a0
+	move	a0,*a9(RS_STREAK)
+
+	move	a9,*a12+,L
+	addi	RS_SIZE,a9
+	addi	PKDPR_SIZE*2,a10	;cmos words
+	inc	a11
+	cmpi	NUM_PRECORDS,a11
+	jrlo	kepwget_next
+
+	PULL	a12			;process SP
+	rets
+
+
+
+ SUBRP	sort_wins
+
+	movi	NUM_PRECORDS-1,a11
+uxpgloop1
+
+	movi	NUM_PRECORDS-1,a10
+
+	movi	record_sort_ptrs,a9
+
+	clr	a14
+uxpgloop2
+	move	*a9,a4,L
+	move	*a9(20h),a5,L
+
+	move	*a4(RS_WINS),a0
+	move	*a5(RS_WINS),a1
+	cmp	a1,a0				;a0-a1
+	jrhi	uxpgno_swap
+	jrlo	uxpgswap
+
+	move	*a4(RS_AVERAGE),a0
+	move	*a5(RS_AVERAGE),a1
+	cmp	a1,a0				;a0-a1
+	jrhi	uxpgno_swap
+	jrlo	uxpgswap
+
+
+	move	*a4(RS_TEAMSDEF),a0
+	move	*a5(RS_TEAMSDEF),a1
+	cmp	a1,a0				;a0-a1
+	jrhs	uxpgno_swap
+
+uxpgswap
+	movk	1,a14
+
+	move	a5,*a9,L
+	move	a4,*a9(20h),L
+
+uxpgno_swap
+	addi	20h,a9
+
+	dsj	a10,uxpgloop2
+	move	a14,a14
+	jrz	uxpgdone
+	dsj	a11,uxpgloop1
+
+uxpgdone
+	rets
+
+
+ SUBRP	sort_streak
+
+	movi	NUM_PRECORDS-1,a11
+jkxfloop1
+
+	movi	NUM_PRECORDS-1,a10
+
+	movi	record_sort_ptrs,a9
+
+	clr	a14
+jkxfloop2
+	move	*a9,a4,L
+	move	*a9(20h),a5,L
+
+	move	*a4(RS_STREAK),a0
+	move	*a5(RS_STREAK),a1
+	cmp	a1,a0				;a0-a1
+	jrhi	jkxfno_swap
+	jrlo	jkxfswap
+
+	move	*a4(RS_WINS),a0
+	move	*a5(RS_WINS),a1
+	cmp	a1,a0				;a0-a1
+	jrhi	jkxfno_swap
+	jrlo	jkxfswap
+
+	move	*a4(RS_AVERAGE),a0
+	move	*a5(RS_AVERAGE),a1
+	cmp	a1,a0				;a0-a1
+	jrhi	jkxfno_swap
+	jrlo	jkxfswap
+
+
+	move	*a4(RS_TEAMSDEF),a0
+	move	*a5(RS_TEAMSDEF),a1
+	cmp	a1,a0				;a0-a1
+	jrhs	jkxfno_swap
+
+jkxfswap
+	movk	1,a14
+
+	move	a5,*a9,L
+	move	a4,*a9(20h),L
+
+jkxfno_swap
+	addi	20h,a9
+
+	dsj	a10,jkxfloop2
+	move	a14,a14
+	jrz	jkxfdone
+	dsj	a11,jkxfloop1
+
+jkxfdone
+	rets
+
+
+ SUBRP	sort_exp
+
+	movi	NUM_PRECORDS-1,a11
+hipgloop1
+
+	movi	NUM_PRECORDS-1,a10
+	movi	record_sort_ptrs,a9
+
+	clr	a14
+hipgloop2
+	move	*a9,a4,L
+	move	*a9(20h),a5,L
+
+	move	*a4(RS_GAMES_PLAYED),a0
+	move	*a5(RS_GAMES_PLAYED),a1
+	cmp	a1,a0				;a0-a1
+	jrhi	hipgno_swap
+	jrlo	hipgswap
+
+	move	*a4(RS_WINS),a0
+	move	*a5(RS_WINS),a1
+	cmp	a1,a0				;a0-a1
+	jrhi	hipgno_swap
+	jrlo	hipgswap
+
+	move	*a4(RS_AVERAGE),a0
+	move	*a5(RS_AVERAGE),a1
+	cmp	a1,a0				;a0-a1
+	jrhi	hipgno_swap
+	jrlo	hipgswap
+
+
+	move	*a4(RS_TEAMSDEF),a0
+	move	*a5(RS_TEAMSDEF),a1
+	cmp	a1,a0				;a0-a1
+	jrhs	hipgno_swap
+
+hipgswap
+	movk	1,a14
+
+	move	a5,*a9,L
+	move	a4,*a9(20h),L
+
+hipgno_swap
+	addi	20h,a9
+	dsj	a10,hipgloop2
+	move	a14,a14
+	jrz	hipgdone
+	dsj	a11,hipgloop1
+
+hipgdone
+	rets
+
+
+ SUBRP	sort_champs
+
+	movi	NUM_PRECORDS-1,a11
+gazyloop1
+
+	movi	NUM_PRECORDS-1,a10
+	movi	record_sort_ptrs,a9
+
+	clr	a14
+gazyloop2
+	move	*a9,a4,L
+	move	*a9(20h),a5,L
+
+	move	*a4(RS_TEAMSDEF),a0
+	move	*a5(RS_TEAMSDEF),a1
+	cmp	a1,a0				;a0-a1
+	jrhi	gazyno_swap
+	jrlo	gazyswap
+
+	move	*a4(RS_WINS),a0
+	move	*a5(RS_WINS),a1
+	cmp	a1,a0				;a0-a1
+	jrhi	gazyno_swap
+	jrlo	gazyswap
+
+	move	*a4(RS_AVERAGE),a0
+	move	*a5(RS_AVERAGE),a1
+	cmp	a1,a0				;a0-a1
+	jrhs	gazyno_swap
+
+gazyswap
+	movk	1,a14
+
+	move	a5,*a9,L
+	move	a4,*a9(20h),L
+
+gazyno_swap
+	addi	20h,a9
+	dsj	a10,gazyloop2
+	move	a14,a14
+	jrz	gazydone
+	dsj	a11,gazyloop1
+
+gazydone
+	rets
+
+
+ SUBRP	sort_losses
+
+	movi	NUM_PRECORDS-1,a11
+msabloop1
+
+
+	movi	NUM_PRECORDS-1,a10
+	movi	record_sort_ptrs,a9
+
+	clr	a14
+msabloop2
+	move	*a9,a4,L
+	move	*a9(20h),a5,L
+
+	move	*a4(RS_GAMES_PLAYED),a0
+	jrz	msabswap
+	cmpi	5,a0
+	jrlo	msabswap
+	move	*a5(RS_GAMES_PLAYED),a0
+	jrz	msabno_swap
+	cmpi	5,a0
+	jrlo	msabno_swap
+
+	move	*a4(RS_AVERAGE),a0
+	move	*a5(RS_AVERAGE),a1
+	cmp	a1,a0				;a0-a1
+	jrlo	msabno_swap
+	jrhi	msabswap
+
+	move	*a4(RS_GAMES_PLAYED),a0
+	move	*a4(RS_WINS),a2
+	sub	a2,a0
+
+	move	*a5(RS_GAMES_PLAYED),a1
+	move	*a5(RS_WINS),a2
+	sub	a2,a1
+	cmp	a1,a0				;a0-a1
+	jrhi	msabno_swap
+	jrlo	msabswap
+
+	move	*a4(RS_TEAMSDEF),a0
+	move	*a5(RS_TEAMSDEF),a1
+	cmp	a1,a0				;a0-a1
+	jrlo	msabno_swap
+	jrhi	msabswap
+
+msabswap
+	movk	1,a14
+
+	move	a5,*a9,L
+	move	a4,*a9(20h),L
+
+msabno_swap
+	addi	20h,a9
+	dsj	a10,msabloop2
+	move	a14,a14
+	jrz	msabdone
+	dsj	a11,msabloop1
+
+msabdone
+	rets
+
+
+ SUBR	calc_num_defeated
+
+	PUSH	a1,a2
+	clr	a0
+	movk	27,a2
+uqdpnext_team
+	srl	1,a1
+	jrnc	uqdpnot_def
+	inc	a0			;teams defeated count ++
+uqdpnot_def
+	dsj	a2,uqdpnext_team
+	PULL	a1,a2
+	rets
+
+
+
+ SUBRP	clear_player_records
+
+	clr	a0
+	movi	PR_SIZE/16,a1
+	movi	temp_record,a2
+uywqclrit
+	move	a0,*a2+
+	dsj	a1,uywqclrit
+
+	movi	NUM_PRECORDS,a11
+	movi	RECORD_ORIGIN,a10
+uywqclear_loop
+	PUSH	a10,a11
+
+	callr	put_temp_record		;write out record
+
+	PULL	a10,a11
+	addi	PKDPR_SIZE*2,a10	;cmos words
+	dsj	a11,uywqclear_loop
+
+
+
+	movk	23,a11
+
+	movi	RECORD_ORIGIN,a10
+	movi	uywqdefault_records,a9
+uywqinit_loop
+	PUSH	a9,a10,a11
+
+	movb	*a9,a0
+	subi	'A',a0
+	move	a0,@temp_record+PR_INIT1
+
+	movb	*a9(8h),a0
+	subi	'A',a0
+	move	a0,@temp_record+PR_INIT2
+
+	movb	*a9(10h),a0
+	subi	'A',a0
+	move	a0,@temp_record+PR_INIT3
+
+	move	*a9(20h),a0
+	dec	a0
+	move	a0,@temp_record+PR_MONTH
+
+	move	*a9(30h),a0
+	dec	a0
+	move	a0,@temp_record+PR_DAY
+
+	move	*a9(40h),a0
+	move	a0,@temp_record+PR_COUNT	;games played
+
+	move	*a9(50h),a0
+	move	a0,@temp_record+PR_WON		;wins
+
+	move	*a9(60h),a0
+	move	a0,@temp_record+PR_WINSTREAK
+
+	move	*a9(70h),a0,L
+	move	a0,@temp_record+PR_TEAMSDEF,L
+
+	movi	2047,a0
+	move	a0,@temp_record+PR_LASTPLAY
+
+	movk	'C'-'A',a0
+	move	a0,@temp_record+PR_TMATEINIT1
+	move	a0,@temp_record+PR_OP1INIT1
+	move	a0,@temp_record+PR_OP2INIT1
+	movk	'P'-'A',a0
+	move	a0,@temp_record+PR_TMATEINIT2
+	move	a0,@temp_record+PR_OP1INIT2
+	move	a0,@temp_record+PR_OP2INIT2
+	movk	'U'-'A',a0
+	move	a0,@temp_record+PR_TMATEINIT3
+	move	a0,@temp_record+PR_OP1INIT3
+	move	a0,@temp_record+PR_OP2INIT3
+
+	movk	3,a0				;chicago
+	move	a0,@temp_record+PR_PTEAM
+	movk	7,a0				;detroit
+	move	a0,@temp_record+PR_OTEAM
+
+	movi	137,a0
+	move	a0,@temp_record+PR_PSCORE
+	movi	86,a0
+	move	a0,@temp_record+PR_OSCORE
+
+	callr	put_temp_record
+	PULL	a9,a10,a11
+
+	addi	9*10h,a9
+	addi	PKDPR_SIZE*2,a10	;cmos words
+	dsj	a11,uywqinit_loop
+
+	rets
+
+RECMAC	.macro	NAME,MONTH,DAY,PLAYED,WINS,STREAK,DEFEATED
+	.string	":NAME:"
+	.word	:MONTH:,:DAY:
+	.word	:PLAYED:,:WINS:,:STREAK:
+	.long	:DEFEATED:
+	.endm
+
+
+uywqdefault_records
+	RECMAC	"MDP ",01,13,	20,8,	1,	000000000000001001000000000b	;1
+	RECMAC	"DOZ ",12,31,	16,9,	1,	100000001000000000000000000b	;2
+	RECMAC	"JCV ",06,27,	9,4,	2,	000000100000000000000000000b	;3
+	RECMAC	"JMS ",02,22,	16,6,	1,	000000001000000010000000001b	;4
+	RECMAC	"JFL ",04,16,	15,7,	1,	000000100000000100000000000b	;5
+
+	RECMAC	"JRN ",06,18,	21,7,	1,	000000010000000000001000000b	;6
+	RECMAC	"GET ",10,19,	20,9,	2,	101000010001000010000100000b	;7
+	RECMAC	"TJC ",10,12,	15,9,	4,	000000000000100000000000000b	;8
+
+	RECMAC	"GNP ",10,08,	14,8,	2,	001000000100010000100010000b	;9
+	RECMAC	"JWH ",09,20,	13,9,	1,	000000010000100000000110000b	;10
+	RECMAC	"CMM ",07,02,	11,5,	1,	100000100000000000001000000b	;11
+	RECMAC	"MJT ",03,22,	28,17,	1,	000001001001010001000001000b	;12
+
+	RECMAC	"RJR ",01,17,	14,12,	1,	100001000100100100000100000b	;13
+	RECMAC	"SAL ",02,01,	13,10,	1,	000001001100010000010000000b	;14
+	RECMAC	"TWG ",12,07,	12,9,	1,	100000001100000010000000000b	;15
+	RECMAC	"JMC ",08,05,	19,12,	3,	001000010010010010001000001b	;16
+
+	.byte	'S','L','A'+26
+	.word	6,24
+	.word	25,15
+	.word	0
+	.long	010010011011100110100100110b	;17
+
+	RECMAC	"WMN ",11,11,	15,8,	4,	001000010010010000001000001b	;18
+	RECMAC	"DIE ",02,23,	12,2,	1,	000000010000000000001000000b	;19
+	RECMAC	"EJB ",02,23,	19,8,	2,	010100010000100010001000000b	;20
+
+	RECMAC	"CRL ",01,01,	5,5,	5,	000000010001000100001000001b	;21
+	RECMAC	"SAN ",01,01,	5,5,	2,	000000010001000100001000001b	;22
+	RECMAC	"SNO ",01,03,	11,5,	3,	000000010001000100001000001b	;23
+
+	.even
+
+
+
+ SUBRP	clear_record
+
+	clr	a0
+	move	a0,@temp_record+00h,L
+	move	a0,@temp_record+20h,L
+	move	a0,@temp_record+40h,L
+	callr	put_temp_record		;write out record
+	rets
+
+	.asg	24,YOFF
+	.asg	64,COL0			;#
+	.asg	COL0+29,COL0b		;1-8
+	.asg	150,COL1		;initials
+	.asg	230,COL2		;wins
+	.asg	COL2+2,COL3		;dash
+	.asg	COL3+16,COL4		;losses
+	.asg	310,COL5		;average
+
+ SUBR	show_hiscore
+
+	andi	7,a0
+	move	a0,@hiscore_type
+
+	callr	get_all_records
+
+	calla	display_blank
+	calla	WIPEOUT			;CLEAN SYSTEM OUT
+
+	movk	1,a0			;page flipping on
+	move	a0,@dpageflip
+
+	movi	4<<10+4<<5+7,a0
+	move	a0,@IRQSKYE
+
+	movi	SCRNEND,a0		;[256,405]
+	move	a0,@SCRNLR,L
+
+	clr	a0
+	move	a0,@WORLDTLX,L
+	move	a0,@WORLDTLY,L
+
+	SLEEPK	2
+
+	movi	bhnkhiscore_mod,a0
+	move	a0,@BAKMODS,L
+	calla	BGND_UD1
+
+	movi	[10,7],a8		;START AT COLOR 10, CYCLE 7 COLORS
+	movi	BLUE,a9			;PAL NAME
+	movi	COLTAB2,a10		;TABLE TO CYCLE WITH
+	movk	2,a11			;RATE OF CYCLE IN TICKS
+	CREATE	CYCPID,CYCLE_TABLE	;START PROCESS TO DO CYCLE
+
+
+
+	movi	OSGCYC8,a0
+	calla	pal_getf
+	movi	OSGCYC9,a0
+	calla	pal_getf
+	movi	OSGCYC10,a0
+	calla	pal_getf
+
+	.asg	1,SPD
+
+	movk	SPD,a8
+	movi	OSGCYC1,a9
+	movi	bhnkmorf_plist1,a10
+	movi	morfpal1,a11
+	CREATE0	morf_pal
+
+	movk	SPD,a8
+	movi	OSGCYC2,a9
+	movi	bhnkmorf_plist2,a10
+	movi	morfpal2,a11
+	CREATE0	morf_pal
+
+	movk	SPD,a8
+	movi	OSGCYC3,a9
+	movi	bhnkmorf_plist3,a10
+	movi	morfpal3,a11
+	CREATE0	morf_pal
+
+	movk	SPD,a8
+	movi	OSGCYC4,a9
+	movi	bhnkmorf_plist4,a10
+	movi	morfpal4,a11
+	CREATE0	morf_pal
+
+	movk	SPD,a8
+	movi	OSGCYC5,a9
+	movi	bhnkmorf_plist5,a10
+	movi	morfpal5,a11
+	CREATE0	morf_pal
+
+	movk	SPD,a8
+	movi	OSGCYC6,a9
+	movi	bhnkmorf_plist6,a10
+	movi	morfpal6,a11
+	CREATE0	morf_pal
+
+	movk	SPD,a8
+	movi	OSGCYC7,a9
+	movi	bhnkmorf_plist7,a10
+	movi	morfpal7,a11
+	CREATE0	morf_pal
+
+
+	movk	4,a8
+	movi	OSGCYC8,a9
+	movi	bhnkmorf_plist8,a10
+	movi	morfpal8,a11
+	CREATE0	morf_pal
+
+	movk	4,a8
+	movi	OSGCYC9,a9
+	movi	bhnkmorf_plist9,a10
+	movi	morfpal9,a11
+	CREATE0	morf_pal
+
+	movk	4,a8
+	movi	OSGCYC10,a9
+	movi	bhnkmorf_plist10,a10
+	movi	morfpal10,a11
+	CREATE0	morf_pal
+
+
+	clr	a0
+bhnkloopit
+	move	a0,@hiscore_type
+
+	movi	TYPTEXT,a0		;delete text
+	calla	obj_del1c
+
+	callr	print_stuff			;heading and hiscore
+
+	move	@hiscore_type,a0
+	jrnz	bhnkno_unblank
+
+	SLEEPK	7
+
+	movk	1,a0
+	move	a0,@DISPLAYON
+
+	SLEEPK	2
+	calla	display_unblank
+	SLEEPK	15
+bhnkno_unblank
+
+	SLEEP	TSEC
+
+	movi	4*60,a10
+
+bhnkdelay
+	SLEEPK	1
+	calla	get_all_buttons_cur2
+	jrnz	bhnkexit0
+	dsj	a10,bhnkdelay
+	jruc	bhnkexit
+
+bhnkexit0
+      	clr	a0
+	move	a0,@SOUNDSUP		;turn all sounds on
+	SOUND1	bounce_snd
+	movk	1,a0
+	.ref	SOUNDSUP
+	move	a0,@SOUNDSUP		;turn all sounds off
+bhnkexit
+	move	@hiscore_type,a0
+	inc	a0
+	cmpi	5,a0
+	jrlt	bhnkloopit
+
+	RETP
+
+
+
+print_stuff
+	movi	bhnkheading1_setup,a2
+	calla	setup_message
+	movi	TYPTEXT,a0
+	move	a0,@mess_objid
+	move	@hiscore_type,a0
+	sll	5,a0				;x 32 bits
+	PUSH	a0
+	addi	bhnkheadings1,a0
+	move	*a0,a4,L
+	calla	print_string_C2
+
+	movi	bhnkheading2_setup,a2
+	calla	setup_message
+	movi	TYPTEXT,a0
+	move	a0,@mess_objid
+	PULL	a0
+	addi	bhnkheadings2,a0
+	move	*a0,a4,L
+	calla	print_string_C2
+
+	move	@hiscore_type,a0
+	sll	5,a0				;x 32 bits
+	addi	bhnksort_routines,a0
+	move	*a0,a0,L
+	call	a0
+
+	move	@hiscore_type,a0
+	sll	5,a0				;x 32 bits
+	addi	bhnkprint_methods,a0
+	move	*a0,a0,L
+	call	a0
+	rets
+
+
+	.def	COLTAB2
+COLTAB2
+	.word   0079fh,0077eh,0077eh,0035eh,0033eh,0031eh,002feh
+	.word   002feh,002deh,002beh,002beh,0029eh,0029eh,0027dh,0025dh
+	.word   0025dh,0023dh,0023dh,0021eh,0023eh,0025eh,0027eh,0029eh
+	.word   0029eh,002beh,002deh,002feh,0033eh,0035eh,0077eh,0079eh
+	.word   0079eh,0037eh,0037eh,0035eh,0033eh,0033eh,0031eh,0031eh
+	.word   002feh,002feh,0131eh,0273eh,03b5eh,04f9fh,063bfh,077ffh
+	.word   063bfh,04f9fh,03b5eh,0273eh,0131eh,002feh,002feh,0031eh
+	.word   0031eh,0033eh,0033eh,0035eh,0037eh,0037eh,0079eh,0079eh
+
+	.word   0079fh,0077eh,0077eh,0035eh,0033eh,0031eh,002feh
+	.word   002feh,002deh,002beh,002beh,0029eh,0029eh,0027dh,0025dh
+	.word   0025dh,0023dh,0023dh,0021eh,0023eh,0025eh,0027eh,0029eh
+	.word   0029eh,002beh,002deh,002feh,0033eh,0035eh,0077eh,0079eh
+	.word   0079eh,0037eh,0037eh,0035eh,0033eh,0033eh,0031eh,0031eh
+	.word   002feh,002feh,0131eh,0273eh,03b5eh,04f9fh,063bfh,077ffh
+	.word   063bfh,04f9fh,03b5eh,0273eh,0131eh,002feh,002feh,0031eh
+	.word   0031eh,0033eh,0033eh,0035eh,0037eh,0037eh,0079eh,0079eh
+
+	.word	-1
+
+
+
+
+
+
+bhnkmorf_plist1
+	.long	GOLD
+	.long	63
+	.long	WHITE2PAL
+	.long	GOLD
+	.long	63
+	.long	WHITEPAL
+	.long	GOLD
+	.long	0
+
+bhnkmorf_plist2
+	.long	GOLD
+	.long	55
+	.long	WHITE2PAL
+	.long	GOLD
+	.long	63
+	.long	WHITEPAL
+	.long	GOLD
+	.long	8
+	.long	0
+
+bhnkmorf_plist3
+	.long	GOLD
+	.long	48
+	.long	WHITE2PAL
+	.long	GOLD
+	.long	63
+	.long	WHITEPAL
+	.long	GOLD
+	.long	15
+	.long	0
+
+bhnkmorf_plist4
+	.long	GOLD
+	.long	41
+	.long	WHITE2PAL
+	.long	GOLD
+	.long	63
+	.long	WHITEPAL
+	.long	GOLD
+	.long	22
+	.long	0
+
+bhnkmorf_plist5
+	.long	GOLD
+	.long	34
+	.long	WHITE2PAL
+	.long	GOLD
+	.long	63
+	.long	WHITEPAL
+	.long	GOLD
+	.long	29
+	.long	0
+
+bhnkmorf_plist6
+	.long	GOLD
+	.long	27
+	.long	WHITE2PAL
+	.long	GOLD
+	.long	63
+	.long	WHITEPAL
+	.long	GOLD
+	.long	36
+	.long	0
+
+bhnkmorf_plist7
+	.long	GOLD
+	.long	20
+	.long	WHITE2PAL
+	.long	GOLD
+	.long	63
+	.long	WHITEPAL
+	.long	GOLD
+	.long	43
+	.long	0
+
+
+bhnkmorf_plist10
+	.long	LGMDGLD
+	.long	66
+	.long	LGMDGLDlt
+	.long	LGMDGLD
+	.long	0
+
+bhnkmorf_plist9
+	.long	LGMDGLD
+	.long	54
+	.long	LGMDGLDlt
+	.long	LGMDGLD
+	.long	12
+	.long	0
+
+bhnkmorf_plist8
+	.long	LGMDGLD
+	.long	42
+	.long	LGMDGLDlt
+	.long	LGMDGLD
+	.long	24
+	.long	0
+
+
+	.even
+bhnkprint_methods
+	.long	bhnkmethod1		;0 (greatest players)
+	.long	bhnkmethod2b		;1 (grand champions)
+	.long	bhnkmethod2		;2 (experienced players)
+	.long	bhnkmethod1b		;3 (win streak)
+	.long	bhnkmethod3		;4 (most popular teams)
+	.long	bhnkmethod1		;5
+	.long	bhnkmethod1		;6
+	.long	bhnkmethod1		;7 (worst players!)
+
+bhnkmethod1
+
+	movi	LN0_setup,a2
+	calla	setup_message
+	movi	TYPTEXT,a0
+	move	a0,@mess_objid
+
+	movk	8,a10
+	movi	record_sort_ptrs,a9
+
+bhnknext_player
+	PUSH	a9,a10
+
+	movi	GOLD,a0
+	move	a0,@message_palette,L
+
+	movk	9,a0
+	sub	a10,a0				;1-8
+	movk	8,a1				;max value
+	calla	dec_to_asc
+	calla	copy_string
+	movi	COL0b,a0
+	move	a0,@mess_cursx
+	calla	print_string_C
+
+	movi	COL0,a0
+	move	a0,@mess_cursx
+	movi	bhnkstr_num,a4
+	calla	print_string2
+
+	move	*a9,a8,L
+	move	*a8(RS_RECORD_NUM),a0
+	movi	PKDPR_SIZE*2,a1			;cmos words
+	mpyu	a0,a1
+	addi	RECORD_ORIGIN,a1
+	PUSH	a10
+	move	a1,a10
+	callr	get_temp_record
+
+	PULL	a0
+	sll	5,a0			;x 32 bits
+	addi	bhnkwinpals-20h,a0
+	move	*a0,a0,L
+	move	a0,@message_palette,L
+
+
+	movi	temp_record+PR_INIT1,a4		;* src initials
+	movi	message_buffer,a3		;* string dest
+	calla	get_initials_string
+	movi	COL1,a0
+	move	a0,@mess_cursx
+	calla	print_string_C
+
+	move	@temp_record+PR_WON,a0
+	movi	999,a1			;max value
+	calla	dec_to_asc
+	calla	copy_string
+	movi	COL2,a0
+	move	a0,@mess_cursx
+	calla	print_string_R
+
+	movi	COL3,a0
+	move	a0,@mess_cursx
+	movi	bhnkstr_dash,a4
+	calla	print_string2
+
+	move	@temp_record+PR_LOST,a0
+	movi	999,a1			;max value
+	calla	dec_to_asc
+	calla	copy_string
+	movi	COL4,a0
+	move	a0,@mess_cursx
+	calla	print_string
+
+	movi	bhnkstr_dot,a4
+	calla	copy_rom_string
+
+	move	*a8(RS_AVERAGE),a0
+	jrnz	bhnknot_zip
+
+	movi	bhnkstr_0,a4
+	calla	copy_rom_string
+	jruc	bhnkskip1
+bhnknot_zip
+	cmpi	1000,a0
+	jrlo	bhnknot_max
+
+	movi	bhnkstr_1000,a4
+	calla	copy_rom_string
+	movi	COL5-9,a0
+	move	a0,@mess_cursx
+	jruc	bhnkskip2
+
+bhnknot_max
+	movi	999,a1			;max value
+	calla	dec_to_pct
+	calla	concat_string
+bhnkskip1
+	movi	COL5,a0
+	move	a0,@mess_cursx
+bhnkskip2
+	calla	print_string
+
+
+	move	@mess_cursy,a0
+	addi	YOFF,a0
+	move	a0,@mess_cursy
+
+	PULL	a9,a10
+	addi	20h,a9
+	dsj	a10,bhnknext_player
+
+	rets
+
+bhnkwinpals
+	.long	OSGCYC7
+	.long	OSGCYC6
+	.long	OSGCYC5
+	.long	OSGCYC4
+	.long	OSGCYC3
+	.long	OSGCYC2
+	.long	OSGCYC1
+	.long	BLUE
+
+bhnkmethod1b
+
+	movi	LN0_setup,a2
+	calla	setup_message
+	movi	TYPTEXT,a0
+	move	a0,@mess_objid
+
+	movk	8,a10
+	movi	record_sort_ptrs,a9
+
+bhnknext_player1b
+	PUSH	a9,a10
+
+	movi	GOLD,a0
+	move	a0,@message_palette,L
+
+    	movk	9,a0
+	sub	a10,a0				;1-8
+	movk	8,a1				;max value
+	calla	dec_to_asc
+	calla	copy_string
+	movi	COL0b,a0
+	move	a0,@mess_cursx
+	calla	print_string_C
+
+	movi	COL0,a0
+	move	a0,@mess_cursx
+	movi	bhnkstr_num,a4
+	calla	print_string2
+
+	move	*a9,a8,L
+	move	*a8(RS_RECORD_NUM),a0
+	movi	PKDPR_SIZE*2,a1			;cmos words
+	mpyu	a0,a1
+	addi	RECORD_ORIGIN,a1
+	PUSH	a10
+	move	a1,a10
+	callr	get_temp_record
+
+	PULL	a0
+	sll	5,a0			;x 32 bits
+	addi	bhnkstreakpals-20h,a0
+	move	*a0,a0,L
+	move	a0,@message_palette,L
+
+
+	movi	temp_record+PR_INIT1,a4		;* src initials
+	movi	message_buffer,a3		;* string dest
+	calla	get_initials_string
+	movi	COL1,a0
+	move	a0,@mess_cursx
+	calla	print_string_C
+
+	movi	COL3+11,a0
+	move	a0,@mess_cursx
+	move	@temp_record+PR_WINSTREAK,a0
+	movi	63,a1				;max value
+	calla	dec_to_asc
+	calla	copy_string
+	movi	bhnkstr_wins,a4
+	calla	concat_rom_string
+	calla	print_string_C
+
+	.asg	96,OFFX
+
+	move	@temp_record+PR_WON,a0
+	movi	999,a1			;max value
+	calla	dec_to_asc
+	calla	copy_string
+	movi	COL2+OFFX,a0
+	move	a0,@mess_cursx
+	calla	print_string_R
+
+	movi	COL3+OFFX,a0
+	move	a0,@mess_cursx
+	movi	bhnkstr_dash,a4
+	calla	print_string2
+
+	move	@temp_record+PR_LOST,a0
+	movi	999,a1			;max value
+	calla	dec_to_asc
+	calla	copy_string
+	movi	COL4+OFFX,a0
+	move	a0,@mess_cursx
+	calla	print_string
+
+
+
+	move	@mess_cursy,a0
+	addi	YOFF,a0
+	move	a0,@mess_cursy
+
+	PULL	a9,a10
+	addi	20h,a9
+	dsj	a10,bhnknext_player1b
+
+	rets
+
+bhnkstr_wins
+	.string	" WINS",0
+
+
+bhnkstreakpals
+	.long	OSGCYC7
+	.long	OSGCYC6
+	.long	OSGCYC5
+	.long	OSGCYC4
+	.long	OSGCYC3
+	.long	OSGCYC2
+	.long	OSGCYC1
+	.long	BLUE
+
+bhnkmethod2
+
+	.asg	153,XCOL1		;initials
+	.asg	238,XCOL3		;plays
+	.asg	310,XCOL5		;average
+
+	movi	LN0_setup,a2
+	calla	setup_message
+	movi	TYPTEXT,a0
+	move	a0,@mess_objid
+
+	movk	8,a10
+	movi	record_sort_ptrs,a9
+
+bhnknext_player2
+	PUSH	a9,a10
+
+	movi	GOLD,a0
+	move	a0,@message_palette,L
+
+	movk	9,a0
+	sub	a10,a0				;1-8
+	movk	8,a1				;max value
+	calla	dec_to_asc
+	calla	copy_string
+	movi	COL0b,a0
+	move	a0,@mess_cursx
+	calla	print_string_C
+
+	movi	COL0,a0
+	move	a0,@mess_cursx
+	movi	bhnkstr_num,a4
+	calla	print_string2
+
+	move	*a9,a8,L
+	move	*a8(RS_RECORD_NUM),a0
+	movi	PKDPR_SIZE*2,a1			;cmos words
+	mpyu	a0,a1
+	addi	RECORD_ORIGIN,a1
+	PUSH	a10
+	move	a1,a10
+	callr	get_temp_record
+
+	PULL	a0
+	sll	5,a0			;x 32 bits
+	addi	bhnkexppals-20h,a0
+	move	*a0,a0,L
+	move	a0,@message_palette,L
+	movi	temp_record+PR_INIT1,a4		;* src initials
+
+
+	movi	message_buffer,a3		;* string dest
+	calla	get_initials_string
+	movi	XCOL1,a0
+	move	a0,@mess_cursx
+	calla	print_string_C
+
+	move	@temp_record+PR_COUNT,a0
+	movi	999,a1			;max value
+	calla	dec_to_asc
+	calla	copy_string
+	movi	XCOL3,a0
+	move	a0,@mess_cursx
+	calla	print_string_C
+
+	movi	bhnkstr_dot,a4
+	calla	copy_rom_string
+
+	move	*a8(RS_AVERAGE),a0
+	jrnz	bhnknot_zip2
+
+	movi	bhnkstr_0,a4
+	calla	copy_rom_string
+	jruc	bhnkskip1b
+bhnknot_zip2
+	cmpi	1000,a0
+	jrlo	bhnknot_max2
+
+	movi	bhnkstr_1000,a4
+	calla	copy_rom_string
+	movi	XCOL5-9,a0
+	move	a0,@mess_cursx
+	jruc	bhnkskip2b
+
+bhnknot_max2
+	movi	999,a1			;max value
+	calla	dec_to_pct
+	calla	concat_string
+bhnkskip1b
+	movi	XCOL5,a0
+	move	a0,@mess_cursx
+bhnkskip2b
+	calla	print_string
+
+
+	move	@mess_cursy,a0
+	addi	YOFF,a0
+	move	a0,@mess_cursy
+
+	PULL	a9,a10
+	addi	20h,a9
+	dsj	a10,bhnknext_player2
+
+	rets
+
+bhnkexppals
+	.long	OSGCYC7
+	.long	OSGCYC6
+	.long	OSGCYC5
+	.long	OSGCYC4
+	.long	OSGCYC3
+	.long	OSGCYC2
+	.long	OSGCYC1
+	.long	BLUE
+
+bhnkmethod2b
+
+	.asg	132,LCOL1
+	.asg	230,LCOL2
+	.asg	65,YOFF2
+
+	movi	LN0b_setup,a2
+	calla	setup_message
+	movi	TYPTEXT,a0
+	move	a0,@mess_objid
+
+	movk	3,a10
+	movi	record_sort_ptrs,a9
+
+bhnknext_player2b
+	PUSH	a9,a10
+
+	movi	LGMDGLD,a0
+	move	a0,@message_palette,L
+
+	movi	LCOL1-38,a0
+	move	a0,@mess_cursx
+	movi	bhnkstr_num,a4
+	calla	print_string_C2
+
+	movk	4,a0
+	sub	a10,a0				;1-3
+	movk	3,a1				;max value
+	calla	dec_to_asc
+	calla	copy_string
+	movi	LCOL1,a0
+	move	a0,@mess_cursx
+	calla	print_string_C
+
+	move	*a9,a8,L
+	move	*a8(RS_RECORD_NUM),a0
+	movi	PKDPR_SIZE*2,a1			;cmos words
+	mpyu	a0,a1
+	addi	RECORD_ORIGIN,a1
+	PUSH	a10
+	move	a1,a10
+	callr	get_temp_record
+
+	movi	LCOL2,a0
+	move	a0,@mess_cursx
+
+	PULL	a0
+	sll	5,a0			;x 32 bits
+	addi	bhnkchampals-20h,a0
+	move	*a0,a0,L
+	move	a0,@message_palette,L
+
+
+	move	@temp_record+PR_NUMDEF,a0
+	cmpi	27,a0
+	jrge	bhnkis_champ
+
+	movi	LGMDGLD,a0
+	move	a0,@message_palette,L
+
+	movi	bhnkstr_none,a4
+	calla	print_string_C2
+	jruc	bhnknot_champ
+bhnkis_champ
+	movi	temp_record+PR_INIT1,a4		;* src initials
+	movi	message_buffer,a3		;* string dest
+	calla	get_initials_string
+	calla	print_string_C
+
+bhnknot_champ
+	move	@mess_cursy,a0
+	addi	YOFF2,a0
+	move	a0,@mess_cursy
+
+	PULL	a9,a10
+	addi	20h,a9
+	dsj	a10,bhnknext_player2b
+
+	rets
+
+bhnkstr_none
+	.string	". . .",0
+	.even
+
+
+bhnkchampals
+	.long	OSGCYC8
+	.long	OSGCYC9
+	.long	OSGCYC10
+
+
+bhnkmethod3
+
+	.asg	115,TCOL1
+	movi	LN0_setup,a2
+	calla	setup_message
+	movi	TYPTEXT,a0
+	move	a0,@mess_objid
+
+	movk	8,a10
+	movi	sorted_teams,a9
+
+bhnknext_team
+	PUSH	a9,a10
+
+	movi	GOLD,a0
+	move	a0,@message_palette,L
+
+	PUSH	a9
+	movk	9,a0
+	sub	a10,a0				;1-8
+	movk	8,a1				;max value
+	calla	dec_to_asc
+	calla	copy_string
+	movi	COL0b,a0
+	move	a0,@mess_cursx
+	calla	print_string_C
+
+	movi	COL0,a0
+	move	a0,@mess_cursx
+	movi	bhnkstr_num,a4
+	calla	print_string2
+
+	move	a10,a0
+	sll	5,a0			;x 32 bits
+	addi	bhnkteampals-20h,a0
+	move	*a0,a0,L
+	move	a0,@message_palette,L
+
+	movi	TCOL1,a0
+	move	a0,@mess_cursx
+	PULL	a9
+	move	*a9,a0				;team number (0-26)
+	sll	5,a0
+	addi	bhnkteam_names,a0
+	move	*a0,a4,L
+	calla	print_string2
+
+
+	move	@mess_cursy,a0
+	addi	YOFF,a0
+	move	a0,@mess_cursy
+
+	PULL	a9,a10
+	addi	10h,a9
+	dsj	a10,bhnknext_team
+	rets
+
+bhnkteampals
+	.long	OSGCYC7
+	.long	OSGCYC6
+	.long	OSGCYC5
+	.long	OSGCYC4
+	.long	OSGCYC3
+	.long	OSGCYC2
+	.long	OSGCYC1
+	.long	BLUE
+
+
+bhnksort_routines
+	.long	bhnksort_wins		;0 (greatest players)
+	.long	bhnksort_champs		;1 (grand champions)
+	.long	bhnksort_exp		;2 (experienced players)
+	.long	bhnksort_streak		;3 (win streaks)
+	.long	bhnksort_teams		;4 (most popular teams)
+	.long	bhnksort_wins		;5
+	.long	bhnksort_wins		;6
+	.long	bhnksort_losses		;7 (worst players!)
+
+bhnksort_wins
+	callr	sort_wins
+	rets
+
+bhnksort_exp
+	callr	sort_exp
+	rets
+
+bhnksort_champs
+	callr	sort_champs
+	rets
+
+bhnksort_losses
+	callr	sort_losses
+	rets
+
+bhnksort_teams
+	calla	get_teams_pop
+	rets
+
+bhnksort_streak
+	calla	sort_streak
+	rets
+
+
+LN0_setup
+	RJR_STR	osgemd_ascii,6,0,200,50,GOLD,0
+LN0b_setup
+	RJR_STR	lgmd_ascii,6,2,200,50,LGMDGLD,0
+bhnkheading1_setup
+	RJR_STR	osgemd_ascii,6,0,200,8,ORANGPAL,0
+bhnkheading2_setup
+	RJR_STR	sgmd8_ascii,3,0,200,29+1,SGMD8YEL,0
+
+bhnkhiscore_mod
+	.long	hiscoreBMOD
+	.word	0,0
+	.long	0
+
+bhnkheadings1
+	.long	bhnkhd1,bhnkhd2,bhnkhd3,bhnkhd4
+	.long	bhnkhd5,bhnkhd6,bhnkhd1,bhnkhd1
+
+bhnkheadings2
+	.long	bhnkhd21,bhnkhd22,bhnkhd23,bhnkhd24
+	.long	bhnkhd25,bhnkhd26,bhnkhd21,bhnkhd21
+
+bhnkhd1	.string	"GREATEST PLAYERS",0
+bhnkhd2	.string	"GRAND CHAMPIONS",0
+bhnkhd3	.string	"EXPERIENCED PLAYERS",0
+bhnkhd4	.string	"LONGEST WINNING STREAK",0
+bhnkhd5	.string	"MOST POPULAR TEAMS",0
+bhnkhd6	.string	"WORST PLAYERS!",0
+
+bhnkhd21	.string	"( most  games  won )",0
+bhnkhd22	.string	"( defeated  all  27  nba  teams )",0
+bhnkhd23	.string	"( most  games  played )",0
+bhnkhd24	.string	"( consecutive wins )",0
+bhnkhd25	.string	"( at  this  location )",0
+bhnkhd26	.string	"( worst  average )",0
+
+bhnkstr_dash
+	.string	"-",0
+bhnkstr_dot
+	.string	".",0
+bhnkstr_1000
+	.string	"1.000",0
+bhnkstr_0
+	.string	".000",0
+bhnkstr_num
+	.string	"#",0
+
+	.even
+
+bhnkteam_names
+	.long	bhnkt0,bhnkt1,bhnkt2,bhnkt3
+	.long	bhnkt4,bhnkt5,bhnkt6,bhnkt7	
+	.long	bhnkt8,bhnkt9,bhnkt10,bhnkt11
+	.long	bhnkt12,bhnkt13,bhnkt14,bhnkt15
+	.long	bhnkt16,bhnkt17,bhnkt18,bhnkt19
+	.long	bhnkt20,bhnkt21,bhnkt22,bhnkt23
+	.long	bhnkt24,bhnkt25,bhnkt26
+
+
+bhnkt0	.string	"ATLANTA HAWKS",0
+bhnkt1	.string	"BOSTON CELTICS",0
+bhnkt2	.string	"CHARLOTTE HORNETS",0
+bhnkt3	.string	"CHICAGO BULLS",0
+bhnkt4	.string	"CLEVELAND CAVALIERS",0
+bhnkt5	.string	"DALLAS MAVERICKS",0
+bhnkt6	.string	"DENVER NUGGETS",0
+bhnkt7	.string	"DETROIT PISTONS",0
+bhnkt8	.string	"GOLDEN STATE WARRIORS",0		;ok
+bhnkt9	.string	"HOUSTON ROCKETS",0
+bhnkt10	.string	"INDIANA PACERS",0
+bhnkt11	.string	"L.A. CLIPPERS",0
+bhnkt12	.string	"L.A. LAKERS",0
+bhnkt13	.string	"MIAMI HEAT",0
+bhnkt14	.string	"MILWAUKEE BUCKS",0
+bhnkt15	.string	"MINNESOTA TIMBERWLVS",0
+bhnkt16	.string	"NEW JERSEY NETS",0
+bhnkt17	.string	"NEW YORK KNICKS",0
+bhnkt18	.string	"ORLANDO MAGIC",0
+bhnkt19	.string	"PHILADELPHIA 76ERS",0
+bhnkt20	.string	"PHOENIX SUNS",0
+bhnkt21	.string	"PORTLAND TRAILBLAZERS",0
+bhnkt22	.string	"SACRAMENTO KINGS",0
+bhnkt23	.string	"SAN ANTONIO SPURS",0
+bhnkt24	.string	"SEATTLE SUPERSONICS",0
+bhnkt25	.string	"UTAH JAZZ",0
+bhnkt26	.string	"WASHINGTON BULLETS",0
+
+	.even
+
+
+RECORDS_ONSCREEN	equ	10
+
+ SUBRP	show_player_records
+
+	calla	display_blank
+	calla	WIPEOUT			;CLEAN SYSTEM OUT
+
+	movk	1,a0			;page flipping on
+	move	a0,@dpageflip
+
+	movi	SCRNEND,a0		;[256,405]
+	move	a0,@SCRNLR,L
+
+	clr	a0
+	move	a0,@WORLDTLX,L
+	move	a0,@WORLDTLY,L
+
+	.asg	80,COL0
+	.asg	90,COL1
+	.asg	170,COL2
+	.asg	215,COL3
+	.asg	280,COL4
+	.asg	310,COL5
+	.asg	22,YOFF
+
+	movi	osgemd_ascii,a0
+	move	a0,@message_ascii,L	;* ascii lookup table
+
+	movi	TYPTEXT,a0
+	move	a0,@mess_objid
+
+	movk	10,a0
+	move	a0,@mess_space_width	;space char width
+	clr	a0
+	move	a0,@mess_spacing	;spacing between chars
+
+
+	movi	OSGEMD,a0
+	move	a0,@message_palette,L
+
+	clr	a4
+ledcdisplay_loop
+	PUSHP	a4
+	callr	display_audits
+
+
+	movk	1,a0
+	move	a0,@DISPLAYON
+
+	SLEEPK	2
+	calla	display_unblank
+
+
+	movk	6,a10
+ledcloopy
+	SLEEPK	1
+	calla	get_all_sticks_down2
+	move	a0,a0
+	jrnz	ledcgot_stick
+	dsj	a10,ledcloopy
+
+ledcwait_for_input
+	SLEEPK	1
+	calla	get_all_buttons_cur2
+	jrnz	ledcexit
+
+ledcgot_stick
+	PULLP	a4
+	calla	get_all_sticks_cur2
+	btst	1,a0
+	jrz	ledcno_down
+	move	a4,a1
+	addi	RECORDS_ONSCREEN,a1
+	cmpi	NUM_PRECORDS,a1
+	jrhs	ledcno_down
+	addi	RECORDS_ONSCREEN,a4
+	jruc	ledcdisplay_loop
+ledcno_down
+	btst	0,a0
+	jrz	ledcno_up
+	move	a4,a4
+	jrz	ledcno_up
+	subi	RECORDS_ONSCREEN,a4
+	jruc	ledcdisplay_loop
+ledcno_up
+	PUSHP	a4
+	jruc	ledcwait_for_input
+
+ledcexit
+	PULLP	a4
+	RETP
+
+
+ SUBRP	display_audits
+
+	movi	TYPTEXT,a0		;delete text
+	calla	obj_del1c
+
+	movi	20,a0
+	move	a0,@mess_cursy		;message cursor pos Y
+
+	movi	PKDPR_SIZE*2,a1		;cmos words
+	mpyu	a4,a1
+	movi	RECORD_ORIGIN,a10
+	add	a1,a10
+	movi	RECORDS_ONSCREEN,a6
+nceksearch_loop
+	PUSH	a6,a10
+	PUSH	a4
+	
+	callr	get_temp_record		;data in temp_record
+
+	movi	str_obr,a4
+	calla	copy_rom_string
+	clr	a0
+	move	a0,@mess_cursx		;message cursor pos X
+
+	PULL	a1
+	move	a1,a0
+	inc	a1
+	PUSH	a1
+	movi	999,a1			;max value
+	calla	dec_to_asc
+	calla	concat_string
+	movi	str_cbr,a4
+	calla	concat_rom_string
+	calla	print_string
+
+	movi	temp_record+PR_INIT1,a4		;* src initials
+	movi	message_buffer,a3		;* string dest
+	calla	get_initials_string
+
+	movi	COL2,a0
+	move	a0,@mess_cursx		;message cursor pos X
+
+	move	@temp_record+PR_COUNT,a0
+	jrnz	nceknot_empty
+
+	movi	str_unused,a4
+	calla	print_string_C2
+	jruc	ncekskipit
+nceknot_empty
+	calla	print_string_C		;centered
+
+	movi	COL0,a0
+	move	a0,@mess_cursx		;message cursor pos X
+	move	@temp_record+PR_COUNT,a0
+	movi	2047,a1			;max value
+	calla	dec_to_asc
+	calla	copy_string
+	calla	print_string
+
+	movi	COL4,a0
+	move	a0,@mess_cursx		;message cursor pos X
+	move	@temp_record+PR_LASTPLAY,a0
+	movi	2047,a1			;max value
+	calla	dec_to_asc
+	calla	copy_string
+	calla	print_string_R
+
+ncekskipit
+
+	move	@mess_cursy,a0		;message cursor pos Y
+	addi	YOFF,a0
+	move	a0,@mess_cursy		;message cursor pos Y
+
+	PULL	a4
+	PULL	a6,a10
+	addi	PKDPR_SIZE*2,a10	;cmos words
+	dsj	a6,nceksearch_loop
+
+	rets
+
+str_num	.string "#",0
+str_obr	.string	"(",0
+str_cbr	.string	")",0
+str_sp	.string	" ",0
+str_2sp	.string	"  ",0
+
+str_unused
+	.string	"UNUSED",0
+
+ncekmonths
+	.string	"JAN",0
+	.string	"FEB",0
+	.string	"MAR",0
+	.string	"APR",0
+	.string	"MAY",0
+	.string	"JUN",0
+	.string	"JUL",0
+	.string	"AUG",0
+	.string	"SEP",0
+	.string	"OCT",0
+	.string	"NOV",0
+	.string	"DEC",0
+
+
+

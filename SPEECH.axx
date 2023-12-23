@@ -1,0 +1,2485 @@
+	.file	"speech.asm"
+	.title	"announcer speech etc..."
+	.width	132
+	.option	b,d,l,t
+	.mnolist
+
+
+	.include	"mproc.equ"
+	.include	"disp.equ"
+	.include	"sys.equ"
+	.include	"gsp.equ"
+	.include	"mac2.asm"
+	.include	"imgtbl.glo"
+	.include	"imgtbl2.glo"
+	.include	"bgndtbl.glo"
+	.include	"game.equ"
+	.include	"audit.equ"
+	.include	"shawn.hdr"
+
+	.asg		0,SEQT
+	.include	"plyr.equ"
+
+
+
+	.ref	fire_flags
+	.ref	ballobj_p
+	.ref	special_heads			;-1 = normal player head
+
+	.ref	brick_count
+	.ref	plyrproc_t
+	.ref	ballpnum,ballpnumshot
+	.ref	inbound
+	.ref	ballrimhitcnt,ballbbhitcnt
+	.ref	snd_play1,snd_play1ovrp
+	.ref	snd_play1ovr
+	.ref	rndrng0,RNDPER
+	.ref	game_time
+	.ref	gmqrtr,scores
+	.ref	ballptsforshot		;Point value for current shot (1-3)
+	.ref	team1,team2
+
+	.ref	ballpnumscored		;Last plyr who scored (0-3) or neg
+	.ref	ballnumscored		;# times last plyr scored
+	.ref	plyrnumonfire		;plyr who is on fire
+
+
+
+	BSSX	last_name,	16	;last name called (0-3)
+	BSSX	last_name_time,	16	;# ticks since name called
+	BSSX	shot_type,	16	;dunk, 3ptr etc
+	BSSX	plyr_shot,	16	;player who shot last
+	BSSX	shot_percentage,16	;0-999
+	BSSX	shot_distance,	16	;distance from hoop
+	.bss	ugly_stat,	16	;0=not ugly, 1=ugly called
+	BSSX	score_diff,	16	;+winning by, -losing by
+	.bss	blowout_called,	16	;0=not called, 1=called
+	.bss	needshot_called,16	;0=not called, 1=called
+	.bss	freakout,	16	;0=no freakout
+	BSSX	jam_speech,	16	;speech type to call when jammed
+	BSSX	next_call,	16	;# shots before next score call
+	.bss	sound_ram,	16*4*4	;queued speech ram
+	.bss	sound_ram2,	16*4*4	;queued speech ram
+	.bss	skycalled,	16	;skyhook called (0=no)
+	BSSX	spch_name_ram,	32*4
+	BSSX	spch_pass_ram,	32*4
+
+	.text
+
+
+STAB_START
+
+scrs0	.word	0f981H,60,08182H,0	;and it's good
+scrs1	.word	0f9a1H,60,081e0H,0	;it's good (excited)
+scrs2	.word	0f981H,30,08187H,0	;got it!
+scrs3	.word	0f981H,30,081daH,0	;finds the hole
+scrs4	.word	0f981H,30,081dcH,0	;what a shot
+scrs5	.word	0f981H,30,081dfH,0	;hooks it in
+scrs6	.word	0f981H,30,081a0H,0	;finger rolls it in
+scrs7	.word	0f981H,98,081eaH,0	;oh my!
+scrs8	.word	0f981H,30,081f5H,0	;spectacular dunk
+scrs9	.word	0f981H,60,0819dH,0	;sweet touch
+scrs10	.word	0f1a0H,39,081e1H,0	;IT IS....
+scrs11	.word	0f9a1H,51,081e2H,0	;GOOOOD!!!
+scrs12	.word	0f981H,47,0819bH,0	;scores
+scrs13	.word	0f981H,87,08184H,0	;gets a lucky bounce
+scrs14	.word	0f990H,100,081d6H,0	;the nail in the coffin!
+scrs15	.word	0f981H,30,081afH,0	;lays it up
+scrs16	.word	0f981H,70,0819cH,0	;boom shakalaka
+scrs17	.word	0f981H,86,081a8H,0	;razzle dazzle (incredible dunk)
+scrs18	.word	0f981H,60,081adH,0	;is it the shoes?
+scrs19	.word	0f981H,51,081aeH,0	;kaboom
+scrs20	.word	0f981H,90,081b2H,0	;monster jam
+scrs22	.word	0f981H,59,081bbH,0	;slams it
+scrs23	.word	0f981H,49,081bcH,0	;stuffs it
+scrs24	.word	0f981H,73,0812dH,0	;the easy jam
+scrs25	.word	0f981H,76,0812fH,0	;fancy move
+scrsrz	.word	0f981H,76,081a8H,0	;razzle dazzle
+scrs26	.word	0f981H,76,0812BH,0	;FANTASTIC!
+
+jamsit	.word	0f981H,74,081a4H,0	;jams it in
+
+twopts	.word	0f981H,50,081caH,0	;gets two (two points)
+bookit	.word	0f981H,42,081a6H,0	;book it
+uncon	.word	0f981H,86,0816fH,0	;he's unconscious
+cantbuy	.word	0f981H,73,08175H,0	;can't buy a bucket
+baddec	.word	0f981H,72,081b7H,0	;bad decision		<--change!
+
+
+blowout_snd
+	.word	0f990H,25,081feH,1	;silence
+	.word	0f990H,67,08172H,0	;it's a blowout
+blowout2_snd
+	.word	0f990H,25,081feH,1	;silence
+	.word	0f990H,87,081abH,0	;Whoomp, there it is
+swish_snd
+	.word	0f981H,5,081feH,1		;silence
+	.word	0f981H,43,081e8H,0	;SWISH!
+allnet_snd
+	.word	0f981H,5,081feH,1		;silence
+	.word	0f981H,72,08195H,0	;nothing but net
+
+shts0	.word	0f180H,95,0818aH,0	;from the 3 point line
+shts1	.word	0f180H,53,081e6H,0	;shoots for 3
+shts2	.word	0f180H,98,0818eH,0	;from down town
+shts3	.word	0f180H,99,08190H,0	;he shoots from the outside
+shtsrb	.word	0f180H,99,081f0H,0	;rainbow
+shts4	.word	0f980H,67,081c1H,0	;wild shot
+shts5	.word	0f180H,81,0818bH,0	;from long range
+shts6	.word	0f980H,70,081e3H,0	;out of range (launches a shot)
+shts7	.word	0f9a0H,70,08183H,0	;at the buzzer
+shts8	.word	0f180H,53,081a3H,0	;for two
+hooksht	.word	0f990H,60,081bdH,0	;takes the hook shot	<----check this
+
+getout	.word	0f990H,86,0815dH,0	;get that outta here
+getout2	.word	0f990H,86,081c9H,0	;get that shit outta here
+yes	.word	0f981H,46,081c2H,0	;YES!
+greatsht .word	0f981H,62,081d8H,0	;great shot!
+wideopen .word	0f981H,66,081ddH,0	;wide open
+gottasht .word	0f990H,51,081d7H,0	;they've gotta shoot it
+nogood	.word	0f981H,58,081f1H,0	;NO GOOD!
+hescores .word	0f981H,63,081f6H,0	;he scores
+
+ugly0
+	.word	0f980H,25,081feH,1	;silence
+	.word	0f980H,63,081d9H,0	;ugly shot!
+
+ugly1
+	.word	0f980H,25,081feH,1	;silence
+	.word	0f980H,64,08198H,0	;puts up a brick
+
+ugly2
+	.word	0f980H,25,081feH,1	;silence
+	.word	0f980H,66,0819fH,0	;terrible shot!
+
+
+
+matchup	.word	0f9ffH,66,081deH,0	;tonight's matchup
+versus	.word	0f9ffH,42,0802fH,0	;versus
+
+ovrtme .word	0f9ffH,69,08180H,0	;overtime!
+wingame	.word	0f9ffH,75,08173H,0	;win the game
+arewinrs .word	0f9ffH,69,08174H,0	;are the winners
+
+
+munged	.word	0f990H,49,0812eH,0	;munged
+ambushed .word	0f990H,47,081c4H,0	;ugly knockdown	(ambushed)
+takethat .word	0f990H,46,08189H,0	;take that!
+flagrant .word	0f990H,50,08178H,0	;flagrant
+tofloor	.word	0f990H,81,081ceH,0	;knocked to the floor
+hello	.word	0f990H,47,081c8H,0	;hello!
+excuse	.word	0f990H,57,081c0H,0	;excuse me!
+
+reject	.word	0f990H,79,081b6H,0	;rejected!
+rejects	.word	0f990H,93,081f2H,0	;rejects the shot
+greatd	.word	0f990H,70,08188H,0	;great defense
+noway	.word	0f990H,68,081b4H,0	;no way!
+grabreb	.word	0f990H,84,081efH,0	;grabs the rebound
+intrcpt	.word	0f990H,59,081a9H,0	;intercepted!
+turnovr	.word	0f990H,51,081bfH,0	;the turnover!
+stolen	.word	0f990H,47,081f3H,0	;steals the ball
+
+downby	.word	0f990H,41,081cdH,0	;down by
+upby	.word	0f990H,34,081cfH,0	;up by
+scrtied	.word	0f990H,83,081baH,0	;the score is tied
+
+snd_1	.word	0f990H,45,081d0H,0	;
+snd_2	.word	0f990H,42,081d1H,0	;
+snd_3	.word	0f990H,46,081d2H,0	;
+snd_4	.word	0f990H,44,081d3H,0	;
+snd_5	.word	0f990H,41,081d4H,0	;
+snd_6	.word	0f990H,38,081d5H,0	;
+snd_7	.word	0f990H,47,081f7H,0	;
+snd_8	.word	0f990H,38,081f8H,0	;
+snd_9	.word	0f990H,46,081f9H,0	;
+snd_10	.word	0f990H,43,081faH,0	;
+snd_15	.word	0f990H,57,081fbH,0	;
+snd_20	.word	0f990H,50,081fcH,0	;
+
+
+heatup_snd	.word	0f9f1H,60,08168H,0	;He's heating up
+onfire_snd	.word	0f9a1H,83,08169H,0	;He's on fire
+hothand		.word	0f990H,87,081fdH,0	;He's got a hot hand
+organ1_snd	.word	0f3ffH,08H,080aeH,0
+organ2_snd	.word	0f3ffH,08H,080afH,0
+
+needshot	.word	0f981H,55,081feH,1	;silence
+		.word	0f998H,71,081e9H,0	;They need a shot here
+
+silence55	.word	0f981H,55,081feH,1	;silence
+
+runout		.word	0f990H,8,081feH,1		;silence
+		.word	0f990H,90,08186H,0	;running out of time
+
+	.def	pass_speech
+
+pass_speech
+
+ .word	0f980H,32,08050H,0	;TO MANNING
+ .word	0f980H,31,080efH,0	;TO AUGMON	( ATLANTA )
+ .word	0f980H,40,08162H,0	;TO WILLIS
+
+ .word	0f980H,43,080f8H,0	;TO BROWN	( BOSTON )
+ .word	0f980H,28,080f7H,0	;TO MCDAN
+ .word	0f980H,30,08145H,0	;TO GAMBLE
+
+ .word	0f980H,50,080e9H,0	;TO JOHNSN_L	( CHARLOTTE )
+ .word	0f980H,43,08061H,0	;TO HAWKINS
+ .word	0f980H,45,08121H,0	;TO MOURNING
+
+ .word	0f980H,29,080e7H,0	;TO PIPPEN
+ .word	0f980H,49,08130H,0	;TO ARMSTRNG
+ .word	0f980H,40,0817cH,0	;TO KUKOC
+ .word	0f980H,34,080e6H,0	;TO GRANT_HC	( CHICAGO )
+
+ .word	0f980H,33,08055H,0	;TO PRICE
+ .word	0f980H,34,08056H,0	;TO DAUGHRTY	( CLEVELAND )
+ .word	0f980H,34,08122H,0	;TO NANCE
+
+ .word	0f980H,34,0817bH,0	;TO JACKSON
+ .word	0f980H,34,0817dH,0	;TO MASHBURN
+
+ .word	0f980H,46,08059H,0	;TO MUTUMBO
+ .word	0f980H,29,0805aH,0	;TO ELLIS	( DENVER )
+ .word	0f980H,34,08137H,0	;TO ROGERS
+
+ .word	0f980H,42,080feH,0	;TO THOMAS
+ .word	0f980H,34,08141H,0	;TO DUMARS
+ .word	0f980H,37,080f6H,0	;TO ELLIOT
+ .word	0f980H,34,08147H,0	;TO HUNTER
+
+ .word	0f980H,37,080fbH,0	;TO HARDAWAY
+ .word	0f980H,30,080fcH,0	;TO MULLIN	( GOLDEN STATE )
+ .word	0f980H,34,08161H,0	;TO WEBBER
+
+ .word	0f980H,43,08058H,0	;TO OLAJUWON
+ .word	0f980H,34,0817fH,0	;TO MAXWELL
+ .word	0f980H,34,08146H,0	;TO HORRY
+ .word	0f980H,25,08057H,0	;TO SMITH	( HOUSTON )
+
+ .word	0f980H,22,0804dH,0	;TO MILLER
+ .word	0f980H,34,08149H,0	;TO SEALY
+ .word	0f980H,34,0814fH,0	;TO SMITS
+
+ .word	0f980H,37,080f0H,0	;TO WILKINS
+ .word	0f980H,28,08051H,0	;TO HARPER_R	( L.A. CLIPPERS )
+ .word	0f980H,40,0802bH,0	;TO ROBERTS
+
+ .word	0f980H,34,08125H,0	;TO PEELER
+ .word	0f980H,37,0804eH,0	;TO DIVAC	( L.A. LAKERS )
+ .word	0f980H,34,0813eH,0	;TO CAMPBELL
+ .word	0f980H,31,0804fH,0	;TO WORTHY
+
+ .word	0f980H,27,08054H,0	;TO RICE
+ .word	0f980H,33,08053H,0	;TO SEIKALY	( MIAMI )
+ .word	0f980H,34,0811cH,0	;TO MINER
+
+ .word	0f980H,34,08131H,0	;TO BAKER
+ .word	0f980H,29,0804bH,0	;TO EDWARDS	( MILWAUKEE )
+ .word	0f980H,34,08140H,0	;TO DAY
+ .word	0f980H,32,080ffH,0	;TO LOHAUS
+
+ .word	0f980H,37,0805eH,0	;TO LAETNER
+ .word	0f980H,30,0805dH,0	;TO PERSON	( MINNESOTTA )
+ .word	0f980H,34,0812aH,0	;TO RIDER
+
+ .word	0f980H,31,08060H,0	;TO COLEMAN
+ .word	0f980H,50,0805fH,0	;TO KANDERSON	( NEW JERSEY )
+ .word	0f980H,34,0811eH,0	;TO CMORRIS
+ .word	0f980H,40,080f2H,0	;TO BENJAMIN	( SEATTLE )
+
+ .word	0f980H,37,080eeH,0	;TO EWING
+ .word	0f980H,34,0817eH,0	;TO MASON
+ .word	0f980H,34,08151H,0	;TO STARKS
+ .word	0f980H,38,080edH,0	;TO OAKLEY	( NEW YORK )
+ .word	0f980H,28,08051H,0	;TO HARPER_D
+
+
+ .word	0f980H,37,080fbH,0	;TO AHARDAWAY
+ .word	0f980H,50,0805fH,0	;TO NANDERSON
+ .word	0f980H,40,080e4H,0	;TO SKILES	( ORLANDO )
+
+ .word	0f980H,34,08152H,0	;TO WEATHERSPOON
+ .word	0f980H,34,08133H,0	;TO BRADLEY
+
+ .word	0f980H,36,080ecH,0	;TO BARKLEY
+ .word	0f980H,38,080ebH,0	;TO MAJERLE	( PHOENIX )
+ .word	0f980H,50,080e9H,0	;TO KJOHNSON
+
+ .word	0f980H,33,080f4H,0	;TO DREXLER
+ .word	0f980H,24,080f3H,0	;TO PORTER	( PORTLAND )
+ .word	0f980H,46,080f5H,0	;TO CROBINSON
+ .word	0f980H,34,080e6H,0	;TO GRANT_HV
+
+ .word	0f980H,34,0814cH,0	;TO SIMMONS
+ .word	0f980H,34,0817aH,0	;TO HURLEY
+ .word	0f980H,34,08127H,0	;TO RICHMOND
+ .word	0f980H,43,0805bH,0	;TO TISDALE
+ .word	0f980H,46,0805cH,0	;TO WEBB	( SACRAMENTO )
+
+ .word	0f980H,46,080f5H,0	;TO ROBINSON	( SAN ANTONIO )
+ .word	0f980H,34,08135H,0	;TO RODMAN
+ .word	0f980H,29,0805aH,0	;TO DELLIS 
+
+ .word	0f980H,31,080f1H,0	;TO KEMP
+ .word	0f980H,40,08126H,0	;TO PAYTON	( SEATTLE )
+ .word	0f980H,28,080eaH,0	;TO GILL
+ .word	0f980H,26,0804cH,0	;TO SCHREMPF	( INDIANA )
+
+ .word	0f980H,37,080faH,0	;TO MALONE_K
+ .word	0f980H,31,080f9H,0	;TO STOCKTON	( UTAH )
+ .word	0f980H,40,08132H,0	;TO BENOIT
+ .word	0f980H,36,08062H,0	;TO HORNACEK	( PHILADELPHIA )
+
+ .word	0f980H,36,080e8H,0	;TO GUGLIOTA	( WASHINGTON )
+ .word	0f980H,40,08142H,0	;TO ELLISON
+ .word	0f980H,40,0813fH,0	;TO CHEANEY
+
+ .word	0f980H,37,080faH,0	;TO MALONE_K
+ .word	0f980H,31,080f1H,0	;TO KEMP
+ .word	0f980H,46,080f5H,0	;TO ROBINSON	( SAN ANTONIO )
+ .word	0f980H,36,080ecH,0	;TO barkley
+ .word	0f980H,33,080f4H,0	;TO DREXLER
+ .word	0f980H,37,080fbH,0	;TO AHARDAWAY
+ .word	0f980H,37,080eeH,0	;TO EWING
+ .word	0f980H,50,0805fH,0	;TO KANDERSON	( NEW JERSEY )
+ .word	0f980H,31,08060H,0	;TO COLEMAN
+ .word	0f980H,50,0805fH,0	;TO NANDERSON
+ .word	0f980H,31,080f9H,0	;TO STOCKTON	( UTAH )
+ .word	0f980H,50,080e9H,0	;TO KJOHNSON
+ .word	0f980H,28,080eaH,0	;TO GILL
+ .word	0f980H,34,08127H,0	;TO RICHMOND
+ .word	0f980H,34,08133H,0	;TO BRADLEY
+ .word	0f980H,46,0805cH,0	;TO WEBB	( SACRAMENTO )
+ .word	0f980H,34,08141H,0	;TO DUMARS
+ .word	0f980H,34,08151H,0	;TO STARKS
+ .word	0f980H,46,08059H,0	;TO MUTUMBO
+ .word	0f980H,37,080f0H,0	;TO WILKINS
+ .word	0f980H,28,08051H,0	;TO HARPER_R	( L.A. CLIPPERS )
+ .word	0f980H,34,0812aH,0	;TO RIDER
+ .word	0f980H,22,0804dH,0	;TO MILLER
+ .word	0f980H,50,080e9H,0	;TO JOHNSN_L	( CHARLOTTE )
+ .word	0f980H,43,08058H,0	;TO OLAJUWON
+ .word	0f980H,34,08131H,0	;TO BAKER
+ .word	0f980H,49,08130H,0	;TO ARMSTRNG
+ .word	0f980H,45,08121H,0	;TO MOURNING
+ .word	0f980H,27,08054H,0	;TO RICE
+ .word	0f980H,37,080fbH,0	;TO HARDAWAY
+ .word	0f980H,34,0817bH,0	;TO JACKSON
+ .word	0f980H,29,080e7H,0	;TO PIPPEN
+ .word	0f980H,34,0811cH,0	;TO MINER
+ .word	0f980H,42,080feH,0	;TO THOMAS
+ .word	0f980H,34,08161H,0	;TO WEBBER
+ .word	0f980H,34,0817dH,0	;TO MASHBURN
+ .word	0f980H,31,0804fH,0	;TO WORTHY
+ .word	0f980H,30,080fcH,0	;TO MULLIN	( GOLDEN STATE )
+ .word	0f980H,32,08050H,0	;TO MANNING
+
+
+
+ .word	0f990H,8,081feH,1		;silence
+ .word	0f990H,8,081feH,1		;silence
+ .word	0f990H,8,081feH,1		;silence
+ .word	0f990H,8,081feH,1		;silence
+ .word	0f990H,8,081feH,1		;silence
+
+
+	.def	name_speech
+
+name_speech
+
+
+ .word	0f980H,32,080d2H,0	;MANNING	( L.A. CLIPPERS )
+ .word	0f980H,31,080bcH,0	;AUGMON
+ .word	0f980H,35,0806aH,0	;WILLIS
+
+ .word	0f980H,43,080c3H,0	;BROWN		( BOSTON )
+ .word	0f980H,28,080c4H,0	;MCDAN
+ .word	0f980H,40,08019H,0	;GAMBLE
+
+ .word	0f980H,50,080b6H,0	;JOHNSN_L	( CHARLOTTE )
+ .word	0f980H,43,080e3H,0	;HAWKINS
+ .word	0f980H,43,08025H,0	;MOURNING
+
+ .word	0f980H,29,080b2H,0	;PIPPEN		( CHICAGO )
+ .word	0f980H,40,08010H,0	;ARMSTRNG
+ .word	0f980H,35,0801eH,0	;KUKOC
+ .word	0f980H,34,080b3H,0	;GRANT_HC
+
+ .word	0f980H,33,080d7H,0	;PRICE		( CLEVELAND )
+ .word	0f980H,34,080d6H,0	;DAUGHRTY
+ .word	0f980H,34,08026H,0	;NANCE
+
+ .word	0f980H,34,0801dH,0	;JACKSON
+ .word	0f980H,44,0801fH,0	;MASHBURN
+
+ .word	0f980H,46,080dbH,0	;MUTUMBO	( DENVER )
+ .word	0f980H,29,080daH,0	;ELLIS
+ .word	0f980H,34,08063H,0	;ROGERS
+
+ .word	0f980H,42,080c9H,0	;THOMAS		( DETROIT )
+ .word	0f980H,40,08017H,0	;DUMARS
+ .word	0f980H,37,080c1H,0	;ELLIOT
+ .word	0f980H,40,0801bH,0	;HUNTER
+
+ .word	0f980H,37,080c8H,0	;HARDAWAY	( GOLDEN STATE )
+ .word	0f980H,30,080c7H,0	;MULLIN
+ .word	0f980H,40,08069H,0	;WEBBER
+
+ .word	0f980H,43,080d8H,0	;OLAJUWON	( HOUSTON )
+ .word	0f980H,40,08021H,0	;MAXWELL
+ .word	0f980H,34,0801aH,0	;HORRY
+ .word	0f980H,25,080d9H,0	;SMITH
+
+ .word	0f980H,22,080cdH,0	;MILLER		( INDIANA )
+ .word	0f980H,34,08064H,0	;SEALY
+ .word	0f980H,34,08066H,0	;SMITS
+
+ .word	0f980H,37,080bbH,0	;WILKINS	( ATLANTA )
+ .word	0f980H,28,080d1H,0	;HARPER_R
+ .word	0f980H,34,0802bH,0	;ROBERTS
+
+ .word	0f980H,34,08027H,0	;PEELER
+ .word	0f980H,37,080d0H,0	;DIVAC
+ .word	0f980H,45,08014H,0	;CAMPBELL
+ .word	0f980H,31,080cfH,0	;WORTHY		( L.A. LAKERS )
+
+ .word	0f980H,27,080d4H,0	;RICE		( MIAMI )
+ .word	0f980H,33,080d5H,0	;SEIKALY
+ .word	0f980H,34,08023H,0	;MINER
+
+ .word	0f980H,37,08011H,0	;BAKER
+ .word	0f980H,29,080cbH,0	;EDWARDS
+ .word	0f980H,34,08016H,0	;DAY
+ .word	0f980H,32,080ccH,0	;LOHAUS		( MILWAUKEE )
+
+ .word	0f980H,37,080deH,0	;LAETNER	( MINNESOTTA )
+ .word	0f980H,30,080dfH,0	;PERSON
+ .word	0f980H,34,0802aH,0	;RIDER
+
+ .word	0f980H,31,080e0H,0	;COLEMAN	( NEW JERSEY )
+ .word	0f980H,45,080e1H,0	;KANDERSON
+ .word	0f980H,34,08024H,0	;CMORRIS
+ .word	0f980H,40,080bdH,0	;BENJAMIN
+
+ .word	0f980H,37,080b9H,0	;EWING		( NEW YORK )
+ .word	0f980H,34,08020H,0	;MASON
+ .word	0f980H,34,08067H,0	;STARKS
+ .word	0f980H,38,080baH,0	;OAKLEY
+ .word	0f980H,28,080d1H,0	;HARPER_D	( DALLAS )
+
+ .word	0f980H,37,080c8H,0	;AHARDAWAY
+ .word	0f980H,45,080e1H,0	;NANDERSON
+ .word	0f980H,40,080b1H,0	;SKILES
+
+ .word	0f980H,44,08068H,0	;WEATHERSPOON	( PHILADELPHIA )
+ .word	0f980H,40,08013H,0	;BRADLEY
+
+ .word	0f980H,36,080b7H,0	;BARKLEY	( PHOENIX )
+ .word	0f980H,38,080b8H,0	;MAJERLE
+ .word	0f980H,50,080b6H,0	;KJOHNSON
+
+ .word	0f980H,33,080bfH,0	;DREXLER	( PORTLAND )
+ .word	0f980H,24,080c0H,0	;PORTER
+ .word	0f980H,46,080c2H,0	;CROBINSON
+ .word	0f980H,34,080b3H,0	;GRANT_HV
+
+ .word	0f980H,34,08065H,0	;SIMMONS
+ .word	0f980H,34,0801cH,0	;HURLEY
+ .word	0f980H,43,08029H,0	;RICHMOND
+ .word	0f980H,43,080ddH,0	;TISDALE	( SACRAMENTO )
+ .word	0f980H,46,080dcH,0	;WEBB
+
+ .word	0f980H,46,080c2H,0	;ROBINSON	( SAN ANTONIO )
+ .word	0f980H,34,0802cH,0	;RODMAN
+ .word	0f980H,29,080daH,0	;DELLIS 
+
+ .word	0f980H,31,080beH,0	;KEMP		( SEATTLE )
+ .word	0f980H,40,08028H,0	;PAYTON
+ .word	0f980H,28,080eaH,0	;GILL
+ .word	0f980H,26,080ceH,0	;SCHREMPF
+
+ .word	0f980H,37,080c5H,0	;MALONE_K	( UTAH )
+ .word	0f980H,31,080c6H,0	;STOCKTON
+ .word	0f980H,40,08012H,0	;BENOIT
+ .word	0f980H,36,080e2H,0	;HORNACEK
+
+ .word	0f980H,36,080b4H,0	;GUGLIOTTA	( WASHINGTON )
+ .word	0f980H,47,08018H,0	;ELLISON
+ .word	0f980H,40,08015H,0	;CHEANEY
+
+ .word	0f980H,37,080c5H,0	;MALONE_K	( UTAH )
+ .word	0f980H,31,080beH,0	;KEMP		( SEATTLE )
+ .word	0f980H,46,080c2H,0	;ROBINSON	( SAN ANTONIO )
+ .word	0f980H,36,080b7H,0	;Barkley
+ .word	0f980H,33,080bfH,0	;DREXLER	( PORTLAND )
+ .word	0f980H,37,080c8H,0	;AHARDAWAY
+ .word	0f980H,37,080b9H,0	;EWING		( NEW YORK )
+ .word	0f980H,45,080e1H,0	;KANDERSON
+ .word	0f980H,31,080e0H,0	;COLEMAN	( NEW JERSEY )
+ .word	0f980H,45,080e1H,0	;NANDERSON
+ .word	0f980H,31,080c6H,0	;STOCKTON
+ .word	0f980H,50,080b6H,0	;KJOHNSON
+ .word	0f980H,28,080eaH,0	;GILL
+ .word	0f980H,43,08029H,0	;RICHMOND
+ .word	0f980H,40,08013H,0	;BRADLEY
+ .word	0f980H,46,080dcH,0	;WEBB
+ .word	0f980H,40,08017H,0	;DUMARS
+ .word	0f980H,34,08067H,0	;STARKS
+ .word	0f980H,46,080dbH,0	;MUTUMBO	( DENVER )
+ .word	0f980H,37,080bbH,0	;WILKINS	( ATLANTA )
+ .word	0f980H,28,080d1H,0	;HARPER_R
+ .word	0f980H,34,0802aH,0	;RIDER
+ .word	0f980H,22,080cdH,0	;MILLER		( INDIANA )
+ .word	0f980H,50,080b6H,0	;JOHNSN_L	( CHARLOTTE )
+ .word	0f980H,43,080d8H,0	;OLAJUWON	( HOUSTON )
+ .word	0f980H,37,08011H,0	;BAKER
+ .word	0f980H,40,08010H,0	;ARMSTRNG
+ .word	0f980H,40,08021H,0	;MAXWELL
+ .word	0f980H,43,08025H,0	;MOURNING
+ .word	0f980H,27,080d4H,0	;RICE		( MIAMI )
+ .word	0f980H,37,080c8H,0	;HARDAWAY	( GOLDEN STATE )
+ .word	0f980H,34,0801dH,0	;JACKSON
+ .word	0f980H,29,080b2H,0	;PIPPEN		( CHICAGO )
+ .word	0f980H,34,08023H,0	;MINER
+ .word	0f980H,42,080c9H,0	;THOMAS		( DETROIT )
+ .word	0f980H,40,08069H,0	;WEBBER
+ .word	0f980H,44,0801fH,0	;MASHBURN
+ .word	0f980H,31,080cfH,0	;WORTHY		( L.A. LAKERS )
+ .word	0f980H,30,080c7H,0	;MULLIN
+ .word	0f980H,32,080d2H,0	;MANNING	( L.A. CLIPPERS )
+
+
+
+ .word	0f990H,8,081feH,1		;silence
+ .word	0f990H,8,081feH,1		;silence
+ .word	0f990H,8,081feH,1		;silence
+
+name_blank
+pass_blank
+ .word	0f980H,1,081feH,0		;blank
+
+
+special_name_speech
+
+	.word	0f980H,1,081feH,0		;0  GOSKIE	
+	.word	0f980H,1,081feH,0		;1  RIVETT		
+	.word	0f980H,1,081feH,0		;2  CARLTON
+	.word	0f980H,1,081feH,0		;3  DIVITA
+	.word	0f980H,1,081feH,0		;4  LIPTAK
+	.word	0f980H,1,081feH,0		;5  TURMELL
+	.word	0f980H,1,081feH,0		;6  HEY
+	.word	0f980H,1,081feH,0		;7  PETRO
+	.word	0f980H,1,081feH,0		;8  NEWCOMER
+	.word	0f980H,1,081feH,0		;9  OURSLER
+	.word	0f980H,1,081feH,0		;10 LASCO
+	.word	0f980H,1,081feH,0		;11 MORRIS
+	.word	0f980H,1,081feH,0		;12 MEDNICK
+	.word	0f980H,1,081feH,0		;13 FORDEN	
+	.word	0f980H,1,081feH,0		;14 KINKEAD
+	.word	0f980H,1,081feH,0		;15 JARVIS	
+
+	.word	0f980H,50,08196H,0	;16 SUBZ	
+
+	.word	0f980H,1,081feH,0		;17 HAEGER	
+	.word	0f980H,1,081feH,0		;18 SIMPSON
+	.word	0f980H,1,081feH,0		;19 GREEN	
+	.word	0f980H,1,081feH,0		;20 GENTILE
+	.word	0f980H,1,081feH,0		;21 DILLON	
+	.word	0f980H,1,081feH,0		;22 LOWES	
+	.word	0f980H,1,081feH,0		;23 VOGEL	
+	.word	0f980H,1,081feH,0		;24 TSUI	
+	.word	0f980H,1,081feH,0		;25 KAM		
+	.word	0f980H,1,081feH,0		;26 DEAL		
+	.word	0f980H,1,081feH,0		;27 BOOTY		
+	.word	0f980H,1,081feH,0		;28 LOFFRE		
+	.word	0f980H,1,081feH,0		;29 PENACHO	
+	.word	0f980H,1,081feH,0		;30 BARKER		
+	.word	0f980H,1,081feH,0		;31 COX
+			
+	.word	0f980H,43,080b0H,0	;32 RAIDEN
+	.word	0f980H,1,081feH,0		;33 REAPER		
+
+	.word	0f980H,1,081feH,0		;34 MACIKA		
+	.word	0f980H,1,081feH,0		;35 SHARPE		
+	.word	0f980H,1,081feH,0		;36 BERAN		
+
+	.word	0f980H,1,081feH,0		;38 KONGO	
+
+	.word	0f980H,1,081feH,0		;39 PONTAREL	
+
+	.word	0f980H,1,081feH,0		;40 ELVIS		
+
+	.word	0f980H,1,081feH,0		;41 DAVIS		
+	.word	0f980H,1,081feH,0		;42 BOON		
+	.word	0f980H,1,081feH,0		;43 TOBIAS		
+	.word	0f980H,1,081feH,0		;44 HEITSCH	
+	.word	0f980H,1,081feH,0		;45 DABEL		
+	.word	0f980H,1,081feH,0		;46 MARTINEZ	
+	.word	0f980H,1,081feH,0		;47 DAVIES		
+	.word	0f980H,1,081feH,0		;48 HOSK		
+	.word	0f980H,1,081feH,0		;49 OLIV		
+
+	.word	0f980H,50,08197H,0	;50 SCORP		
+	.word	0f980H,50,081a5H,0	;51 REPT   
+		
+	.word	0f980H,1,081feH,0		;52 GRANNER
+	.word	0f980H,40,08199H,0	;53 GRIFFEY
+	.word	0f980H,40,080B1H,0	;54 SKILES
+	.word	0f980H,1,081feH,0		;55 LINHOFF
+
+
+	.word	0f980H,37,080bbH,0	;56 WILKINS
+	.word	0f980H,43,080c3H,0	;57 BROWN
+	.word	0f980H,43,08025H,0	;58 MOURNING
+	.word	0f980H,29,080b2H,0	;59 PIPPEN  
+
+	.word	0f980H,42,08028H,0	;60 PAYTON
+
+	.word	0f980H,40,08069H,0	;61 WEBBER
+	.word	0f980H,43,080d8H,0	;62 OLAJUWON
+	.word	0f980H,31,080e0H,0	;63 COLEMAN
+	.word	0f980H,37,080b9H,0	;64 EWING
+	.word	0f980H,36,080b7H,0	;65 BARKLEY
+	.word	0f980H,46,080c2H,0	;66 ROBINSON
+	.word	0f980H,31,080beH,0	;67 KEMP
+	.word	0f980H,37,080c5H,0	;68 MALONE
+
+
+special_pass_speech
+
+	.word	0f980H,1,081feH,0		;0  GOSKIE	
+	.word	0f980H,1,081feH,0		;1  RIVETT		
+	.word	0f980H,1,081feH,0		;2  CARLTON
+	.word	0f980H,1,081feH,0		;3  DIVITA
+	.word	0f980H,1,081feH,0		;4  LIPTAK
+	.word	0f980H,1,081feH,0		;5  TURMELL
+	.word	0f980H,1,081feH,0		;6  HEY
+	.word	0f980H,1,081feH,0		;7  PETRO
+	.word	0f980H,1,081feH,0		;8  NEWCOMER
+	.word	0f980H,1,081feH,0		;9  OURSLER
+	.word	0f980H,1,081feH,0		;10 LASCO
+	.word	0f980H,1,081feH,0		;11 MORRIS
+	.word	0f980H,1,081feH,0		;12 MEDNICK
+	.word	0f980H,1,081feH,0		;13 FORDEN	
+	.word	0f980H,1,081feH,0		;14 KINKEAD
+	.word	0f980H,1,081feH,0		;15 JARVIS	
+
+	.word	0f980H,50,081a1H,0	;16 SUBZ	
+
+	.word	0f980H,1,081feH,0		;17 HAEGER	
+	.word	0f980H,1,081feH,0		;18 SIMPSON
+	.word	0f980H,1,081feH,0		;19 GREEN	
+	.word	0f980H,1,081feH,0		;20 GENTILE
+	.word	0f980H,1,081feH,0		;21 DILLON	
+	.word	0f980H,1,081feH,0		;22 LOWES	
+	.word	0f980H,1,081feH,0		;23 VOGEL	
+	.word	0f980H,1,081feH,0		;24 TSUI	
+	.word	0f980H,1,081feH,0		;25 KAM		
+	.word	0f980H,1,081feH,0		;26 DEAL		
+	.word	0f980H,1,081feH,0		;27 BOOTY		
+	.word	0f980H,1,081feH,0		;28 LOFFRE		
+	.word	0f980H,1,081feH,0		;29 PENACHO	
+	.word	0f980H,1,081feH,0		;30 BARKER		
+	.word	0f980H,1,081feH,0		;31 COX			
+
+	.word	0f980H,50,080e5H,0	;32 RAIDEN
+	.word	0f980H,1,081feH,0		;33 REAPER		
+
+	.word	0f980H,1,081feH,0		;34 MACIKA		
+	.word	0f980H,1,081feH,0		;35 SHARPE		
+	.word	0f980H,1,081feH,0		;36 BERAN 
+		
+	.word	0f980H,1,081feH,0		;38 KONGO	
+
+	.word	0f980H,1,081feH,0		;39 PONTAREL	
+
+	.word	0f980H,1,081feH,0		;40 ELVIS		
+
+	.word	0f980H,1,081feH,0		;41 DAVIS		
+	.word	0f980H,1,081feH,0		;42 BOON		
+	.word	0f980H,1,081feH,0		;43 TOBIAS		
+	.word	0f980H,1,081feH,0		;44 HEITSCH	
+	.word	0f980H,1,081feH,0		;45 DABEL		
+	.word	0f980H,1,081feH,0		;46 MARTINEZ	
+	.word	0f980H,1,081feH,0		;47 DAVIES		
+	.word	0f980H,1,081feH,0		;48 HOSK		
+	.word	0f980H,1,081feH,0		;49 OLIV		
+
+	.word	0f980H,50,081a2H,0	;50 SCORP		
+	.word	0f980H,50,081a6H,0	;51 REPT		
+
+	.word	0f980H,1,081feH,0		;52 GRANNER
+
+	.word	0f980H,40,0819AH,0	;53 TO GRIFFEY
+
+	.word	0f980H,40,080e4H,0	;54 SKILES
+	.word	0f980H,1,081feH,0		;55 LINHOFF
+
+
+
+	.word	0f980H,37,080f0H,0	;56 TO WILKINS
+	.word	0f980H,43,080f8H,0	;57 TO BROWN
+	.word	0f980H,45,08121H,0	;58 TO MOURNING
+	.word	0f980H,29,080e7H,0	;59 TO PIPPEN  
+
+         .word	0f980H,40,08126H,0	;60 TO PAYTON	( SEATTLE )
+
+	.word	0f980H,45,08161H,0	;61 TO WEBBER
+	.word	0f980H,43,08058H,0	;62 TO OLAJUWON
+	.word	0f980H,40,08060H,0	;63 TO COLEMAN
+	.word	0f980H,40,080eeH,0	;64 TO EWING
+	.word	0f980H,40,080ecH,0	;65 TO BARKLEY
+	.word	0f980H,40,080f5H,0	;66 TO ROBINSON
+	.word	0f980H,40,080f1H,0	;67 TO KEMP
+	.word	0f980H,40,080faH,0	;68 TO MALONE
+
+
+
+team_speech
+ .word	0f981H,50,08035H,0	;00 ATLANTA		"Hawks"
+ .word	0f981H,55,08033H,0	;01 BOSTON		"Celtics"
+ .word	0f981H,37,08036H,0	;02 CHARLOTTE		"Hornets"
+ .word	0f981H,43,08031H,0	;03 CHICAGO		"Bulls"
+ .word	0f981H,65,08032H,0	;04 CLEVELAND		"Cavaliers"
+ .word	0f981H,45,0803cH,0	;05 DALLAS		"Maverick"
+ .word	0f981H,40,0803eH,0	;06 DENVER		"Nuggets"
+ .word	0f981H,40,08040H,0	;07 DETROIT		"Pistons"
+ .word	0f981H,48,08048H,0	;08 GOLDEN STATE	"Warriors"
+ .word	0f981H,43,08041H,0	;09 HOUSTON		"Rockets"
+ .word	0f981H,46,0803fH,0	;10 INDIANA		"Pacers"
+ .word	0f981H,43,08034H,0	;11 L.A. CLIPPERS	"Clippers"
+ .word	0f981H,42,0803aH,0	;12 L.A. LAKERS		"Lakers"
+ .word	0f981H,37,08046H,0	;13 MIAMI		"Heat"
+ .word	0f981H,26,0804aH,0	;14 MILWAUKEE		"Bucks"
+ .word	0f981H,51,08047H,0	;15 MINNESOTTA		"Timberwolves"
+ .word	0f981H,40,0803dH,0	;16 NEW JERSEY		"Nets"
+ .word	0f981H,43,08039H,0	;17 NEW YORK		"Knicks"
+ .word	0f981H,38,0803bH,0	;18 ORLANDO		"Magic"
+ .word	0f981H,47,08042H,0	;19 PHILADELPHIA	"Sixers"
+ .word	0f981H,42,08044H,0	;20 PHOENIX		"Suns"
+ .word	0f981H,48,08049H,0	;21 PORTLAND		"Blazers"
+ .word	0f981H,49,08038H,0	;22 SACRAMENTO		"Kings"
+ .word	0f981H,46,08043H,0	;23 SAN ANTONIO		"Spurs"
+ .word	0f981H,59,08045H,0	;24 SEATTLE		"Supersonics"
+ .word	0f981H,42,08037H,0	;25 UTAH		"Jazz"
+ .word	0f981H,39,08030H,0	;26 WASHINGTON		"Bullets"
+ .word	0f981H,51,081e2H,0	;GOOOOD!!!
+
+
+
+STAB_END
+
+
+
+ SUBRP	speech_play
+
+	calla	snd_play1
+	rets
+
+
+ SUBR	speech_playovrp
+
+	calla	snd_play1ovrp
+	rets
+
+
+
+ SUBR	shoots_speech
+
+	PUSH	a1,a2
+
+	move	a0,@plyr_shot
+	callr	calc_score_diff
+
+	clr	a0
+	move	a0,@ugly_stat		;not ugly
+	move	a0,@freakout		;no freakout on score
+
+	callr	at_buzzer
+	jrnc	ucnkxshtspeech
+
+	move	@shot_type,a0
+	sll	5,a0			;x 32 bits
+	addi	ucnkshoots_table,a0
+	move	*a0,a0,L
+	call	a0
+
+ucnkxshtspeech
+	PULL	a1,a2
+	rets
+
+ucnkshoots_table
+	.long	ucnkdesperation
+	.long	ucnklong_range
+	.long	ucnk2_points
+	.long	ucnk3_points
+	.long	ucnkhook_shot
+	.long	ucnklay_up
+	.long	ucnkfinger_roll
+	.long	ucnkdunk_short
+	.long	ucnkdunk_med
+	.long	ucnkdunk_long
+
+ucnkdesperation
+
+	movi	2,a0
+	calla	rndrng0
+	sll	5,a0		;x 32 bits
+	addi	ucnkdesptab,a0
+	move	*a0,a0,L
+	calla	speech_play
+	rets
+
+ucnkdesptab
+	.long	shts5	;from long range
+	.long	shts6	;launches a shot
+	.long	shts4	;wild shot
+
+ucnklong_range
+
+	movi	1,a0
+	calla	rndrng0
+	sll	5,a0		;x 32 bits
+	addi	ucnklongtab,a0
+	move	*a0,a0,L
+	calla	speech_play
+	rets
+
+ucnklongtab
+	.long	shts5	;from long range
+	.long	shts6	;launches a shot
+
+ucnk2_points
+
+	callr	ugly_shot
+	jrnc	ucnkugly_2pts
+
+	callr	wideopen_speech
+	jrnc	ucnkx2pts
+
+	movi	100,a0			;call for two 10% time
+	calla	RNDPER
+	jrhi	ucnkdo_for2
+
+	move	@plyr_shot,a0
+	callr	call_player_name
+	jrnc	ucnkx2pts			;nc = name called
+
+ucnkdo_for2
+	movi	shts8,a0	;for two
+	calla	speech_play
+ucnkx2pts
+ucnkugly_2pts
+	rets
+
+
+ucnk3_points
+
+	callr	ugly_shot
+	jrnc	ucnkx3pts
+
+	callr	wideopen_speech
+	jrnc	ucnkx3pts
+
+	movi	300,a0			;call name 30% time
+	calla	RNDPER
+	jrls	ucnkno_name3p
+
+	move	@plyr_shot,a0
+	callr	call_player_name
+	jrnc	ucnkx3pts			;nc = name called
+
+ucnkno_name3p
+	movi	4,a0
+	calla	rndrng0
+	sll	5,a0	;x 32 bits
+	addi	ucnk3ptab,a0
+	move	*a0,a0,L
+	jrz	ucnkx3pts
+	calla	speech_play
+ucnkx3pts
+	rets
+
+ucnk3ptab
+	.long	shts0		;from the 3 point line
+	.long	shts1		;shoots for 3
+	.long	shts1		;shoots for 3
+	.long	shts2		;from down town
+	.long	shts3		;he shoots from the outside
+	.long	shtsrb		;rainbow
+
+ucnkhook_shot
+
+	clr	a0
+	move	a0,@skycalled
+
+	callr	ugly_shot
+	jrnc	ucnkxhook
+
+	move	@shot_distance,a0	;distance from hoop
+	cmpi	130,a0
+	jrlt	ucnktoo_close
+
+	movi	1,a0
+	calla	rndrng0
+	sll	5,a0		;x 32 bits
+	addi	ucnkhooktab,a0
+	move	*a0,a0,L
+	calla	speech_play
+	jrc	ucnkfailed
+
+	movk	1,a0
+	move	a0,@skycalled
+	rets
+
+ucnkfailed
+ucnktoo_close
+	move	@plyr_shot,a0
+	callr	call_player_name
+
+ucnkxhook
+	rets
+
+ucnkhooktab
+	.long	hooksht		;1 takes the hook shot
+	.long	hooksht		;1 takes the hook shot
+
+ucnklay_up
+
+	rets
+
+	move	@plyr_shot,a0
+	callr	call_player_name
+
+ucnkxlay
+	rets
+
+ucnkfinger_roll
+
+	move	@plyr_shot,a0
+	callr	call_player_name
+
+ucnkxfing
+	rets
+
+ucnkdunk_short
+
+	move	@plyr_shot,a0
+	callr	call_player_name
+
+	rets
+
+ucnkdunk_med
+
+	move	@plyr_shot,a0
+	callr	call_player_name
+
+	rets
+
+ucnkdunk_long
+
+	movi	400,a0			;call name 40% time
+	calla	RNDPER
+	jrls	ucnknoname_dnkl
+
+	move	@plyr_shot,a0
+	callr	call_player_name
+	jrnc	ucnkxdnkl			;nc = name called
+
+ucnknoname_dnkl
+	movi	1,a0
+	calla	rndrng0
+	sll	5,a0	;x 32 bits
+	addi	ucnkdnktab,a0
+	move	*a0,a0,L
+	jrz	ucnkxdnkl
+	calla	speech_play
+ucnkxdnkl
+	rets
+
+ucnkdnktab
+	.long	scrs7		;oh my!
+	.long	scrs8		;spectacular dunk
+
+
+ SUBR	scored_speech
+
+	PUSH	a1,a2
+
+	callr	blowout
+	jrnc	tmuxxscrdspeech
+
+	callr	onfire_speech
+	jrnc	tmuxxscrdspeech
+
+	callr	lucky_bounce
+	jrnc	tmuxxscrdspeech
+
+	move	@shot_type,a0
+	sll	5,a0			;x 32 bits
+	addi	tmuxscored_table,a0
+	move	*a0,a0,L
+	call	a0
+
+tmuxxscrdspeech
+	PULL	a1,a2
+	rets
+
+
+tmuxscored_table
+	.long	tmuxdesperation
+	.long	tmuxlong_range
+	.long	tmux2_points
+	.long	tmux3_points
+	.long	tmuxhook_shot
+	.long	tmuxlay_up
+	.long	tmuxfinger_roll
+	.long	tmuxdunk_short
+	.long	tmuxdunk_med
+	.long	tmuxdunk_long
+
+tmuxdesperation
+hotscored
+
+	callr	itsgood
+	jrnc	tmuxxdesp
+
+	movi	5,a0
+	calla	rndrng0
+	sll	5,a0		;x 32 bits
+	addi	tmuxdesptab,a0
+	move	*a0,a0,L
+	calla	speech_play
+tmuxxdesp
+	rets
+
+tmuxdesptab
+	.long	scrs7		;0 oh my!
+	.long	scrs7		;1 oh my!
+	.long	scrs7		;2 oh my!
+	.long	scrs7		;3 oh my!
+	.long	takethat	;4 take that!
+	.long	hello		;5 hello!
+
+tmuxlong_range
+
+	callr	itsgood
+	jrnc	tmuxxlong
+
+	movi	3,a0
+	calla	rndrng0
+	sll	5,a0		;x 32 bits
+	addi	tmuxlongtab,a0
+	move	*a0,a0,L
+	calla	speech_play
+tmuxxlong
+	rets
+
+tmuxlongtab
+	.long	scrs4		;0 what a shot
+	.long	scrs0		;1 and it's good
+	.long	greatsht	;2 great shot!
+	.long	hescores	;4 he scores
+
+tmux2_points
+
+	movi	500,a0		;call 50% swishes
+	callr	swish_speech
+	jrnc	tmuxx2pts
+
+	movi	300,a0		;call scores 20% time
+	calla	RNDPER
+	jrls	tmuxx2pts
+
+	movi	6,a0
+	calla	rndrng0
+	sll	5,a0		;x 32 bits
+	addi	tmux2tab,a0
+	move	*a0,a0,L
+	calla	speech_play
+tmuxx2pts
+
+	rets
+
+tmux2tab
+	.long	scrs12		;0 count it (scores)
+	.long	scrs12		;1 count it (scores)
+	.long	hescores	;2 he scores
+	.long	hescores	;3 he scores
+	.long	hescores	;5 he scores
+	.long	twopts		;6 two points
+	.long	twopts		;7 two points
+
+
+
+tmux3_points
+
+	callr	itsgood
+	jrnc	tmuxx3p
+
+	movi	350,a0		;call 35% swishes
+	callr	swish_speech
+	jrnc	tmuxx3p
+
+	movi	6,a0
+	calla	rndrng0
+	sll	5,a0	;x 32 bits
+	addi	tmux3ptab,a0
+	move	*a0,a0,L
+	jrz	tmuxx3p
+	calla	speech_play
+tmuxx3p
+	rets
+
+tmux3ptab
+	.long	scrs0		;0 and it's good
+	.long	scrs0		;1 and it's good
+	.long	scrs2		;2 got it!
+	.long	scrs4		;3 what a shot
+	.long	greatsht	;4 great shot!
+	.long	yes		;5 yes!
+	.long	hescores	;6 he scores
+
+
+tmuxhook_shot
+
+	callr	itsgood
+	jrnc	tmuxxhook
+
+	move	@skycalled,a0	;sky hook called?
+	jrz	tmuxnosky
+
+	jruc	tmux2_points	;call like regular 2 pointer
+	calla	speech_play
+	rets
+
+tmuxnosky
+	movi	scrs5,a0	;hooks it in
+	calla	speech_play
+
+tmuxxhook
+	rets
+
+
+tmuxlay_up
+
+	movk	3,a0
+	calla	rndrng0
+	sll	5,a0		;x 32 bits
+	addi	tmuxlaytab,a0
+	move	*a0,a0,L
+	calla	speech_play
+	rets
+
+tmuxlaytab
+	.long	scrs9	;0 sweet touch
+	.long	scrs25	;1 fancy move
+	.long	scrsrz	;2 razzle dazzle
+	.long	scrs26	;3 fantastic
+
+tmuxfinger_roll
+
+	movi	5,a0
+	calla	rndrng0
+	sll	5,a0		;x 32 bits
+	addi	tmuxfingtab,a0
+	move	*a0,a0,L
+	calla	speech_play
+	rets
+
+tmuxfingtab
+	.long	scrs9	;0 sweet touch
+	.long	scrs3	;1 finds the hole
+	.long	scrs6	;2 finger rolls it in
+	.long	scrs25	;3 fancy move
+	.long	scrsrz	;4 razzle dazzle
+	.long	scrs26	;5 fantastic
+
+
+tmuxdunk_short
+tmuxdunk_med
+tmuxdunk_long
+
+
+	move	@jam_speech,a0		;speech type to call when jammed
+	jrz	tmuxno_speech
+	sll	5,a0			;x 32 bits
+	addi	tmuxjam_jump,a0
+	move	*a0,a0,L
+	call	a0
+tmuxno_speech
+	rets
+
+
+tmuxjam_jump
+	.long	0
+	.long	tmuxeasy_jam
+	.long	tmuxmed_jam
+	.long	tmuxgood_jam
+	.long	tmuxgreat_jam
+
+tmuxeasy_jam
+
+	movi	5,a0
+	calla	rndrng0
+	sll	5,a0		;x 32 bits
+	addi	tmuxeasy_tab,a0
+	move	*a0,a0,L
+	calla	speech_play
+	rets
+
+tmuxeasy_tab
+	.long	scrs19	;0 kaboom
+	.long	scrs22	;1 slams it
+	.long	scrs23	;2 stuffs it
+	.long	scrs24	;3 the easy jam
+	.long	jamsit	;4 jams it in
+	.long	scrs26	;5 fantastic
+
+
+tmuxmed_jam
+
+	movi	6,a0
+	calla	rndrng0
+	sll	5,a0		;x 32 bits
+	addi	tmuxmed_tab,a0
+	move	*a0,a0,L
+	calla	speech_play
+	rets
+
+tmuxmed_tab
+	.long	scrs16		;0 boom shakalaka
+	.long	scrs19		;1 kaboom
+	.long	scrs20		;2 monster jam
+	.long	jamsit		;3 jams it in
+	.long	scrs22		;4 slams it
+	.long	scrs23		;5 stuffs it
+	.long	scrs26		;6 fantastic
+
+
+tmuxgood_jam
+
+	movi	2,a0
+	calla	rndrng0
+	sll	5,a0		;x 32 bits
+	addi	tmuxgood_tab,a0
+	move	*a0,a0,L
+	calla	speech_play
+	rets
+
+tmuxgood_tab
+	.long	scrs16	;0 boom shakalaka
+	.long	scrs19	;1 kaboom
+	.long	jamsit	;2 jams it in
+
+
+tmuxgreat_jam
+
+	movk	5,a0
+	calla	rndrng0
+	sll	5,a0		;x 32 bits
+	addi	tmuxgreat_tab,a0
+	move	*a0,a0,L
+	calla	speech_play
+	rets
+
+tmuxgreat_tab
+	.long	scrs8		;0 spectacular dunk
+	.long	scrs16		;1 boom shakalaka
+	.long	scrs17		;2 razzle dazzle
+	.long	scrs19		;4 kaboom
+	.long	scrs20		;5 monster jam
+	.long	takethat	;6 take that
+
+
+ SUBR	seq_call_name
+
+	move	*a13(plyr_num),a0	;(0-3)
+	callr	call_player_name
+	rets
+
+
+
+ SUBRP	call_player_name
+
+
+
+	move	@last_name_time,a1	;# ticks since name called
+	cmpi	TSEC*2,a1
+	jrhs	chbtplayit
+
+	move	@last_name,a1		;if name called in last 3 secs
+	cmp	a0,a1			;then don't call it again
+	jreq	chbtsnd_fail
+
+chbtplayit
+	PUSH	a0
+
+	move	a0,a1
+	sll	5,a1
+	addi	spch_name_ram,a1
+	move	*a1,a0,L
+
+
+
+	calla	speech_play
+	PULL	a0
+	jrc	chbtsnd_fail
+	move	a0,@last_name		;last player name called
+	clr	a0
+	move	a0,@last_name_time	;# ticks since name called
+	clrc
+	rets
+
+chbtsnd_fail
+	setc
+	rets
+
+
+
+ SUBR	pass_to_speech
+
+	move	@last_name_time,a0	;# ticks since name called
+	cmpi	TSEC*3,a0
+	jrls	cdwisnd_fail
+
+
+	move	a1,a0
+
+	PUSH	a1
+
+	move	a0,a1
+	sll	5,a1
+	addi	spch_pass_ram,a1
+	move	*a1,a0,L
+
+
+
+
+	calla	speech_play
+	PULL	a1
+	jrc	cdwisnd_fail
+	move	a1,a0
+	xori	1,a0
+	move	a0,@last_name		;last player name called
+	clr	a0
+	move	a0,@last_name_time	;# ticks since name called
+	clrc
+	rets
+
+cdwisnd_fail
+	setc
+	rets
+
+
+	.asg	040500h,MAX_TIME	;45 seconds
+	.asg	020500h,MAX_TIME2	;25 seconds
+	.asg	000200h,MIN_TIME	;2 seconds
+
+ SUBRP	blowout
+
+	move	@freakout,a1		;no freakout on score
+	jrz	namino_freakout
+
+	movi	scrs1,a0		;it's good (excited)
+	dec	a1
+	jrnz	namiok
+	move	@game_time,a0,L
+	cmpi	MAX_TIME,a0
+	jrhi	namisnd_fail
+	movi	scrs11,a0		;GOOOOD!!!
+namiok
+	callr	speech_playovrp
+	jrc	namisnd_fail
+	rets
+
+
+namino_freakout
+	move	@gmqrtr,a0
+	cmpi	3,a0
+	jrlt	naminot_last_qtr
+
+	move	@game_time,a0,L
+	cmpi	MAX_TIME,a0
+	jrhi	namisnd_fail
+	cmpi	MIN_TIME,a0
+	jrlo	namisnd_fail
+
+	move	@blowout_called,a0
+	jrnz	namisnd_fail
+
+	move	@ballpnumscored,a0	;Last plyr who scored (0-3) or neg
+	callr	calc_score_diff
+
+	move	@score_diff,a1
+	cmpi	6,a1
+	jrge	namiisblow
+
+	cmpi	3,a1
+	jrlt	namisnd_fail
+
+	move	@needshot_called,a0
+	jrnz	namisnd_fail
+
+	move	@game_time,a0,L
+	cmpi	MAX_TIME2,a0
+	jrhi	namisnd_fail
+
+
+	movi	1,a0
+	calla	rndrng0
+	move	a0,a0
+	jrz	namido_needshot
+
+
+	move	@ballpnumscored,a0	;Last plyr who scored (0-3) or neg
+	jrn	namierror
+
+	movi	silence55,a2
+	movi	sound_ram2,a4
+	move	*a2+,*a4+,L
+	move	*a2+,*a4+,L
+
+	move	@team1,a2
+	srl	1,a0			;0-1
+	jrnz	namitm1_scored
+	move	@team2,a2
+namitm1_scored
+	sll	6,a2			;x 16bits x 4
+	addi	team_speech,a2
+	move	*a2+,*a4+,L
+	move	*a2+,*a4+,L
+	movk	1,a0
+	move	a0,@sound_ram2+40h+30h
+
+	movi	runout,a2
+	move	*a2+,*a4+,L
+	move	*a2+,*a4+,L
+	move	*a2+,*a4+,L
+	move	*a2+,*a4+,L
+
+	movi	sound_ram2,a0
+	jruc	namiplayit
+	rets
+
+namierror
+namido_needshot
+	movi	needshot,a0		;They need a shot here
+namiplayit
+	calla	speech_play
+	jrc	namisnd_fail
+	movk	1,a0
+	move	a0,@needshot_called
+	rets
+
+
+namiisblow
+	movi	blowout_snd,a0		;it's a blowout
+	cmpi	9,a1
+	jrge	namiblowout
+
+	movi	blowout2_snd,a0		;Whoomp
+	move	@HCOUNT,a14
+	btst	0,a14
+	jrz	namiwhoomp
+	movi	scrs14,a0		;the nail in the coffin!
+namiwhoomp
+namiblowout
+	calla	speech_play
+	jrc	namisnd_fail
+
+	movk	1,a0
+	move	a0,@blowout_called
+
+	clrc
+	rets
+
+
+naminot_last_qtr
+	clr	a0
+	move	a0,@blowout_called
+	move	a0,@needshot_called
+
+namisnd_fail
+	setc
+	rets
+
+
+ SUBRP	at_buzzer
+
+	move	@shot_type,a0		;don't call on dunks
+	cmpi	DUNK_SHORT,a0
+	jrhs	npwxcheck_buzzer
+
+	move	@game_time,a0,L
+	cmpi	400h,a0			;less than 4 seconds left
+	jrgt	npwxsnd_fail
+
+	move	@gmqrtr,a0
+	cmpi	3,a0			;last quarter?
+	jrlt	npwxnot_last_qtr
+
+	move	@score_diff,a0
+	jrp	npwxin_front		;already in front
+	move	@ballptsforshot,a1	;Point value for current shot (1-3)
+	add	a1,a0
+	jrz	npwxties_it
+	jrn	npwxbehind
+npwxwins_it
+	movi	scrs10,a0		;IT IS....
+	calla	speech_play
+	jrc	npwxsnd_fail
+	movk	1,a0
+	move	a0,@freakout		;freak out if it scores
+	rets
+
+npwxties_it
+	movi	shts6,a0		;launches a shot
+	calla	speech_play
+	jrc	npwxsnd_fail
+
+	movk	2,a0
+	move	a0,@freakout		;freak out if it scores
+	rets
+
+
+npwxbehind
+npwxin_front
+npwxnot_last_qtr
+npwxcheck_buzzer
+	move	@game_time,a0,L
+	cmpi	200h,a0
+	jrgt	npwxsnd_fail
+
+	movi	shts7,a0		;at the buzzer
+	callr	speech_playovrp
+	jrc	npwxsnd_fail
+	rets
+
+npwxsnd_fail
+	setc
+	rets
+
+
+ SUBRP	lucky_bounce
+
+	move	@shot_type,a0
+	cmpi	DUNK_SHORT,a0		;no lucky bounce on dunks!
+	jrge	ywpfsnd_fail
+
+	move	@ugly_stat,a0
+	jrz	ywpfsnd_fail		;ugly not called
+
+	movi	scrs13,a0		;gets a lucky bounce
+	calla	speech_play
+	jrc	ywpfsnd_fail
+	clrc
+	rets
+
+ywpfsnd_fail
+	setc
+	rets
+
+
+ SUBRP	ugly_shot
+
+	move	@shot_percentage,a0	;0=ugly, 1=ok
+	jrn	ucdkdoit
+	jrnz	ucdksnd_fail
+
+	movi	100,a0			;call ugly 20% time
+	calla	RNDPER
+	jrls	ucdksnd_fail
+
+ucdkdoit
+	movi	2,a0
+	calla	rndrng0
+	sll	5,a0		;x 32 bits
+	addi	ucdkuglytab,a0
+	move	*a0,a0,L
+	calla	speech_play
+	jrc	ucdksnd_fail
+
+	movk	1,a0
+	move	a0,@ugly_stat		;ugly called
+
+	clrc
+	rets
+
+ucdksnd_fail
+	setc
+	rets
+
+ucdkuglytab
+	.long	ugly0	;ugly shot!
+	.long	ugly1	;puts up a brick
+	.long	ugly2	;terrible shot!
+
+
+
+ SUBR	call_team_name
+
+	sll	6,a0			;x 16bits x 4
+	addi	team_speech,a0
+	calla	speech_play
+	rets
+
+
+
+ SUBR	call_matchup
+
+	SLEEP	20
+
+	movi	matchup,a0
+	calla	snd_play1
+
+	SLEEP	1*TSEC+20
+
+	move	@team1,a2
+	sll	6,a2			;x 16bits x 4
+	addi	team_speech,a2
+	movi	sound_ram,a4
+	move	*a2+,*a4+,L
+	move	*a2+,*a4+,L
+	movk	1,a0
+	move	a0,@sound_ram+30h
+
+	movi	versus,a2
+	move	*a2+,*a4+,L
+	move	*a2+,*a4+,L
+	movk	1,a0
+	move	a0,@sound_ram+40h+30h
+
+	move	@team2,a2
+	sll	6,a2			;x 16bits x 4
+	addi	team_speech,a2
+	move	*a2+,*a4+,L
+	move	*a2+,*a4+,L
+
+	movi	sound_ram,a0
+	calla	snd_play1
+
+	DIE
+
+
+
+calc_score_diff
+
+	PUSH	a0,a1,a2
+
+	move	@scores,a1
+	move	@scores+10h,a2
+	sub	a2,a1
+	srl	1,a0
+	jrz	jwpnteam1
+	neg	a1			;team2, so negate
+jwpnteam1
+	move	a1,@score_diff
+	PULL	a0,a1,a2
+	rets
+
+
+ SUBR	pushed_speech
+
+	movi	4,a0
+	calla	rndrng0
+	sll	5,a0		;x 32 bits
+	addi	tlthpushtab,a0
+	move	*a0,a0,L
+	jrz	tlthsnd_fail
+	calla	speech_play
+
+tlthsnd_fail
+	setc
+	rets
+
+tlthpushtab
+	.long	munged		;0 munged
+	.long	ambushed	;1 ambushed
+	.long	excuse		;2 excuse me
+	.long	tofloor		;3 knocked to the floor
+	.long	takethat	;4 take that
+
+
+ SUBR	rejected_speech
+
+	move	@ballobj_p,a1,L
+	move	*a1(OYPOS),a0
+	cmpi	-28,a0
+	jrgt	hkliyes		;Br=near ground
+
+	movk	11,a0
+	calla	rndrng0
+	sll	5,a0		;x 32 bits
+	addi	hkliregtab,a0
+	move	*a0,a0,L
+	calla	speech_playovrp
+hkliyes
+	rets
+
+hkliregtab
+	.long	reject		;0 rejected!
+	.long	reject		;1 rejected!
+	.long	rejects		;2 rejects the shot
+	.long	rejects		;2 rejects the shot
+	.long	greatd		;3 great defense
+	.long	greatd		;4 great defense
+	.long	noway		;5 no way!
+	.long	getout		;6 get that outta here!
+	.long	getout		;6 get that outta here!
+	.long	getout		;8 get that outta here!
+	.long	getout		;8 get that outta here!
+	.long	getout2		;8 get that outta here!
+
+
+ SUBR	rejected_dnk_speech
+
+	move	@ballobj_p,a1,L
+	move	*a1(OYPOS),a0
+	cmpi	-28,a0
+	jrgt	ggomyes		;Br=near ground
+
+	movk	7,a0
+	calla	rndrng0
+	sll	5,a0		;x 32 bits
+	addi	ggomregdnktab,a0
+	move	*a0,a0,L
+	calla	speech_playovrp
+ggomyes
+	rets
+
+ggomregdnktab
+	.long	reject		;0 rejected!
+	.long	reject		;1 rejected!
+	.long	reject		;1 rejected!
+	.long	noway		;2 no way!
+	.long	noway		;2 no way!
+	.long	getout		;3 get that outta here!
+	.long	getout		;3 get that outta here!
+	.long	getout2		;3 get that outta here!
+
+
+ SUBR	rebound_speech
+
+	PUSH	a1,a2
+
+	move	@game_time,a0,L	;don't call if clock run down
+	jrz	czkjsnd_fail
+
+	movi	1,a0
+	calla	rndrng0
+	sll	5,a0		;x 32 bits
+	addi	czkjrebtab,a0
+	move	*a0,a0,L
+
+	move	@ballpnum,a1
+	jrn	czkjsnd_fail
+
+	sll	4,a1			;x16
+	addi	special_heads,a1	;-1 = normal player head
+	move	*a1,a1
+
+	move	@last_name,a2
+	cmp	a1,a2
+	jrne	czkjcall_name
+
+czkjno_name
+	calla	speech_play
+	jrc	czkjsnd_fail
+	PULL	a1,a2
+	rets
+
+czkjcall_name
+	movi	sound_ram+40h,a2
+	move	*a0+,*a2+,L
+	move	*a0+,*a2+,L
+
+	move	@ballpnum,a0
+
+
+
+	move	a0,a1
+	sll	5,a1
+	addi	spch_name_ram,a1
+	move	*a1,a0,L
+
+
+ 
+
+	movi	sound_ram,a2
+	move	*a0+,*a2+,L
+	move	*a0+,*a2+,L
+	movk	1,a0
+	move	a0,@sound_ram+30h
+	movi	sound_ram,a0
+	calla	speech_play
+	jrc	czkjsnd_fail
+
+	move	@ballpnum,a0
+	move	a0,@last_name		;last player name called
+	clr	a0
+	move	a0,@last_name_time	;# ticks since name called
+
+	PULL	a1,a2
+	rets
+
+
+czkjsnd_fail
+	setc
+	PULL	a1,a2
+	rets
+
+czkjrebtab
+	.long	grabreb		;0 grabs the rebound
+	.long	grabreb		;0 grabs the rebound
+
+
+
+ SUBR	intercepted_speech
+
+	movi	1,a0
+	calla	rndrng0
+	sll	5,a0		;x 32 bits
+	addi	wkfxintcptab,a0
+	move	*a0,a0,L
+	calla	speech_playovrp
+	rets
+
+wkfxintcptab
+	.long	intrcpt		;intercepted!
+	.long	turnovr		;the turnover!
+
+
+ SUBR	stolen_speech
+
+	movi	1,a0
+	calla	rndrng0
+	sll	5,a0		;x 32 bits
+	addi	wbdxstealstab,a0
+	move	*a0,a0,L
+	calla	speech_playovrp
+	rets
+
+wbdxstealstab
+	.long	turnovr		;the turnover!
+	.long	stolen		;stolen!
+
+
+
+ SUBRP	itsgood
+
+	move	@game_time,a0,L
+	jrnz	hbqwsnd_fail
+
+	movi	scrs1,a0	;it's good (excited)
+	calla	speech_play
+	jrc	hbqwsnd_fail
+	rets
+
+hbqwsnd_fail
+	setc
+	rets
+
+
+
+ SUBR	seq_lay_up_start
+
+	movi	scrs15,a0	;lays it up
+	calla	speech_play
+	rets
+
+
+ SUBR	seq_jam_speech
+
+	move	*b4+,b0
+	move	b0,a0		;jam speech type
+	move	a0,@jam_speech	;speech type to call when jammed
+ 	rets
+
+
+ SUBRP	swish_speech
+
+	move	@ballrimhitcnt,a1
+	jrnz	lcyhnoswish
+
+	move	@ballbbhitcnt,a1
+	jrnz	lcyhsnd_fail
+
+	calla	RNDPER
+	jrls	lcyhsnd_fail
+
+lcyhdoit
+	movi	2,a0
+	calla	rndrng0
+	sll	5,a0		;x 32 bits
+	addi	lcyhswishtab,a0
+	move	*a0,a0,L
+	calla	speech_play
+	rets
+lcyhsnd_fail
+	setc
+	rets
+
+lcyhnoswish
+	cmpi	9,a1
+	jrlt	lcyhsnd_fail
+
+	movi	scrs13,a0	;gets a lucky bounce
+	calla	speech_play
+
+	rets
+
+
+lcyhswishtab
+	.long	swish_snd	;0 SWISH!
+	.long	allnet_snd	;1 nothing but net
+	.long	swish_snd	;2 SWISH!
+
+
+
+ SUBR	call_scores
+
+	PUSH	a0,a1,a7,a14
+	PUSH	b0,b1
+
+	move	@game_time,a0,L
+	jrz	zgtuno_call0
+
+	cmpi	010000h,a0		;10 seconds
+	jrlt	zgtuno_call0
+
+
+zgtunot_last_qtr
+
+	move	@next_call,a0
+	jrz	zgtudo_call
+	dec	a0
+	move	a0,@next_call
+	jruc	zgtuno_call0
+
+zgtudo_call
+	CREATE0	call_scores_proc
+
+zgtuno_call0
+	PULL	b0,b1
+	PULL	a0,a1,a7,a14
+	rets
+
+
+ SUBRP	call_scores_proc
+
+	SLEEP	TSEC+30
+
+	move	@game_time,a0,L
+	jrz	zgtuno_call
+
+	move	@scores,a1
+	move	@scores+10h,a0
+	sub	a0,a1
+
+	move	a11,a11
+	jrnz	zgtutm1_scored
+zgtutm2_scored
+	move	@team2,a2
+	neg	a1
+	jruc	zgtucnt
+
+zgtutm1_scored
+	move	@team1,a2
+zgtucnt
+	sll	6,a2			;x 16bits x 4
+	addi	team_speech,a2
+	movi	sound_ram,a4
+	move	*a2+,*a4+,L
+	move	*a2+,*a4+,L
+	movk	1,a0
+	move	a0,@sound_ram+30h
+
+	movi	upby,a2
+	move	a1,a1
+	jrz	zgtutied
+	jrp	zgtupos
+
+	movi	downby,a2
+	neg	a1
+zgtupos
+	cmpi	20,a1
+	jreq	zgtuok
+	cmpi	15,a1
+	jreq	zgtuok
+	cmpi	10,a1
+	jrgt	zgtuoutrange
+
+
+zgtuok
+	movi	sound_ram+40h,a4
+	move	*a2+,*a4+,L
+	move	*a2+,*a4+,L
+	movk	1,a0
+	move	a0,@sound_ram+40h+30h
+
+	sll	5,a1			;x 32 bits
+	addi	zgtunumtab-20h,a1
+	move	*a1,a2,L
+	movi	sound_ram+80h,a4
+	move	*a2+,*a4+,L
+	move	*a2+,*a4+,L
+
+	movi	sound_ram,a0
+	calla	speech_play
+	jrc	zgtusnd_fail		;so try again
+
+	movi	2,a0
+	move	a0,@next_call
+
+zgtusnd_fail
+zgtuoutrange
+zgtuno_call
+	DIE
+
+
+zgtutied
+	movi	scrtied,a0		;the score is tied
+	calla	speech_play
+	jrc	zgtusnd_fail		;so try again
+
+	movi	2,a0
+	move	a0,@next_call
+
+	move	@gmqrtr,a0
+	jrz	zgtunoorg
+	movi	150,a0
+	calla	RNDPER
+	jrls	zgtunoorg
+
+	move	@game_time,a1,L
+	cmpi	020000h,a1
+	jrlt	zgtunoorg
+
+	SLEEP	3*60
+
+	movi	organ1_snd,a1
+	btst	0,a0
+	jrz	zgtuorg1
+	movi	organ2_snd,a1
+zgtuorg1	move	a1,a0
+	calla	snd_play1ovr
+
+zgtunoorg
+
+	DIE
+
+zgtunumtab
+	.long	snd_1
+	.long	snd_2
+	.long	snd_3
+	.long	snd_4
+	.long	snd_5
+	.long	snd_6
+	.long	snd_7
+	.long	snd_8
+	.long	snd_9
+	.long	snd_10
+	.long	0,0,0,0
+	.long	snd_15
+	.long	0,0,0,0
+	.long	snd_20
+
+
+	movi	needshot,a0		;They need a shot here
+
+
+
+ SUBR	name_call
+
+nzflrestart
+	movi	TSEC*2,a10
+nzflloop
+	SLEEPK	1
+
+	move	@game_time,a0,L
+	jrz	nzflrestart
+
+	move	@inbound,a0
+	jrnn	nzflrestart
+
+	move	@ballpnum,a0
+	jrn	nzflrestart		;ball free
+
+
+	move	a0,a1
+	sll	5,a1			;*32
+	addi	plyrproc_t,a1
+	move	*a1,a1,L
+	move	*a1(plyr_seqflgs),a1
+	btst	DUNK_B,a1
+	jrnz	nzflrestart
+
+	dsj	a10,nzflloop
+
+	move	@last_name,a1		;if name called in last 3 secs
+	cmp	a0,a1
+	jrne	nzfldiff_name
+
+	move	@last_name_time,a1	;# ticks since name called
+	cmpi	TSEC*2,a1
+	jrlt	nzflrestart
+
+nzfldiff_name
+	callr	call_player_name
+
+	movi	TSEC*4,a10
+	jruc	nzflloop
+
+
+
+ SUBRP	onfire_speech
+
+	move	@game_time,a0,L
+	jrz	kezusnd_fail
+
+
+	move	@ballpnumscored,a0	;Last plyr who scored (0-3) or neg
+
+	move	@ballnumscored,a0	;# times last plyr scored
+	cmpi	3,a0
+	jrge	kezuonfire
+	cmpi	2,a0
+	jrne	kezusnd_fail		;is cold
+
+	movi	heatup_snd,a0
+	jruc	kezuheatup
+
+kezuonfire
+	move	@plyrnumonfire,a0	;plyr who is on fire
+	move	@ballpnumscored,a1	;Last plyr who scored (0-3) or neg
+	cmp	a0,a1
+	jrne	kezuwas_teammate
+
+	move	@shot_type,a0
+	jrnz	kezunot_desp
+
+	movi	400,a0			;call desp speech 40% time
+	calla	RNDPER
+	jrhi	hotscored
+
+kezunot_desp
+	movi	3,a0
+	calla	rndrng0
+	sll	5,a0		;x 32 bits
+	addi	kezuonfiretab,a0
+	move	*a0,a0,L
+kezuheatup
+	callr	speech_playovrp
+	rets
+
+kezuwas_teammate
+kezusnd_fail
+	setc
+	rets
+
+kezuonfiretab
+	.long	onfire_snd		;0 he's on fire
+	.long	hothand			;1 he's got a hot hand
+	.long	takethat		;2 take that!
+	.long	uncon			;3 he's unconscious
+
+
+	.asg	140,RANGE
+
+ SUBRP	 wideopen_speech
+
+	move	@plyr_shot,a0		;player who shot last (0-3)
+	sll	5,a0			;*32
+	addi	plyrproc_t,a0
+	move	*a0,a0,L
+	move	*a0(plyr_o1dist),a1	;opponent 1 dist
+	cmpi	RANGE,a1
+	jrlt	ycrtnot_open
+	move	*a0(plyr_o2dist),a1	;opponent 2 dist
+	cmpi	RANGE,a1
+	jrlt	ycrtnot_open
+
+	movi	wideopen,a0
+	calla	speech_play
+
+	rets
+
+ycrtnot_open
+	setc
+	rets
+
+
+
+	.asg	3,BRICK_MAX
+
+ SUBR	nogood_speech
+
+	PUSH	a10
+
+	move	@ballpnumshot,a10
+	sll	4,a10			;x 16
+	addi	brick_count,a10
+	move	*a10,a1			;brick_count
+	cmpi	BRICK_MAX,a1
+	jrlt	tswzno_good
+	movi	cantbuy,a0		;can't buy a bucket
+	callr	speech_play
+	jrc	tswzfailed
+	clr	a0
+	move	a0,*a10			;played, now clear it
+
+tswzno_good
+	move	@game_time,a0,L		;always call if clock at zero
+	jrz	tswzdoit_baby
+
+	movi	400,a0			;don't call 40% of no goods
+	calla	RNDPER
+	jrls	tswzfailed
+
+tswzdoit_baby
+	movi	nogood,a0		;NO GOOD!
+	callr	speech_play
+
+tswzfailed
+	PULL	a10
+	rets
+
+
+ SUBR	victory_speech
+
+	move	@team1,a0
+	move	@scores,a1
+	move	@scores+10h,a2
+	cmp	a1,a2
+	jrlt	zxldt1_wins
+	move	@team2,a0
+zxldt1_wins
+	sll	6,a0			;x 16bits x 4
+	addi	team_speech,a0
+
+	movi	sound_ram2,a4
+	move	*a0+,*a4+,L
+	move	*a0+,*a4+,L
+	movk	1,a0
+	move	a0,@sound_ram2+30h
+
+	movi	wingame,a0
+	move	*a0+,*a4+,L
+	move	*a0+,*a4+,L
+
+	movi	sound_ram2,a0
+	callr	speech_play
+
+	rets
+
+
+
+	.ref	player_names,tm1set,tm2set,name_sort
+
+ SUBR	setup_speech
+
+	movi	player_names,a10
+	move	@team1,a2
+
+
+cxjylp3	cmpi	0,a2
+	jrz	cxjyout3
+	addi	20*64,a10
+	dec	a2
+	jruc	cxjylp3
+cxjyout3
+	move	@team1,a0
+	sll	4,a0
+	addi	tm1set,a0
+	move	*a0,a14
+	sll	6,a14
+	add	a14,a10
+
+	move	*a10,a0,L
+	movi	name_sort,a14
+	movi	-1,a10
+cxjylp4
+	inc	a10
+	move	*a14+,a1,L
+	cmp	a1,a0
+	jrnz	cxjylp4
+
+	sll	6,a10
+	move	a10,a0
+	addi	name_speech,a10
+	addi	pass_speech,a0
+
+	move	@special_heads,a14
+	jrn	cxjytag1
+	sll	6,a14
+	addi	special_name_speech,a14
+	move	a14,a10
+cxjytag1
+	move	@special_heads,a14
+	jrn	cxjytag2
+	sll	6,a14
+	addi	special_pass_speech,a14
+	move	a14,a0
+cxjytag2
+
+	move	a10,@spch_name_ram,L
+	move	a0,@spch_pass_ram+32,L
+
+
+
+	movi	player_names,a10
+	move	@team1,a2
+
+
+
+
+
+
+ilvblp3	cmpi	0,a2
+	jrz	ilvbout3
+	addi	20*64,a10
+	dec	a2
+	jruc	ilvblp3
+ilvbout3
+	move	@team1,a0
+	sll	4,a0
+	addi	tm1set,a0
+	move	*a0,a14
+	sll	6,a14
+	add	a14,a10
+
+	addk	32,a10
+
+	move	*a10,a0,L
+	movi	name_sort,a14
+	movi	-1,a10
+ilvblp4
+	inc	a10
+	move	*a14+,a1,L
+	cmp	a1,a0
+	jrnz	ilvblp4
+
+	sll	6,a10
+	move	a10,a0
+	addi	name_speech,a10
+	addi	pass_speech,a0
+
+	move	@special_heads+10h,a14
+	jrn	ilvbtag1a
+	sll	6,a14
+	addi	special_name_speech,a14
+	move	a14,a10
+ilvbtag1a
+	move	@special_heads+10h,a14
+	jrn	ilvbtag2a
+	sll	6,a14
+	addi	special_pass_speech,a14
+	move	a14,a0
+ilvbtag2a
+
+
+	move	a10,@spch_name_ram+32,L
+	move	a0,@spch_pass_ram,L
+
+
+
+	movi	player_names,a10
+	move	@team2,a2
+rxwjlp3	cmpi	0,a2
+	jrz	rxwjout3
+	addi	20*64,a10
+	dec	a2
+	jruc	rxwjlp3
+rxwjout3
+	move	@team2,a0
+	sll	4,a0
+	addi	tm2set,a0
+	move	*a0,a14
+	sll	6,a14
+	add	a14,a10
+
+	move	*a10,a0,L
+	movi	name_sort,a14
+	movi	-1,a10
+rxwjlp4
+	inc	a10
+	move	*a14+,a1,L
+	cmp	a1,a0
+	jrnz	rxwjlp4
+
+	sll	6,a10
+	move	a10,a0
+	addi	name_speech,a10
+	addi	pass_speech,a0
+
+	move	@special_heads+20h,a14
+	jrn	rxwjtag1b
+	sll	6,a14
+	addi	special_name_speech,a14
+	move	a14,a10
+rxwjtag1b
+	move	@special_heads+20h,a14
+	jrn	rxwjtag2b
+	sll	6,a14
+	addi	special_pass_speech,a14
+	move	a14,a0
+rxwjtag2b
+
+	move	a10,@spch_name_ram+64,L
+	move	a0,@spch_pass_ram+96,L
+
+
+
+	movi	player_names,a10
+	move	@team2,a2
+qlswlp3	cmpi	0,a2
+	jrz	qlswout3
+	addi	20*64,a10
+	dec	a2
+	jruc	qlswlp3
+qlswout3
+	move	@team2,a0
+	sll	4,a0
+	addi	tm2set,a0
+	move	*a0,a14
+	sll	6,a14
+	add	a14,a10
+
+	addk	32,a10
+
+	move	*a10,a0,L
+	movi	name_sort,a14
+	movi	-1,a10
+qlswlp4
+	inc	a10
+	move	*a14+,a1,L
+	cmp	a1,a0
+	jrnz	qlswlp4
+
+	sll	6,a10
+	move	a10,a0
+	addi	name_speech,a10
+	addi	pass_speech,a0
+
+	move	@special_heads+30h,a14
+	jrn	qlswtag1c
+	sll	6,a14
+	addi	special_name_speech,a14
+	move	a14,a10
+qlswtag1c
+	move	@special_heads+30h,a14
+	jrn	qlswtag2c
+	sll	6,a14
+	addi	special_pass_speech,a14
+	move	a14,a0
+qlswtag2c
+
+	move	a10,@spch_name_ram+96,L
+	move	a0,@spch_pass_ram+64,L
+
+	rets
+
+	.end
+

@@ -1,0 +1,40 @@
+
+AUDIT	.macro	P1
+	MOVI	:P1:,A0	
+	CALLA	AUD1
+	.endm
+
+AUDITCNT .macro	P1,P2
+	MOVE	@:P2:,A1
+	MOVI	:P1:,A0
+	CALLA	AUD
+	.endm
+
+ADJUST	.macro	P1
+	MOVI	:P1:,A0
+	CALLA	GET_ADJ
+	.endm
+
+FCALL	.macro	n,b
+	movi	:n:,:b:,L
+	exgpc	:b:
+	.endm
+
+FRET	.macro	b
+	exgpc	:b:
+	.endm
+
+
+
+RJR_STR	.macro	FONT,SPACING,CSPACE,X,Y,PALETTE,PR_METHOD
+	.long	:FONT:
+	.word   :SPACING:
+	.word	:CSPACE:
+	.word	:X:
+	.word	:Y:
+	.long   :PALETTE:
+	.long   :PR_METHOD:
+	.endm
+
+
+

@@ -1,0 +1,679 @@
+	.DATA
+COURT	.set	04673800h
+AD_III_L:
+	.word   101,46,-148,1
+	.long   047cbb10H
+	.word   00H
+	.long   CROWD_p
+RF_III_L:
+	.word   101,15,0,0
+	.long   047d4c40H
+	.word   06000H
+	.long   COURT_p
+AD_REV_R:
+	.word   101,47,-19,-4
+	.long   047d6fc2H
+	.word   00H
+	.long   CROWD_p
+RF_REV_R:
+	.word   101,15,0,0
+	.long   047e041aH
+	.word   06000H
+	.long   COURT_p
+AD_PEK_L:
+	.word   101,46,-148,1
+	.long   047e279cH
+	.word   00H
+	.long   CROWD_p
+RF_PEK_L:
+	.word   101,15,0,0
+	.long   047eb8ccH
+	.word   06000H
+	.long   COURT_p
+AD_MUS_R:
+	.word   101,47,-19,-4
+	.long   047edc4eH
+	.word   00H
+	.long   CROWD_p
+RF_MUS_R:
+	.word   101,15,0,0
+	.long   047f70a6H
+	.word   06000H
+	.long   COURT_p
+AD_SMO_R:
+	.word   101,47,-19,-4
+	.long   047f9428H
+	.word   00H
+	.long   CROWD_p
+RF_SMO_R:
+	.word   101,15,0,0
+	.long   04802880H
+	.word   06000H
+	.long   COURT_p
+AD_CHAL_L:
+	.word   101,46,-148,1
+	.long   04804c02H
+	.word   00H
+	.long   CROWD_p
+RF_CHAL_L:
+	.word   101,15,0,0
+	.long   0480dd32H
+	.word   06000H
+	.long   COURT_p
+AD_WWF_L:
+	.word   102,46,-148,1
+	.long   048100b4H
+	.word   00H
+	.long   CROWD_p
+RF_WWF_L:
+	.word   101,15,0,0
+	.long   04819354H
+	.word   06000H
+	.long   COURT_p
+AD_KANO_L:
+	.word   101,46,-148,1
+	.long   0481b6d6H
+	.word   00H
+	.long   CROWD_p
+RF_KANO_L:
+	.word   101,15,0,0
+	.long   04824806H
+	.word   06000H
+	.long   COURT_p
+AD_KOM1_L:
+	.word   101,46,-148,1
+	.long   04826b88H
+	.word   00H
+	.long   CROWD_p
+RF_KOM1_L:
+	.word   101,15,0,0
+	.long   0482fcb8H
+	.word   06000H
+	.long   COURT_p
+AD_KOM2_L:
+	.word   101,46,-148,1
+	.long   0483203aH
+	.word   00H
+	.long   CROWD_p
+adrecy2:
+	.word   101,47,-19,-4
+	.long   0483b16aH
+	.word   00H
+	.long   CROWD_p
+adhot:
+	.word   101,46,-148,1
+	.long   048445c2H
+	.word   00H
+	.long   CROWD_p
+admid2:
+	.word   101,47,-19,-4
+	.long   0484d6f2H
+	.word   00H
+	.long   CROWD_p
+adblue2:
+	.word   101,47,-19,-4
+	.long   04856b4aH
+	.word   00H
+	.long   CROWD_p
+blueref:
+	.word   101,15,0,0
+	.long   0485ffa2H
+	.word   06000H
+	.long   COURT_p
+hotref:
+	.word   101,15,0,0
+	.long   04862324H
+	.word   06000H
+	.long   COURT_p
+midref:
+	.word   101,15,0,0
+	.long   048646a6H
+	.word   06000H
+	.long   COURT_p
+recycref:
+	.word   99,15,0,0
+	.long   04866a28H
+	.word   06000H
+	.long   COURT_p
+ad1:
+	.word   101,46,-148,1
+	.long   04868cf6H
+	.word   00H
+	.long   CROWD_p
+ad1ref:
+	.word   101,15,0,0
+	.long   04871e26H
+	.word   06000H
+	.long   COURT_p
+ad2:
+	.word   101,47,-19,-4
+	.long   048741a8H
+	.word   00H
+	.long   CROWD_p
+ad2ref:
+	.word   100,15,0,0
+	.long   0487d600H
+	.word   06000H
+	.long   COURT_p
+pal_img2:
+	.word   5,4,0,0
+	.long   0487f928H
+	.word   0
+	.long   crtgrnyel
+pal_img4:
+	.word   5,4,0,0
+	.long   0487f928H
+	.word   0
+	.long   crtpuryel
+pal_img5:
+	.word   5,4,0,0
+	.long   0487f928H
+	.word   0
+	.long   crtblupur
+pal_img3:
+	.word   5,4,0,0
+	.long   0487f928H
+	.word   0
+	.long   UPCOURT_P
+pal_img1:
+	.word   5,4,0,0
+	.long   0487f928H
+	.word   0
+	.long   crtblkred
+adnba:
+	.word   101,46,-148,1
+	.long   0487f9c8H
+	.word   00H
+	.long   CROWD_p
+adjet:
+	.word   101,46,-148,1
+	.long   04888af8H
+	.word   00H
+	.long   CROWD_p
+nbaref:
+	.word   98,15,0,0
+	.long   04891c28H
+	.word   06000H
+	.long   COURT_p
+jamref:
+	.word   99,15,0,0
+	.long   04893e9cH
+	.word   06000H
+	.long   COURT_p
+jetref:
+	.word   100,15,0,0
+	.long   0489616aH
+	.word   06000H
+	.long   COURT_p
+adnba2:
+	.word   101,47,-19,-4
+	.long   04898492H
+	.word   00H
+	.long   CROWD_p
+adjam2:
+	.word   101,47,-19,-4
+	.long   048a18eaH
+	.word   00H
+	.long   CROWD_p
+tfreeply:
+	.word   42,5,0,0
+	.long   048aad42H
+	.word   0
+	.long   CROWD_p
+tcredit:
+	.word   27,5,0,0
+	.long   048ab3d2H
+	.word   0
+	.long   CROWD_p
+reflc1:
+	.word   16,28,0,0
+	.long   048ab80aH
+	.word   06000H
+	.long   COURT_p
+reflc2:
+	.word   24,19,0,0
+	.long   048ac28aH
+	.word   06000H
+	.long   COURT_p
+reflc3:
+	.word   20,28,0,0
+	.long   048acd3aH
+	.word   06000H
+	.long   COURT_p
+reflc4:
+	.word   15,15,0,0
+	.long   048ada5aH
+	.word   06000H
+	.long   COURT_p
+topcrwd:
+	.word   400,73,0,25
+	.long   048adfa0H
+	.word   00000H
+	.long   CROWD_p
+table2:
+	.word   216,41,-12,-7
+	.long   048e7020H
+	.word   00H
+	.long   CROWD_p
+cdre0:
+	.word   55,12,0,0
+	.long   048f84e0H
+	.word   06000H
+	.long   COURT_p
+newtbl1:
+	.word   112,45,-248,0
+	.long   048f9458H
+	.word   00000H
+	.long   CROWD_p
+newtbl2:
+	.word   111,39,-169,-9
+	.long   049031d8H
+	.word   00H
+	.long   CROWD_p
+crowd1a2:
+	.word   148,46,0,1
+	.long   0490b920H
+	.word   00H
+	.long   CROWD_p
+crowd1a3:
+	.word   148,47,0,2
+	.long   04918de0H
+	.word   00H
+	.long   CROWD_p
+crowd1a4:
+	.word   148,51,0,6
+	.long   04926740H
+	.word   00H
+	.long   CROWD_p
+crowd1a5:
+	.word   148,66,0,21
+	.long   04935320H
+	.word   00H
+	.long   CROWD_p
+usher:
+	.word   18,52,0,0
+	.long   04948460H
+	.word   00H
+	.long   CROWD_p
+crowd2a2:
+	.word   143,41,-28,-4
+	.long   0494a1a0H
+	.word   00H
+	.long   CROWD_p
+crowd2a3:
+	.word   143,43,-28,-2
+	.long   049558d8H
+	.word   00H
+	.long   CROWD_p
+crowd2a4:
+	.word   143,50,-28,5
+	.long   04961900H
+	.word   00H
+	.long   CROWD_p
+newtbl3:
+	.word   313,42,0,0
+	.long   0496f870H
+	.word   00H
+	.long   CROWD_p
+crowd3a2:
+	.word   146,44,0,2
+	.long   04989340H
+	.word   00H
+	.long   CROWD_p
+crowd3a3:
+	.word   146,44,0,3
+	.long   04995c00H
+	.word   00H
+	.long   CROWD_p
+crowd1a:
+	.word   148,45,0,0
+	.long   049a24c0H
+	.word   00H
+	.long   CROWD_p
+crowd1b:
+	.word   230,59,0,3
+	.long   049af4e0H
+	.word   00H
+	.long   CROWD_p
+crowd2a:
+	.word   141,37,-28,-8
+	.long   049c9cf0H
+	.word   00H
+	.long   CROWD_p
+crowd2b:
+	.word   217,20,0,0
+	.long   049d3ff8H
+	.word   00H
+	.long   CROWD_p
+crowd3:
+	.word   146,44,0,0
+	.long   049dc798H
+	.word   00H
+	.long   CROWD_p
+crowd3a4:
+	.word   146,48,0,10
+	.long   049e9058H
+	.word   00H
+	.long   CROWD_p
+sdcrwd1:
+	.word   108,81,0,0
+	.long   049f6b58H
+	.word   00H
+	.long   CROWD_p
+sdcrwd2:
+	.word   63,58,0,0
+	.long   04a07cb8H
+	.word   00H
+	.long   CROWD_p
+sdcrwd3:
+	.word   92,74,14,0
+	.long   04a0eee8H
+	.word   00H
+	.long   CROWD_p
+sdcrwd4:
+	.word   101,87,0,0
+	.long   04a1c3a8H
+	.word   00H
+	.long   CROWD_p
+sdcrwd5:
+	.word   91,55,0,0
+	.long   04a2d640H
+	.word   00H
+	.long   CROWD_p
+sdcrwd6:
+	.word   83,55,0,0
+	.long   04a372a8H
+	.word   00H
+	.long   CROWD_p
+sdcrwd7:
+	.word   72,43,0,0
+	.long   04a40150H
+	.word   00H
+	.long   CROWD_p
+sdcrwd8:
+	.word   111,44,40,0
+	.long   04a46210H
+	.word   00000H
+	.long   CROWD_p
+nsdcrwd1a:
+	.word   66,92,0,4
+	.long   04a4fab0H
+	.word   00H
+	.long   CROWD_p
+nsdcrwd2a:
+	.word   58,69,-3,-2
+	.long   04a5b870H
+	.word   00H
+	.long   CROWD_p
+nsdcrwd4a:
+	.word   96,86,-2,-1
+	.long   04a63580H
+	.word   00H
+	.long   CROWD_p
+sdcrwd8c:
+	.word   111,44,40,0
+	.long   04a73780H
+	.word   00H
+	.long   CROWD_p
+nsdcrwd4c:
+	.word   96,88,-2,-1
+	.long   04a7d020H
+	.word   00H
+	.long   CROWD_p
+nsdcrwd1c:
+	.word   66,102,-2,14
+	.long   04a8d820H
+	.word   00H
+	.long   CROWD_p
+nsdcrwd2c:
+	.word   59,57,-2,-13
+	.long   04a9aa80H
+	.word   00H
+	.long   CROWD_p
+nsdcrwd3c:
+	.word   70,81,-3,11
+	.long   04aa1398H
+	.word   00H
+	.long   CROWD_p
+nsdcrwd3a:
+	.word   70,74,-4,4
+	.long   04aac4c8H
+	.word   00H
+	.long   CROWD_p
+crowd40:
+	.word   400,128,1,49
+	.long   04ab66a8H
+	.word   00H
+	.long   CROWD_p
+crowd401:
+	.word   400,128,1,50
+	.long   04ab66a8H
+	.word   00H
+	.long   CROWD_p
+crowd402:
+	.word   400,128,1,51
+	.long   04ab66a8H
+	.word   00H
+	.long   CROWD_p
+PAL_ATL:
+	.word   5,5,0,0
+	.long   04b1a6a8H
+	.word   00000H
+	.long   CRT_ATL_P
+PAL_BOS:
+	.word   5,5,0,0
+	.long   04b1a6a8H
+	.word   00000H
+	.long   CRT_BOS_P
+PAL_CHA:
+	.word   5,5,0,0
+	.long   04b1a6a8H
+	.word   00000H
+	.long   CRT_CHA_P
+PAL_CHI:
+	.word   5,5,0,0
+	.long   04b1a6a8H
+	.word   00000H
+	.long   CRT_CHI_P
+PAL_CHI2:
+	.word   5,5,0,0
+	.long   04b1a6a8H
+	.word   00000H
+	.long   CRT_CHI2P
+PAL_CLE:
+	.word   5,5,0,0
+	.long   04b1a6a8H
+	.word   00000H
+	.long   CRT_CLE_P
+PAL_CLP:
+	.word   5,5,0,0
+	.long   04b1a6a8H
+	.word   00000H
+	.long   CRT_CLP_P
+PAL_DAL:
+	.word   5,5,0,0
+	.long   04b1a6a8H
+	.word   0000H
+	.long   CRT_DAL_P
+PAL_DEN:
+	.word   5,5,0,0
+	.long   04b1a6a8H
+	.word   0000H
+	.long   CRT_DEN_P
+PAL_DET:
+	.word   5,5,0,0
+	.long   04b1a6a8H
+	.word   00000H
+	.long   CRT_DET_P
+PAL_GLD:
+	.word   5,5,0,0
+	.long   04b1a6a8H
+	.word   00000H
+	.long   CRT_GLD_P
+PAL_HOU:
+	.word   5,5,0,0
+	.long   04b1a6a8H
+	.word   00000H
+	.long   CRT_HOU_P
+PAL_IND:
+	.word   5,5,0,0
+	.long   04b1a6a8H
+	.word   00000H
+	.long   CRT_IND_P
+PAL_LAK:
+	.word   5,5,0,0
+	.long   04b1a6a8H
+	.word   00000H
+	.long   CRT_LAK_P
+PAL_MIA:
+	.word   5,5,0,0
+	.long   04b1a6a8H
+	.word   00000H
+	.long   CRT_MIA_P
+PAL_MIL:
+	.word   5,5,0,0
+	.long   04b1a6a8H
+	.word   00000H
+	.long   CRT_MIL_P
+PAL_MIN:
+	.word   5,5,0,0
+	.long   04b1a6a8H
+	.word   00000H
+	.long   CRT_MIN_P
+PAL_NEJ:
+	.word   5,5,0,0
+	.long   04b1a6a8H
+	.word   00000H
+	.long   CRT_NEJ_P
+PAL_NEY:
+	.word   5,5,0,0
+	.long   04b1a6a8H
+	.word   00000H
+	.long   CRT_NEY_P
+PAL_ORL:
+	.word   5,5,0,0
+	.long   04b1a6a8H
+	.word   00000H
+	.long   CRT_ORL_P
+PAL_ORL2:
+	.word   5,5,0,0
+	.long   04b1a6a8H
+	.word   00000H
+	.long   CRT_ORL2P
+PAL_PHI:
+	.word   5,5,0,0
+	.long   04b1a6a8H
+	.word   00000H
+	.long   CRT_PHI_P
+PAL_PHO:
+	.word   5,5,0,0
+	.long   04b1a6a8H
+	.word   00000H
+	.long   CRT_PHO_P
+PAL_POR:
+	.word   5,5,0,0
+	.long   04b1a6a8H
+	.word   00000H
+	.long   CRT_POR_P
+PAL_SAC:
+	.word   5,5,0,0
+	.long   04b1a6a8H
+	.word   00000H
+	.long   CRT_SAC_P
+PAL_SAN:
+	.word   5,5,0,0
+	.long   04b1a6a8H
+	.word   00000H
+	.long   CRT_SAN_P
+PAL_SEA:
+	.word   5,5,0,0
+	.long   04b1a6a8H
+	.word   00000H
+	.long   CRT_SEA_P
+PAL_UTA:
+	.word   5,5,0,0
+	.long   04b1a6a8H
+	.word   00000H
+	.long   CRT_UTA_P
+PAL_UTA2:
+	.word   5,5,0,0
+	.long   04b1a6a8H
+	.word   00000H
+	.long   CRT_UTA2P
+PAL_WAS:
+	.word   5,5,0,0
+	.long   04b1a6a8H
+	.word   00000H
+	.long   CRT_WAS_P
+cheer1:
+	.word   37,35,18,33
+	.long   04b1a770H
+	.word   07000H
+	.long   CHER1
+cheer2:
+	.word   34,38,17,37
+	.long   04b1cad9H
+	.word   07000H
+	.long   CHER1
+cheer3:
+	.word   44,46,19,45
+	.long   04b1ee2dH
+	.word   07000H
+	.long   CHER1
+cheer4:
+	.word   65,58,29,56
+	.long   04b22585H
+	.word   07000H
+	.long   CHER1
+cheer5:
+	.word   83,69,39,67
+	.long   04b28c9bH
+	.word   07000H
+	.long   CHER1
+cheer6:
+	.word   60,62,27,60
+	.long   04b32934H
+	.word   07000H
+	.long   CHER1
+cheer7:
+	.word   41,52,19,51
+	.long   04b38eecH
+	.word   07000H
+	.long   CHER1
+cheer2a:
+	.word   41,42,19,41
+	.long   04b3c938H
+	.word   07000H
+	.long   CHER1
+cary1:
+	.word   39,38,20,35
+	.long   04b3f84eH
+	.word   07000H
+	.long   CARY
+cary2:
+	.word   80,44,40,43
+	.long   04b420d4H
+	.word   07000H
+	.long   CARY
+cary3:
+	.word   85,51,43,49
+	.long   04b48114H
+	.word   07000H
+	.long   CARY
+cary4:
+	.word   81,63,40,61
+	.long   04b4f79dH
+	.word   07000H
+	.long   CARY
+cary5:
+	.word   57,69,27,63
+	.long   04b58326H
+	.word   07000H
+	.long   CARY
+cary6:
+	.word   42,71,20,64
+	.long   04b5eeb1H
+	.word   07000H
+	.long   CARY
+	.TEXT
+

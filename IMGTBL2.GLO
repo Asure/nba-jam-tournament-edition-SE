@@ -1,0 +1,8 @@
+	.globl	LED_P
+	.globl	DIAGP
+	.globl	WILPAL
+	.globl	NEWILPAL
+	.globl	NEWILPAL2
+	.globl	DUXPAL
+	.globl	SQTR_B_P
+	.globl	SQTR_R_P

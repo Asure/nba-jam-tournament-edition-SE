@@ -1,0 +1,480 @@
+	.file	"sounds.asm"
+	.title	"sound processor"
+	.width	132
+	.option	b,d,l,t
+	.mnolist
+
+
+	.include	"mproc.equ"
+	.include	"sys.equ"
+	.include	"game.equ"
+	.include	"shawn.hdr"
+	.include	"audit.equ"
+
+
+	.ref	AUD1
+	.ref	gmqrtr
+
+
+	.def	SNDSND
+	.def	musicoff_snd,YAMOFF,FADE_DOWN,ALLOFF,FADE_UP,ALLOFF
+
+
+	.def	coin_snd,beep2_snd
+	.def	cntdown_snd
+	.def	tune2_snd,horn_snd
+
+
+SNDPRI	.SET	0  	;PRIORITY (00=LOWEST, FF=HIGHEST)
+SNDTMR	.SET	010h	;TIMER COUNTDOWN
+SNDPTR	.SET	020h	;POINTER TO SOUND TABLE DATA
+SNDREP	.SET	040h	;REPEAT COUNT OF SOUND
+SNDST	.SET	060h	;ADDRESS OF SOUND TABLE START
+SNDSIZ	.SET	080h	;Note: Code uses shifts
+
+SL_CHANNEL	EQU	21	;SHIFTS REQUIRED TO ISOLATE CHANNEL NUMBER
+SR_CHANNEL	EQU	29
+
+NCHAN		EQU	6	;DECLARE NUMBER OF ALLOWED CHANNELS
+MUSICHAN	EQU	3	;THIS CHANNEL IS FOR THE TUNES
+
+RESETBIT	EQU	0FE00H	;THIS IS THE ^RESET BIT
+
+EXTENDED_CODE	EQU	7AH	;SEND THIS TO INDICATE EXTENDED SOUND CALL
+
+
+	BSSX	sound_rev	,16
+	BSSX	SOUNDSUP	,16		;!0=Sounds off
+	.bss	SNDSTR		,8*SNDSIZ	;RESERVE STORAGE AREA
+	.bss	SNDEND		,0		;END OF SOUND PROCESSOR RAM
+
+
+	.text
+
+
+
+ SUBR	snd_reset
+
+	movi	RESETBIT,a0	;Reset on
+	move	a0,@SOUND
+
+	movi	100,a0		;Delay
+	dsj	a0,$
+
+	movi	0FF00h,a0	;Reset off	;gnp 2/15/93
+	move	a0,@SOUND
+
+	clr	a0
+	movi	SNDSTR,a1
+iectlp	move	a0,*a1+
+	cmpi	SNDEND,a1
+	jrlo	iectlp
+
+	rets
+
+
+ SUBR	QSNDRST
+
+	PUSH	a3
+
+	callr	snd_reset
+	movi	50*6/3,a0
+	dsj	a0,$		;Delay 50us
+	clr	a3
+	callr	SNDSND		;Kill dig sound
+
+	PULL	a3
+	rets
+
+
+
+ SUBR	snd_play1ovrp
+
+ 	PUSH	a2,a3
+	movk	1,a1
+	move	@SOUNDSUP,a2
+	jrnz	iectx			;Quiet?
+
+	move	*a0,a2			;Get priority word
+	move	a2,a3
+	sll	SL_CHANNEL,a2
+	srl	SR_CHANNEL,a2		;Extract channel bits
+	sll	7,a2			;*SNDSIZ
+	addi	SNDSTR,a2 		;+Base
+
+	move	*a2,a14			;Get current priority
+	sll	32-8,a3			;Mask priorities
+	sll	32-8,a14
+	cmp	a14,a3
+	jrls	iectx			;New pri <= old pri?
+
+	jruc	sl50
+
+
+
+ SUBR	snd_play1ovr
+
+ 	PUSH	a2,a3
+	movk	1,a1
+	move	@SOUNDSUP,a2
+	jrnz	iectx			;Quiet?
+	move	*a0,a2			;Get priority word
+	sll	SL_CHANNEL,a2
+	srl	SR_CHANNEL,a2		;Extract channel bits
+	sll	7,a2			;*SNDSIZ
+	addi	SNDSTR,a2 		;+Base
+	jruc	sl50
+
+
+
+ SUBR	snd_play1
+
+	movk	1,a1
+
+
+
+ SUBR	snd_play
+
+	PUSH	a2,a3
+
+sl20
+	move	@SOUNDSUP,a2
+	jrnz	iectx			;Quiet?
+
+	move	*a0,a2			;Get priority word
+	move	a2,a3
+	sll	SL_CHANNEL,a2
+	srl	SR_CHANNEL,a2		;Extract channel bits
+	sll	7,a2			;*SNDSIZ
+	addi	SNDSTR,a2 		;+Base
+
+	move	*a2,a14			;Get current priority
+	btst	11,a14
+	jrnz	iectx			;Non-interruptable?
+	sll	32-8,a3			;Mask priorities
+	sll	32-8,a14
+	cmp	a14,a3
+	jrlo	iectx			;New pri < old pri?
+
+sl50	move	a0,*a2(SNDST),L 	;Setup sound start pointer
+	move	*a0+,*a2+,L		;Set PRI,TMR
+	move	*a0+,a3			;Snd code
+	move	a0,*a2+,L		;Set PTR
+	move	a1,*a2+			;Set RPT (Repeat count)
+	callr	SNDSND			;Send sound code
+	PULL	a2,a3
+	clrc				;ok
+	rets
+
+iectx	PULL	a2,a3
+	setc				;fail
+	rets
+
+
+
+ SUBR	snd_update
+
+	movi	SNDSTR,a0
+	movk	NCHAN,a1
+splp	move	*a0(SNDTMR),a2 	;Check timer
+	jrz	sp5		;Inactive channel?
+	subk	1,a2
+	move	a2,*a0(SNDTMR)	;New time
+	jrnz	sp5		;No timeout?
+	callr	SNDUPD		;Update sound
+sp5	addi	SNDSIZ,a0
+	dsjs	a1,splp
+	rets
+
+
+
+SNDUPD
+        move	*a0(SNDPTR),a2,L	;Get * to rom table
+sud2	move	*a2+,a3			;Get next rom table entry
+	jrnz	sud8			;Another snd?
+
+	move	*a0(SNDREP),a3		;Check repeat count
+	subk	1,a3
+	move	a3,*a0(SNDREP)
+	jrle	sud6			;No repeats?
+	move	*a0(SNDST),a2,L
+	jruc	sud2			;Start sound over
+
+sud6	clr	a2
+	move	a2,*a0			;Clear sound priority
+	move	a2,*a0(SNDST),L		;Clear sound ptr 
+	rets
+
+sud8
+	move	a2,*a0(SNDST),L		;setup sound start pointer (SNDST)
+	move	*a2+,*a0+,L		;set PRI,TMR
+	move	*a2+,a3			;snd code
+	move	a2,*a0+,L		;set SNDPTR
+	subi	40h,a0			;fix a0
+
+
+ .if 0
+	move	a3,*a0+			;Set PRI
+	move	*a2+,*a0+		;Set TMR
+	move	*a2+,a3			;Get code
+	move	a2,*a0,L		;Set PTR
+	subk	32,a0			;Fix A0
+ .endif
+
+
+
+SNDSND
+	PUSH	a3
+
+	sll	32-9,a3
+	srl	32-9,a3			;Strip off bits
+
+
+	cmpi	0100H,a3
+	jrlo	ss20			;Not extended sound call?
+	move	a3,b0
+	movi	EXTENDED_CODE,a3	;Send the extended feature
+	callr	SNDSND
+	move	b0,a3
+
+	sll	32-8,a3
+	srl	32-8,a3
+ss20
+	addi	SOUNDBIT,a3		;Pull sound section interrupt
+	move	a3,@SOUND		;Hit sound (LOW)
+
+	.if	TUNIT
+	movk	8,a14
+	dsj	a14,$			;Slow it down a bit
+
+	.else
+
+	movk	8,a14
+	dsj	a14,$
+
+	ori	0ff00H,a3		;Put out 1's
+	move	a3,@SOUND
+
+	movk	8,a14
+	dsj	a14,$
+	.endif
+
+	movi	390/3,a3		;180 micros max firq delay on snd board
+ss50	movb	@SOUNDIRQ+B_SIRQ-7,a14
+	jrn	uvbix			;Done?
+	dsj	a3,ss50
+	.if	DEBUG
+	nop				;So we can breakpoint
+	.endif
+
+uvbix	PULL	a3
+	rets
+
+
+
+
+
+FADE_UP
+	MOVI	FADE_UP_TAB,A8
+	JRUC	FADER
+FADE_DOWN
+	MOVI	FADE_DOWN_TAB,A8
+	JRUC	FADER
+
+FADER
+	MOVI	FADEPID,A0
+	CLR	A1
+	NOT	A1
+	CALLA	KILALL			;WASTE ANY OTHER FADERS
+FADE_LP
+	MOVE	*A8+,A0,L
+	JRZ	FADE_DONE
+	callr	snd_play1
+	SLOOPR	A11,FADE_LP
+FADE_DONE
+	DIE
+
+FADE_UP_TAB
+	.LONG	VOLUME0
+	.LONG	VOLUME1
+	.LONG	VOLUME2
+	.LONG	VOLUME3
+	.LONG	VOLUME4
+	.LONG	VOLUME5
+	.LONG	VOLUME6
+	.LONG	VOLUME7
+	.LONG	VOLUME8
+	.LONG	VOLUME9
+	.LONG	VOLUMEA
+	.LONG	VOLUMEB
+	.LONG	VOLUMEC
+	.LONG	VOLUMED
+	.LONG	VOLUMEE
+	.LONG	VOLUMEF
+	.LONG	0
+
+FADE_DOWN_TAB
+	.LONG	VOLUMEF
+	.LONG	VOLUMEE
+	.LONG	VOLUMED
+	.LONG	VOLUMEC
+	.LONG	VOLUMEB
+	.LONG	VOLUMEA
+	.LONG	VOLUME9
+	.LONG	VOLUME8
+	.LONG	VOLUME7
+	.LONG	VOLUME6
+	.LONG	VOLUME5
+	.LONG	VOLUME4
+	.LONG	VOLUME3
+	.LONG	VOLUME2
+	.LONG	VOLUME1
+	.LONG	VOLUME0
+	.LONG	0
+
+
+
+CVSDOFF		.WORD	0F0FFH|0800H,001H,08000H,0	;CVSD BACKGROUND LOOP OFF
+CVSDFOFF 	.WORD	0F0FFH|0800H,001H,08000H,0	;CVSD FOREGROUND LOOP OFF
+SOUNDOFF 	.WORD	0F0FFH|0800H,001H,08000H,0	;TURN SOUND SIDE OFF
+ALLOFF	 	.WORD	0F3FFH|0800H,001H,08000H,0	;MUSIC AND EFFECTS OFF
+musicoff_snd	.WORD	0F3FFH|0800H,001H,0807EH,0	;TURN JUST MUSIC OFF
+MUSITOFF	.WORD	0F3FFH|0800H,001H,08040H,0	;MUSIC TRANSITION OFF
+YAMOFF		.WORD	0F2FFH|0800H,001H,0807FH,0	;YAMAHA EFFECT OFF
+
+VOLUME0	.WORD	0F3FEH,01H,0802FH,0
+VOLUME1	.WORD	0F3FEH,01H,0802EH,0
+VOLUME2	.WORD	0F3FEH,01H,0802DH,0
+VOLUME3	.WORD	0F3FEH,01H,0802CH,0
+VOLUME4	.WORD	0F3FEH,01H,0802BH,0
+VOLUME5	.WORD	0F3FEH,01H,0802AH,0
+VOLUME6	.WORD	0F3FEH,01H,08029H,0
+VOLUME7	.WORD	0F3FEH,01H,08028H,0
+VOLUME8	.WORD	0F3FEH,01H,08027H,0
+VOLUME9	.WORD	0F3FEH,01H,08026H,0
+VOLUMEA	.WORD	0F3FEH,01H,08025H,0
+VOLUMEB	.WORD	0F3FEH,01H,08024H,0
+VOLUMEC	.WORD	0F3FEH,01H,08023H,0
+VOLUMED	.WORD	0F3FEH,01H,08022H,0
+VOLUMEE	.WORD	0F3FEH,01H,08021H,0
+VOLUMEF	.WORD	0F3FEH,01H,08020H,0
+
+
+
+
+coin_snd	.word	0f3ffH,08H,080a4H,0	;coin in melody snd
+
+beep2_snd	.word	0fcf7H,05H,08123H,0	;beep tone for diagnostics
+cntdown_snd	.word	0fcf5H,5,08123H,0		;buyin cntdwn clang
+
+horn_snd	.word	0f8feH,058H,08159H,0	;horn
+
+
+tune2_snd	.word	0f3feH,1,08002H,0		;main game play tune
+
+
+
+
+
+
+
+
+ SUBR	sound_watchdog
+
+
+	SLEEPK	1
+
+	move	@SOUNDR,a0		;clear sound data available latch
+
+	movi	0ffaah,a3		;Pull sound section interrupt
+	move	a3,@SOUND		;Hit sound (LOW)
+
+	SLEEPK	8
+
+	movb	@SOUNDR,a3
+	move	a3,@sound_rev		;determine snd board rev.
+
+
+aiaqwatchdog_loop
+
+	SLEEP	60
+
+
+	movi	0ffaah,a3		;Pull sound section interrupt
+	move	a3,@SOUND		;Hit sound (LOW)
+
+	movk	8,a14
+	dsj	a14,$			;Slow it down a bit
+
+
+
+
+	.if	0
+
+	movi	390/3,a3		;180 micros max firq delay on snd board
+aiaqlp1	movb	@SOUNDIRQ+B_SIRQ-7,a14
+	jrn	aiaqok1			;Done?
+	dsj	a3,aiaqlp1
+
+	movi	AUD_SNDERR1,a0		;log it
+	calla	AUD1
+	jruc	aiaqreset_board
+
+
+	.endif
+
+
+
+
+aiaqok1
+
+	move	@sound_rev,a0		;if old sound board software
+	cmpi	05ah,a0			;then skip these two checks
+	jrne	sound_watchdog
+
+
+	SLEEPK	8			;approx 128 msec delay
+
+	movb	@SOUNDIRQ+B_SDAV-7,a14
+	jrn	aiaqok2
+
+	movi	AUD_SNDERR,a0		;log it
+	calla	AUD1
+	jruc	aiaqreset_board
+
+aiaqok2
+
+	movb	@SOUNDR,a3
+	cmpi	05ah,a3
+	jreq	aiaqwatchdog_loop
+
+	movi	AUD_SNDERR,a0		;log it
+	calla	AUD1
+aiaqreset_board
+
+	callr	QSNDRST			;quiet hardware sound board reset
+
+	SLEEP	90
+
+	move	@gmqrtr,a0
+	sll	5,a0
+	addi	aiaqtune_t,a0
+	move	*a0,a0,L
+	calla	snd_play1ovr
+
+	jruc	aiaqwatchdog_loop
+
+
+aiaqtune_t	.long	tuneq2_snd,tuneq2_snd,tuneq3_snd,tuneq4_snd,tuneot_snd
+	.long	tuneot_snd,tuneot_snd,tuneot_snd,tuneot_snd
+	.long	tuneot_snd,tuneot_snd,tuneot_snd,tuneot_snd
+
+tuneq2_snd	.word	0f3ffH,08H,08006H,0	;Quarter 2 tune
+tuneq3_snd	.word	0f3ffH,08H,08007H,0	;Quarter 3 tune
+tuneq4_snd	.word	0f3ffH,08H,08008H,0	;Quarter 4 tune
+tuneot_snd	.word	0f3ffH,08H,0800bH,0	;Quarter o.t.
+
+
+
+	.end
+

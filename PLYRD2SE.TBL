@@ -1,0 +1,345 @@
+	.DATA
+T1HANG9:
+	.word   26,114,23,112
+	.long   029a2e21H
+	.word   00H
+	.long   NEWILPAL
+	.word   0,0,0,0,12,29,-1,13,0
+T1HANG10:
+	.word   40,72,18,69
+	.long   029a8ac1H
+	.word   00H
+	.long   NEWILPAL
+	.word   0,0,0,0,18,3,1,13,0
+T1HANG1:
+	.word   27,124,14,123
+	.long   029ae4c1H
+	.word   00H
+	.long   NEWILPAL
+	.word   0,0,0,0,9,37,-1,8,0
+T1HANG2:
+	.word   54,109,15,124
+	.long   029b4d61H
+	.word   00H
+	.long   NEWILPAL
+	.word   0,0,0,0,11,35,-1,3,0
+T1HANG3:
+	.word   59,97,16,123
+	.long   029c0551H
+	.word   00H
+	.long   NEWILPAL
+	.word   0,0,0,0,11,34,-1,13,0
+T1HANG4:
+	.word   65,75,16,123
+	.long   029cb829H
+	.word   00H
+	.long   NEWILPAL
+	.word   0,0,0,0,8,29,-1,13,0
+T1HANG5:
+	.word   68,65,27,123
+	.long   029d5081H
+	.word   00H
+	.long   NEWILPAL
+	.word   0,0,0,0,5,22,-1,13,0
+T1HANG6:
+	.word   57,70,36,124
+	.long   029ddaa1H
+	.word   00H
+	.long   NEWILPAL
+	.word   0,0,0,0,8,15,-1,3,0
+T1HANG7:
+	.word   50,88,40,123
+	.long   029e5751H
+	.word   00H
+	.long   NEWILPAL
+	.word   0,0,0,0,14,23,-1,13,0
+T1HANG8:
+	.word   37,114,34,124
+	.long   029ee0d1H
+	.word   00H
+	.long   NEWILPAL
+	.word   0,0,0,0,16,37,-1,13,0
+T2DUNK9:
+	.word   65,73,31,77
+	.long   029f64a1H
+	.word   00H
+	.long   NEWILPAL
+	.word   0,0,0,0,38,7,-1,1,0
+T2DUNK10:
+	.word   59,70,24,74
+	.long   029ff8e9H
+	.word   00H
+	.long   NEWILPAL
+	.word   0,0,0,0,31,2,-1,1,0
+T2DUNK1:
+	.word   36,73,16,68
+	.long   02a079f9H
+	.word   00H
+	.long   NEWILPAL
+	.word   32,28,-1,0,14,1,-1,13,0
+T2DUNK2:
+	.word   38,93,18,91
+	.long   02a0cc19H
+	.word   00H
+	.long   NEWILPAL
+	.word   26,6,-1,0,13,10,-1,13,0
+T2DUNK3:
+	.word   48,97,25,97
+	.long   02a13a89H
+	.word   00H
+	.long   NEWILPAL
+	.word   15,5,-1,0,21,12,-1,3,0
+T2DUNK4:
+	.word   69,84,36,92
+	.long   02a1cc09H
+	.word   00H
+	.long   NEWILPAL
+	.word   32,8,-1,0,28,13,-2,7,0
+T2DUNK5:
+	.word   87,85,35,104
+	.long   02a28129H
+	.word   00H
+	.long   NEWILPAL
+	.word   42,8,-1,0,31,20,1,2,0
+T2DUNK6:
+	.word   80,85,29,102
+	.long   02a36841H
+	.word   00H
+	.long   NEWILPAL
+	.word   50,13,-1,0,27,17,-1,12,0
+T2DUNK7:
+	.word   64,103,17,108
+	.long   02a43cc1H
+	.word   00H
+	.long   NEWILPAL
+	.word   45,19,0,0,142,-176,-1,2,0
+T2DUNK8:
+	.word   62,86,34,91
+	.long   02a50ac1H
+	.word   00H
+	.long   NEWILPAL
+	.word   0,0,0,0,30,20,-1,1,0
+T6DUNK9:
+	.word   69,94,35,97
+	.long   02a5b161H
+	.word   00H
+	.long   NEWILPAL
+	.word   52,6,-1,0,38,19,-1,1,0
+T6DUNK10:
+	.word   62,84,31,90
+	.long   02a67c11H
+	.word   00H
+	.long   NEWILPAL
+	.word   29,12,-2,16384,31,14,-1,2,0
+T6DUNK1:
+	.word   56,56,30,54
+	.long   02a71ed1H
+	.word   00H
+	.long   NEWILPAL
+	.word   3,42,-1,0,33,3,1,4,0
+T6DUNK2:
+	.word   83,60,38,57
+	.long   02a780d1H
+	.word   00H
+	.long   NEWILPAL
+	.word   12,31,-1,0,48,1,1,3,0
+T6DUNK3:
+	.word   81,65,37,60
+	.long   02a81c71H
+	.word   00H
+	.long   NEWILPAL
+	.word   14,24,-1,0,47,4,-1,3,0
+T6DUNK4:
+	.word   55,63,21,60
+	.long   02a8c0f9H
+	.word   00H
+	.long   NEWILPAL
+	.word   3,31,-1,0,37,4,-1,3,0
+T6DUNK5:
+	.word   42,65,12,61
+	.long   02a92d41H
+	.word   00H
+	.long   NEWILPAL
+	.word   38,33,-1,0,20,2,-1,2,0
+T6DUNK6:
+	.word   44,84,9,82
+	.long   02a98291H
+	.word   00H
+	.long   NEWILPAL
+	.word   41,9,-1,0,12,15,-1,12,0
+T6DUNK7:
+	.word   36,108,13,106
+	.long   02a9f611H
+	.word   00H
+	.long   NEWILPAL
+	.word   29,8,-1,0,15,28,-1,12,0
+T6DUNK8:
+	.word   50,106,28,105
+	.long   02aa6f91H
+	.word   00H
+	.long   NEWILPAL
+	.word   35,9,-1,0,32,27,-1,1,0
+T6DUNK11:
+	.word   52,100,34,100
+	.long   02ab1531H
+	.word   00H
+	.long   NEWILPAL
+	.word   36,17,0,16384,27,25,-1,2,0
+T6DUNK12:
+	.word   45,84,33,83
+	.long   02abb7b1H
+	.word   00H
+	.long   NEWILPAL
+	.word   0,0,0,16384,22,17,-1,8,0
+T6DUNK13:
+	.word   33,60,15,59
+	.long   02ac2dd1H
+	.word   00H
+	.long   NEWILPAL
+	.word   0,0,0,16384,11,2,0,8,0
+CANB1:
+	.word   46,105,19,111
+	.long   03219cd1H
+	.word   00H
+	.long   NEWILPAL
+	.word   35,13,-1,0,19,18,-1,3,0
+CANB2:
+	.word   62,59,36,89
+	.long   032233c1H
+	.word   00H
+	.long   NEWILPAL
+	.word   54,33,-1,0,48,5,-1,8,0
+CANB3:
+	.word   35,50,18,86
+	.long   0322a611H
+	.word   00H
+	.long   NEWILPAL
+	.word   26,28,1,0,32,13,-1,17,0
+CANB4:
+	.word   52,35,36,85
+	.long   0322dcc1H
+	.word   00H
+	.long   NEWILPAL
+	.word   34,31,1,16384,44,31,-1,18,0
+CANB5:
+	.word   48,39,33,89
+	.long   032315a1H
+	.word   00H
+	.long   NEWILPAL
+	.word   24,31,1,16384,28,35,-1,19,0
+CANB6:
+	.word   37,51,21,101
+	.long   03235021H
+	.word   00H
+	.long   NEWILPAL
+	.word   10,42,1,0,8,44,-1,16,0
+CANB7:
+	.word   36,50,20,104
+	.long   03238b19H
+	.word   00H
+	.long   NEWILPAL
+	.word   8,34,1,0,3,36,-1,16,0
+CANB8:
+	.word   48,38,19,89
+	.long   0323c359H
+	.word   00H
+	.long   NEWILPAL
+	.word   15,12,1,0,4,13,-1,3,0
+CANB9:
+	.word   57,54,19,105
+	.long   0323fc59H
+	.word   00H
+	.long   NEWILPAL
+	.word   21,13,-1,0,4,24,-1,3,0
+CANB10:
+	.word   43,77,16,105
+	.long   03245c89H
+	.word   00H
+	.long   NEWILPAL
+	.word   15,10,-1,0,8,21,-1,3,0
+CANB11:
+	.word   53,91,43,111
+	.long   0324c401H
+	.word   00H
+	.long   NEWILPAL
+	.word   45,9,-1,0,36,21,-1,3,0
+CANB13:
+	.word   80,90,47,110
+	.long   03255ab9H
+	.word   00H
+	.long   NEWILPAL
+	.word   77,15,-1,0,57,22,-1,8,0
+CANB14:
+	.word   61,104,30,110
+	.long   03263bb9H
+	.word   00H
+	.long   NEWILPAL
+	.word   58,15,-1,0,43,26,-1,8,0
+CANB15:
+	.word   61,98,3,110
+	.long   032701f9H
+	.word   00H
+	.long   NEWILPAL
+	.word   31,15,-1,0,11,24,-1,8,0
+CANB16:
+	.word   49,74,4,78
+	.long   0327bcc9H
+	.word   00H
+	.long   NEWILPAL
+	.word   0,0,0,0,15,3,1,8,0
+CANB12:
+	.word   76,80,60,116
+	.long   03282e19H
+	.word   00H
+	.long   NEWILPAL
+	.word   64,10,-1,0,64,28,-1,8,0
+canroll1:
+	.word   39,49,19,85
+	.long   0328ec19H
+	.word   00H
+	.long   NEWILPAL
+	.word   30,22,1,0,25,4,-1,8,0
+canroll2:
+	.word   35,53,18,86
+	.long   032927d1H
+	.word   00H
+	.long   NEWILPAL
+	.word   28,26,1,0,32,13,-1,17,0
+canroll3:
+	.word   49,39,33,85
+	.long   032961c9H
+	.word   00H
+	.long   NEWILPAL
+	.word   32,34,1,16384,43,25,-1,18,0
+canroll4:
+	.word   52,35,37,87
+	.long   03299d81H
+	.word   00H
+	.long   NEWILPAL
+	.word   30,31,1,16384,39,32,-1,19,0
+canroll5:
+	.word   39,49,23,98
+	.long   0329d661H
+	.word   00H
+	.long   NEWILPAL
+	.word   9,39,1,0,12,44,-1,16,0
+canroll6:
+	.word   35,52,21,102
+	.long   032a1219H
+	.word   00H
+	.long   NEWILPAL
+	.word   6,35,1,0,1,39,-1,16,0
+canroll7:
+	.word   49,39,23,89
+	.long   032a4af9H
+	.word   00H
+	.long   NEWILPAL
+	.word   14,16,1,0,3,13,-1,3,0
+canroll8:
+	.word   53,35,17,85
+	.long   032a86b1H
+	.word   00H
+	.long   NEWILPAL
+	.word   24,14,1,0,11,3,-1,8,0
+	.TEXT
+

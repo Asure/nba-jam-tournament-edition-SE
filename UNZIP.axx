@@ -1,0 +1,783 @@
+	.file	"unzip.asm"
+	.title	"pkzip unzipper"
+	.width	132
+	.option	b,d,l,t
+	.mnolist
+
+
+	.include	"mproc.equ"		;Mproc equates
+	.include	"disp.equ"		;Display proc equates
+	.include	"gsp.equ"		;Gsp asm equates
+	.include	"sys.equ"
+	.include	"imgtbl.glo"
+	.include	"shawn.hdr"		;Macros
+	.include	"frame.tbl"
+
+
+
+	.ref	pal_getf
+
+
+	.ref	SYSCOPY
+
+	.ref	last_score,scores,tvpanelon
+	.ref	get_all_buttons_cur
+
+
+
+BPP		.set 	3
+RAMBUFSIZ	.set	(4*1024)*8		; << BPP
+
+PAGE1ADR	.equ	PAGE1YO*512*8
+
+CARYTEST	.equ	0		;1 for Cary's board testing
+ERRORTEST	.equ	0		;1 for random pixel test
+DEBUGPORT	.equ	01d01010H
+
+
+	STRUCTPD
+	LONG	PTEMP1
+	LONG	PIXPERFRM
+
+
+RamBuffer	.usect	"unzip",RAMBUFSIZ
+
+	BSSX	lengthtree	,256*32
+	.bss	disttree	,256*32
+	.bss	minptrtbl	,256*32
+
+
+	.text
+
+
+
+
+
+
+
+	.if	TUNITDB
+
+ SUBRP	movie_error
+
+	PUSH	a0,a1
+	pushst
+	dint
+
+	move	@SYSCOPY,a0
+	ori	4,a0
+	move	a0,@SYSCOPY
+	move	a0,@SYSCTRL
+
+acawlp2	movi	20000,a1
+acawlp	move	a0,@ERASELOC
+	addk	1,a0
+	dsj	a1,acawlp
+
+	move	@SWITCH+16,a1
+	not	a1
+	andi	0624H,a1
+	jrz	acawlp2
+
+	move	@SYSCOPY,a0
+	xori	4,a0
+	move	a0,@SYSCOPY
+	move	a0,@SYSCTRL
+
+	popst
+	PULL	a0,a1
+	rets
+
+	.endif
+
+
+
+
+
+
+ SUBR	movie_run
+
+
+	addi	SCRNXP*8,a10		;+XPad offset
+	move	@dpage,a14
+	jrnz	bjulp2
+	addi	PAGE1YO*512*8,a10	;Start in page 1 if page 0 is being displayed
+bjulp2
+
+	callr	movie_waitdma
+
+	.if	CARYTEST
+	movk	1,a14
+	move	a14,@DEBUGPORT
+	.endif
+
+	callr	movie_parsehdr
+	jrnz	bjulerror
+
+	move	b3,a14			;Height
+	subk	1,a14
+	movi	SCRN_PTCH,a1
+	mpys	a14,a1
+	add	a1,a10			;* to bottom left
+
+	callr	movie_getpal
+	jrz	bjulerror
+					;A4=# frames
+					;A6=X size
+					;B3=Y size
+					;B4=strtpal
+	movi	blowline,b10
+	move	a9,a9
+	jrz	bjulmode0
+	movi	blowlinex2,b10
+bjulmode0
+
+	JSRP	movie_unzip
+
+bjulx	setf	16,1,0
+	setf	32,0,1
+
+	RETP
+
+bjulerror
+	clr	a14
+	move	a14,@DEBUGPORT
+
+	LOCKUP
+	jruc	bjulx
+
+
+
+ SUBRP	movie_waitdma
+
+vgmkwtlp
+	move	b13,b13			;Wait for DMAQ empty
+	jrge	vgmkwtlp
+	move	@DMACTRL,a14
+	jrn	vgmkwtlp
+
+
+	.if	CARYTEST=0
+
+	movk	1,a14
+	move	a14,@DEBUGPORT
+
+vgmkdly	movi	200,a14			;Wait 400 cycles
+	dsj	a14,$
+
+	move	@DMACTRL,a14
+	jrnn	vgmkx
+	LOCKUP
+	jruc	vgmkdly
+
+	.endif
+
+vgmkx	rets
+
+
+
+ SUBRP	movie_getpal
+
+	move	a8,a0
+	subk	16,a0		;Point to # colors
+	calla	pal_getf
+	jrz	kuykx
+
+	move	a7,a1
+	sll	4,a1		;*16
+	add	a1,a8
+
+	move	a0,b4
+	addk	1,a1		;Clr Z
+
+kuykx	rets
+
+
+
+
+movie_parsehdr
+
+	move	a8,a14
+	movk	30,a0		;# retries
+
+isfjrd	move	*a8+,a6		;X size of frames
+	move	*a8+,a1		;Y size of frames
+	move	*a8+,a4		;# of frames
+	move	*a8+,a7		;# of colors
+	move	a1,b3
+	move	a6,b9
+
+	cmpi	100,a6		;X
+	jrne	isfjerror
+	cmpi	68,b3		;Y
+	jrne	isfjerror
+	cmpi	5,a4		;isfjfrms
+	jrlt	isfjerror
+	cmpi	35,a4
+	jrgt	isfjerror
+	cmpi	200,a7		;isfjcolors
+	jrlt	isfjerror
+	cmpi	255,a7
+	jrhi	isfjerror
+
+	clr	a0
+	rets
+
+isfjerror
+	movk	101b,a8
+	move	a8,@DEBUGPORT
+
+	move	a14,a8
+	dsj	a0,isfjrd
+
+	addk	1,a0
+	rets
+
+
+
+
+
+
+UncompressTree:
+
+	PUSH	a4,a5
+
+	move	a7,a5		;Save start of tree
+
+	clr	a4
+	PUSH	a8
+				;0DeHtermine how many codes of each bit length
+	setf	8,0,0
+	move	*a8+,a0		;# compressed bytes to describe tree - 1
+	addk	1,a0
+	movk	0fH,a3		;Constant
+	clr	a6		;Total number of codes in tree
+utr0
+	move	*a8+,a1		;(# codes - 1 << 4) | bit lngth - 1
+	add	a1,a4		;Chksum
+	move	a1,a2
+	srl	4,a2
+	addk	1,a2		;number of codes of this bit length
+	add	a2,a6		;adjust total
+	and	a3,a1
+	addk	1,a1		;bit length
+	move	a1,a11
+	sll	16,a11
+	movy	a11,a1		;duplicate bit length for sort
+utr1
+	move	a1,*a7+,L
+	dsj	a2,utr1		;fill table
+
+	dsj	a0,utr0		;a6 now contains size of tree
+
+
+	PULL	a8		;>Recalc chksum
+	clr	a2
+	move	*a8+,a0		;# compressed bytes to describe tree - 1
+	addk	1,a0
+lfdwchklp	move	*a8+,a1
+	add	a1,a2
+	dsj	a0,lfdwchklp
+
+	setf	16,1,0
+
+	cmp	a2,a4
+	jrne	lfdwerror		;Chksums don't match?
+
+
+
+	movi	minptrtbl,a0	; for placing translation ptrs
+	move	a6,a9		; outer loop count (# entries in tree table)
+
+
+utr2
+	move	a5,a7		; restore start of tree
+	movi	06543h,a14	; current minimum
+	move	a6,b6		; inner loop count
+	movi	07654h,a1	; constant
+
+
+utr3
+	move	*a7,a2		; look at next bit length
+	cmp	a14,a2		; is it less than the last minimum
+	jrge	nonewmin
+	move	a2,a14		; if yes, save new minimum
+	move	a7,a11		;         save pointer to minimum
+nonewmin
+	addk	32,a7		; point to next entry
+	dsj	b6,utr3
+
+
+	move	a1,*a11		; set this minimum high.
+	move	a11,*a0+,L	; place translation ptr in MinPtrTbl.
+
+	dsjs	a9,utr2
+
+				;0CHompute the codes
+	clr	a11		;Code
+	clr	a1		;CodeInc
+	clr	a2		;LastBitLength
+	move	a6,a14		;loop counter
+utr4
+	move	*-a0,a7,L	;translated pointer
+	add	a1,a11
+	movb	*a7(16),a3	;bit length
+	cmp	a3,a2
+	jreq	samebitlng
+	move	a3,a2		;set new LastBitLength
+	movk	16,a3
+	sub	a2,a3		;16-LastBitLength
+	movk	1,a1
+	sll	a3,a1		;CodeInc = 1 << (16-LastBitLength)
+samebitlng
+	move	a11,a5		;copy of Code in a5
+	movk	16,a9		;reverse bit loop count
+rvrsbts
+	sll	1,a5		;Reverse bits of word
+	movy	a5,a3
+	srl	1,a3
+	zext	a5
+	dsjs	a9,rvrsbts
+
+	move	a3,*a7		;store code with bits reversed
+	dsjs	a14,utr4
+
+	clr	a0
+
+lfdwx	PULL	a4,a5
+	move	a0,a0
+	rets
+
+
+lfdwerror
+	movk	1001b,a14
+	move	a14,@DEBUGPORT
+
+	LOCKUP
+	movk	1,a0		;Error!
+	jruc	lfdwx
+
+
+
+
+SetConstants:
+	movi	lengthtree,b0
+	movi	disttree,b1
+SetConstX
+	movi	RamBuffer+RAMBUFSIZ-1,a0	;mask for rambuf ptr
+	movi	RamBuffer,a6			;used for negative wraparound
+	movi	0c0c0h,b7			;for blowing words of
+	movi	DMACMAP,b8
+	rets
+
+
+
+
+ SUBRP	movie_unzip
+
+
+	.if	TUNITDB
+	jruc	bgwpdebugstrt
+	.endif
+
+
+	movi	lengthtree,b0
+	movi	disttree,b1
+
+	movk	10,a5
+bgwpltlp	move	b0,a7			;Length Tree
+	move	a8,b2
+	callr	UncompressTree
+	jrz	bgwpltok			;OK?
+	move	b2,a8
+	dsj	a5,bgwpltlp
+	jruc	bgwperror
+bgwpltok
+
+	movk	10,a5
+bgwpdtlp	move	b1,a7			;Distance Tree
+	move	a8,b2
+	callr	UncompressTree
+	jrz	bgwpdtok			;OK?
+	move	b2,a8
+	dsj	a5,bgwpdtlp
+	jruc	bgwperror
+bgwpdtok
+
+	.if	CARYTEST
+	clr	a14
+	move	a14,@DEBUGPORT
+	.endif
+
+bgwpdebugstrt
+
+	;Clear top 4K of buffer to take care of initial wraparound
+
+	movi	RamBuffer+RAMBUFSIZ,a1	;End of buffer
+	movi	1024,a2			;4K
+	clr	a3
+clrbuf
+	move	a3,*-a1,L
+	dsj	a2,clrbuf
+
+					;Do some initializing
+	mpyu	b9,b3
+	move	b3,a11			;total # bytes in frame in a11
+	move	a11,*a13(PIXPERFRM),L
+	callr	SetConstX
+	move	a6,a9			;Where to uncompress to
+	move	a9,b3			;first frame start
+	clr	b5			;pixel count for Stills only
+
+	cmpi	1,a4
+	jreq	UncompressFrame		;1 frame?
+
+
+bgwplp
+	mmtm	a12,a4,a10
+
+	callr	movie_waitdma
+
+	.if	CARYTEST
+	movk	10b,a14
+	move	a14,@DEBUGPORT
+	.endif
+
+	.if	TUNITDB
+	movi	50,a0
+bgwpdblp
+	movi	80,a2
+bgwpdblp2
+	move	a8,a9
+	addi	GRANT_F2-GRANT_F,a9
+	movb	*a8,a14
+	movb	*a9,a1
+	move	a14,@SCRATCH+13
+	move	a1,@SCRATCH+16+15
+	cmp	a1,a14
+	jreq	bgwpcmpok
+bgwpdberr	callr	movie_error
+	mmfm	a12,a4,a10
+	RETP
+bgwpcmpok
+	move	@DMACTRL,a1
+	move	@DMACTRL,a1
+	move	@DMACTRL,a1
+	move	@SWITCH,a1,L
+	move	@SWITCH,a1,L
+	move	@SWITCH,a1,L
+	movb	*a9,a1
+	cmp	a1,a14
+	jrne	bgwpdberr
+	move	@SCRATCH+13,a1
+	cmp	a1,a14
+	jrne	bgwpdberr
+	movb	*a8,a14
+	move	@SCRATCH+16+15,a1
+	cmp	a1,a14
+	jrne	bgwpdberr
+
+	movb	a14,*a10
+	addk	8,a8
+	addk	8,a9
+	addk	8,a10
+	dsj	a2,bgwpdblp2
+	addi	(512-80)*8,a10
+	dsj	a0,bgwpdblp
+
+	jruc	bgwpskipuncomp
+	.endif
+
+
+	JSRP	UncompressFrame
+
+	clr	a0
+	move	a0,@DEBUGPORT
+bgwpskipuncomp
+
+	movk	1,a0			;1 tick sleep
+
+
+	movi	swappg,a14
+	jruc	GoToSleep
+
+
+swappg
+
+	mmfm	a12,a4,a10
+
+	xori	PAGE1YO*512*8,a10	;Flip * to other page
+
+
+	setf	16,1,0
+
+
+
+	move	*a13(PIXPERFRM),a14,L	;number of pixels in a frame
+	add	a14,a11			;adjust by extra pixels done last time
+
+
+bgwpnxtf
+	PUSH	a0,a1,a2
+	calla	get_all_buttons_cur
+	PULL	a0,a1,a2
+	jrnz	bgwpabort
+
+
+	dsj	a4,bgwplp			;Loop once for each frame
+
+bgwpabort
+	callr	movie_waitdma
+					;0CHopy visable frame to other page
+	move	*a13(PIXPERFRM),a14,L	;# of pixels in a frame
+
+	move	b4,*b8			;Set pallette
+
+	move	a10,a2 			;* screen
+	xori	PAGE1YO*512*8,a2	;Flip * to other page
+bgwpcpylp
+	move	a2,a0
+	move	a10,a1
+
+	move	b9,a5			;X size
+	srl	1,a5			;X/2 = loop counter
+bgwpcllp	move	*a0+,*a1+
+	dsj	a5,bgwpcllp
+
+	subi	SCRN_PTCH,a2
+	subi	SCRN_PTCH,a10
+	move	b9,a0
+	sub	a0,a14
+	jrgt	bgwpcpylp			;More pixels?
+
+
+bgwpx
+	RETP
+
+
+bgwperror	LOCKUP
+	jruc	bgwpx
+
+
+
+
+GoToSleep
+	getst	b2
+	move	a12,b6
+	mmtm	b6,b2,b3,b4,b5,b9,b10
+	move	b6,a12
+
+	setf	16,1,0
+	setf	32,0,1
+	move	a14,*a13(PTEMP1),L
+	calla	PRCSLP
+
+	move	a12,b6
+	mmfm	b6,b2,b3,b4,b5,b9,b10
+	move	b6,a12
+
+	callr	SetConstants
+	move	*a13(PTEMP1),a14,L
+
+	putst	b2
+	exgpc	a14			;Return
+
+
+
+
+UncompressFrame:
+
+	setf	16,0,1		;Field 1 = 16 bits no sign-ext
+	move	b4,*b8,1	;Set pallette
+
+UncFr0
+	setf	1,0,0
+	move	*a8+,a14	; if bit = 1, read 8 bits and copy
+	.if	ERRORTEST
+	move	@HCOUNT,a14
+	.endif
+	jrz	decode_still
+	setf	8,0,0
+
+	move	*a8+,*a9+
+	and	a0,a9
+
+	addk	1,b5		; pixel count
+	subk	1,a11
+us1
+	cmp	b5,b9		; have we filled a line yet?
+	jrgt	us0
+
+    	call	b10		; Blow Line Routine
+
+us0
+	move	a11,a11
+	jrgt	UncFr0
+
+	setf	16,1,0
+	setf	32,0,1
+	RETP
+
+
+decode_still:		 	; if bit = 0, decode from trees
+	setf	6,0,0
+	move	*a8+,a1		; lower 6 bits of distance
+
+	.if	ERRORTEST
+	move	@HCOUNT,a1
+	.endif
+
+	move	b1,a5		; Distance Tree in a5
+	callr	ReadTree	; Result in a7
+	sll	6,a7
+	or	a7,a1
+	inc	a1		; DISTANCE in a1
+	sll	BPP,a1		; turn it into a pointer
+
+	move	b0,a5		; Length Tree in a5
+	callr	ReadTree	; Result in a7
+
+	setf	8,0,0
+
+	cmpi	63,a7
+	jrne	notmaxs
+	move	*a8+,a3		; If length is 63, get next byte, and
+
+	.if	ERRORTEST
+	move	@HCOUNT,a3
+	.endif
+
+	add	a3,a7		; add it to the length
+notmaxs
+	addk	2,a7		; add MML, LENGTH in a7
+
+
+	move	a9,a2		; copy of current position in a2
+	sub	a1,a2  		; initial attempt
+	and	a0,a2		; handle wraparound
+	or	a6,a2		;copy pointer is now in a2
+
+	sub	a7,a11		;Adjust total pixel count
+	move	a7,b6
+	add	b6,b5	    	;Adjust pixel counter for this line
+
+copys
+	move	*a2+,*a9+	;0CHopy
+	and	a0,a2
+	and	a0,a9
+	dsj	a7,copys
+
+	jruc	us1
+
+
+
+ReadTree:
+	movk	1,a2		; bits_read
+	setf	1,0,0
+	move	*a8+,a7		; read a bit
+	rl	31,a7		; rotate right one more bit
+	clr	b6		; result
+	jruc	rxalstrt
+rxallp
+	addk	1,b6
+rxalstrt	move	*a5+,a3,1	; Code in a3
+	move	*a5+,a4,1	; Blngth in a4
+	movk	32,a14
+	sub	a2,a14
+	rl	a14,a3		; rotate right as many bits have been read
+rxallp2
+	cmpxy	a3,a7
+	jrynz	rxallp
+
+	cmp	a2,a4
+	jreq	rxalx
+	move	*a8+,a14	; read a bit
+	or	a14,a7		; accumulate with other bits
+	inc	a2		; inc bits_read
+	rl	31,a7		; rotate right one more bit
+	rl	31,a3		; shift code for check of next bit
+	jruc	rxallp2
+
+rxalx
+	move	b6,a7
+	rets			;Result returned in a7
+
+
+
+
+ SUBRP	blowline
+
+
+	move	a10,a2 		;* screen
+
+	move	b3,a1		;Start of line
+	move	b9,a5		;X size
+	srl	2,a5		;X/4 = loop counter
+	jrnc	mupcby4
+	move	*a1+,*a2+,1	;Copy 2 pixels
+	and	a0,a1
+mupcby4
+mupclp
+	move	*a1+,*a2+,1	;Copy 2 pixels
+	and	a0,a1
+	move	*a1+,*a2+,1	;Copy 2 pixels
+	and	a0,a1
+	dsj	a5,mupclp
+
+
+endblowline
+	subi	SCRN_PTCH,a10
+	move	a1,b3		;save for next frame
+	sub	b9,b5		;readjust pixels for next line
+	cmp	b9,b5		;added 6/92. if there are enough pixels
+	jrge	mupcnuther		;left to do another line, do it.
+
+      	rets
+
+mupcnuther
+	jruc	blowline
+
+
+
+
+
+
+
+
+ SUBRP	blowlinex2
+
+
+	move	a10,a2 		;* screen
+	move	a10,a3
+	addi	SCRN_PTCH,a3
+
+	move	b3,a1		;start of line
+	move	b9,a5		;X size
+
+	setf	8,0,0
+dtfylp
+	move	*a1+,a14	;Get 8 bits
+	move	a14,a4
+	sll	8,a4
+	or	a4,a14
+	move	a14,*a2+,1	;16 bits
+	move	a14,*a3+,1
+	and	a0,a1
+	dsjs	a5,dtfylp
+
+
+	subi	SCRN_PTCH*2,a10
+	move	a1,b3		; save for next frame
+	sub	b9,b5		; readjust pixels for next line
+	cmp	b9,b5		; added 6/92. if there are enough pixels
+	jrge	dtfynuther		; left to do another line, do it.
+
+      	rets
+
+dtfynuther
+	jruc	blowlinex2
+
+
+
+
+	.end
+

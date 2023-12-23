@@ -1,0 +1,98 @@
+	.DATA
+arrow1l:
+	.word   28,16,0,0
+	.long   0540afa4H
+	.word   05000H
+	.long   arw4p
+arrow1r:
+	.word   28,16,0,0
+	.long   0540b864H
+	.word   05000H
+	.long   arw4p
+arrow2l:
+	.word   28,16,0,0
+	.long   0540c124H
+	.word   05000H
+	.long   arw3p
+arrow2r:
+	.word   28,16,0,0
+	.long   0540c9e4H
+	.word   05000H
+	.long   arw3p
+arrow3l:
+	.word   28,16,0,0
+	.long   0540d2a4H
+	.word   05000H
+	.long   arw2p
+arrow3r:
+	.word   28,16,0,0
+	.long   0540db64H
+	.word   05000H
+	.long   arw2p
+arrow4l:
+	.word   28,16,0,0
+	.long   0540e424H
+	.word   05000H
+	.long   arw1p
+arrow4r:
+	.word   28,16,0,0
+	.long   0540ece4H
+	.word   05000H
+	.long   arw1p
+arrow1t:
+	.word   16,26,7,24
+	.long   0540f5a4H
+	.word   05000H
+	.long   arw4p
+arrow2t:
+	.word   16,26,7,24
+	.long   0540fdc4H
+	.word   05000H
+	.long   arw3p
+arrow3t:
+	.word   16,26,7,24
+	.long   054105e4H
+	.word   05000H
+	.long   arw2p
+arrow4t:
+	.word   16,26,7,24
+	.long   05410e04H
+	.word   05000H
+	.long   arw1p
+arrow1t2:
+	.word   16,26,7,24
+	.long   0540f5a4H
+	.word   05000H
+	.long   arwbp
+arrow1l2p:
+	.word   28,16,0,0
+	.long   0540afa4H
+	.word   05000H
+	.long   arw4p
+arrow1r2p:
+	.word   28,16,0,0
+	.long   0540b864H
+	.word   05000H
+	.long   arw4p
+arrow2l2p:
+	.word   28,16,0,0
+	.long   0540c124H
+	.word   05000H
+	.long   arw1p
+arrow2r2p:
+	.word   28,16,0,0
+	.long   0540c9e4H
+	.word   05000H
+	.long   arw1p
+arrow1t2p:
+	.word   16,26,7,24
+	.long   0540f5a4H
+	.word   05000H
+	.long   arw4p
+arrow2t2p:
+	.word   16,26,7,24
+	.long   0540fdc4H
+	.word   05000H
+	.long   arw1p
+	.TEXT
+

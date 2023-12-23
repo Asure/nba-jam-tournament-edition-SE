@@ -1,0 +1,504 @@
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:10 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE    1
+
+       1                            .file   "plyrat2.asm"
+       3                            .width  132
+       4                            .option b,d,l,t
+       5                            .mnolist
+       6                    
+       7                    
+       8                            .include        "mproc.equ"             ;Mproc equates
+       9                            .include        "disp.equ"              ;Display proc equates
+      10                            .include        "gsp.equ"               ;Gsp asm equates
+      11                            .include        "sys.equ"
+      12                            .include        "shawn.hdr"             ;Macros
+      13                            .include        "imgtbl.glo"
+      14                            .include        "plyrhd.tbl"
+      15                            .asg            0,SEQT
+      16                            .include        "plyr.equ"
+      17                    
+      18                    
+      19                    
+      20                    
+      21                    
+      22                            .ref    team1,team2
+      23                            .ref    special_heads,spechds_t
+      24                            .ref    ATL_t,name_sort,player_names
+      25                            .ref    tm1set,tm2set
+      26                            .ref    attrib1_obj,attrib2_obj
+      27                            .ref    attrib3_obj,attrib4_obj
+      28                    
+      29                    
+      30                    
+      31                    
+      32                            .def    Kemp_h,Pippen_h,Gill_h,Daughert_h,Mullin_h,Wilkins_h
+      33                    
+      34                            .def    Worthy_h,Laetner_h,Hawkins_h,LJohnson_h,Divac_h,Seikaly_h
+      35                            .def    KMalone_h,Stockton_h,Ewing_h,RHarper_h
+      36                            .def    Seikaly_h,Price_h,Rice_h,Miller_h,Mutumbo_h,Oakley_h,Olajuwon_h
+      37                            .def    Skiles_h
+      38                            .def    Porter_h,Schrempf_h,Robinson_h,Tisdale_h
+      39                            .def    Webb_h,Smith_h,Thomas_h
+      40                            .def    Person_h,Augmon_h,Benjamin_h,Barkley_h,Coleman_h,Drexler_h
+      41                            .def    Ellis_h,Elliot_h,Hardaway_h,DHarper_h,HCGrant_h,HVGrant_h
+      42                            .def    Hornacek_h,Majerle_h,Manning_h
+      43                    
+      44                    
+      45                    
+      46                    
+      47                    
+      48                    
+      49 00000000                   .text
+      50                    
+      51                    
+      52                    
+      53 00000000            SUBR   plyr_getattributes
+      54                    
+      55 00000000     4d00          move    a8,a0
+      56 00000010     24a0          sll     5,a0
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:10 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball player code                                               PAGE    2
+
+      57 00000020     09e1          movi    a1_tbl,a1               ;team1 or team2
+         00000030 00000480' 
+      58 00000050     4001          add     a0,a1
+      59 00000060     8622          move    *a1,a2,L
+      60 00000070     09e1          movi    a2_tbl,a1               ;tm1set or tm2set
+         00000080 00000500' 
+      61 000000a0     4001          add     a0,a1
+      62 000000b0     8623          move    *a1,a3,L
+      63 000000c0     09e1          movi    a3_tbl,a1               ;0 or 32
+         000000d0 00000580' 
+      64 000000f0     4001          add     a0,a1
+      65 00000100     8624          move    *a1,a4,L
+      66                    
+      67 00000110     09ea          movi    player_names,a10
+         00000120 00000000! 
+      68 00000140     8440          move    *a2,a0
+      69 00000150     0b40  gzpvlp3 cmpi    0,a0
+         00000160     ffff  
+      70 00000170     ca04          jrz     gzpvout3
+      71 00000180     0b0a          addi    20*64,a10
+         00000190     0500  
+      72 000001a0     1420          dec     a0
+      73 000001b0     c0f9          jruc    gzpvlp3
+      74 000001c0           gzpvout3
+      75 000001c0     8440          move    *a2,a0
+      76 000001d0     2480          sll     4,a0
+      77 000001e0     4060          add     a3,a0
+      78 000001f0     840e          move    *a0,a14
+      79 00000200     24ce          sll     6,a14
+      80 00000210     41ca          add     a14,a10
+      81                    
+      82 00000220     408a          add     a4,a10
+      83                    
+      84 00000230     8740          move    *a10,a0,L
+      85 00000240     09ee          movi    name_sort,a14
+         00000250 00000000! 
+      86 00000270     09ca          movi    -1,a10
+         00000280     ffff  
+      87 00000290           gzpvlp4
+      88 00000290     102a          inc     a10
+      89 000002a0     97c1          move    *a14+,a1,L
+      90 000002b0     4820          cmp     a1,a0
+      91 000002c0     cbfc          jrnz    gzpvlp4
+      92                    
+      93 000002d0     09e1          movi    ATL_t,a1
+         000002e0 00000000! 
+      94 00000300     0b4a  gzpvlp5 cmpi    0,a10
+         00000310     ffff  
+      95 00000320     ca04          jrz     gzpvout
+      96 00000330     0b01          addi    320+16*3,a1
+         00000340     0170  
+      97 00000350     142a          dec     a10
+      98 00000360     c0f9          jruc    gzpvlp5
+      99                    
+     100 00000370           gzpvout
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:10 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball player code                                               PAGE    3
+
+     101                    
+     102 00000370     4c2a          move    a1,a10
+     103                    
+     104 00000380     4d00          move    a8,a0
+     105 00000390     2480          sll     4,a0                    ;*16
+     106 000003a0     0b20          addi    special_heads,a0
+         000003b0 00000000! 
+     107 000003d0     8400          move    *a0,a0
+     108 000003e0     ce06          jrn     gzpvnorm2
+     109 000003f0     09c1          movi    PAT_SIZE,a1
+         00000400     0170  
+     110 00000410     5e01          mpyu    a0,a1
+     111 00000420     0b21          addi    spechds_t,a1
+         00000430 00000000! 
+     112                    
+     113 00000450     b22d  gzpvnorm2       move    a1,*a13(plyr_attrib_p),L
+         00000460     0150  
+     114                    
+     115 00000470     0960          rets
+     116                    
+     117                    
+     118 00000480 00000000! a1_tbl  .long   team1,team1
+     119 000004c0 00000000!         .long   team2,team2
+     120                    
+     121 00000500 00000000! a2_tbl  .long   tm1set,tm1set
+     122 00000540 00000000!         .long   tm2set,tm2set
+     123                    
+     124 00000580 00000000  a3_tbl  .long   0,32
+     125 000005c0 00000000          .long   0,32
+     126                    
+     127                    
+     128                    
+     129 00000600            SUBR   getwindowhead
+     130                    
+     131 00000600     4d00          move    a8,a0
+     132 00000610     24a0          sll     5,a0
+     133 00000620     09e1          movi    a1_tbl,a1               ;team1 or team2
+         00000630 00000480' 
+     134 00000650     4001          add     a0,a1
+     135 00000660     8622          move    *a1,a2,L
+     136 00000670     09e1          movi    a2_tbl,a1               ;tm1set or tm2set
+         00000680 00000500' 
+     137 000006a0     4001          add     a0,a1
+     138 000006b0     8623          move    *a1,a3,L
+     139 000006c0     09e1          movi    a3_tbl,a1               ;0 or 32
+         000006d0 00000580' 
+     140 000006f0     4001          add     a0,a1
+     141 00000700     8624          move    *a1,a4,L
+     142                    
+     143 00000710     09ea          movi    player_names,a10
+         00000720 00000000! 
+     144 00000740     8440          move    *a2,a0
+     145 00000750     0b40  kbwglp3 cmpi    0,a0
+         00000760     ffff  
+     146 00000770     ca04          jrz     kbwgout3
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:10 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball player code                                               PAGE    4
+
+     147 00000780     0b0a          addi    20*64,a10
+         00000790     0500  
+     148 000007a0     1420          dec     a0
+     149 000007b0     c0f9          jruc    kbwglp3
+     150 000007c0           kbwgout3
+     151 000007c0     8440          move    *a2,a0
+     152 000007d0     2480          sll     4,a0
+     153 000007e0     4060          add     a3,a0
+     154 000007f0     840e          move    *a0,a14
+     155 00000800     24ce          sll     6,a14
+     156 00000810     41ca          add     a14,a10
+     157                    
+     158 00000820     408a          add     a4,a10
+     159                    
+     160 00000830     8740          move    *a10,a0,L
+     161 00000840     09ee          movi    name_sort,a14
+         00000850 00000000! 
+     162 00000870     09ca          movi    -1,a10
+         00000880     ffff  
+     163 00000890           kbwglp4
+     164 00000890     102a          inc     a10
+     165 000008a0     97c1          move    *a14+,a1,L
+     166 000008b0     4820          cmp     a1,a0
+     167 000008c0     cbfc          jrnz    kbwglp4
+     168                    
+     169 000008d0     09e1          movi    ATL_t,a1
+         000008e0 00000000! 
+     170 00000900     0b4a  kbwglp5 cmpi    0,a10
+         00000910     ffff  
+     171 00000920     ca04          jrz     kbwgout
+     172 00000930     0b01          addi    320+16*3,a1
+         00000940     0170  
+     173 00000950     142a          dec     a10
+     174 00000960     c0f9          jruc    kbwglp5
+     175                    
+     176 00000970           kbwgout
+     177                    
+     178 00000970     4d00          move    a8,a0
+     179 00000980     2480          sll     4,a0                    ;*16
+     180 00000990     0b20          addi    special_heads,a0
+         000009a0 00000000! 
+     181 000009c0     8400          move    *a0,a0
+     182 000009d0     ce06          jrn     kbwgnorm2
+     183 000009e0     09c1          movi    PAT_SIZE,a1
+         000009f0     0170  
+     184 00000a00     5e01          mpyu    a0,a1
+     185 00000a10     0b21          addi    spechds_t,a1
+         00000a20 00000000! 
+     186                    
+     187 00000a40           kbwgnorm2
+     188 00000a40     0b01          addi    272+16,a1                       ;272
+         00000a50     0120  
+     189 00000a60     8620          move    *a1,a0,L
+     190 00000a70     b600          move    *a0(5*32),a0,L
+         00000a80     00a0  
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:10 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball player code                                               PAGE    5
+
+     191                    
+     192 00000a90     0960          rets
+     193                    
+     194                    
+     195 00000aa0           Worthy_h
+     196 00000aa0 00013200"         .long   worthy1
+     197 00000ac0 00013200"         .long   worthy1
+     198 00000ae0 00013290"         .long   worthy2,worthy3,worthy4,worthy5,worthy6,worthy7,worthy8,worthy9
+     199 00000be0 00013710"         .long   worthy10,worthy11,worthy12,worthy13,worthy14,worthy15,worthy16
+     200 00000cc0           Laetner_h
+     201 00000cc0 00013b00"         .long   laet1
+     202 00000ce0 00013b00"         .long   laet1,laet2,laet3,laet4,laet5,laet6,laet7,laet8,laet9,laet10
+     203 00000e20 000140a0"         .long   laet11,laet12,laet13,laet14,laet15,laet16
+     204 00000ee0           Hawkins_h
+     205 00000ee0 00014400"         .long   hawkins1
+     206 00000f00 00014400"         .long   hawkins1,hawkins2,hawkins3
+     207 00000f60 000145b0"         .long   hawkins4,hawkins5,hawkins6,hawkins7,hawkins8,hawkins9,hawkins10
+     208 00001040 000149a0"         .long   hawkins11,hawkins12,hawkins13,hawkins14,hawkins15,hawkins16
+     209 00001100           LJohnson_h
+     210 00001100 00014d00"         .long   johnson1
+     211 00001120 00014d00"         .long   johnson1
+     212 00001140 00014d90"         .long   johnson2,johnson3,johnson4,johnson5,johnson6,johnson7,johnson8,johnson9
+     213 00001240 00015210"         .long   johnson10,johnson11,johnson12,johnson13,johnson14,johnson15,johnson16
+     214 00001320 00015600" Divac_h .long   divac1
+     215 00001340 00015600"         .long   divac1,divac2,divac3,divac4,divac5,divac6,divac7,divac8,divac9,divac10
+     216 00001480 00015ba0"         .long   divac11,divac12,divac13,divac14,divac15,divac16
+     217 00001540           KMalone_h
+     218 00001540 00002400"         .long   kmalone1
+     219 00001560 00002400"         .long   kmalone1,kmalone2,kmalone3,kmalone4,kmalone5
+     220 00001600 000026d0"         .long   kmalone6,kmalone7,kmalone8,kmalone9,kmalone10
+     221 000016a0 000029a0"         .long   kmalone11,kmalone12,kmalone13,kmalone14,kmalone15
+     222 00001740 00002c70"         .long   kmalone16
+     223 00001760 000005a0"         .long   ewing11,ewing12,ewing13,ewing14,ewing15
+     224 00001800           Stockton_h
+     225 00001800 00000900"         .long   stock1
+     226 00001820 00000900"         .long   stock1,stock2,stock3,stock4,stock5
+     227 000018c0 00000bd0"         .long   stock6,stock7,stock8,stock9,stock10
+     228 00001960 00000ea0"         .long   stock11,stock12,stock13,stock14,stock15
+     229 00001a00 00001170"         .long   stock16
+     230 00001a20 000005a0"         .long   ewing11,ewing12,ewing13,ewing14,ewing15
+     231 00001ac0           Ewing_h
+     232 00001ac0 00000000"         .long   ewing1
+     233 00001ae0 00000000"         .long   ewing1,ewing2,ewing3,ewing4,ewing5
+     234 00001b80 000002d0"         .long   ewing6,ewing7,ewing8,ewing9,ewing10
+     235 00001c20 000005a0"         .long   ewing11,ewing12,ewing13,ewing14,ewing15
+     236 00001cc0 00000870"         .long   ewing16
+     237 00001ce0 000005a0"         .long   ewing11,ewing12,ewing13,ewing14,ewing15
+     238 00001d80           RHarper_h
+     239 00001d80 00001b00"         .long   rharp1
+     240 00001da0 00001b00"         .long   rharp1,rharp2,rharp3,rharp4,rharp5
+     241 00001e40 00001dd0"         .long   rharp6,rharp7,rharp8,rharp9,rharp10
+     242 00001ee0 000020a0"         .long   rharp11,rharp12,rharp13,rharp14,rharp15
+     243 00001f80 00002370"         .long   rharp16
+     244 00001fa0 000005a0"         .long   ewing11,ewing12,ewing13,ewing14,ewing15
+     245                    
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:10 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball player code                                               PAGE    6
+
+     246 00002040           Seikaly_h
+     247 00002040 00001200"         .long   shiek1
+     248 00002060 00001200"         .long   shiek1,shiek2,shiek3,shiek4,shiek5
+     249 00002100 000014d0"         .long   shiek6,shiek7,shiek8,shiek9,shiek10
+     250 000021a0 000017a0"         .long   shiek11,shiek12,shiek13,shiek14,shiek15
+     251 00002240 00001a70"         .long   shiek16
+     252 00002260 000005a0"         .long   ewing11,ewing12,ewing13,ewing14,ewing15
+     253 00002300           Miller_h
+     254 00002300 0000b400"         .long   Miller1
+     255 00002320 0000b400"         .long   Miller1,Miller2,Miller3,Miller4,Miller5,Miller6,Miller7
+     256 00002400 0000b7f0"         .long   Miller8,Miller9,Miller10,Miller11,Miller12,Miller13,Miller14,Miller15
+     257 00002500 0000bc70"         .long   Miller16
+     258 00002520           Mutumbo_h
+     259 00002520 0000bd00"         .long   Mutumbo1
+     260 00002540 0000bd00"         .long   Mutumbo1,Mutumbo2,Mutumbo3,Mutumbo4,Mutumbo5,Mutumbo6,Mutumbo7
+     261 00002620 0000c0f0"         .long   Mutumbo8,Mutumbo9,Mutumbo10,Mutumbo11,Mutumbo12,Mutumbo13,Mutumbo14
+     262 00002700 0000c4e0"         .long   Mutumbo15,Mutumbo16
+     263 00002740           Oakley_h
+     264 00002740 0000c600"         .long   Oakley1
+     265 00002760 0000c600"         .long   Oakley1,Oakley2,Oakley3,Oakley4,Oakley5,Oakley6
+     266 00002820 0000c960"         .long   Oakley7,Oakley8,Oakley9,Oakley10,Oakley11,Oakley12,Oakley13,Oakley14
+     267 00002920 0000cde0"         .long   Oakley15,Oakley16
+     268 00002960           Olajuwon_h
+     269 00002960 0000cf00"         .long   Hakeem1
+     270 00002980 0000cf00"         .long   Hakeem1,Hakeem2,Hakeem3,Hakeem4,Hakeem5,Hakeem6
+     271 00002a40 0000d260"         .long   Hakeem7,Hakeem8,Hakeem9,Hakeem10,Hakeem11,Hakeem12,Hakeem13,Hakeem14
+     272 00002b40 0000d6e0"         .long   Hakeem15,Hakeem16
+     273 00002b80           Porter_h
+     274 00002b80 0000d800"         .long   Porter1
+     275 00002ba0 0000d800"         .long   Porter1,Porter2,Porter3,Porter4,Porter5,Porter6,Porter7,Porter8,Porter9
+     276 00002cc0 0000dd10"         .long   Porter10,Porter11,Porter12,Porter13,Porter14,Porter15,Porter16
+     277 00002da0           Price_h
+     278 00002da0 0000e100"         .long   Price1
+     279 00002dc0 0000e100"         .long   Price1
+     280 00002de0 0000e190"         .long   Price2,Price3,Price4,Price5,Price6,Price7,Price8,Price9,Price10,Price11
+     281 00002f20 0000e730"         .long   Price12,Price13,Price14,Price15,Price16
+     282 00002fc0           Rice_h
+     283 00002fc0 0000ea00"         .long   Rice1
+     284 00002fe0 0000ea00"         .long   Rice1,Rice2,Rice3,Rice4,Rice5
+     285 00003080 0000ecd0"         .long   Rice6,Rice7,Rice8,Rice9,Rice10,Rice11,Rice12,Rice13,Rice14,Rice15
+     286 000031c0 0000f270"         .long   Rice16
+     287 000031e0           Robinson_h
+     288 000031e0 0000f300"         .long   Robins1
+     289 00003200 0000f300"         .long   Robins1,Robins2,Robins3,Robins4,Robins5,Robins6,Robins7,Robins8
+     290 00003300 0000f780"         .long   Robins9,Robins10,Robins11,Robins12,Robins13,Robins14,Robins15,Robins16
+     291 00003400           Schrempf_h
+     292 00003400 0000fc00"         .long   schremp1
+     293 00003420 0000fc00"         .long   schremp1,schremp2
+     294 00003460 0000fd20"         .long   schremp3,schremp4,schremp5,schremp6,schremp7,schremp8,schremp9
+     295 00003540 00010110"         .long   schremp10,schremp11,schremp12,schremp13,schremp14,schremp15,schremp16
+     296 00003620           Skiles_h
+     297 00003620 00010500"         .long   skiles1
+     298 00003640 00010500"         .long   skiles1,skiles2,skiles3,skiles4,skiles5,skiles6,skiles7,skiles8,skiles9
+     299 00003760 00010a10"         .long   skiles10,skiles11,skiles12,skiles13,skiles14,skiles15,skiles16
+     300 00003840           Smith_h
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:10 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball player code                                               PAGE    7
+
+     301 00003840 00010e00"         .long   smith1
+     302 00003860 00010e00"         .long   smith1,smith2,smith3,smith4
+     303 000038e0 00011040"         .long   smith5,smith6,smith7,smith8,smith9,smith10,smith11,smith12,smith13
+     304 00003a00 00011550"         .long   smith14,smith15,smith16
+     305 00003a60           Thomas_h
+     306 00003a60 00011700"         .long   thomas1
+     307 00003a80 00011700"         .long   thomas1,thomas2,thomas3,thomas4,thomas5,thomas6
+     308 00003b40 00011a60"         .long   thomas7,thomas8,thomas9,thomas10,thomas11,thomas12,thomas13,thomas14
+     309 00003c40 00011ee0"         .long   thomas15,thomas16
+     310 00003c80           Tisdale_h
+     311 00003c80 00012000"         .long   tisdale1
+     312 00003ca0 00012000"         .long   tisdale1,tisdale2,tisdale3,tisdale4,tisdale5,tisdale6
+     313 00003d60 00012360"         .long   tisdale7,tisdale8,tisdale9,tisdale10,tisdale11,tisdale12,tisdale13
+     314 00003e40 00012750"         .long   tisdale14,tisdale15,tisdale16
+     315 00003ea0           Webb_h
+     316 00003ea0 00012900"         .long   webb1
+     317 00003ec0 00012900"         .long   webb1,webb2,webb3,webb4,webb5,webb6,webb7
+     318 00003fa0 00012cf0"         .long   webb8,webb9,webb10,webb11,webb12,webb13,webb14,webb15,webb16
+     319 000040c0 000005a0"         .long   ewing11,ewing12,ewing13,ewing14,ewing15
+     320 00004160 000005a0"         .long   ewing11,ewing12,ewing13,ewing14,ewing15
+     321                    
+     322 00004200           Kemp_h
+     323 00004200 00015f00"         .long   kemp1
+     324 00004220 00015f00"         .long   kemp1,kemp2,kemp3,kemp4,kemp5,kemp6,kemp7,kemp8,kemp9
+     325 00004340 00016410"         .long   kemp10,kemp11,kemp12,kemp13,kemp14,kemp15,kemp16
+     326 00004420           Pippen_h
+     327 00004420 00016800"         .long   pippin1
+     328 00004440 00016800"         .long   pippin1,pippin2,pippin3,pippin4,pippin5,pippin6,pippin7,pippin8,pippin9
+     329 00004560 00016d10"         .long   pippin10,pippin11,pippin12,pippin13,pippin14,pippin15,pippin16
+     330 00004640           Gill_h
+     331 00004640 00017100"         .long   gill1
+     332 00004660 00017100"         .long   gill1
+     333 00004680 00017190"         .long   gill2,gill3,gill4,gill5,gill6,gill7,gill8,gill9,gill10,gill11,gill12
+     334 000047e0 000177c0"         .long   gill13,gill14,gill15,gill16
+     335 00004860           Daughert_h
+     336 00004860 00017a00"         .long   daug1
+     337 00004880 00017a00"         .long   daug1,daug2,daug3,daug4,daug5,daug6,daug7
+     338 00004960 00017df0"         .long   daug8,daug9,daug10,daug11,daug12,daug13,daug14,daug15,daug16
+     339 00004a80           Mullin_h
+     340 00004a80 00018300"         .long   mullin1
+     341 00004aa0 00018300"         .long   mullin1
+     342 00004ac0 00018390"         .long   mullin2,mullin3,mullin4,mullin5,mullin6,mullin7,mullin8,mullin9
+     343 00004bc0 00018810"         .long   mullin10,mullin11,mullin12,mullin13,mullin14,mullin15,mullin16
+     344 00004ca0           Wilkins_h
+     345 00004ca0 00018c00"         .long   wilkens1
+     346 00004cc0 00018c00"         .long   wilkens1
+     347 00004ce0 00018c90"         .long   wilkens2,wilkens3,wilkens4,wilkens5,wilkens6,wilkens7,wilkens8,wilkens9
+     348 00004de0 00019110"         .long   wilkens10,wilkens11,wilkens12,wilkens13,wilkens14,wilkens15,wilkens16
+     349 00004ec0           Person_h
+     350 00004ec0 00002d00"         .long   Person1
+     351 00004ee0 00002d00"         .long   Person1,Person2,Person3,Person4,Person5,Person6,Person7,Person8,Person9
+     352 00005000 00003210"         .long   Person10,Person11,Person12,Person13,Person14,Person15,Person16
+     353 000050e0           Augmon_h
+     354 000050e0 00003600"         .long   Augmon1
+     355 00005100 00003600"         .long   Augmon1
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:10 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball player code                                               PAGE    8
+
+     356 00005120 00003690"         .long   Augmon2,Augmon3,Augmon4,Augmon5,Augmon6,Augmon7,Augmon8,Augmon9
+     357 00005220 00003b10"         .long   Augmon10,Augmon11,Augmon12,Augmon13,Augmon14,Augmon15,Augmon16
+     358 00005300           Benjamin_h
+     359 00005300 00003f00"         .long   Benja1
+     360 00005320 00003f00"         .long   Benja1
+     361 00005340 00003f90"         .long   Benja2,Benja3,Benja4,Benja5,Benja6,Benja7,Benja8,Benja9,Benja10,Benja11
+     362 00005480 00004530"         .long   Benja12,Benja13,Benja14,Benja15,Benja16
+     363 00005520           Barkley_h
+     364 00005520 00004800"         .long   Barkley1
+     365 00005540 00004800"         .long   Barkley1,Barkley2,Barkley3
+     366 000055a0 000049b0"         .long   Barkley4,Barkley5,Barkley6,Barkley7,Barkley8,Barkley9,Barkley10
+     367 00005680 00004da0"         .long   Barkley11,Barkley12,Barkley13,Barkley14,Barkley15,Barkley16
+     368 00005740           Coleman_h
+     369 00005740 00005100"         .long   Cole1
+     370 00005760 00005100"         .long   Cole1,Cole2
+     371 000057a0 00005220"         .long   Cole3,Cole4,Cole5,Cole6,Cole7,Cole8,Cole9,Cole10,Cole11,Cole12,Cole13
+     372 00005900 00005850"         .long   Cole14,Cole15,Cole16
+     373 00005960           Drexler_h
+     374 00005960 00005a00"         .long   Drex1
+     375 00005980 00005a00"         .long   Drex1,Drex2,Drex3,Drex4,Drex5,Drex6
+     376 00005a40 00005d60"         .long   Drex7,Drex8,Drex9,Drex10,Drex11,Drex12,Drex13,Drex14,Drex15,Drex16
+     377 00005b80           Ellis_h
+     378 00005b80 00006300"         .long   Ellis1
+     379 00005ba0 00006300"         .long   Ellis1,Ellis2,Ellis3,Ellis4,Ellis5,Ellis6,Ellis7,Ellis8,Ellis9,Ellis10
+     380 00005ce0 000068a0"         .long   Ellis11,Ellis12,Ellis13,Ellis14,Ellis15,Ellis16
+     381 00005da0           Elliot_h
+     382 00005da0 00006c00"         .long   Elliot1
+     383 00005dc0 00006c00"         .long   Elliot1,Elliot2,Elliot3
+     384 00005e20 00006db0"         .long   Elliot4,Elliot5,Elliot6,Elliot7,Elliot8,Elliot9,Elliot10,Elliot11
+     385 00005f20 00007230"         .long   Elliot12,Elliot13,Elliot14,Elliot15,Elliot16
+     386 00005fc0           Hardaway_h
+     387 00005fc0 00007500"         .long   Hrdaway1
+     388 00005fe0 00007500"         .long   Hrdaway1,Hrdaway2,Hrdaway3
+     389 00006040 000076b0"         .long   Hrdaway4,Hrdaway5,Hrdaway6,Hrdaway7,Hrdaway8,Hrdaway9,Hrdaway10
+     390 00006120 00007aa0"         .long   Hrdaway11,Hrdaway12,Hrdaway13,Hrdaway14,Hrdaway15,Hrdaway16
+     391 000061e0           DHarper_h
+     392 000061e0 00007e00"         .long   HarpMav1
+     393 00006200 00007e00"         .long   HarpMav1,HarpMav2,HarpMav3,HarpMav4,HarpMav5,HarpMav6,HarpMav7,HarpMav8
+     394 00006300 00008280"         .long   HarpMav9,HarpMav10,HarpMav11,HarpMav12,HarpMav13,HarpMav14,HarpMav15
+     395 000063e0 00008670"         .long   HarpMav16
+     396 00006400           HCGrant_h
+     397 00006400 00009000"         .long   GrantG1
+     398 00006420 00009000"         .long   GrantG1
+     399 00006440 00009090"         .long   GrantG2,GrantG3,GrantG4,GrantG5,GrantG6,GrantG7,GrantG8,GrantG9
+     400 00006540 00009510"         .long   GrantG10,GrantG11,GrantG12,GrantG13,GrantG14,GrantG15,GrantG16
+     401 00006620           HVGrant_h
+     402 00006620 00008700"         .long   Grant1
+     403 00006640 00008700"         .long   Grant1,Grant2,Grant3,Grant4,Grant5,Grant6,Grant7,Grant8
+     404 00006740 00008b80"         .long   Grant9,Grant10,Grant11,Grant12,Grant13,Grant14,Grant15,Grant16
+     405 00006840           Hornacek_h
+     406 00006840 00009900"         .long   Horna1
+     407 00006860 00009900"         .long   Horna1
+     408 00006880 00009990"         .long   Horna2,Horna3,Horna4,Horna5,Horna6,Horna7,Horna8,Horna9,Horna10,Horna11
+     409 000069c0 00009f30"         .long   Horna12,Horna13,Horna14,Horna15,Horna16
+     410 00006a60           Majerle_h
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:10 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball player code                                               PAGE    9
+
+     411 00006a60 0000a200"         .long   Majerle1
+     412 00006a80 0000a200"         .long   Majerle1
+     413 00006aa0 0000a290"         .long   Majerle2,Majerle3,Majerle4,Majerle5,Majerle6,Majerle7,Majerle8,Majerle9
+     414 00006ba0 0000a710"         .long   Majerle10,Majerle11,Majerle12,Majerle13,Majerle14,Majerle15,Majerle16
+     415 00006c80           Manning_h
+     416 00006c80 0000ab00"         .long   Manning1
+     417 00006ca0 0000ab00"         .long   Manning1,Manning2,Manning3,Manning4,Manning5,Manning6,Manning7,Manning8
+     418 00006da0 0000af80"         .long   Manning9,Manning10,Manning11,Manning12,Manning13,Manning14,Manning15
+     419 00006e80 0000b370"         .long   Manning16
+     420                    
+     421 00006ea0 000005a0"         .long   ewing11,ewing12,ewing13,ewing14,ewing15
+     422 00006f40 000005a0"         .long   ewing11,ewing12,ewing13,ewing14,ewing15
+     423                    
+     424                    
+     425                    
+     426                    
+     427                            .end
+
+ No Errors,  No Warnings

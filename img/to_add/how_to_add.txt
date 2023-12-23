@@ -1,0 +1,59 @@
+How to add player(s)
+--------------------
+
+1. Get images
+2. Looking at Ken Griffey
+
+- The player name during select & play goes into imgtbl.asm and imgpal.asm as it's used everywhere.
+- Used pal (scorep) is in imgpal.asm.
+- You need to generate data for imgpal and imgtbl and store the image.
+- There was room in BB3.IRW for this
+
+- The player mug shot goes into mugshot.tbl 
+- Used pal goes into imgpalm.asm/axx
+- Data is in BBMUG.IRW
+
+- The player heads go into plyrhd4.tbl / imgtbl4.glo
+- These are generated from BB3.LOD
+- Data is in BB3.IRW
+- RAYGAY is cut from BB3.LOD for this.
+
+2. Player src structure
+
+PLYRAT.ASM
+
+KG_H	;GRIFFEY
+	.long	KGRIF01
+	.long	KGRIF01,KGRIF02,KGRIF03,KGRIF04,KGRIF05
+	.long	KGRIF01,KGRIF02,KGRIF03,KGRIF04,KGRIF05
+	.long	KGRIF01,KGRIF02,KGRIF03,KGRIF04,KGRIF05
+	.long	KGRIF03						;note we don't have KGRIF16 here.
+
+spechds_t  	; table that holds entries for special guests. I don't yet know how this data is identified,
+		; or if there is a max # of entries. Current entries are 68
+
+	LWWWWWW	scale610_t,BV9,SHT9,DNK9,DEF7,SDEF7,DSKL3
+	.long	FL34_p, Un12_p,Un14_p, TR2_p,TR7_p,KG_H		;FL34 is the flesh pal. KH_H are the heads
+	.word	6,9,9	
+
+SCORE2.ASM ; holds a sample for when the ball is passed. (I don't know what the number is for.)
+        .long   GRIFFEY         ;53
+
+SELECT2.ASM
+
+team_inits
+;	.word	'R'-'A','M'-'A','G'-'A'	,08,11	;53 GAY
+	.word	'G'-'A','K'-'A','G'-'A'	,02,04	;53 GRIFFEY (again 53, they commented RAY GAY who had same nmbr.)
+#team_snds
+;	.word	0f9a9H,47,081c8H,0	;Hello!       53 GAY
+	.word	0f9a9H,47,0812bH,0	;fantastic    53 GRIFFEY
+our_heads
+;	.long	RAY_GAY		;53
+	.long	KEN_MUG		;53  GRIFFEY
+
+SPEECH.ASM
+
+special_name_speech
+;special guests
+;	.word	0f980H,40,080b1H,0	;53 GAY
+	.word	0f980H,40,08199H,0	;53 GRIFFEY

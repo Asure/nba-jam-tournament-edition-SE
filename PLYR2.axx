@@ -1,0 +1,4828 @@
+	.file	"plyr2.asm"
+	.title	"basketball player code"
+	.width	132
+	.option	b,d,l,t
+	.mnolist
+
+
+	.include	"mproc.equ"		;Mproc equates
+	.include	"disp.equ"		;Display proc equates
+	.include	"gsp.equ"		;Gsp asm equates
+	.include	"sys.equ"
+	.include	"audit.equ"
+	.include	"imgtbl.glo"
+	.include	"game.equ"
+	.include	"shawn.hdr"		;Macros
+	.asg		0,SEQT
+	.include	"plyr.equ"
+	.include	"ball.tbl"
+
+
+
+	.ref	snd_play1ovr
+	.ref	snd_play1ovrp
+
+
+facial_snd	.word	0f990H,93,081eeH,0	;Delivers the
+ohmy		.word	0f981H,98,081eaH,0	;oh my!
+stealsb		.word	0f990H,80,081f3H,0	;steals the ball
+intercept	.word	0f991H,59,081a9H,0	;Intercepted
+intostands	.word	0f970H,74,081c7H,0	;into the stands
+bounce_snd	.word	0fc80H,10,08129H,0	;Ball bounce
+swish_snd	.word	0fca0H,30,08112H,0	;Ball swish
+dunk_snd	.word	0fca4H,30,08120H,0	;Dunk
+
+miss_snd	.word	0fc90H,10,0813bH,0	;Ball hits rim
+miss2_snd	.word	0fd90H,10,08139H,0	;Ball hits rim
+miss3_snd	.word	0fc90H,10,0813aH,0	;Ball hits rim
+missd1_snd	.word	0fc90H,08H,08128H,0	;Cartoon part of missed dunk
+
+hitbboard_snd	.word	0fcf5H,05,08138H,0	;Hit backboard
+swat_snd	.word	0fd94H,15,08157H,0	;Swat ball (Steals & blocks)
+swat3_snd	.word	0fd94H,18,08155H,0
+cheer_snd	.word	0f898H,40,08144H,0	;Quick cheer
+cheer1_snd	.word	0fd84H,100,08111H,0	;Long cheer
+cheer2_snd	.word	0f894H,100,08144H,0	;Long cheer
+cheer3_snd	.word	0fc84H,130,0814eH,0	;Long cheer
+boo1_snd	.word	0f884H,120,0814aH,0	;Boo
+steal_snd	.word	0fbf7H,08H,08093H,0	;Steal
+anncr3_snd	.word	0f1f8H,100,08182H,0	;And it's good
+explode_snd	.word	0fcf9H,250,08153H,0	;Backboard smash
+
+onfire_snd	.word	0f9feH,74,08169H,0	;He's on fire
+nogood		.word	0f981H,58,081f1H,0	;NO GOOD!
+
+
+	.ref	plyr_maxpower
+	.ref	shot_percentage
+	.ref	gmqrtr,FIREFALP
+	.ref	w1blok3,w2blok3,w4blok3,w5blok3
+	.ref	w1blok2,w2blok2,w4blok2,w5blok2
+	.ref	shot_distance
+
+	.ref	AUD1,AUD
+	.ref	nogood_speech,GAMSTATE
+	.ref	speech_playovrp
+
+	.ref	pushed_speech
+	.ref	rejected_speech
+	.ref	rejected_dnk_speech
+	.ref	rebound_speech
+	.ref	intercepted_speech
+	.ref	stolen_speech
+
+	.ref	rebound_delay
+	.ref	pushing_delay
+	.ref	team1
+
+	.ref	shot_type
+	.ref	shoots_speech,scored_speech
+
+	.ref	steals_off
+	.ref	pass_off
+	.ref	RNDRNGS,PSTATUS
+
+	.ref	game_time
+	.ref	scores,prt_top_scores
+	.ref	score_add,score_showtvpanel
+	.ref	stick_number
+	.ref	sclockx,sc_proc
+	.ref	net_ani
+	.ref	arw_on1plyr
+
+	.ref	pal_getf
+
+	.ref	PCNT
+	.ref	HALT
+	.ref	scale58_t,scale66_t,scale72_t
+	.ref	gndx
+	.ref	RNDPER
+	.ref	SHAKER
+	.ref	GET_ADJ
+
+	.ref	plyrobj_t,plyrproc_t
+	.ref	P1DATA,P2DATA,P3DATA,P4DATA
+	.ref	plyrcharge
+	.ref	plyrpasstype
+	.ref	plyrairballoff
+	.ref	ball_smokepuff
+
+	.ref	seekdir_xyxy128
+	.ref	seekdirdist_obxz128
+	.ref	plyr_setseq,plyr_takeoutball
+	.ref	plyr_goaltending
+	.ref	plyr_setshtdly
+
+	.ref	inc_player_stat
+
+
+
+	.def	ball101
+
+	.def	hoopl_t,hoopr_t
+
+
+
+	BSSX	plyrnumonfire	,16	;Plyr # on fire (0-3) or Neg
+	BSSX	ballobj_p	,32	;* basketball obj
+	BSSX	ballpnum	,16	;Plyr # who owns (0-3) or Neg
+	BSSX	ballpnumlast	,16	;Last plyr who owned ^ (0-3) or neg if loose
+	BSSX	ballpnumshot	,16	;Last plyr who shot (0-3)
+	BSSX	ballsclastp	,16	;Last plyr who owned (0-3) for shot clock
+
+					;Keep in order!
+	BSSX	ballpnumscored	,16	;Last plyr who scored (0-3) or neg
+	BSSX	ballnumscored	,16	;# times last plyr scored
+
+	BSSX	ballfree	,16	;!0=Ball free to move
+	BSSX	ballscorezhit	,16	;!0=Ball hit score zone, +=Top z, -=Scored
+
+	BSSX	ballrimhitcnt	,16	;# times rim hit since last shot
+	BSSX	ballbbhitcnt	,16	;# times backboard hit since last shot
+
+	BSSX	ballptsforshot	,16	;Point value for current shot (1-3)
+	BSSX	ballprcv_p	,32	;*Plyr proc who gets this pass or 0
+	BSSX	ballpasstime	,16	;# ticks since passed
+	BSSX	ballgoaltcnt	,16	;+=Goaltend cnt down
+	BSSX	ballflash	,16	;!0=Ball flashing
+	BSSX	inbound		,16	;Inbounding team (0-1) or Neg
+	BSSX	bbshatter	,16	;!0=Backboard shattered (+=L, -=R)
+
+	BSSX	cntl_team	,16	;Team in control (0,1,-1)
+	BSSX	cntl_team_last	,16	;Team in control (0,1,-1)
+	BSSX	scrl_divs_cur	,16	;Scroller current divisor
+	BSSX	scrl_divs_dest	,16	;^ destination divisor
+
+
+	BSSX	slamming	,16	;!0=Ball going into rim from dunking
+
+	BSSX	t1dunkcnt	,16	;+=# dunks since start of game (In order)
+	.bss	t2dunkcnt	,16	;^ -=# dunks till we can break board
+
+	BSSX	brick_count	,4*16	;# bricks each player has thrown up
+	BSSX	last_power	,16	;Player pushing has this power
+
+	BSSX	original_names	,4*32	;Names of original players in game
+	BSSX	fire_flags	,16	;1 if this player has been on fire (1,2,4,8)
+
+
+
+	.text
+
+
+
+	STRUCTPD
+	WORD	ball_anix	;X anipt offset
+	WORD	ball_aniy	;Y ^
+	APTR	ball_ani1st_p	;*1st ani_l pos
+	APTR	ball_ani_p	;*Current ani_l pos
+	WORD	ball_zsznum	;Z size # 0-?
+	WORD	ball_collcnt	;# of collisions in a row
+	WORD	ball_xscrllmin	;
+	WORD	ball_xscrllmax	;
+	WORD	ball_onfire	;!0=Flaming
+
+push1_snd	.word	0fd85H,15,08160H,0	;Push ugh
+
+ SUBR	ball_main
+
+
+	move	a13,a1			;0CHlr PDATA & PSDATA areas
+	addi	PDATA,a1
+	movi	(PRCSIZ-PDATA)/16,a2
+	clr	a0
+qlcfclrpd	move	a0,*a1+
+	dsj	a2,qlcfclrpd
+
+
+	move	@WORLDTLX+16,a0
+	addi	200,a0
+	sll	16,a0
+	movi	[-80,0],a1		;In air
+	movi	ball11,a2
+	movi	CZMID,a3
+	movi	DMAWNZ|M_3D|M_NOSCALE,a4
+	movi	CLSENMY|TYPBALL,a5
+	clr	a6
+	movi	-020000H,a7
+	calla	BEGINOBJ2
+	move	a8,@ballobj_p,L
+	callr	ball_getshadow
+
+	clr	a0
+	move	a0,@ballpnumshot
+	move	a0,@ballscorezhit
+	move	a0,@ballgoaltcnt
+	move	a0,@ballflash
+	move	a0,@t1dunkcnt
+	move	a0,@t2dunkcnt
+	movi	-1,a0
+	move	a0,@ballpnum
+	move	a0,@ballpnumlast
+
+	move	a0,@brick_count,L
+	move	a0,@brick_count+20h,L
+
+
+	move	a0,@ballpnumscored
+
+	move	a0,*a13(ball_zsznum)
+	move	a0,@bbshatter
+	movk	1,a0
+	move	a0,@ballfree		;Free
+
+
+	move	*a8(OIMG),a0,L
+	move	*a0(IANIOFFX),*a13(ball_anix)
+
+	movk	1,a10			;A10=Anim cntdn
+
+	movi	DIVS_RATE1,a0
+	move	a0,@scrl_divs_cur
+	movi	DIVS_RATE2,a0
+	move	a0,@scrl_divs_dest
+
+	move	@WORLDTLX,a0,L
+	subi	[WRLDMID-200,0],a0
+	move	a0,@gndx,L
+
+	SLEEPK	4			;Wait for others to establish data
+
+
+qlcflp
+	move	@HALT,a0
+	jrnz	qlcfhalted
+
+
+	move	@ballgoaltcnt,a0
+	jrle	qlcfskipgt
+	subk	1,a0
+	move	a0,@ballgoaltcnt
+qlcfskipgt
+
+	clr	a14			;0EHmit smoke if hot
+	movi	-1,a2
+	move	@ballnumscored,a0
+
+	move	@ballpnumscored,a4
+	move	@fire_flags,a3
+	btst	a4,a3
+	jrz	qlcfnormfire
+	subk	4,a0
+	jruc	qlcfinhr
+
+qlcfnormfire
+	subk	3,a0
+qlcfinhr
+	jrlt	qlcfnothot			;Not enough?
+
+
+
+
+
+
+
+	move	@ballpnumscored,a0
+	move	a0,a2
+	move	@ballpnum,a1
+	jrn	qlcfnoownr
+
+	move	@plyrnumonfire,a3
+	cmp	a1,a3
+	jrz	qlcfnxt
+	
+	clr	a3
+	move	a3,*a13(ball_onfire)
+	jruc	qlcfnothot
+qlcfnxt
+
+	cmp	a0,a1
+	jrne	qlcfnothot
+	sll	5,a1
+	addi	plyrproc_t,a1
+	move	*a1,a1,L
+	move	*a1(plyr_seqflgs),a1
+	btst	DUNK_B,a1
+	jrnz	qlcfhot2			;Dunking?
+	jruc	qlcfhotf
+qlcfnoownr
+	move	@plyrnumonfire,a3
+	move	@ballpnumlast,a1
+	srl	1,a1
+	srl	1,a3
+	cmp	a1,a3
+	jrnz	qlcfnothot
+	
+	move	@plyrnumonfire,a3
+	move	@ballpnumshot,a1
+	cmp	a1,a3
+	jrz	qlcfhot
+	cmp	a0,a1
+	jrne	qlcfnota
+	move	@ballprcv_p,a4,L
+	jrz	qlcfahot
+	move	*a4(plyr_num),a4
+	cmp	a3,a4
+	jrz	qlcfnothot
+	jruc	qlcfhot
+qlcfnota
+	move	@ballprcv_p,a4,L
+	jrz	qlcfnothot
+	move	*a4(plyr_num),a4
+	cmp	a3,a4
+	jrnz	qlcfhot
+	jruc	qlcfnothot
+
+qlcfahot	cmp	a1,a3
+	jrnz	qlcfnothot
+	
+qlcfhot
+qlcfhot2
+	move	@PCNT,a0
+	sll	32-1,a0
+	jrnz	qlcfhotf
+	CREATE0	ball_smokepuff
+qlcfhotf	movk	1,a14
+qlcfnothot
+
+	move	@plyrnumonfire,a0
+	jrnn	qlcfskip
+	move	a2,a2
+	jrn	qlcfskipsnd
+
+	move	@GAMSTATE,a0
+	cmpi	INAMODE,a0
+	jrz	qlcfnoaud
+	movi	AUD_NUMHOTSTRK,a0
+	calla	AUD1
+qlcfnoaud
+
+	move	a2,a0
+	sll	3,a0
+	addi	qlcfbit_t,a0
+	movb	*a0,a0
+	move	@fire_flags,a14
+	or	a0,a14
+
+	movk	4,a0
+	move	a0,@ballnumscored
+
+	movi	onfire_snd,a0
+	calla	speech_playovrp
+
+qlcfskipsnd
+	move	a2,@plyrnumonfire	;Save pnum
+qlcfskip
+	move	@ballpnum,a1
+	jrnn	qlcfck1
+	move	@ballpnumlast,a1
+	jrn	qlcfclrball
+qlcfck1
+	cmp	a0,a1
+	jrz	qlcffireit
+	
+qlcfclrball
+	clr	a14
+	clr	a0
+	jruc	qlcfsetb
+
+qlcfbit_t	.byte	1,2,4,8
+
+qlcffireit	movk	1,a14
+	movi	-1,a0
+qlcfsetb
+	move	a14,*a13(ball_onfire)
+qlcffsame
+
+
+
+	move	*a8(OXPOS),a6
+	move	*a13(ball_anix),a14
+	add	a14,a6
+
+	move	*a8(OXVEL),a1,L
+	jreq	qlcfxok
+	jrgt	qlcfxvpos
+
+	cmpi	WRLDMID-345,a6
+	jrge	qlcfxok
+	movi	WRLDMID-345,a6
+	sub	a14,a6
+	move	a6,*a8(OXPOS)
+	jruc	qlcfbadx
+
+qlcfxvpos	cmpi	WRLDMID+345,a6
+	jrlt	qlcfxok
+	movi	WRLDMID+345,a6
+	sub	a14,a6
+	move	a6,*a8(OXPOS)
+
+qlcfbadx	clr	a1
+	move	a1,*a8(OXVEL),L
+qlcfxok
+
+
+	move	@ballpnum,a5
+	jrn	qlcffree
+
+	clr	a14
+	move	a14,@ballpasstime
+
+	jruc	qlcfowned
+
+qlcffree	move	@ballprcv_p,a5,L
+	jrnz	qlcfskpcol			;Pass in progress?
+
+	callr	ball_bbcollision
+qlcfskpcol
+
+	move	@ballpasstime,a0
+	addk	1,a0
+	move	a0,@ballpasstime
+	jruc	qlcfscroll
+
+qlcfowned
+	move	*a13(ball_onfire),a14
+	jrnz	qlcfscroll			;On fire?
+	movk	2,a10			;Keep ball from animating
+
+qlcfscroll
+	move	@inbound,a0
+	jrn	qlcfnot_inbounding
+qlcfdunking
+	jrnz	qlcfright_side
+	movi	[WRLDMID-200-MAX_VIEW1,0],a3
+	movi	DIVS_RATE1,a0
+	move	a0,@scrl_divs_cur
+	jruc	qlcfdo_scroll
+qlcfright_side
+	movi	[WRLDMID-200+MAX_VIEW1,0],a3
+	movi	DIVS_RATE1,a0
+	move	a0,@scrl_divs_cur
+	jruc	qlcfdo_scroll
+qlcfnot_inbounding
+
+
+	movi	DIVS_RATE2,a0		;normal scroll divisor
+	move	a0,@scrl_divs_dest
+
+	move	@ballpnum,a5
+	jrge	qlcfplyr_has_ball
+	move	a6,a3
+
+	move	@ballprcv_p,a0,L	;passing?
+	jrz	qlcfnot_passing
+
+	move	@ballpnumlast,a0	;player who passed ball
+	jrn	qlcfnot_passing
+
+
+	movi	DIVS_RATE3,a0
+	move	@plyrpasstype,a1
+	jrz	qlcfnot_turbo
+	move	a0,@scrl_divs_cur
+qlcfnot_turbo
+	move	a0,@scrl_divs_dest
+
+	move	@ballpnumlast,a5	;player who passed ball
+	jruc	qlcfplyr_has_ball2
+
+qlcfnot_passing
+	move	@ballpnumlast,a5
+	jrnn	qlcfplyr_shooting
+
+	movi	-1,a0
+	move	a0,@cntl_team		;team in control (0,1 or -1)
+	movi	DIVS_RATE1,a0
+	move	a0,@scrl_divs_cur
+
+	jruc	qlcfball_free1
+
+
+qlcfplyr_has_ball
+	move	a5,a0
+	sll	5,a0			;*32
+	addi	plyrobj_t,a0
+	move	*a0,a0,L
+	move	*a0(OXPOS),a3
+	move	*a0(OXANI+16),a1
+	add	a1,a3
+qlcfplyr_has_ball2
+qlcfplyr_shooting
+	move	a5,a0
+	srl	1,a0
+	move	a0,@cntl_team		;team in control (0,1 or -1)
+	sll	5,a5
+	addi	plyrproc_t,a5
+	move	*a5,a5,L
+	move	*a5(plyr_seqflgs),a0
+	btst	DUNK_B,a0
+	jrz	qlcfnot_dunking
+	move	@cntl_team,a0		;team in control (0,1 or -1)
+	xori	1,a0
+	jruc	qlcfdunking
+qlcfnot_dunking
+
+
+qlcfnot_hixvel
+
+
+	move	@scrl_divs_cur,a1	;move cur -> dest
+	move	@scrl_divs_dest,a2
+	cmp	a1,a2			;dest-cur
+	jreq	qlcfat_dest
+	jrgt	qlcfadd
+	movi	DIVS_DELTA,a0
+	sub	a0,a1
+	cmp	a1,a2
+	jrle	qlcfset_divs
+	move	a2,a1
+	jruc	qlcfset_divs
+qlcfadd
+	movi	DIVS_DELTA,a0
+	add	a0,a1
+	cmp	a1,a2
+	jrge	qlcfset_divs
+	move	a2,a1
+qlcfset_divs
+	move	a1,@scrl_divs_cur
+qlcfat_dest
+
+
+
+qlcfball_free1
+	sll	16,a3			;[int,frac]
+	subi	[200,0],a3
+
+	move	@cntl_team,a0		;team in control (0,1 or -1)
+	jrn	qlcfball_free
+	jrnz	qlcfteam2
+qlcfteam1
+	addi	[SCRL_EDGE_OFF,0],a3
+	jruc	qlcfcont1
+qlcfteam2
+	subi	[SCRL_EDGE_OFF,0],a3
+qlcfcont1
+qlcfball_free
+
+	move	@cntl_team,a0
+	move	@cntl_team_last,a1
+	cmp	a0,a1
+	jreq	qlcfno_turnover2
+	move	a0,@cntl_team_last
+	movi	DIVS_RATE1,a0
+	move	a0,@scrl_divs_cur
+qlcfno_turnover2
+
+
+	cmpi	[WRLDMID-200-MAX_VIEW2,0],a3
+	jrge	qlcfsxok1
+	movi	[WRLDMID-200-MAX_VIEW2,0],a3
+	move	@scrl_divs_cur,a0
+	cmpi	DIVS_RATE2,a0
+	jrhs	qlcfsxok1
+	movi	DIVS_RATE2,a0
+	move	a0,@scrl_divs_cur
+	move	a0,@scrl_divs_dest
+qlcfsxok1
+	cmpi	[WRLDMID-200+MAX_VIEW2,0],a3
+	jrle	qlcfsxok2
+	movi	[WRLDMID-200+MAX_VIEW2,0],a3
+	move	@scrl_divs_cur,a0
+	cmpi	DIVS_RATE2,a0
+	jrhs	qlcfsxok2
+	movi	DIVS_RATE2,a0
+	move	a0,@scrl_divs_cur
+	move	a0,@scrl_divs_dest
+qlcfsxok2
+
+
+
+qlcfdo_scroll
+	move	@scrl_divs_cur,a7
+	move	@WORLDTLX,a1,L		;>Scroll world view
+	move	a1,a5
+	sub	a3,a5
+	jreq	qlcfno_scroll
+	jrlt	qlcfscroll_right
+qlcfscroll_left
+	subi	[SCROLL_BUFFER,0],a5
+	jrle	qlcfno_scroll
+	divu	a7,a5			;/ divs rate x 256
+	sll	8,a5			;x 256
+	sub	a5,a1
+	cmpi	[WRLDMID-200-MAX_VIEW1,0],a1
+	jrle	qlcfno_scroll
+	jruc	qlcfset_scroll
+
+qlcfscroll_right
+	abs	a5
+	subi	[SCROLL_BUFFER,0],a5
+	jrle	qlcfno_scroll
+	divu	a7,a5			;/ divs rate x 256
+	sll	8,a5			;x 256
+	add	a5,a1
+	cmpi	[WRLDMID-200+MAX_VIEW1,0],a1
+	jrge	qlcfno_scroll
+
+qlcfset_scroll
+	move	@inbound,a0
+	jrn	qlcfnoinb
+ 
+	move	@WORLDTLX,a0,L
+	sub	a1,a0
+	abs	a0
+	cmpi	1000h,a0
+	jrlt	qlcfno_scroll
+qlcfnoinb
+
+	move	a1,@WORLDTLX,L
+	subi	[WRLDMID-200,0],a1
+	move	a1,@gndx,L
+qlcfno_scroll
+
+
+
+
+	move	@ballpnum,a5		;player who has ball (0-3 or -1)
+	move	*a8(OZPOS),a14		;>Set world Y
+	subi	GZBASE,a14		;-Base
+	jrge	qlcfzok2
+	clr	a14
+qlcfzok2	move	a14,a2
+	sra	1,a14			;Z/2
+	sra	3,a2			;Z/8
+	sub	a2,a14			;=Z/2.667
+
+	move	*a8(OYPOS),a1
+	add	a14,a1
+	addi	70,a1
+
+	move	a5,a14
+	jrn	qlcfbfree			;Free from plyr?
+	sll	5,a14			;x 32 bits
+	addi	plyrproc_t,a14
+	move	*a14,a14,L
+	move	*a14(plyr_seqflgs),a2
+	btst	DUNK_B,a2
+	jrz	qlcfbfree
+
+	move	*a14(plyr_seq),a2	;Current ani sequence #
+	cmpi	DUNKU2_SEQ,a2		;These dunks need different buffering
+	jrlt	qlcf1stdunks
+	addi	25-70,a1
+	move	a1,a1
+	jrlt	qlcfbyvis0
+	clr	a1
+qlcfbyvis0
+	move	@WORLDTLY+16,a2
+	sub	a2,a1
+	jreq	qlcfskipwy
+	sra	4,a1
+	jruc	qlcfsetwy
+
+qlcf1stdunks
+	addi	45-70,a1
+
+qlcfbfree
+	move	a1,a1
+	jrlt	qlcfbyvis
+	clr	a1
+qlcfbyvis
+	move	@WORLDTLY+16,a2
+	sub	a2,a1
+	jreq	qlcfskipwy
+	sra	2,a1
+qlcfsetwy	jrnz	qlcfadjok
+	addk	1,a1
+qlcfadjok	add	a1,a2
+	cmpi	-130,a2			;110 ;125,;135
+	jrlt	qlcfskipwy			;Don't scroll higher?
+	move	a2,@WORLDTLY+16
+qlcfskipwy
+
+
+
+					;0CHheck Z
+	move	*a8(OZPOS),a0
+	move	a5,a5
+	jrge	qlcfzok			;Plyr has ball?
+	move	*a8(OZVEL),a1,L
+	jrn	qlcfzvneg
+
+	cmpi	GZMAX,a0		;-12
+	jrlt	qlcfzok
+	movi	GZMAX,a0
+	jruc	qlcfzbad
+
+qlcfzvneg	cmpi	CZMIN,a0
+	jrge	qlcfzok
+	movi	CZMIN,a0
+
+qlcfzbad	move	a0,*a8(OZPOS)
+	clr	a1
+	move	a1,*a8(OZVEL),L
+qlcfzok
+
+	subi	CZMIN,a0		;-Base
+	jrge	qlcfzge
+	clr	a0
+qlcfzge	srl	5,a0			;/32
+	move	*a13(ball_zsznum),a1
+	cmp	a1,a0
+	jreq	qlcfani			;Same Z range?
+	move	a0,*a13(ball_zsznum)
+	sll	5,a0			;*32
+	move	a0,a1
+	addi	qlcfshad_t,a1		;>Set new shadow img
+	move	*a1,a2,L
+	move	a2,*a9(OIMG),L
+	move	*a2,a14,L
+	move	a14,*a9(OSIZE),L
+	move	*a2(ISAG),*a9(OSAG),L
+	move	*a2(IANIOFFY),a1
+	neg	a1
+	move	a1,*a9(OYPOS)
+
+	move	*a13(ball_onfire),a14
+	jrnz	qlcfonfire
+	addi	qlcfani_t,a0
+	move	*a0,a0,L
+	move	a0,*a13(ball_ani1st_p),L
+	jruc	qlcfnewz
+
+qlcfonfire
+	addi	qlcfanif_t,a0
+	move	*a0,a0,L
+	move	a0,*a13(ball_ani1st_p),L
+	jruc	qlcfnewz
+
+
+qlcfani
+	dsj	a10,qlcfskipa
+ 
+	move	*a13(ball_onfire),a14
+	jrnz	qlcfmovin			;On fire?
+
+	move	*a8(OXVEL),a0,L
+	abs	a0
+	srl	2,a0
+	jrnz	qlcfmovin
+	movk	5,a10
+	move	*a8(OZVEL),a0,L
+	abs	a0
+	srl	2,a0
+	jrz	qlcfskipa
+qlcfmovin
+
+	move	*a13(ball_ani_p),a0,L
+	move	*a0+,a1,L		;*Next img
+	jrnz	qlcfnotend
+
+	move	*a13(ball_ani1st_p),a0,L
+qlcfnewz	move	*a0+,a1,L		;*1st img
+
+qlcfnotend	move	*a0+,a10
+	move	a0,*a13(ball_ani_p),L
+
+	move	a1,*a8(OIMG),L		;>Set new img
+	move	*a1,a2,L
+	move	a2,*a8(OSIZE),L
+	move	*a1(ISAG),*a8(OSAG),L
+	move	*a1(IANIOFFX),a2
+	move	*a1(IANIOFFY),*a13(ball_aniy)
+	move	*a13(ball_anix),a1
+	move	a2,*a13(ball_anix)
+	move	*a8(OXPOS),a0
+	add	a1,a0			;Old ani X
+	sub	a2,a0			;-New ani X
+	move	a0,*a8(OXPOS)
+
+qlcfskipa
+	move	*a8(OYVEL),a2,L
+
+	move	*a8(OYPOS),a1
+	move	*a13(ball_aniy),a3
+	add	a3,a1
+	jrlt	qlcfagnd			;Above gnd?
+
+	clr	a0
+	calla	plyr_setshtdly
+
+	cmpi	04000H,a2
+	jrlt	qlcfnosnd
+	movi	bounce_snd,a0
+	calla	snd_play1
+
+qlcfnosnd
+	neg	a3
+	move	a3,*a8(OYPOS)		;Set on gnd
+	neg	a2
+	move	a2,a3			;75%
+	sra	2,a3			;/4
+	sub	a3,a2
+qlcfagnd	addi	GRAVB,a2
+	move	a2,*a8(OYVEL),L
+qlcfnograv
+	move	*a8(OXVAL),*a9(OXVAL),L	;0AHlign shadow
+	move	*a8(OXANI),*a9(OXANI),L
+	move	*a8(OZPOS),a0
+	subk	10,a0			;Adjust
+	move	a0,*a9(OZPOS)
+
+	callr	ball_chkpcollide
+
+qlcfhalted
+	SLOOP	1,qlcflp
+
+
+qlcfani_t
+	.long	qlcfb1_l
+	.long	qlcfb1_l,qlcfb2_l,qlcfb2_l
+	.long	qlcfb3_l,qlcfb3_l,qlcfb4_l,qlcfb4_l
+	.long	qlcfb5_l,qlcfb5_l,qlcfb6_l,qlcfb6_l
+	.long	qlcfb7_l,qlcfb7_l,qlcfb8_l,qlcfb8_l
+	.long	qlcfb9_l,qlcfb9_l, qlcfb9_l,qlcfb9_l
+	.long	qlcfb9_l,qlcfb9_l, qlcfb9_l,qlcfb9_l
+	.long	qlcfb9_l,qlcfb9_l, qlcfb9_l,qlcfb9_l
+	.long	qlcfb9_l,qlcfb9_l, qlcfb9_l,qlcfb9_l
+	.long	qlcfb9_l,qlcfb9_l, qlcfb9_l,qlcfb9_l
+
+	.asg	5,D
+
+qlcfb1_l	LW	ball11,D
+	LW	ball12,D
+	LWL0	ball13,D
+
+qlcfb2_l	LW	ball21,D
+	LW	ball22,D
+	LWL0	ball23,D
+
+qlcfb3_l	LW	ball31,D
+	LW	ball32,D
+	LWL0	ball33,D
+
+qlcfb4_l	LW	ball41,D
+	LW	ball42,D
+	LWL0	ball43,D
+
+qlcfb5_l	LW	ball51,D
+	LW	ball52,D
+	LWL0	ball53,D
+
+qlcfb6_l	LW	ball61,D
+	LW	ball62,D
+	LWL0	ball63,D
+
+qlcfb7_l	LW	ball71,D
+	LW	ball72,D
+	LWL0	ball73,D
+
+qlcfb8_l	LW	ball81,D
+	LW	ball82,D
+	LWL0	ball83,D
+
+qlcfb9_l	LW	ball91,D
+	LW	ball92,D
+	LWL0	ball93,D
+
+
+qlcfanif_t
+	.long	qlcfbf1_l
+	.long	qlcfbf1_l,qlcfbf2_l,qlcfbf2_l
+	.long	qlcfbf3_l,qlcfbf3_l,qlcfbf4_l,qlcfbf4_l
+	.long	qlcfbf5_l,qlcfbf5_l,qlcfbf6_l,qlcfbf6_l
+	.long	qlcfbf7_l,qlcfbf7_l,qlcfbf8_l,qlcfbf8_l
+	.long	qlcfbf9_l,qlcfbf9_l, qlcfbf9_l,qlcfbf9_l
+	.long	qlcfbf9_l,qlcfbf9_l, qlcfbf9_l,qlcfbf9_l
+	.long	qlcfbf9_l,qlcfbf9_l, qlcfbf9_l,qlcfbf9_l
+	.long	qlcfbf9_l,qlcfbf9_l, qlcfbf9_l,qlcfbf9_l
+	.long	qlcfbf9_l,qlcfbf9_l, qlcfbf9_l,qlcfbf9_l
+
+	.asg	4,D
+
+qlcfbf1_l	LW	ballf11,D
+	LW	ballf12,D
+	LW	ballf13,D
+	LW	ballf14,D
+	LW	ballf15,D
+	LWL0	ballf16,D
+
+qlcfbf2_l	LW	ballf21,D
+	LW	ballf22,D
+	LW	ballf23,D
+	LW	ballf24,D
+	LW	ballf25,D
+	LWL0	ballf26,D
+
+qlcfbf3_l	LW	ballf31,D
+	LW	ballf32,D
+	LW	ballf33,D
+	LW	ballf34,D
+	LW	ballf35,D
+	LWL0	ballf36,D
+
+qlcfbf4_l	LW	ballf41,D
+	LW	ballf42,D
+	LW	ballf43,D
+	LW	ballf44,D
+	LW	ballf45,D
+	LWL0	ballf46,D
+
+qlcfbf5_l	LW	ballf51,D
+	LW	ballf52,D
+	LW	ballf53,D
+	LW	ballf54,D
+	LW	ballf55,D
+	LWL0	ballf56,D
+
+qlcfbf6_l	LW	ballf61,D
+	LW	ballf62,D
+	LW	ballf63,D
+	LW	ballf64,D
+	LW	ballf65,D
+	LWL0	ballf66,D
+
+qlcfbf7_l	LW	ballf71,D
+	LW	ballf72,D
+	LW	ballf73,D
+	LW	ballf74,D
+	LW	ballf75,D
+	LWL0	ballf76,D
+
+qlcfbf8_l	LW	ballf81,D
+	LW	ballf82,D
+	LW	ballf83,D
+	LW	ballf84,D
+	LW	ballf85,D
+	LWL0	ballf86,D
+
+qlcfbf9_l	LW	ballf91,D
+	LW	ballf92,D
+	LW	ballf93,D
+	LW	ballf94,D
+	LW	ballf95,D
+	LWL0	ballf96,D
+
+
+
+qlcfshad_t
+	.long	ballshad8,ballshad8,ballshad7,ballshad7
+	.long	ballshad6,ballshad6,ballshad5,ballshad5
+	.long	ballshad4,ballshad4,ballshad3,ballshad3
+	.long	ballshad2,ballshad2,ballshad1,ballshad1
+	.long	ballshad1,ballshad1,ballshad1,ballshad1
+	.long	ballshad1,ballshad1,ballshad1,ballshad1
+	.long	ballshad1,ballshad1,ballshad1,ballshad1
+
+
+
+ SUBRP	ball_getshadow
+
+	PUSH	a8
+
+	move	*a8(OXVAL),a0,L
+	movi	[-2,0],a1
+	movi	ballshad5,a2
+	move	*a8(OZPOS),a3
+	subk	10,a3			;Z
+	move	*a8(OCTRL),a4
+	andi	M_FLIPH|M_FLIPV,a4
+	ori	DMAWNZ|M_3D|M_SHAD|M_NOCOLL,a4
+	movi	CLSDEAD,a5
+	clr	a6
+	clr	a7
+	calla	BEGINOBJ2
+	move	a8,a9
+	movk	10,a0
+	move	a0,*a8(OMISC)		;Z offset
+
+	PULL	a8
+	rets
+
+
+
+ SUBRP	ball_bbcollision
+
+	PUSH	a2,a3,a4,a5,a6,a7,a9,a10,a11
+
+	clr	b2			;B2=Rim collision flag
+
+	move	@shot_distance,a14
+	cmpi	0158H,a14
+	jrlt	mjnbok
+	movi	200,a0
+
+	move	@game_time,a1,L
+	cmpi	0400H,a1
+	jrgt	mjnbnohelp
+	movi	350,a0
+mjnbnohelp
+	calla	RNDPER
+	jrhi	mjnbok
+	movi	lhoopl_t,a10
+	movi	HOOPLX,b3		;B3=Hoop X
+	cmpi	WRLDMID,a6
+	jrlt	mjnbleft
+	movi	lhoopr_t,a10
+	movi	HOOPRX,b3
+	jruc	mjnbleft
+
+mjnbok
+	movi	hoopl_t,a10
+	movi	HOOPLX,b3		;B3=Hoop X
+	cmpi	WRLDMID,a6
+	jrlt	mjnbleft
+	movi	hoopr_t,a10
+	movi	HOOPRX,b3
+mjnbleft
+	move	*a8(OYPOS),a7		;A7=Ball Y
+	move	*a8(OSIZEY),a14
+	srl	1,a14			;/2
+	add	a14,a7			;Center Y
+	cmpi	HOOPY+20,a7
+	jrge	mjnbx			;Under all collision points?
+
+
+	move	@ballscorezhit,a0
+	jrge	mjnbchkpts			;Haven't scored?
+
+	move	*a8(OZVEL),a0,L		;>Slow XZ vel
+	sra	1,a0
+	move	a0,*a8(OZVEL),L
+
+	move	*a8(OYVEL),a0,L		;-1/4 Y
+	move	a0,a14
+	sra	2,a14
+	sub	a14,a0
+	move	a0,*a8(OYVEL),L
+
+
+	move	a6,a0			;>Pull toward center
+	move	b3,a14
+	sub	a14,a0
+	sll	12,a0			;/16
+
+	move	*a8(OXVEL),a1,L
+	sub	a0,a1
+	move	a1,a14
+	sra	2,a14			;/4
+	sub	a14,a1
+	move	a1,*a8(OXVEL),L
+
+	jruc	mjnbchkbb
+
+
+mjnbchkpts
+	move	*a8(OZPOS),a5		;A5=Ball Z
+	jruc	mjnbnxt
+
+
+mjnblp	move	*a10+,a3		;Y
+	move	*a10+,a4		;Z
+	move	*a10+,a11		;Mode
+	sub	a6,a2
+	sub	a7,a3
+	sub	a5,a4
+	abs	a2
+	abs	a3
+	abs	a4
+
+	cmp	a3,a2			;>Sort A2-A4 large to sml
+	jrge	mjnb20
+	SWAP	a2,a3
+
+mjnb20	cmp	a4,a3
+	jrge	mjnbsorted
+	SWAP	a3,a4
+
+	cmp	a3,a2
+	jrge	mjnbsorted
+	SWAP	a2,a3
+
+mjnbsorted	srl	1,a3			;/2
+	srl	2,a4			;/4
+	add	a3,a2
+	add	a4,a2
+	subk	5,a2
+	jrgt	mjnbnxt			;Too far?
+
+
+	move	@sc_proc,a0,L
+	jrz	mjnbno24clock
+	clr	a14
+	move	a4,@sc_proc,L
+	PUSH	a7,a10
+	movi	sclockx,a7
+	movi	clockid,a1
+	move	*a0(PA10),a10,L
+	calla	XFERPROC
+	PULL	a7,a10
+mjnbno24clock
+
+	clr	a0
+	move	a0,@ballgoaltcnt
+
+	movi	3*60+30,a0		;Rebound stat can happen for next 3
+	move	a0,@rebound_delay	;seconds
+
+	movk	8,a0
+	move	a0,@ballsclastp		;Nobody
+
+
+	move	a11,a11
+	jrle	mjnbnotrim
+					;>Rim
+
+	move	@ballscorezhit,a0
+	jrn	mjnbnxt			;Already scored?
+ 
+	move	@ballrimhitcnt,a0
+	jrnz	mjnbskipit
+
+	PUSH	a0,a7,a11
+
+	move	@ballpnumshot,a0
+	sll	4,a0			;x 16
+	addi	brick_count,a0
+	move	*a0,a1			;brick_count++
+	inc	a1
+	move	a1,*a0
+
+	move	b3,a11			;hoop x
+	CREATE	NOG_PID,no_good_check
+	PULL	a0,a7,a11
+mjnbskipit
+	addk	1,a0
+	move	a0,@ballrimhitcnt
+
+	move	b2,b2
+	jrnz	mjnbnomv			;Hit already?
+	addk	1,b2			;Set flag
+
+	cmpi	3,a11
+	jrlt	mjnbnobend
+
+	clr	a0			;>Make rim bend a little
+	cmpi	WRLDMID,a6
+	jrlt	mjnbnetani
+	movk	1,a0
+mjnbnetani	movk	4,a1
+	calla	net_ani
+
+mjnbnobend
+	move	@PCNT,a0
+	sll	32-2,a0
+	srl	32-2-5,a0
+	addi	rim_snds,a0
+	move	*a0,a0,L
+	calla	snd_play1
+
+
+	move	a8,a1			;>Move back
+	addi	OXVAL,a1
+	move	*a8(OXVEL),a0,L
+	move	*a1,a2,L
+	sub	a0,a2
+	move	a2,*a1+,L
+	move	*a8(OYVEL),a0,L
+	move	*a1,a3,L
+	sub	a0,a3
+	move	a3,*a1+,L
+	move	*a8(OZVEL),a0,L
+	move	*a1,a4,L
+	sub	a0,a4
+	move	a4,*a1+,L
+
+	move	*a13(ball_collcnt),a1
+	subk	3,a1
+	jrge	mjnbballstuck
+
+mjnbnomv
+	subi	16*4,a10
+	move	*a10+,a2
+	move	*a10+,a3
+	move	*a10+,a4
+	addk	16,a10
+	callr	ball_deflect
+
+	move	b2,b2
+	jrnz	mjnbnxt			;Hit already?
+
+	move	*a13(ball_collcnt),a1
+	jrnz	mjnbnxt
+
+	move	a11,a0			;0AbHsorb some vel
+	subk	13,a0			;-12 to -9
+	neg	a0
+	move	a8,a1
+	addk	OXVEL,a1
+	move	*a1,a3,L
+	mpys	a0,a3
+	sra	5,a3			;/32
+	move	a3,*a1+,L
+	move	*a1,a3,L
+	mpys	a0,a3
+	sra	5,a3			;/32
+	move	a3,*a1+,L
+	move	*a1,a3,L
+	mpys	a0,a3
+	sra	5,a3			;/32
+	move	a3,*a1+,L
+
+	jruc	mjnbnxt
+
+
+mjnbballstuck
+	callr	ball_stuck
+	jruc	mjnbskip
+
+mjnbnotrim
+
+
+mjnbscore	callr	ball_score		;>Score if really a basket
+
+
+mjnbnxt	move	*a10+,a2		;X
+	jrnz	mjnblp
+
+
+mjnbskip	clr	a1
+	move	b2,b2
+	jrz	mjnbsvcol			;No rim collision?
+	move	*a13(ball_collcnt),a1
+	addk	1,a1
+mjnbsvcol	move	a1,*a13(ball_collcnt)
+
+
+	move	b2,b2
+	jrz	mjnbchkbb			;No rim collision?
+
+	move	*a8(OXVEL),a2,L		;>Limit max XZvel
+	move	*a8(OZVEL),a3,L
+	move	*a8(OYVEL),a4,L
+	move	a2,a0
+	move	a3,a1
+	abs	a0
+	abs	a1
+	cmp	a0,a1
+	jrge	mjnba1big
+	move	a0,a1
+mjnba1big
+	cmpi	012000H,a1
+	jrle	mjnbchkyv			;XZ vel within max?
+
+	move	a4,a14
+	sra	8,a14
+
+mjnbscldlp	srl	1,a1			;Scale down
+	sra	1,a2
+	sra	1,a3
+	add	a14,a4			;+1/8
+mjnbstrtsc	cmpi	012000H,a1
+	jrgt	mjnbscldlp
+
+	move	a2,*a8(OXVEL),L
+	move	a3,*a8(OZVEL),L
+
+mjnbchkyv	cmpi	-044000H,a4
+	jrge	mjnbymaxok
+	movi	-044000H,a4
+mjnbymaxok	cmpi	030000H,a4
+	jrle	mjnbydnok
+	movi	030000H,a4
+mjnbydnok	move	a4,*a8(OYVEL),L
+
+
+
+
+
+
+mjnbchkbb
+	subi	CZMID,a5		;0CHheck backboard
+	abs	a5
+	cmpi	34,a5
+	jrge	mjnbx			;Z <> backboard Z?
+	subi	HOOPY+5,a7
+	jrgt	mjnbx			;Y<bottom?
+	cmpi	-56,a7
+	jrlt	mjnbx			;Y>top?
+
+	subi	WRLDMID,a6
+	move	a6,a2
+	abs	a6
+	subi	HOOPRX-WRLDMID+12,a6
+	jrlt	mjnbx			;In front of backboard?
+
+	move	*a8(OXVEL),a0,L
+	abs	a0
+	move	a2,a2
+	jrn	mjnblbb			;Left bb?
+	neg	a0
+mjnblbb	move	a0,*a8(OXVEL),L
+	move	*a8(OXVAL),a1,L
+	add	a0,a1
+	add	a0,a1
+	move	a1,*a8(OXVAL),L
+
+	abs	a0
+	cmpi	01fffH,a0
+	jrlt	mjnbsoftbbhit		;Soft?
+	movi	hitbboard_snd,a0
+	calla	snd_play1
+mjnbsoftbbhit
+     
+	move	@ballbbhitcnt,a0
+	addk	1,a0
+	move	a0,@ballbbhitcnt
+
+	subk	7,a0			;8
+	jrlt	mjnbx			;!Stuck?
+	movi	020000H,a0		;20000
+	move	*a8(OZPOS),a1
+	cmpi	CZMID,a1
+	jrgt	mjnbnewzv
+	neg	a0
+mjnbnewzv
+	move	a0,*a8(OZVEL),L		;Try to unstick
+
+mjnbx	PULL	a2,a3,a4,a5,a6,a7,a9,a10,a11
+	rets
+
+
+	.asg	HOOPLX,X
+	.asg	HOOPY,Y
+	.asg	Y+7,NY
+	.asg	CZMID,Z
+hoopl_t	.word	X-8	,Y	,Z	,1	;Rim
+	.word	X-6	,Y	,Z-7	,1
+	.word	X	,Y	,Z-9	,2
+	.word	X+6	,Y	,Z-7	,3
+	.word	X+8	,Y	,Z	,4
+	.word	X+6	,Y	,Z+7	,3
+	.word	X	,Y	,Z+9	,2
+	.word	X-6	,Y	,Z+7	,1
+	.word	X	,Y	,Z	,-1	;Score spots
+	.word	X	,Y+2	,Z	,-1
+	.word	X	,Y+6	,Z	,-2
+	.word	X-3	,Y+8	,Z	,-2
+	.word	X	,Y+8	,Z-3	,-2
+	.word	X+3	,Y+8	,Z	,-2
+	.word	X	,Y+8	,Z+3	,-2
+	.word	0
+
+	.asg	HOOPRX,X
+hoopr_t	.word	X-8	,Y	,Z	,4
+	.word	X-6	,Y	,Z-7	,3
+	.word	X	,Y	,Z-9	,2
+	.word	X+6	,Y	,Z-7	,1
+	.word	X+8	,Y	,Z	,1
+	.word	X+6	,Y	,Z+7	,1
+	.word	X	,Y	,Z+9	,2
+	.word	X-6	,Y	,Z+7	,3
+	.word	X	,Y	,Z	,-1	;Score spots
+	.word	X	,Y+2	,Z	,-1
+	.word	X	,Y+6	,Z	,-2
+	.word	X-3	,Y+8	,Z	,-2
+	.word	X	,Y+8	,Z-3	,-2
+	.word	X+3	,Y+8	,Z	,-2
+	.word	X	,Y+8	,Z+3	,-2
+	.word	0
+
+	.asg	HOOPLX,X
+lhoopl_t
+	.word	X-8	,Y	,Z	,1	;Rim
+	.word	X-6	,Y	,Z-7	,1
+	.word	X	,Y	,Z-9	,2
+	.word	X+6	,Y	,Z-7	,3
+	.word	X+8	,Y	,Z	,4
+	.word	X+6	,Y	,Z+7	,3
+	.word	X	,Y	,Z+9	,2
+	.word	X-6	,Y	,Z+7	,1
+	.word	X	,Y	,Z	,1	;Score spots
+	.word	X	,Y+2	,Z	,2
+	.word	X	,Y+6	,Z	,3
+	.word	X-3	,Y+8	,Z	,4
+	.word	X	,Y+8	,Z-3	,3
+	.word	X+3	,Y+8	,Z	,2
+	.word	X	,Y+8	,Z+3	,1
+	.word	0
+
+	.asg	HOOPRX,X
+lhoopr_t
+	.word	X-8	,Y	,Z	,4
+	.word	X-6	,Y	,Z-7	,3
+	.word	X	,Y	,Z-9	,2
+	.word	X+6	,Y	,Z-7	,1
+	.word	X+8	,Y	,Z	,1
+	.word	X+6	,Y	,Z+7	,1
+	.word	X	,Y	,Z+9	,2
+	.word	X-6	,Y	,Z+7	,3
+	.word	X	,Y	,Z	,1	;Score spots
+	.word	X	,Y+2	,Z	,2
+	.word	X	,Y+6	,Z	,3
+	.word	X-3	,Y+8	,Z	,4
+	.word	X	,Y+8	,Z-3	,3
+	.word	X+3	,Y+8	,Z	,2
+	.word	X	,Y+8	,Z+3	,1
+	.word	0
+
+rim_snds
+	.long	miss_snd,miss_snd,miss2_snd,miss3_snd
+
+
+
+ SUBRP	ball_deflect
+
+	PUSH	a5,a6,a7,a9,a10,a11
+
+	sll	4,a2
+	sll	4,a3
+	sll	4,a4
+	sll	4,a5
+	sll	4,a6
+	sll	4,a7
+
+	PUSH	a2,a3,a6,a7
+
+	move	a6,a0			;0DefHlect XZ
+	move	a5,a1
+	move	a2,a6
+	move	a4,a7
+	callr	seekdir_xyxy128
+	move	a0,a14
+	neg	a0
+	addi	080H,a0
+	callr	sinecos_get
+
+	move	*a8(OXVEL),a3,L
+	move	*a8(OZVEL),a9,L
+
+	move	a3,a5			;>Rotate to 0
+	move	a9,a11
+	mpys	a1,a3			;X*COS
+	mpys	a0,a11			;Z*SIN
+	sub	a11,a3			;X-Z
+	mpys	a0,a5			;X*SIN
+	mpys	a1,a9			;Z*COS
+	add	a5,a9			;X+Z
+	sra	12,a3
+	sra	12,a9
+
+	neg	a9			;Neg Z
+
+	move	a14,a0
+	callr	sinecos_get
+
+	move	a3,a5			;>Rotate back
+	move	a9,a11
+	mpys	a1,a3			;X*COS
+	mpys	a0,a11			;Z*SIN
+	sub	a11,a3			;X-Z
+	mpys	a0,a5			;X*SIN
+	mpys	a1,a9			;Z*COS
+	add	a5,a9			;X+Z
+	sra	12,a3
+	sra	12,a9
+
+	move	a3,*a8(OXVEL),L
+	move	a9,*a8(OZVEL),L
+
+	PULL	a2,a3,a6,a7
+
+	move	a6,a0			;0DefHlect XY
+	move	a7,a1
+	move	a2,a6
+	move	a3,a7
+	callr	seekdir_xyxy128
+	move	a0,a14
+	neg	a0
+	addi	080H,a0
+	callr	sinecos_get
+
+	move	*a8(OXVEL),a3,L
+	move	*a8(OYVEL),a9,L
+
+	move	a3,a5			;>Rotate to 0
+	move	a9,a11
+	mpys	a1,a3			;X*COS
+	mpys	a0,a11			;Z*SIN
+	sub	a11,a3			;X-Z
+	mpys	a0,a5			;X*SIN
+	mpys	a1,a9			;Z*COS
+	add	a5,a9			;X+Z
+	sra	12,a3
+	sra	12,a9
+
+	neg	a9			;Neg Y
+
+	move	a14,a0
+	callr	sinecos_get
+
+	move	a3,a5			;>Rotate back
+	move	a9,a11
+	mpys	a1,a3			;X*COS
+	mpys	a0,a11			;Z*SIN
+	sub	a11,a3			;X-Z
+	mpys	a0,a5			;X*SIN
+	mpys	a1,a9			;Z*COS
+	add	a5,a9			;X+Z
+	sra	12,a3
+	sra	12,a9
+
+	move	a3,*a8(OXVEL),L
+	move	a9,*a8(OYVEL),L
+
+
+	PULL	a5,a6,a7,a9,a10,a11
+	rets
+
+
+
+ SUBRP	ball_stuck
+
+	PUSH	a6,a7
+
+	move	b3,a6			;>Give vel towards or away from center
+	movi	CZMID,a7
+	callr	seekdirdist_obxz128
+
+	srl	3,a0			;Dir 0-15
+	sll	4,a0			;*16
+	addi	ositdx_t,a0
+	move	*a0,a2
+	move	*a0(ositdz_t-ositdx_t),a3
+	subk	10,a1
+	jrle	osittcent			;Towards center?
+	neg	a2
+	neg	a3
+	sra	1,a2			;/2
+	sra	1,a3
+osittcent
+	sll	3,a2			;*8
+	sll	3,a3
+	move	a2,*a8(OXVEL),L
+	move	a3,*a8(OZVEL),L
+
+	move	*a8(OXVAL),a0,L
+	add	a2,a0
+	move	a0,*a8(OXVAL),L
+	move	*a8(OZVAL),a0,L
+	add	a3,a0
+	move	a0,*a8(OZVAL),L
+
+	move	@HCOUNT,a14
+	btst	0,a14
+	jrz	ositnoyvc			;Skip yvel change?
+
+	movi	-GRAVB*7,a1
+	move	*a8(OYPOS),a0
+	cmpi	HOOPY+6,a0
+	jrlt	ositabv			;Ball above rim?
+	neg	a1
+ositabv	move	a1,*a8(OYVEL),L
+
+ositnoyvc
+	clr	a1
+	move	a1,*a13(ball_collcnt)
+
+	PULL	a6,a7
+	rets
+
+
+ositdz_t
+	.word	-16384,-15137,-11585,-6270
+ositdx_t
+	.word	0,6270,11585,15137,16384,15137,11585,6270
+	.word	0,-6269,-11585,-15137, -16384,-15137,-11585,-6270
+
+
+
+ SUBRP	ball_score
+
+	PUSH	a2,a3,a4,a5,a6,a7,a10,a11
+
+
+	move	*a8(OYVEL),a0,L
+	jrle	zzbox			;Moving up?
+
+	addk	1,a11
+	jrne	zzbolow
+
+	movk	1,a0			;Upper zone hit
+	move	a0,@ballscorezhit
+	jruc	zzbox
+
+zzbolow
+	move	@ballscorezhit,a0
+	jrle	zzbox			;No top hit?
+
+	movi	-1,a0
+	move	a0,@ballscorezhit
+
+	movi	NOG_PID,a0		;kill no good process
+	calla	KIL1C
+
+	move	@ballptsforshot,a1
+	jrz	zzbox			;Goaltending?
+
+
+	clr	a10
+
+
+	movk	16,a0			;Team 2
+	clr	a2
+	move	*a8(OXPOS),a14
+	cmpi	WRLDMID,a14
+	jrlt	zzboleft
+	clr	a0			;Team 1
+	movk	32,a2
+zzboleft
+	addi	scores,a0		;+Base
+	move	@ballptsforshot,a1
+	move	a1,a3
+	calla	score_add
+
+	clr	a0
+	move	a0,@rebound_delay
+
+	callr	plyr_setptsdown
+
+	subk	2,a3
+	jrne	zzbo3ptr
+	movk	PS_2PTS_MADE,a0		;>Inc made shot stat
+	jruc	zzbo2ptr
+zzbo3ptr
+	movk	PS_3PTS_MADE,a0
+
+zzbo2ptr	move	@ballpnumshot,a1
+	calla	inc_player_stat
+
+	calla	prt_top_scores		;Update scores at scrn top
+
+	CREATE0	score_showtvpanel
+
+	move	a2,a11
+
+
+	CREATE0	plyr_takeoutball
+
+
+
+	movi	TSEC*1,a0
+	calla	plyr_setshtdly
+
+	movi	P1DATA,a10
+	calla	stick_number
+	movi	P2DATA,a10
+	calla	stick_number
+	movi	P3DATA,a10
+	calla	stick_number
+	movi	P4DATA,a10
+	calla	stick_number
+
+					;0DHo a net animation
+	move	@ballpnumshot,a0
+	move	a0,a14
+	sll	4,a14			;x 16
+	addi	brick_count,a14
+	clr	a1
+	move	a1,*a14
+
+	movi	ballpnumscored,a3
+	move	*a3,a14
+	cmp	a0,a14
+	jreq	zzbosmpl			;Same guy?
+
+	movk	1,a1			;1st
+	move	*a3(16),a4		;# times
+
+
+	move	@fire_flags,a5
+	btst	a14,a5
+	jrz	zzbonormfire2
+	cmpi	4,a4
+	jruc	zzbonrmf2	
+
+zzbonormfire2
+	cmpi	3,a4
+zzbonrmf2	
+
+	jrlt	zzbodiffpl			;Last guy not hot?
+
+	move	a0,a4
+	srl	1,a4
+	srl	1,a14
+	cmp	a4,a14
+	jrz	zzbonochg			;Different team?
+	move	a1,*a3(16)
+	movi	-1,a1
+	move	a1,@plyrnumonfire
+	jruc	zzbonochg			;Don't messup teammate
+
+zzbosmpl
+	move	*a3(16),a1		;# times
+	addk	1,a1
+	cmpi	8,a1			;7
+	jrlt	zzbodiffpl
+	movi	-1,a1
+	move	a1,@plyrnumonfire	;Cap out on fire capability
+	movk	1,a1
+zzbodiffpl	move	a1,*a3(16)
+zzbonochg
+	move	a0,*a3
+
+	sll	5,a0			;*32
+	addi	plyrproc_t,a0
+	move	*a0,a10,L
+	move	*a10(plyr_seqflgs),a6
+
+	move	a2,a0
+	movk	1,a1			;Bend from dunk
+
+	movi	dunk_snd,a11		;Sound for dunk
+	btst	DUNK_B,a6
+	jrnz	zzboneta
+
+	CREATE0	plyr_jscrowdsnd		;For good jump shot
+
+	movi	swish_snd,a11		;Sound for swish
+
+	clr	a1			;Normal swish
+	move	*a8(OXVEL),a14,L
+	sra	15,a14
+	move	a2,a0
+	jrnz	zzbornet
+	neg	a14			;Reverse
+zzbornet	subk	4,a14
+	jrlt	zzboxvsml
+	movk	3,a1			;Angled swish
+zzboxvsml
+	move	*a8(OYVEL+16),a14
+	subk	2,a14
+	jrge	zzboyvlrg
+	clr	a1
+zzboyvlrg
+zzboneta
+	move	*a3(16),a4		;# times
+	move	@ballpnumscored,a14
+	move	@fire_flags,a2
+	btst	a14,a2
+	jrz	zzbonor2
+	cmpi	4,a4
+	jruc	zzbonor3
+
+zzbonor2
+	cmpi	3,a4
+zzbonor3
+
+
+
+
+	jrlt	zzbonothot
+	movk	6,a1			;Burn net
+zzbonothot
+	calla	net_ani
+
+	move	a11,a0
+	calla	snd_play1		;Net sound
+
+
+
+
+	move	*a8(OXVEL),a0,L		;>Slow XZ vel
+	sra	1,a0
+	move	a0,*a8(OXVEL),L
+	move	*a8(OZVEL),a0,L
+	sra	1,a0
+	move	a0,*a8(OZVEL),L
+
+
+	btst	DUNK_B,a6
+	jrz	zzbonoshake		;!dunk?
+	btst	LAYUP_B,a6
+	jrnz	zzbonoshake		;!dunk?
+
+	movk	PS_DUNKS_MADE,a0
+	move	@ballpnumshot,a1
+	move	a1,a2
+	calla	inc_player_stat
+	srl	1,a2			;0-1
+	move	a2,a3
+	XORK	1,a2
+	move	a2,@inbound		;Inbounding team (0-1)
+
+	sll	4,a3			;*16
+	addi	t1dunkcnt,a3
+	move	*a3,a0
+	addk	1,a0
+	jrnc	zzbonoshat			;No overflow?
+
+	move	*a10(plyr_seq),a0
+	movi	zzbodunk_t,a1
+zzbodlp	move	*a1+,a14
+	jrn	zzbonoshat2		;End of table?
+	cmp	a14,a0
+	jrne	zzbodlp			;Wimpy dunk?
+
+	move	@PSTATUS,a0		;Plyr start bits 0-3
+	move	@ballpnumshot,a1
+	btst	a1,a0
+	jrz	zzbonoshat2		;Drone?
+
+
+	move	@bbshatter,a0		;Already happened
+	jrnz	zzbonoshat2
+
+
+	.ref	gmqrtr
+	move	@gmqrtr,a0
+	cmpi	3,a0
+	jrlt	zzbonoshat2
+
+	move	*a10(plyr_attrib_p),a0,L
+	move	*a0(PAT_DUNKSKILL),a0
+	cmpi	9,a0
+	jrlt	zzbonoshat2
+
+	clr	a0
+	move	a0,*a3			;Reset cnt
+	move	a0,@t1dunkcnt
+	move	a0,@t2dunkcnt
+
+	movk	32,a0
+	cmpi	2,a1
+	jrlt	tm1
+	move	@plyrproc_t,a1,L
+	move	a0,*a1(plyr_stagcnt)
+	move	@plyrproc_t+32,a1,L
+	move	a0,*a1(plyr_stagcnt)
+	jruc	zzbodoit
+tm1
+	move	@plyrproc_t+64,a1,L
+	move	a0,*a1(plyr_stagcnt)
+	move	@plyrproc_t+96,a1,L
+	move	a0,*a1(plyr_stagcnt)
+zzbodoit
+	CREATE0	board_shatter
+	movi	HOOP_PID,a0
+	calla	KIL1C
+	move	a2,a0
+	movk	5,a1			;Big rim bend
+	calla	net_ani
+	movk	18,a10			;Big shake
+	jruc	zzboshake
+zzbonoshat
+	move	a0,*a3
+zzbonoshat2
+	movk	15,a10
+zzboshake	calla	SHAKER
+zzbonoshake
+
+
+
+	calla	scored_speech
+
+zzbox	PULL	a2,a3,a4,a5,a6,a7,a10,a11
+	rets
+
+zzbodunk_t	.word	DUNKP_SEQ,DUNKA_SEQ,DUNKB_SEQ,DUNKC_SEQ,DUNKD_SEQ
+	.word	DUNKE_SEQ,DUNKE2_SEQ,DUNKD2_SEQ
+	.word	DUNKL_SEQ,DUNKL2_SEQ,DUNKL3_SEQ,DUNKL4_SEQ
+	.word	DUNKP2_SEQ
+	.word	DUNKP3_SEQ
+	.word	DUNKR_SEQ
+	.word	DUNKR2_SEQ
+	.word	DUNKT5_SEQ
+	.word	DUNKU2_SEQ
+	.word	DUNKU3_SEQ
+	.word	DUNKU4_SEQ
+	.word	DUNKU5_SEQ
+	.word	DUNKU6_SEQ
+	.word	DUNKX_SEQ
+	.word	DUNKX2_SEQ
+	.word	DUNKX3_SEQ
+	.word	DUNKY_SEQ
+	.word	DUNKY2_SEQ
+	.word	DUNKZ_SEQ
+	.word	DUNKZ2_SEQ
+	.word	DUNKZ3_SEQ
+	.word	DUNKT2_SEQ
+	.word	DUNKT3_SEQ
+	.word	DUNKT4_SEQ
+	.word	DUNKT_SEQ
+	.word	DUNKU_SEQ
+	.word	DUNKF_SEQ,DUNKJ_SEQ,DUNKO_SEQ
+	.word	DUNKK_SEQ,DUNKK2_SEQ,DUNKJ2_SEQ
+	.word	DUNKQ_SEQ
+	.word	DUNKQ3_SEQ
+	.word	DUNKO2_SEQ
+	.word	DUNKW3_SEQ
+	.word	DUNKW2_SEQ
+	.word	DUNKW_SEQ
+
+	.word	-1
+
+
+
+ SUBR	sinecos_get
+
+	sll	32-7,a0
+	srl	32-7-4,a0		;*16
+	addi	sine_t,a0
+	move	*a0(cos_t-sine_t),a1
+	move	*a0,a0
+	rets
+
+sine_t
+	.word	-4096,-4091,-4076,-4052,-4017,-3973,-3920,-3857
+	.word	-3784,-3703,-3612,-3513,-3406,-3290,-3166,-3035
+	.word	-2896,-2751,-2598,-2440,-2275,-2106,-1931,-1751
+	.word	-1567,-1380,-1189,-995,-799,-601,-401,-201
+cos_t
+	.word	0,201,401,601,799,995,1189,1380
+	.word	1567,1751,1931,2106,2275,2440,2598,2751
+	.word	2896,3035,3166,3290,3406,3513,3612,3703
+	.word	3784,3857,3920,3973,4017,4052,4076,4091
+
+	.word	4096,4091,4076,4052,4017,3973,3920,3857
+	.word	3784,3703,3612,3513,3406,3290,3166,3035
+	.word	2896,2751,2598,2440,2275,2106,1931,1751
+	.word	1567,1380,1189,995,799,601,401,201
+
+	.word	0,-200,-401,-601,-799,-995,-1189,-1380
+	.word	-1567,-1751,-1931,-2105,-2275,-2440,-2598,-2750
+	.word	-2896,-3035,-3166,-3290,-3406,-3513,-3612,-3703
+	.word	-3784,-3857,-3920,-3973,-4017,-4052,-4076,-4091
+
+	.word	-4096,-4091,-4076,-4052,-4017,-3973,-3920,-3857
+	.word	-3784,-3703,-3612,-3513,-3406,-3290,-3166,-3035
+	.word	-2896,-2751,-2598,-2440,-2275,-2106,-1931,-1751
+	.word	-1567,-1380,-1189,-995,-799,-601,-401,-201
+
+
+
+
+ SUBR	ball_chkpcollide
+
+	PUSH	a2,a3,a4,a5,a6,a7,a10,a11
+
+	movk	4,a7
+	move	*a8(OXPOS),a4
+	move	*a8(OXANI+16),a14
+	add	a14,a4			;A4=Center X
+	move	*a8(OZPOS),a6		;A6=Z
+	movi	plyrobj_t,a5
+
+	movk	18,a10			;A10=Z coll radius
+	move	*a8(OYPOS),a0
+	cmpi	-28,a0
+	jrlt	iphclp
+	move	*a8(OYVEL),a0,L
+	abs	a0
+	cmpi	0c000H,a0
+	jrgt	iphclp
+	movi	35,a10			;Larger radius
+
+iphclp	move	*a5+,a11,L
+
+	move	*a11(OPLINK),a2,L
+	move	*a2(plyr_attrib_p),a2,L
+	move	*a2(PAT_DEFSKILL),a2
+	sll	4,a2
+	subk	18,a10
+	jrz	iphctbl1
+	addi	tbl2,a2
+	jruc	iphctbo
+iphctbl1	
+	addi	tbl1,a2
+iphctbo	move	*a2,a10
+
+
+	move	*a11(OZPOS),a2		;0CHhk Z
+	sub	a6,a2
+	abs	a2
+	sub	a10,a2
+	jrge	iphcnxt
+
+	move	*a11(OXPOS),a1		;0CHhk box X
+	move	*a11(OXANI+16),a14
+	add	a14,a1
+	move	*a11(OSIZEX),a14
+	srl	1,a14			;/2
+	sub	a14,a1
+	cmp	a1,a4
+	jrle	iphcnxt			;Center X <= lft?
+	sll	1,a14
+	add	a14,a1
+	cmp	a1,a4
+	jrge	iphcnxt			;Center X >= rgt?
+
+	move	*a11(OYPOS),a1
+	move	*a8(OYPOS),a0
+	addk	3,a0
+	move	*a13(plyr_seq),a14
+	cmpi	RUNDRIBTURB_SEQ,a14
+	jrhi	iphchandhi			;Hand higher than shoulder?
+
+	move	*a11(OPLINK),a14,L
+	move	*a14(plyr_attrib_p),a14,L
+	move	*a14(PAT_DEFSKILL),a14
+	sll	4,a14
+	addi	tbl3,a14
+	move	*a14,a14
+	add	a14,a0
+
+
+iphchandhi	cmp	a1,a0
+	jrlt	iphcnxt			;Too hi?
+
+	move	*a11(OPLINK),a3,L
+	move	*a3(plyr_shtdly),a14
+	jrgt	iphcnxt5			;Can't touch?
+
+	move	@ballpnum,b0	;a14
+	jrn	iphcok
+
+
+	sll	5,b0		;a14
+	addi	plyrproc_t,b0	;a14
+	move	*b0,b0,L	;a14,a14,L
+	move	b0,a14
+	cmp	a14,a3
+	jrz	iphcskpz
+	move	*b0(plyr_seqflgs),b0	;a14	a6
+	btst	LAYUP_B,b0
+	jrnz	iphcguydunking
+	btst	DUNK_B,b0
+	jrnz	iphcguydunking
+iphcskpz
+	move	*a14(plyr_seq),a14
+	cmpi	SHOOT_SEQ,a14
+	jrnz	iphcok
+	jruc	iphcnxt5
+
+takedunk_t
+	.word	0,0,0,0,0,0,0,0,0,0,0,50,100,150,300,400,500,600,700,800,999,999
+
+iphcguydunking
+	PUSH	a0,a1
+
+	move	*a14(plyr_num),a0
+	move	@plyr_maxpower,a1
+	btst	a14,a1
+	jrz	iphcnochng
+	movk	9,a0
+	jruc	iphcmaxp
+iphcnochng
+	move	*a14(plyr_attrib_p),a14,L
+	move	*a14(PAT_POWER),a0		;Guy trying to dunk ball
+iphcmaxp
+
+
+
+	move	*a11(OPLINK),a14,L
+	move	*a14(plyr_attrib_p),a14,L
+	move	*a14(PAT_POWER),a14		;Guy trying to take ball
+	cmpi	3,a14
+	jrle	iphcnxt0z				;3 power can't take ball!
+
+	sub	a14,a0				;a0=-10 thru 10
+	addk	10,a0
+	sll	4,a0
+	addi	takedunk_t,a0
+	move	*a0,a0
+	jrz	iphcok0
+	calla	RNDPER
+	jrls	iphcok0
+iphcnxt0z						;3 power can't take ball!
+	PULL	a0,a1
+	jruc	iphcnxt				;To big, don't lose ball!
+iphcok0
+	PULL	a0,a1
+iphcok
+	move	*a3(plyr_jmpcnt),a14
+	jrle	iphcongnd
+	move	*a3(plyr_aniy),a14
+	add	a14,a1
+	sra	2,a14			;/4
+	sub	a14,a1			;75% down from top
+	cmp	a1,a0
+	jrge	iphcnxt3			;Ball too low?
+iphcongnd
+
+	move	*a3(plyr_seqflgs),a14
+	btst	BLOCKREB_B,a14
+	jrz	iphcnobr			;No?
+
+	addk	18-12,a2
+	jrge	iphcnxt2			;Too far from Z?
+					;0CHhk box X
+	move	*a11(OIMG),a2,L
+	move	*a2(IANI2X),a0
+
+	move	*a11(OCTRL),a14
+	btst	B_FLIPH,a14
+	jrz	iphcnof			;No flip?
+
+	move	*a2,a2			;ISIZEX
+	subk	1,a2
+	neg	a0
+	add	a2,a0			;+size
+iphcnof
+	move	*a11(OXPOS),a14
+	add	a14,a0
+	sub	a4,a0
+	abs	a0
+
+	move	*a11(OPLINK),a14,L
+	move	*a14(plyr_attrib_p),a14,L
+	move	*a14(PAT_DEFSKILL),a14
+	sll	4,a14
+	addi	tbl4,a14
+	move	*a14,a14
+	sub	a14,a0
+
+	jrge	iphcnxt4			;Too far from X?
+
+
+	move	@ballpnum,a1
+	jrn	iphcnoow			;No owner?
+	move	*a3(plyr_num),a14
+	cmp	a1,a14
+	jreq	iphcnxt			;I own?
+
+	srl	1,a1
+	srl	1,a14
+	cmp	a1,a14
+	jreq	iphcnxt			;Teammate owns?
+
+
+	move	*a3(plyr_num),a0
+	move	@plyrnumonfire,a1
+	cmp	a0,a1
+	jrz	iphcnoow			;If on fire, don't miss as often
+
+	move	*a11(OPLINK),a14,L
+	move	*a14(plyr_attrib_p),a14,L
+	move	*a14(PAT_DEFSKILL),a14
+	sll	4,a14
+	addi	tbl5,a14
+	move	*a14,a0
+	calla	RNDPER
+	jrhi	iphcnxt
+
+
+iphcnoow
+	PUSH	a7
+	CREATE0	fix_airb
+	PULL	a7
+
+
+	move	@ballprcv_p,a2,L
+	cmp	a3,a2
+	jreq	iphcrcvok			;The receiver is touching it?
+
+
+	move	@ballgoaltcnt,a0	;0CHhk goaltending
+	jrle	iphcskipgt
+	move	@ballpnumshot,a1
+	move	*a3(plyr_num),a14
+	srl	1,a1
+	srl	1,a14
+	cmp	a1,a14
+	jreq	iphcnxt			;Same team?
+
+	move	*a8(OYVEL),a0,L
+	move	a0,a2
+	sra	14,a0
+	jrle	iphcnogt
+
+	move	*a3(plyr_num),a0
+	move	@plyrnumonfire,a1
+	cmp	a0,a1
+	jrz	iphcnogt
+
+	move	*a3(plyr_ptsdown),a0
+
+	subk	5,a0
+	jrlt	iphcnormgt			;I'm losing by 5?
+	cmpi	[3,0000h],a2
+	jrlt	iphcnogt
+	jruc	iphcgt
+iphcnormgt
+	cmpi	[2,0000h],a2
+	jrlt	iphcnogt
+
+iphcgt
+	movk	6,a0
+	calla	rnd
+	jrnz	iphcnxt
+	
+	move	@plyrairballoff,a0
+	jrn	iphcnogt
+	move	@shot_percentage,a0
+	jrn	iphcnogt
+	
+
+	move	*a3(plyr_num),a0
+	sll	4,a0 			;Secret goaltend
+	.ref	p1taps
+	addi	p1taps,a0
+	move	*a0,a0
+	cmpi	24,a0
+	jrnz	iphcnosec1
+
+	movi	700,a0			;Let this guy get away with GT
+	calla	RNDPER
+	jrhi	iphcnogt
+
+
+iphcnosec1
+	move	a7,a2
+	CREATE0	plyr_goaltending	;Pass A11
+	move	a2,a7
+	jruc	iphcskipgt
+iphcnogt
+	movk	PS_BLOCKS,a0		;It's a block
+	move	*a3(plyr_num),a1
+	calla	inc_player_stat
+
+	calla	rejected_speech
+
+	movi	steal_snd,a0
+	calla	snd_play1
+	PUSH	a7,a10
+	move	a3,a10
+	calla	arw_on1plyr		;Guy who picks up ball gets arw
+	PULL	a7,a10
+
+iphcskipgt
+
+	callr	flash_ball
+	movi	cheer_snd,a0
+	calla	snd_play1
+	callr	get_swat
+
+	move	*a3(plyr_seq),a2
+	cmpi	REBOUND_SEQ,a2
+	jreq	iphcagiveball
+	cmpi	REBOUNDA_SEQ,a2
+	jrnz	iphcfix
+
+
+iphcagiveball
+	PUSH	a3
+
+	move	@ballpnum,a0
+	jrn	iphcballfree
+
+	movi	stealsb,a0		;steals the ball
+	calla	snd_play1ovrp
+
+	jruc	iphcskiprbnd
+iphcballfree
+	move	@ballgoaltcnt,a0	;0CHhk goaltending
+	jrgt	iphcskiprbnd
+	move	@ballprcv_p,a0,L
+	jrz	iphcisreb
+	calla	intercepted_speech
+	jruc	iphcskiprbnd
+iphcisreb
+	move	*a3(plyr_num),a14
+	move	a14,@ballpnum
+	clr	a0
+	move	a0,*a3(plyr_dribmode)	;Reset dribble
+
+	move	@inbound,a0
+	jrnn	iphcskiprbnd
+
+	move	@gmqrtr,a0
+	jrnz	iphcokr
+	move	@game_time,a0,L
+	cmpi	02050400H,a0
+	jrgt	iphcnor
+
+iphcokr
+	calla	rebound_speech
+iphcnor
+	movi	80,a0
+	move	a0,@pushing_delay
+	movi	15,a0
+	calla	plyr_setshtdly
+	PULL	a3
+
+	jruc	iphcx
+
+fix_airb
+	movk	1,a0
+	move	a0,@plyrairballoff	;Shut off eventual airball snd
+	DIE
+
+iphcskiprbnd
+	movi	80,a0
+	move	a0,@pushing_delay
+	movi	15,a0
+	calla	plyr_setshtdly
+	PULL	a3
+	jruc	iphcgiveball
+iphcfix
+	subk	BLOCKREJ_SEQ,a2
+	jreq	iphcrej
+
+	movk	3,a0			;>Regular block
+	callr	rnd
+
+
+	jrnz	iphcglance_off
+
+	movi	steal_snd,a0
+	calla	snd_play1
+	movi	80,a0
+	move	a0,@pushing_delay
+	PUSH	a7,a10
+	move	a3,a10
+	calla	arw_on1plyr
+	PULL	a7,a10
+
+	movk	PS_BLOCKS,a0		;It's a block
+	move	*a3(plyr_num),a1
+	calla	inc_player_stat
+ 
+	calla	rejected_dnk_speech
+	jruc	iphcgiveball
+
+iphcglance_off
+	PUSH	a3
+	movi	15,a0
+	calla	plyr_setshtdly
+	PULL	a3
+
+	move	@ballgoaltcnt,a0
+	jrgt	iphcablk
+
+
+	move	*a8(OYPOS),a0
+	addk	30,a0			;Not if ball near ground
+	jrgt	iphcx
+
+	move	*a3(plyr_dir),a0
+	callr	sinecos_get
+	sll	5,a0			;*32
+	sll	5,a1
+	move	a0,*a8(OZVEL),L
+	move	a1,*a8(OXVEL),L
+
+	movi	-GRAV*22,a1		;Towards roof
+
+	move	a1,*a8(OYVEL),L
+
+	move	@PCNT,a0
+	ANDK	7,a0
+	jrnz	iphcx
+
+	movk	25,a0
+	move	a0,*a3(plyr_shtdly)
+	calla	rejected_dnk_speech
+
+	jruc	iphcx
+
+iphcablk
+	clr	a0
+	move	a0,@ballgoaltcnt
+
+
+	movi	-GRAV*15,a1		;Towards roof
+	move	a1,*a8(OYVEL),L
+
+
+	movk	01fH,a0
+	callr	rnd
+	btst	0,a0
+	jrz	iphcnoxf
+	move	*a8(OXVEL),a2,L
+	neg	a2
+	move	a2,*a8(OXVEL),L
+iphcnoxf
+	btst	1,a0
+	jrz	iphcnxt
+	move	*a8(OZVEL),a2,L
+	neg	a2
+	move	a2,*a8(OZVEL),L
+
+
+	jruc	iphcnxt
+
+iphcrej
+	movk	PS_BLOCKS,a0		;It's a block
+	move	*a3(plyr_num),a1
+	calla	inc_player_stat
+	move	*a3(plyr_dir),a0
+	callr	sinecos_get
+	sll	5,a0			;*32
+	sll	5,a1
+	move	a0,*a8(OZVEL),L
+	move	a1,*a8(OXVEL),L
+	movi	-GRAV*21,a1		;Towards roof ;18
+	move	a1,*a8(OYVEL),L
+	movk	15,a0
+	move	a0,*a3(plyr_shtdly)
+
+	callr	def_play_reward		;Good defensive play reward
+
+	clr	a0
+	move	a0,@ballgoaltcnt
+	jruc	iphcnxt
+
+iphcnobr
+	move	@ballpnum,a2
+	jrlt	iphcgiveball		;No owner?
+	move	*a3(plyr_num),a14
+	cmp	a2,a14
+	jreq	iphcnxt			;I already have it?
+
+	move	*a3(plyr_seq),a0
+	subi	STEAL_SEQ,a0
+	jrne	iphcnxt
+
+
+	move	*a3(plyr_attrib_p),a0,L
+	move	*a0(PAT_STLSKILL),a0
+	sll	4,a0
+	addi	stl1,a0
+	move	*a0,a0
+
+	calla	RNDPER
+	jrls	iphcnxt			;No steal?
+
+	sll	5,a2			;*32
+	addi	plyrproc_t,a2
+	move	*a2,a2,L
+
+	move	*a2(plyr_seqflgs),a0
+	btst	NOSTEAL_B,a0
+	jrnz	iphcnxt			;Ball can't be stolen?
+
+
+	move	@steals_off,a0
+	jrnz	iphcnxt
+
+	movk	PS_STEALS,a0
+	move	*a3(plyr_num),a1
+	calla	inc_player_stat
+
+	move	*a3(plyr_attrib_p),a0,L
+	move	*a0(PAT_STLSKILL),a0
+	sll	4,a0
+	addi	stl2,a0
+	move	*a0,a0
+
+	calla	RNDPER
+	jrhi	iphcgiveballflsh		;20% give him the ball?
+
+	movk	15,a0			;>Knock it away
+	move	a0,*a2(plyr_shtdly)
+	move	a0,*a3(plyr_shtdly)
+
+	movi	-1,a0
+	move	a0,@ballpnum
+	move	a0,@ballpnumlast
+	callr	ball_convfmprel2
+
+	movi	01ffffH,a2		;>Give rnd velocity
+	movi	010000H,a3
+	move	a2,a0
+	callr	rnd
+	add	a3,a0
+	btst	0,a0
+	jrz	iphcxpos
+	neg	a0
+iphcxpos	move	a0,*a8(OXVEL),L
+	move	a2,a0
+	callr	rnd
+	add	a3,a0
+	btst	0,a0
+	jrz	iphcypos
+	neg	a0
+iphcypos	move	a0,*a8(OZVEL),L
+
+	callr	flash_ball
+	callr	get_swat
+	movi	cheer_snd,a0
+	calla	snd_play1
+
+	jruc	iphcnxt
+
+stl1	.word	160,170,180,195,200
+	.word	205,215,245,260,285
+	.word	300
+
+stl2	.word	160,170,180,195,200
+	.word	205,215,225,230,235
+	.word	250
+
+
+iphcgiveballflsh
+
+	calla	stolen_speech
+
+	movk	30,a0
+	move	a0,@steals_off
+	movk	25,a0
+	move	a0,@pass_off
+	movi	80,a0
+	move	a0,@pushing_delay
+	callr	flash_ball
+	callr	get_swat
+	movi	cheer_snd,a0
+	calla	snd_play1
+
+
+iphcgiveball
+	move	@ballprcv_p,a2,L
+	jrz	iphcnorcvr			;No pass receiver?
+	cmp	a3,a2
+	jreq	iphcrcvok			;The receiver has it?
+
+	movi	99,a0
+	callr	rndrng0
+
+	clr	a14
+	move	*a3(plyr_ptsdown),a1
+	jrle	iphcnormint		;!Losing?
+
+	cmpi	15,a1
+	jrle	iphcmaxpts2
+	movk	15,a1
+
+iphcmaxpts2
+	movi	150,a14			;Secret steal power!
+	move	*a3(plyr_num),a6
+	.ref	stlpower
+	move	@stlpower,a4
+	btst	a6,a4
+	jrnz	iphcnormint
+
+	sll	4,a1
+	addi	iphcint_t,a1
+	move	*a1,a14
+
+iphcnormint
+	move	@ballpasstime,a1
+	subk	3,a1
+	abs	a1
+	srl	1,a1			;/2
+	add	a14,a1
+	addk	1,a1			;1% to 100%
+	cmp	a1,a0
+	jrge	iphcnxt			;% failed?
+
+
+	movi	400,a0			;650 ,450
+	calla	RNDPER
+	jrls	iphcnxt			;br=nope
+
+
+	PUSH	a2,a8
+
+	move	*a8(OXVAL),a6,L		;Figure out where ball was 4 ticks ago
+	move	*a8(OZVAL),a7,L
+
+	move	*a8(OXVEL),a1,L
+	sll	2,a1
+	sub	a1,a6
+	move	*a8(OZVEL),a1,L
+	sll	2,a1
+	sub	a1,a7
+
+	sra	16,a6
+	sra	16,a7
+
+	move	a11,a8
+
+	calla	seekdirdist_obxz128
+	move	a0,*a3(plyr_newdir)	;Turn toward ball
+
+	PULL	a2,a8
+
+	move	*a2(plyr_rcvpass),a0
+	jrle	iphcrcvok0			;Already caught?
+
+	clr	a14			;Intercepted
+	move	a14,*a2(plyr_rcvpass)
+	move	*a2(plyr_jmpcnt),a0
+	jrnz	iphcinair			;Jumping?
+	move	a14,*a2(plyr_nojoy)
+iphcinair
+
+
+
+	callr	def_play_reward		;Good defensive play reward
+
+	movi	40,a0			;2% of intercepts are just deflects
+	calla	RNDPER
+	jrls	iphcnope
+
+
+	movi	intercept,a0
+	calla	snd_play1ovrp
+
+	move	*a3(plyr_dir),a0
+	callr	sinecos_get
+	sll	5,a0			;*32
+	sll	5,a1
+	move	a0,*a8(OZVEL),L
+	move	a1,*a8(OXVEL),L
+	movi	-GRAV*25,a1		;Towards roof
+	move	a1,*a8(OYVEL),L
+	movk	PS_STEALS,a0
+	move	*a3(plyr_num),a1
+	calla	inc_player_stat
+
+	jruc	iphcx			;iphcnxt
+
+iphcnope
+
+
+	move	@ballprcv_p,a0,L	;*Plyr proc who gets this pass or 0
+	jrz	iphcnopass
+
+	move	@ballpasstime,a0	;# ticks since passed
+	cmpi	6,a0
+	jrle	iphccntstl			;iphcnopass
+
+	calla	intercepted_speech
+	jruc	iphccntstl
+
+iphcnopass
+	calla	stolen_speech
+
+iphccntstl
+
+	movk	PS_STEALS,a0
+	move	*a3(plyr_num),a1
+	calla	inc_player_stat
+	jruc	iphcrcvok
+
+iphcrcvok0
+	PUSH	a7,a10
+	move	a3,a10
+	calla	arw_on1plyr		;Guy who picks up ball gets arw
+	PULL	a7,a10
+
+iphcrcvok
+	clr	a14
+	move	a14,@ballprcv_p,L
+
+iphcnorcvr
+	move	*a3(plyr_num),a14
+	move	a14,@ballpnum
+	clr	a0
+	move	a0,*a3(plyr_dribmode)	;Reset dribble
+	
+	move	*a11(OIMG),a0,L
+	cmpi	w1blok3,a0
+	jrz	iphcahha
+	cmpi	w2blok3,a0
+	jrz	iphcahha
+	cmpi	w4blok3,a0
+	jrz	iphcahha
+	cmpi	w5blok3,a0
+	jrz	iphcahha
+	cmpi	w1blok2,a0
+	jrz	iphcahha
+	cmpi	w2blok2,a0
+	jrz	iphcahha
+	cmpi	w4blok2,a0
+	jrz	iphcahha
+	cmpi	w5blok2,a0
+	jrnz	iphcx
+
+iphcahha
+	movk	NOSPEAR_SEQ,a0
+	move	*a3(plyr_dir),a7
+	PUSH	a13
+	move	a3,a13
+	calla	plyr_setseq
+	movk	1,a0
+	move	a0,*a13(PA10),L
+	PULL	a13
+
+
+	jruc	iphcx
+
+iphcnxt5	
+	nop
+	nop
+iphcnxt2
+	nop
+	nop
+iphcnxt3
+	nop
+	nop
+iphcnxt4
+	nop
+	nop
+
+
+iphcnxt	dsj	a7,iphclp
+
+
+iphcx	PULL	a2,a3,a4,a5,a6,a7,a10,a11
+	rets
+
+tbl1	.word	16,17,18,18,18,18,18,19,20,21,22,23
+tbl2	.word	32,33,34,35,35,35,35,36,37,38,39,40
+tbl3	.word	15,15,15,15,15,15,15,15,15,15,15,15
+tbl4	.word	11,12,12,12,12,12,12,13,14,15,16,17
+tbl5	.word	500,500,500,500,500,500,500,500,500,500,500,500
+
+
+iphcgoalt_t
+	.word	0,35,45,55,60,65,70,75,75
+	.word	75,80,90,90,90,90,90
+
+iphcint_t
+	.word	0,4,7,10,12,15,19,20,20,20
+	.word	20,20,22,25,27,30
+
+
+
+ SUBR	get_swat
+	movi	swat_snd,a0
+	calla	snd_play1
+	rets
+
+
+
+
+
+ SUBR	def_play_reward
+
+	callr	flash_ball
+
+	movi	steal_snd,a0
+	calla	snd_play1
+	callr	get_swat
+	movi	cheer_snd,a0
+	calla	snd_play1
+
+	PUSH	a7,a10
+	move	a3,a10
+	calla	arw_on1plyr		;Guy who picks up ball gets arw
+	PULL	a7,a10
+
+	rets
+
+
+ SUBR	flash_reward
+
+	callr	flash_ball
+
+	movi	cheer_snd,a0
+	calla	snd_play1
+	callr	get_swat
+	rets
+
+
+
+
+ SUBRP	flash_ball
+
+	move	@inbound,a0
+	jrnn	buzgx
+	move	@ballflash,a0
+	jrnz	buzgx
+	PUSH	a7
+	CREATE0	ball_flash
+	PULL	a7
+buzgx	rets	
+
+
+ball_flash
+	movk	1,a0
+	move	a0,@ballflash
+
+	move	@ballobj_p,a8,L		;Basketball obj
+
+	movi	1010h,a2
+	move	a2,*a8(OCONST)
+
+	movk	4,a10
+buzgagain
+	setf	4,0,0
+	movk	M_CONNON,a0		;Replace non-zero data with constant
+	move	a0,*a8(OCTRL)		;Write 4 low bits
+	setf	16,1,0
+
+	SLEEPK	3
+
+	setf	4,0,0
+	movk	M_WRNONZ,a0
+	move	a0,*a8(OCTRL)		;Write 4 low bits
+	setf	16,1,0
+
+	SLEEPK	3
+
+
+	dsj	a10,buzgagain
+
+buzgdie	clr	a0
+	move	a0,@ballflash
+
+	DIE
+
+
+
+
+ SUBR	plyr_jscrowdsnd
+
+	SLEEPK	10
+	movi	cheer1_snd,a0
+	calla	snd_play1
+	movi	cheer2_snd,a0
+	calla	snd_play1
+	SLEEP	76
+	movk	9,a0
+	callr	rndrng0
+	subk	7,a0
+	jalt	SUCIDE		;70%
+
+	movi	cheer3_snd,a0
+	calla	snd_play1
+	DIE
+
+
+
+ SUBR	ball_convfmprel
+
+	move	@ballobj_p,a0,L
+
+	move	*a0(OIMG),a1,L		;0CHonvert ball from player relative
+	move	*a1(IANIOFFX),a1
+	sll	16,a1
+	move	*a0(OXANI),a14,L
+	move	a1,*a0(OXANI),L
+	sub	a14,a1			;Ani difference
+
+
+	rets
+
+
+ SUBR	ball_convfmprel2
+
+	move	@ballobj_p,a0,L
+
+	move	*a0(OIMG),a1,L		;0CHonvert ball from player relative
+	move	*a1(IANIOFFX),a1
+	sll	16,a1
+	move	*a0(OXANI),a14,L
+	move	a1,*a0(OXANI),L
+	sub	a14,a1			;Ani difference
+
+	sra	16-5,a1
+	move	*a0(OZPOS),a14		;894 to 1379 (Z range 486)
+	addi	(819-GZBASE),a14	;768 to ?
+	mpys	a14,a1
+	move	a1,a14
+	sra	2,a14			;/4
+	sub	a14,a1
+	sra	1,a14			;/2
+	sub	a14,a1
+	sll	16-(14+1),a1		;*64k /16k /2
+
+	move	*a0(OXVAL),a14,L	;Adjust X
+	sub	a1,a14
+	move	a14,*a0(OXVAL),L
+
+	rets
+
+
+
+	.ref	assistance_off
+
+ SUBR	plyr_setptsdown
+
+	PUSH	a2,a3,a4,a5,a6
+
+	movi	scores,a14
+	move	*a14+,a0
+	move	*a14+,a4
+	sub	a0,a4			;+ if losing, - if winning
+
+	move	@PSTATUS,a5
+
+	movi	plyrproc_t,a6
+	movk	4,a3
+
+msqglp
+	move	a4,a2
+	srl	1,a5
+	jrnc	msqgset			;Drone?
+
+	move	@PSTATUS,a0
+	move	a0,a1
+	sll	32-2,a0
+	jrz	msqgset			;Drone team?
+	ANDK	0cH,a1
+	jrz	msqgset			;Drone team?
+
+	move	@assistance_off,a0
+	jrnz	msqgnoset
+
+	movk	ADJCOMPASS,a0		;Computer assistance
+	calla	GET_ADJ			;0-1
+	jrz	msqgset			;On?
+msqgnoset
+	clr	a2
+msqgset
+	move	*a6+,a0,L
+	move	a2,*a0(plyr_ptsdown)
+
+	cmpi	3,a3
+	jrne	msqgnxt
+	neg	a4
+
+msqgnxt	dsj	a3,msqglp
+
+	PULL	a2,a3,a4,a5,a6
+	rets
+
+
+
+
+ SUBRP	board_shatter
+
+	movi	explode_snd,a0
+	calla	snd_play1ovr
+
+	movi	ohmy,a0			;oh my!
+	calla	snd_play1ovr
+
+	CREATE0	board_glssnd
+	movk	10,a1
+	move	a1,*a0(PTIME)
+
+	move	@ballpnumshot,a11
+	movk	10,a8
+	move	a11,a0
+	subk	2,a0
+	jrnz	rctsn0
+	addk	1,a0
+rctsn0	move	a0,@bbshatter
+rctsshlp
+	movk	13,a2
+rctsshlp2	CREATE0	board_shard
+	dsj	a2,rctsshlp2
+	SLEEPK	1
+	dsj	a8,rctsshlp
+
+	DIE
+
+board_glssnd
+	SLEEPK	10
+	movi	explode_snd,a0
+	calla	snd_play1ovr
+	DIE
+
+
+	STRUCTPD
+	APTR	shd_ani1st_p	;*1st ani_l pos
+
+ SUBRP	board_shard
+
+	movk	10,a0
+	callr	rndrng0
+	sll	5,a0			;*32
+	addi	rctsshard_t,a0
+	move	*a0,a9,L
+	move	*a9+,a0,L
+	PUSHP	a0
+	move	a9,*a13(shd_ani1st_p),L
+
+	movk	0fH,a0
+	callr	rnd
+	subk	5,a0
+	move	a0,a6
+	sll	13,a6			;XVel
+
+	movk	3,a0
+	callr	rnd
+	jrnz	rctsxnorm
+	sll	2,a6			;*4
+rctsxnorm
+	movk	0fH,a0
+	callr	rnd
+	subk	6,a0
+	move	a0,a7
+	sll	14,a7			;YVel
+
+	movk	3,a0
+	callr	rnd
+	jrnz	rctsynorm
+	sll	2,a7			;*4
+rctsynorm
+
+	movi	36,a0
+	callr	rndrng0
+	move	a0,a1
+	neg	a1			;Y offset
+
+	movi	HOOPLX-13,a0
+	subk	2,a11
+	jrge	rctsp23
+	movi	HOOPRX+13,a0
+	neg	a6
+rctsp23
+	sll	16,a0
+	addi	HOOPY,a1
+	sll	16,a1
+	movi	shard1_1,a2
+	movi	CZMID,a3
+	movi	DMAWNZ|M_3D|M_NOSCALE,a4
+	movi	CLSDEAD,a5
+	calla	BEGINOBJ2
+
+	movk	7,a0
+	callr	rnd
+	subk	4,a0
+	sll	16,a0
+	move	a0,*a8(OZVEL),L
+
+	movk	1,a0
+	callr	rnd
+	addk	1,a0
+	move	a0,a11
+	jruc	rctsstrt
+
+rctslp	dsj	a10,rctsnoani
+rctsstrt
+	move	a11,a10
+	move	*a9+,a0,L
+	jrnz	rctsani
+	move	*a13(shd_ani1st_p),a9,L
+	move	*a9+,a0,L
+rctsani
+	move	*a8(OCTRL),a1
+	calla	obj_aniq
+rctsnoani
+	SLEEPK	1
+	move	*a8(OYVEL),a2,L
+	addi	GRAV,a2
+	move	a2,*a8(OYVEL),L
+	jrn	rctslp			;Going up?
+	move	*a8(OYVAL),a1,L
+	jrlt	rctslp			;Above gnd?
+	clr	a1
+	move	a1,*a8(OYVAL),L
+	move	@HCOUNT,a14
+	sll	32-2,a14
+	jrz	rctsshatter
+	neg	a2
+	sra	2,a2
+	move	a2,*a8(OYVEL),L
+	cmpi	-(GRAV*2),a2
+	jrlt	rctslp
+
+rctsshatter
+	clr	a0
+	move	a0,*a8(OXVEL),L
+	move	a0,*a8(OYVEL),L
+	move	a0,*a8(OZVEL),L
+
+	PULLP	a9
+	movk	3,a10
+	jruc	rctsstrt2
+
+rctslp2
+	move	*a8(OCTRL),a1
+	calla	obj_aniq
+rctsnoani2
+	SLEEPK	1
+rctsstrt2	move	*a9+,a0,L
+	jrnz	rctslp2
+
+
+	jauc	DELOBJDIE
+
+
+rctsshard_t
+	.long	s1_t,s2_t,s3_t,s4_t,s5_t,s6_t,s7_t,s8_t
+	.long	s1_t,s6_t,s8_t
+
+s1_t
+	.long	st4_t
+	.long	shard1_1
+	.long	shard1_2
+	.long	shard1_3
+	.long	shard1_4
+	.long	shard1_5
+	.long	shard1_6
+	.long	shard1_7
+	.long	shard1_8
+	.long	0
+s2_t
+	.long	st3_t
+	.long	shard2_1
+	.long	shard2_2
+	.long	shard2_3
+	.long	shard2_4
+	.long	shard2_5
+	.long	shard2_6
+	.long	shard2_7
+	.long	shard2_8
+	.long	0
+s3_t
+	.long	st2_t
+	.long	shard3_1
+	.long	shard3_2
+	.long	shard3_3
+	.long	shard3_4
+	.long	shard3_5
+	.long	shard3_6
+	.long	shard3_7
+	.long	shard3_8
+	.long	shard3_9
+	.long	shard3_10
+	.long	shard3_11
+	.long	shard3_12
+	.long	0
+s4_t
+	.long	st1_t
+	.long	shard4_1
+	.long	shard4_2
+	.long	shard4_3
+	.long	shard4_4
+	.long	shard4_5
+	.long	shard4_6
+	.long	shard4_7
+	.long	shard4_8
+	.long	shard4_9
+	.long	shard4_10
+	.long	0
+s5_t
+	.long	st2_t
+	.long	shard5_1
+	.long	shard5_2
+	.long	shard5_3
+	.long	shard5_4
+	.long	shard5_5
+	.long	shard5_6
+	.long	shard5_7
+	.long	shard5_8
+	.long	0
+s6_t
+	.long	st4_t
+	.long	shard6_1
+	.long	shard6_2
+	.long	shard6_3
+	.long	shard6_4
+	.long	shard6_5
+	.long	shard6_6
+	.long	shard6_7
+	.long	shard6_8
+	.long	0
+s7_t
+	.long	st2_t
+	.long	shard7_1
+	.long	shard7_2
+	.long	shard7_3
+	.long	shard7_4
+	.long	shard7_5
+	.long	shard7_6
+	.long	shard7_7
+	.long	shard7_8
+	.long	shard7_9
+	.long	shard7_10
+	.long	0
+s8_t
+	.long	st4_t
+	.long	shard8_1
+	.long	shard8_2
+	.long	shard8_3
+	.long	shard8_4
+	.long	shard8_5
+	.long	shard8_6
+	.long	shard8_7
+	.long	shard8_8
+	.long	shard8_9
+	.long	shard8_10
+	.long	0
+
+st1_t	.long	shat1_1
+	.long	shat1_2
+	.long	shat1_3
+	.long	shat1_4
+	.long	shat1_5
+	.long	0
+st2_t	.long	shat2_1
+	.long	shat2_2
+	.long	shat2_3
+	.long	shat2_4
+	.long	shat2_5
+	.long	0
+st3_t	.long	shat3_1
+	.long	shat3_2
+	.long	shat3_3
+	.long	shat3_4
+	.long	shat3_5
+	.long	0
+st4_t	.long	shat4_1
+	.long	shat4_2
+	.long	shat4_3
+	.long	shat4_4
+	.long	shat4_5
+	.long	0
+
+
+
+ SUBRP	rnd
+
+	move	@RAND,a1,L
+	rl	a1,a1
+	move	@HCOUNT,a14
+	rl	a14,a1
+	add	sp,a1
+	move	a1,@RAND,L
+
+	and	a1,a0
+	rets
+
+
+ SUBRP	rndrng0
+
+	move	@RAND,a1,L
+	rl	a1,a1
+	move	@HCOUNT,a14
+	rl	a14,a1
+	add	sp,a1
+	move	a1,@RAND,L
+
+	addk	1,a0
+	mpyu	a1,a0		;Condition codes not valid!
+
+	rets
+
+
+
+
+
+
+ SUBR	seq_stand
+
+	clr	a0
+	move	a0,*a13(plyr_nojoy)
+
+	movk	STND_SEQ,a0		;Set stand sequence
+	move	*a13(plyr_ownball),a1
+	jrle	rctsset
+
+
+	move	*a13(plyr_num),a2
+	srl	1,a2
+	XORK	1,a2
+	sll	6,a2			;*64
+	addi	plyrproc_t,a2
+	move	*a2+,a4,L
+	move	*a2+,a5,L
+	move	*a13(plyr_o1dist),a0
+	cmpi	60,a0
+	jrge	rctschko2			;Too far?
+	subk	30,a0
+	jrlt	rctsdoelbo			;In close?
+	move	*a4(plyr_seq),a14
+	subi	STEAL_SEQ,a14
+	jreq	rctsdoelbo
+	subk	PUSH_SEQ-STEAL_SEQ,a14
+	jreq	rctsdoelbo
+rctschko2
+	move	*a13(plyr_o2dist),a0
+	cmpi	60,a0
+	jrge	rctsstndwb			;Too far?
+	subk	30,a0
+	jrlt	rctsdoelbo			;In close?
+	move	*a5(plyr_seq),a14
+	subi	STEAL_SEQ,a14
+	jreq	rctsdoelbo
+	subk	PUSH_SEQ-STEAL_SEQ,a14
+	jrne	rctsstndwb
+rctsdoelbo
+	move	*a13(plyr_autoctrl),a14
+	jrnz	rctsstndwb
+
+	move	@game_time,a1,L		;If under 2 secs, no elbow
+	cmpi	0200H,a1
+	jrle	rctsstndwb
+
+	movi	ELBO_SEQ,a0
+	move	*a13(plyr_seq),a14
+	cmp	a0,a14
+	jrne	rctssetnostl		;!In elbo?
+	move	*a11,a1
+	sll	32-6,a1
+	jrz	rctsset			;No buttons?
+
+
+rctsstndwb	movk	STNDWB_SEQ,a0
+rctsset	calla	plyr_setseq
+
+	move	*a13(plyr_ani1st_p),a0,L
+	move	a0,b4
+	rets
+
+
+
+rctssetnostl
+	calla	plyr_setseq
+
+	move	*a13(plyr_ani1st_p),a0,L
+	move	a0,b4
+
+	movi	140,a0
+	move	a0,@steals_off		;Don't allow steals for 60 ticks
+	movi	80,a0
+	move	a0,@pushing_delay
+	rets
+
+
+
+
+ SUBR	seq_stealstand
+
+	move	*a13(plyr_ownball),a0
+	jrp	seq_stand
+
+	btst	5,a6
+	jrz	seq_stand
+	rets
+
+
+
+ SUBR	seq_newdir
+
+	move	*b4+,b0
+	move	b0,a7
+	move	*a13(plyr_anirevff),a0
+	jrz	ewagx
+	srl	4,a7
+	sll	3,a7
+	addi	ewagt,a7
+	movb	*a7,a7
+ewagx	move	a7,*a13(plyr_dir)
+	rets
+
+ewagt	.byte	0,7*16,6*16,5*16,4*16,3*16,2*16,1*16
+
+
+
+ SUBR	seq_stayinair
+
+	move	*a13(plyr_jmpcnt),a0
+	jrz	giygx
+	subi	2*32+3*16,b4
+giygx	rets
+
+
+ SUBR	seq_keepzx
+
+	move	*a8(OXVEL),a0,L
+	sla	1,a0
+	move	a0,*a13(plyr_kpxvel),L
+	move	*a8(OZVEL),a0,L
+	sla	1,a0
+	move	a0,*a13(plyr_kpzvel),L
+	rets
+
+
+ SUBR	seq_injury
+
+	movk	PS_INJURY,a0		;>Inc try shot stat
+	move	*a13(plyr_num),a1
+	calla	inc_player_stat
+
+	rets
+
+
+ SUBR	seq_stuffzx
+
+	move	*a13(plyr_kpxvel),a0,L
+	move	a0,*a8(OXVEL),L
+	move	*a13(plyr_kpzvel),a0,L
+	move	a0,*a8(OZVEL),L
+
+	rets
+
+
+ SUBR	seq_strtfire
+
+
+	move	*a13(plyr_keeppal),a0
+	jrnz	dyiux
+	move	*a8(OPAL),a0
+	move	a0,*a13(plyr_keeppal)
+	movi	FIREFALP,a0
+	calla	pal_getf
+	move	a0,*a8(OPAL)
+	move	*a13(plyr_headobj_p),a1,L
+	move	*a1(OPAL),a14
+	move	a14,*a13(plyr_hdkeeppal)
+	move	a0,*a1(OPAL)
+dyiux
+	rets
+
+
+ SUBR	seq_stopfire
+
+	move	*a13(plyr_keeppal),a0
+	jrz	gvlux
+	move	a0,*a8(OPAL)
+	move	*a13(plyr_hdkeeppal),a0
+	move	*a13(plyr_headobj_p),a1,L
+	move	a0,*a1(OPAL)
+	clr	a0
+	move	a0,*a13(plyr_keeppal)
+gvlux
+	rets
+
+
+ SUBR	seq_smoke
+
+	.ref	plyr_smoketrail2
+	CREATE0	plyr_smoketrail2
+	move	a13,*a0(PA10),L
+
+	rets
+
+
+
+ SUBR	seq_snd
+
+	move	*b4+,b0,L
+	move	b0,a0
+	jauc	snd_play1
+
+
+ SUBR	seq_noballoff
+
+	move	*a13(plyr_seqflgs),a0
+	andni	NOBALL_M,a0
+	move	a0,*a13(plyr_seqflgs)
+
+	rets
+
+
+
+ SUBR	seq_resetseq
+
+	clr	a0
+	move	a0,*a13(plyr_nojoy)
+
+	move	*a13(plyr_seq),a0
+	move	a6,a1
+	sll	32-4,a1
+	jrnz	qcpjset			;Pushing joy?
+
+	movk	STNDDEF_SEQ,a0		;>Setup stand sequence
+	move	*a13(plyr_ownball),a14
+	jrle	qcpjset
+	movk	STNDDRIBDEF_SEQ,a1
+
+qcpjset	jruc	plyr_setseq
+
+
+
+ SUBR	seq_run
+
+	move	b4,a0
+	addi	4*16,a0
+	move	a0,*a13(plyr_ani1st_p),L
+	rets
+
+
+
+ SUBR	seq_jump
+
+	move	*a13(plyr_seq),a14
+	cmpi	LAYUP_SEQ,a14
+	jreq	zzlsjmp
+	cmpi	HOOK_SEQ,a14
+	jreq	zzlsjmp
+	cmpi	HOOK2_SEQ,a14
+	jreq	zzlsjmp
+
+
+	move	@game_time,a0,L
+	cmpi	0400H,a0
+	jrlt	zzlsjmp
+
+	btst	4,a6			;But1 (Shoot/block)
+	jrnz	seq_jump2		;Fake?
+	SOUND1	fake_snd
+	jruc	seq_stand		;Fake?
+
+fake_snd	.word	0f981H,60,0816eH,0	;Head fake
+
+
+ SUBR	seq_jump2
+
+zzlsjmp
+	movk	1,a0			;Start jump
+	move	a0,*a13(plyr_jmpcnt)
+
+	move	*a8(OXVEL),a2,L		;>Reduce vel
+	move	*a8(OZVEL),a3,L
+	sra	2,a2
+	sra	2,a3
+
+	move	*a13(plyr_seq),a0
+	cmpi	LAYUP_SEQ,a0
+	jrz	zzlsnodesp
+
+	move	*a13(plyr_turbon),a5
+
+	move	*a13(plyr_num),a14
+	move	@plyrnumonfire,a0
+	cmp	a0,a14
+	jrnz	zzlsfire1			;If on fire, don't do turbo jump!
+	clr	a5
+	jruc	zzlsfire
+zzlsfire1
+
+	move	*a13(plyr_PDATA_p),a1,L	;If lotsa turbo, still do tall jump!
+	move	*a1(ply_turbo),a1
+	cmpi	24,a1
+	jrlt	zzlsfire			;Turbo too low?
+
+	move	*a13(plyr_turbon),a5
+	jrnz	zzlsturb			;Br=taller jump!
+zzlsfire
+	sra	1,a2
+	sra	1,a3
+zzlsturb
+	move	*a13(plyr_seq),a0
+	subk	SHOOTDESP3_SEQ,a0
+	jrne	zzlsnodesp
+	movi	020000H,a2		;For this desperation shot, we
+	move	*a13(plyr_num),a0	;need some x velocity
+	subk	2,a0
+	jrlt	zzlsnodesp
+	movi	-020000H,a2
+zzlsnodesp
+
+
+	move	a2,*a8(OXVEL),L
+	move	a3,*a8(OZVEL),L
+
+
+	move	*a8(OZPOS),a14		;894 to 1379 (Z range 486)
+	subi	400,a14
+	movi	-070H,a1
+	mpys	a14,a1
+	addi	-024000H,a1
+
+	move	a5,a5
+	jrz	zzlsnotur
+	addi	-08000H,a1
+zzlsnotur
+	move	*a13(plyr_seq),a0
+	cmpi	LAYUP_SEQ,a0
+	jreq	zzlsnoly2
+	addi	-08000H,a1
+zzlsnoly2
+	move	*a13(plyr_seqflgs),a0
+	btst	SHOOT_B,a0
+	jrz	zzlsnotsh
+	move	a1,a0			;-1/16
+	sra	4,a0
+	sub	a0,a1
+
+	move	*a13(plyr_seq),a14
+	cmpi	QSHOOT_SEQ,a14
+	jrnz	zzlsnotsh
+	sra	1,a1
+
+zzlsnotsh
+	move	a1,*a8(OYVEL),L
+
+	rets
+
+
+
+
+ SUBR	seq_block
+
+	PUSH	a6,a7,a9
+
+	movk	1,a0			;Start jump
+	move	a0,*a13(plyr_jmpcnt)
+
+
+	move	@ballobj_p,a5,L		;0CaHlc where ball is headed
+
+	move	@ballpnum,a14
+	jrn	lfwgbinair			;Ball in air?
+
+
+	move	*a13(plyr_myhoopx),a0
+	movi	CZMID,a1
+
+	sll	5,a14
+	addi	plyrproc_t,a14
+	move	*a14,a14,L
+	move	*a14(plyr_seqflgs),a2
+	btst	DUNK_B,a2
+	jrz	lfwgnodunk
+
+	move	a0,a6			;>Jump at rim
+	move	a1,a7
+	movi	-200<<16,a9
+	addk	6,a6
+	cmpi	WRLDMID,a6
+	jrlt	lfwgcalcintercept
+	subk	6+6,a6
+	jruc	lfwgcalcintercept
+
+
+lfwgnodunk
+	move	*a13(plyr_seq),a14
+	subk	BLOCK_SEQ,a14
+	jrne	lfwgnoblk
+	addk	32,b4			;Skip
+
+
+	PULL	a6,a7,a9
+
+
+	move	*a13(plyr_balldist),a0
+	cmpi	0100H,a0			;About 10 feet away from ball
+	jrlt	seq_jump2
+
+	movk	1,a0			;Start jump
+	move	a0,*a13(plyr_jmpcnt)
+
+	clr	a0
+	move	a0,*a8(OXVEL),L		;Zero vel
+	move	a0,*a8(OZVEL),L
+
+	move	*a8(OZPOS),a14		;894 to 1379 (Z range 486)
+	subi	400,a14
+	movi	-030H,a1			;Smaller vertical jump
+	mpys	a14,a1
+	addi	-024000H,a1
+
+	move	a1,*a8(OYVEL),L
+
+	rets
+
+lfwgnoblk
+	move	*a5(OXPOS),a6		;>In front of plyr between basket
+	move	*a5(OXANI+16),a14
+	add	a14,a6
+	move	*a5(OZPOS),a7
+	movi	-200<<16,a9
+
+	sub	a6,a0
+	sub	a7,a1
+	move	a0,a2
+	move	a1,a3
+	abs	a2
+	abs	a3
+	cmp	a3,a2
+	jrge	lfwgscl
+	move	a3,a2
+	jruc	lfwgscl
+
+lfwgscllp	sra	1,a0			;Scale down
+	sra	1,a1
+	srl	1,a2
+lfwgscl	cmpi	22,a2
+	jrgt	lfwgscllp
+
+	add	a0,a6
+	add	a1,a7
+
+	jruc	lfwgcalcintercept
+
+lfwgbinair
+	move	*a5(OXVAL),a6,L
+	move	*a5(OXANI),a0,L
+	add	a0,a6
+	move	*a5(OZVAL),a7,L
+	move	*a5(OYVAL),a9,L
+
+	move	*a5(OXVEL),a0,L
+	move	*a5(OZVEL),a1,L
+	move	*a5(OYVEL),a2,L
+	movk	30,b0
+lfwgnewblp
+	add	a0,a6
+	add	a1,a7
+	add	a2,a9
+	addi	GRAVB,a2
+	dsj	b0,lfwgnewblp
+
+	sra	16,a6
+	sra	16,a7
+
+lfwgcalcintercept
+
+	move	*b4+,b0,L
+	move	b0,a2			;*Key img
+
+	movk	30,a4
+
+	clr	a3
+	clr	a5
+	move	@ballprcv_p,a0,L
+	cmp	a13,a0
+	jreq	lfwgsetvel			;I'm receiving?
+
+
+	move	*a2(IANIOFFX),a1
+	move	*a2(IANI2X),a14
+	sub	a14,a1
+	movi	850,a0
+	mpys	a0,a1
+	sra	10,a1			;/1024
+
+	move	*a13(plyr_newdir),a14
+	jrge	lfwgndok
+	move	*a13(plyr_dir),a14
+lfwgndok	addk	8,a14
+	sll	32-7,a14
+	srl	32-7+4,a14
+	subk	4,a14
+	jrle	lfwgnof			;No flip?
+	neg	a1
+lfwgnof
+	add	a1,a6
+
+
+	move	a6,a3
+	move	a7,a5
+
+	move	*a8(OXPOS),a1
+	move	*a8(OXANI+16),a14
+	add	a14,a1
+	sub	a1,a3			;X delta
+
+
+	move	*a8(OZPOS),a1
+	sub	a1,a5			;Z delta
+
+	movk	30,a1			;Max delta
+	move	*a13(plyr_seq),a14
+	subk	REBOUND_SEQ,a14
+	jrne	lfwgnoreb
+	addk	20,a1
+
+lfwgnoreb	cmp	a1,a3
+	jrlt	lfwgx1ok
+	move	a1,a3
+lfwgx1ok
+	cmp	a1,a5
+	jrlt	lfwgz1ok
+	move	a1,a5
+lfwgz1ok
+	neg	a1
+	cmp	a1,a3
+	jrgt	lfwgx2ok
+	move	a1,a3
+lfwgx2ok
+	cmp	a1,a5
+	jrgt	lfwgz2ok
+	move	a1,a5
+lfwgz2ok
+
+	sll	16,a3
+	sll	16,a5
+	divs	a4,a3
+	divs	a4,a5
+lfwgsetvel
+	move	a3,*a8(OXVEL),L
+	move	a5,*a8(OZVEL),L
+
+	movi	-GRAV/2,a1
+	mpys	a4,a1
+	move	*a8(OYVAL),a3,L		;Adjust for hgt difference
+	sub	a9,a3			;- if above
+	divs	a4,a3
+	sub	a3,a1
+	cmpi	-03c000H,a1
+	jrlt	lfwgminok
+	movi	-03c000H,a1		;Min
+lfwgminok
+
+	move	*a13(plyr_num),a14
+	move	@plyrnumonfire,a6
+	cmp	a14,a6
+	jrnz	lfwgnofire
+
+	cmpi	-050200H,a1		;4a200
+	jrgt	lfwgmaxok
+	movi	-050200H,a1
+	jruc	lfwgmaxok
+lfwgnofire
+	cmpi	-04b200H,a1		;4a200
+	jrgt	lfwgmaxok
+	movi	-04b200H,a1
+lfwgmaxok
+	move	a1,*a8(OYVEL),L
+
+
+lfwgx	PULL	a6,a7,a9
+	rets
+
+
+lfwgz_t	.word	CZMID+12,CZMID+8,CZMID,CZMID-8
+	.word	CZMID-12,CZMID-8,CZMID,CZMID+8
+	.word	CZMID+12
+
+
+
+ SUBR	seq_rebounda
+
+	move	@ballpnum,a14
+	jrge	seq_stand		;Someone grabbed ball?
+
+
+	PUSH	a6,a7,a9
+
+
+	movk	1,a0			;Start jump
+	move	a0,*a13(plyr_jmpcnt)
+
+
+	move	@ballobj_p,a5,L		;0CaHlc where ball is headed
+
+	move	*a5(OXVAL),a6,L
+	move	*a5(OXANI),a0,L
+	add	a0,a6
+	move	*a5(OZVAL),a7,L
+	move	*a5(OYVAL),a9,L
+
+	move	*a5(OXVEL),a0,L
+	move	*a5(OZVEL),a1,L
+	move	*a5(OYVEL),a2,L
+	movk	20,b0
+	movi	GRAVB,a14
+fdtrnewblp
+	add	a0,a6
+	add	a1,a7
+	add	a2,a9
+	add	a14,a2
+	dsj	b0,fdtrnewblp
+
+	sra	16,a6
+	sra	16,a7
+
+
+	move	*b4+,b0,L
+	move	b0,a2			;*Key img
+
+	movk	20,a4
+
+
+	move	*a2(IANIOFFX),a1
+	move	*a2(IANI2X),a14
+	sub	a14,a1
+	movi	850,a0
+	mpys	a0,a1
+	sra	10,a1			;/1024
+
+	move	*a13(plyr_newdir),a14
+	jrge	fdtrndok
+	move	*a13(plyr_dir),a14
+fdtrndok	addk	8,a14
+	sll	32-7,a14
+	srl	32-7+4,a14
+	subk	4,a14
+	jrle	fdtrnof			;No flip?
+	neg	a1
+fdtrnof
+	add	a1,a6
+
+
+	move	a6,a3
+	move	a7,a5
+
+	move	*a8(OXPOS),a1
+	move	*a8(OXANI+16),a14
+	add	a14,a1
+	sub	a1,a3			;X delta
+
+
+	move	*a8(OZPOS),a1
+	sub	a1,a5			;Z delta
+
+	movi	50,a1			;Max delta (was 30)
+	cmp	a1,a3
+	jrlt	fdtrx1ok
+	move	a1,a3
+fdtrx1ok
+	cmp	a1,a5
+	jrlt	fdtrz1ok
+	move	a1,a5
+fdtrz1ok
+	neg	a1
+	cmp	a1,a3
+	jrgt	fdtrx2ok
+	move	a1,a3
+fdtrx2ok
+	cmp	a1,a5
+	jrgt	fdtrz2ok
+	move	a1,a5
+fdtrz2ok
+
+	sll	16,a3
+	sll	16,a5
+	divs	a4,a3
+	divs	a4,a5
+fdtrsetvel
+	move	a3,*a8(OXVEL),L
+	move	a5,*a8(OZVEL),L
+
+	movi	-GRAV/2,a1
+	mpys	a4,a1
+	move	*a8(OYVAL),a3,L		;Adjust for hgt difference
+	sub	a9,a3			;- if above
+	divs	a4,a3
+	sub	a3,a1
+	cmpi	-01c000H,a1
+	jrlt	fdtrminok
+	movi	-01c000H,a1		;Min
+fdtrminok
+
+
+fdtrmaxok	move	a1,*a8(OYVEL),L
+
+
+	PULL	a6,a7,a9
+	rets
+
+
+
+ SUBR	seq_strtdunk
+
+	move	*b4+,b0,L
+	move	b0,a2			;*Slam img
+
+	move	*b4+,b0
+	move	b0,a4			;msiaticks till we reach rim
+
+
+	movk	1,a0			;Start jump
+	move	a0,*a13(plyr_jmpcnt)
+
+
+	move	*a13(plyr_ohoopx),a3
+
+	move	*a2(IANIOFFX),a1
+	move	*a2(IANI2X),a14
+	sub	a14,a1
+	movi	850,a0
+	mpys	a0,a1
+	sra	10,a1			;/1024
+
+
+	move	*a8(OCTRL),a14
+	btst	B_FLIPH,a14
+	jrz	msianof
+	neg	a1
+msianof
+	add	a1,a3
+
+
+	move	*a8(OXPOS),a1
+	move	*a8(OXANI+16),a14
+	add	a14,a1
+	sub	a1,a3			;X delta
+
+	move	*a13(plyr_dir),a14
+	addk	8,a14			;Round up
+	srl	4,a14			;Lose frac
+	sll	4,a14			;*16
+	addi	msiaz_t,a14
+	move	*a14,a5
+	move	*a8(OZPOS),a1
+	sub	a1,a5			;Y delta
+
+	sll	16,a3
+	sll	16,a5
+	divs	a4,a3
+	divs	a4,a5
+
+	move	*a13(plyr_seqflgs),a0
+	btst	LAYUP_B,a0
+	jrz	msianolay
+
+	movk	LAY_UP,a0
+	move	a0,@shot_type
+
+	movk	3,a14
+	move	a3,a7
+	divs	a14,a7
+	sub	a7,a3
+
+	move	a5,a7
+	divs	a14,a7
+	sub	a7,a5
+
+	jruc	msialayin
+msianolay
+	movk	PS_DUNKS_TRY,a0		;>Inc dunk stats
+	move	*a13(plyr_num),a1
+	calla	inc_player_stat
+
+msialayin
+	move	a3,*a8(OXVEL),L
+	move	a5,*a8(OZVEL),L
+
+	movi	-GRAV/2,a1
+	mpys	a4,a1
+	move	*a8(OYVAL),a3,L		;Adjust for hgt difference
+	subi	(HOOPY+12)<<16,a3	;- if above
+	divs	a4,a3
+	sub	a3,a1
+	move	a1,*a8(OYVEL),L
+
+	clr	a0
+	move	a0,@plyrcharge
+	move	a0,@slamming
+
+	movi	PS_2PTS_TRY,a0
+	move	*a13(plyr_num),a1
+	calla	inc_player_stat
+
+	cmpi	62,a4			;60
+	jrlt	msianofl
+
+	PUSH	a10
+	clr	a10
+	cmpi	48h,a4
+	jrlt	msianosnd
+	movi	20,a0			;2% do bogus snd
+	callr	RNDPER
+	jrls	msianosnd	
+	movk	1,a10
+msianosnd	
+	move	a7,a2
+	CREATE0	plyr_camflash
+	move	a2,a7
+	PULL	a10
+
+msianofl
+	rets
+
+
+msiaz_t	.word	CZMID+12,CZMID+8,CZMID,CZMID-8
+	.word	CZMID-12,CZMID-8,CZMID,CZMID+8
+	.word	CZMID+12
+
+
+
+	.ref	gndpos_t
+
+ SUBR	plyr_camflash
+
+	movk	7,a0
+	callr	rnd
+	addk	17,a0
+	move	a0,a8
+kstjlp	CREATE0	plyr_cflsh
+	move	a10,a10
+	jrz	kstjnosnd
+	CREATE0	plyr_cflsh_snd
+kstjnosnd
+	movk	4,a0			;7
+	callr	rnd
+	addk	2,a0
+	calla	PRCSLP
+	dsj	a8,kstjlp
+	DIE
+
+plyr_cflsh_snd
+	movk	3,a0
+	callr	rndrng0
+	sll	5,a0
+	addi	flsh_t,a0
+	move	*a0,a0,L
+kstjs1	calla	snd_play1
+	DIE
+
+flsh_t	.long	flsh1_snd,flsh1_snd,flsh2_snd,flsh2_snd
+
+flsh1_snd	.word	0fabeH,5,080a8H,0
+flsh2_snd	.word	0fbbeH,8,080a9H,0
+
+plyr_cflsh
+	movi	110,a0
+	callr	rndrng0
+	subi	50,a0
+	move	a0,a2
+
+	movi	399,a0
+	callr	rndrng0
+	move	@WORLDTLX+16,a14
+	subi	02000H-200,a14
+	add	a14,a0
+	sll	16,a0			;X
+
+	move	a2,a1
+	sll	16,a1			;Y
+
+	movi	flash1,a2
+	movi	290,a3
+	movi	DMAWNZ|M_3DQ|M_NOCOLL|M_NOSCALE,a4
+	movi	CLSDEAD,a5
+	clr	a6
+	clr	a7
+	calla	BEGINOBJ2
+	movi	gndpos_t,a1
+	move	a1,*a8(ODATA_p),L
+
+	movi	kstjf_l,a9
+	movk	1,a0
+	callr	rnd
+	jrnz	kstj1
+	movi	kstjf2_l,a9
+kstj1
+	SLEEPK	2
+	jauc	FRQDELDIE
+
+
+kstjf_l	LW	flash2,2
+	LW	flash3,2
+	LW	flash3a,2
+	LW	flash3,2
+	LW	flash2,2
+	LWL0	flash1,2
+
+kstjf2_l	LW	flash4,2
+	LW	flash5,1
+	LW	flash6,1
+	LW	flash5,1
+	LWL0	flash4,2
+
+
+
+ SUBR	seq_slamball
+
+
+	move	@ballpnum,a0
+	move	*a13(plyr_num),a1
+	cmp	a0,a1
+	jrne	xqztx			;I don't have it?
+
+	movk	1,a0
+	move	a0,@slamming
+
+	move	@ballobj_p,a5,L
+
+	move	*a5(OIMG),a1,L		;0CHonvert ball from player relative
+	move	*a1(IANIOFFX),a1
+	sll	16,a1
+	move	a1,*a5(OXANI),L
+
+
+
+	move	*a13(plyr_ohoopx),a7	;>Set ball over rim
+	subk	6,a7
+
+    
+	movi	35,a0
+	calla	RNDPER
+	jrls	xqztnoadjst
+
+xqztyes
+	move	*a13(plyr_num),a0
+	cmpi	2,a0
+	jrlt	xqztnofix
+	addk	9,a7
+xqztnofix
+	subk	6,a7
+
+xqztnoadjst
+
+	move	a7,*a5(OXPOS)
+
+	movi	HOOPY-8,a14
+	move	a14,*a5(OYPOS)
+	movi	CZMID,a14
+	move	a14,*a5(OZPOS)
+
+
+	movi	25,a0
+	calla	RNDPER
+	jrls	xqztdunknorm
+					;>Missed dunk
+	move	*a13(plyr_ptsdown),a0
+	subk	2,a0
+	jrge	xqztdunknorm		;I'm loosing by 5?
+
+
+	move	@plyrnumonfire,a14
+
+
+	jrnn	xqztdunknorm
+
+	movi	missd1_snd,a0
+	calla	snd_play1
+	movi	boo1_snd,a0
+	calla	snd_play1
+	movi	cheer1_snd,a0
+	calla	snd_play1
+
+	movi	03ffffH,a0
+	callr	rnd
+	subi	020000H,a0
+	move	a0,a2
+	movi	01ffffH,a0
+	callr	rnd
+	addi	04000H,a0
+	move	*a13(plyr_num),a1
+	subk	2,a1
+	jrge	xqztt2
+	neg	a0
+xqztt2	movi	-GRAVB*40,a3		;Up
+	jruc	xqztsetxyz
+
+xqztdunknorm
+
+	move	*a13(plyr_o1dist),a0
+	cmpi	35,a0
+	jrlt	xqztdlvr
+	move	*a13(plyr_o2dist),a0
+	cmpi	35,a0
+	jrgt	xqztnodlvr
+xqztdlvr
+	move	*a13(plyr_num),a0
+	cmpi	2,a0
+	jrlt	xqztcktm2
+
+
+	move	@plyrproc_t,a0,L
+	move	*a0(plyr_stagcnt),a1
+	move	@plyrproc_t+32,a2,L
+	move	*a2(plyr_stagcnt),a2
+	add	a2,a1
+	cmpi	13,a1
+	jrlt	xqztnodlvr
+	jruc	xqztdlv
+xqztcktm2
+	move	@plyrproc_t+64,a0,L
+	move	*a0(plyr_stagcnt),a1
+	move	@plyrproc_t+96,a2,L
+	move	*a2(plyr_stagcnt),a2
+	add	a2,a1
+	cmpi	13,a1
+	jrlt	xqztnodlvr
+xqztdlv
+	movi	350,a0
+	calla	RNDPER
+	jrhi	xqztnodlvr
+	movi	facial_snd,a0
+	calla	snd_play1ovrp
+xqztnodlvr
+
+	CREATE0	xqztdunk_cheer
+	clr	a0
+	clr	a2
+	movi	GRAVB*4,a3
+xqztsetxyz	move	a0,*a5(OXVEL),L
+	move	a2,*a5(OZVEL),L
+	move	a3,*a5(OYVEL),L
+
+
+	move	*a8(OXVEL),a1,L
+	move	*a8(OZVEL),a2,L
+
+	move	*b4+,b0			;Get # ticks we hang
+	move	b0,a0
+	move	a0,*a13(plyr_hangcnt)
+	subk	2,a0
+	jrlt	xqztnohang
+	move	*a13(plyr_seq),a1
+	cmpi	DUNKX3_SEQ,a1
+	jrnz	xqztdck1
+	move	*a8(OYPOS),a1
+	addk	5,a1
+	move	a1,*a8(OYPOS)
+	move	*a8(OXPOS),a1
+	move	*a8(OXVEL),a2,L
+	jrnn	xqztfix1
+	subi	02eH,a1			;2c
+xqztfix1	addi	016H,a1
+	move	a1,*a8(OXPOS)
+	jruc	xqztfix2
+xqztdck1
+	cmpi	DUNKX_SEQ,a1
+	jrnz	xqztdck2
+	move	*a8(OYPOS),a1
+	addk	9,a1
+	move	a1,*a8(OYPOS)
+	move	*a8(OXPOS),a1
+	move	*a8(OXVEL),a2,L
+	jrnn	xqztfix1a
+	subi	02eH,a1			;2c
+xqztfix1a	addi	018H,a1
+	move	a1,*a8(OXPOS)
+	jruc	xqztfix2
+xqztdck2
+	cmpi	DUNKX2_SEQ,a1
+	jrnz	xqztdck3
+	move	*a8(OYPOS),a1
+	subk	2,a1
+	move	a1,*a8(OYPOS)
+	move	*a8(OXPOS),a1
+	move	*a8(OXVEL),a2,L
+	jrnn	xqztfix1b
+	subi	02eH,a1			;2c
+xqztfix1b	addi	016H,a1
+	move	a1,*a8(OXPOS)
+	jruc	xqztfix2
+xqztdck3
+
+xqztfix2
+	clr	a1			;0 velocity
+	clr	a2
+	move	a1,*a8(OYVEL),L
+xqztnohang	sra	1,a1
+	sra	1,a2
+	move	a1,*a8(OXVEL),L
+	move	a2,*a8(OZVEL),L
+
+	move	*a13(plyr_num),a1
+	move	a1,@ballpnumshot
+	move	a1,@ballpnumlast
+	movi	-1,a0
+	move	a0,@ballpnum		;No owner
+	clr	a0
+	move	a0,@ballscorezhit
+	move	a0,@ballrimhitcnt
+	move	a0,@ballbbhitcnt
+	move	a0,*a13(plyr_ownball)
+	movi	TSEC+20,a0
+	move	a0,*a13(plyr_shtdly)
+
+	rets
+
+xqztx	addk	16,b4
+	rets
+
+xqztdunk_cheer
+	SLEEPK	15
+	movi	cheer1_snd,a0
+	calla	snd_play1
+	movi	cheer2_snd,a0
+	calla	snd_play1
+ 
+	SLEEP	5*60
+
+	clr	a0
+	move	a0,@slamming
+
+	DIE
+
+
+
+
+ SUBR	seq_push
+
+
+	PUSH	a11
+
+	move	*a13(plyr_dir),a3
+
+	move	*a13(plyr_o1dist),a14
+	subi	50,a14
+	jrgt	cjrio1far			;Too far?
+	clr	a5			;O1
+	move	*a13(plyr_o1dir),a2
+	sub	a3,a2
+	abs	a2
+	cmpi	040H,a2
+	jrle	cjrio1dsml
+	subi	080H,a2
+	abs	a2
+cjrio1dsml	subk	32,a2			;16
+	jrlt	cjripusho			;In front of me?
+
+cjrio1far
+
+	move	*a13(plyr_o2dist),a14
+	subi	50,a14
+	jrgt	cjrio2far			;Too far?
+	movk	32,a5			;O2
+	move	*a13(plyr_o2dir),a2
+	sub	a3,a2
+	abs	a2
+	cmpi	040H,a2
+	jrle	cjrio2dsml
+	subi	080H,a2
+	abs	a2
+cjrio2dsml	subk	32,a2			;16
+	jrlt	cjripusho
+cjrio2far
+
+
+	move	*a13(plyr_num),a14
+	move	@PSTATUS,a0
+	btst	a14,a0
+	jrz	cjrix			;I am a stupid drone?  Drones never
+					;push human teammate!
+
+	move	*a13(plyr_tmdist),a14
+	subi	50,a14
+	jrgt	cjrix			;Too far?
+	movi	-1,a5
+	move	*a13(plyr_tmdir),a2
+	sub	a3,a2
+	abs	a2
+	cmpi	040H,a2
+	jrle	cjritmdsml
+	subi	080H,a2
+	abs	a2
+cjritmdsml	subk	16,a2
+	jrlt	cjripush
+	jruc	cjrix
+
+
+cjripusho
+
+
+
+cjripush
+	move	@inbound,a0
+	jrnn	cjrix
+
+	move	*a13(plyr_num),a0	;>Nail him
+
+	move	a5,a5
+	jrnn	cjripush_op		;Pushing opponent
+
+	XORK	1,a0			;Get teammate
+	sll	5,a0
+	addi	plyrproc_t,a0
+	jruc	cjriget_prc
+
+cjripush_op
+
+
+	srl	1,a0
+	XORK	1,a0
+	sll	6,a0			;*64
+	addi	plyrproc_t,a0
+	add	a5,a0
+
+cjriget_prc
+ 	move	*a0,a5,L		;A5=*O proc
+
+	move	*a5(plyr_seqflgs),a14
+	movi	300,a0
+	btst	LAYUP_B,a14
+	jrnz	cjrixz2
+
+	move	*a5(plyr_seq),a14
+	cmpi	ELBO_SEQ,a14
+	jrz	cjrixz
+	cmpi	ELBO2_SEQ,a14
+	jrz	cjrixz
+	cmpi	REBOUND_SEQ,a14
+	jrz	cjrixz
+	cmpi	REBOUNDA_SEQ,a14
+	jrnz	cjriskpck
+
+cjrixz
+	movi	150,a0			;200
+cjrixz2					;Layups 30%
+	calla	RNDPER
+	jrls	cjrix			;br=nope
+cjriskpck
+
+	move	*a5(PA8),a2,L
+	move	*a2(OYPOS),a0
+	move	*a8(OYPOS),a1
+	sub	a0,a1
+
+	cmpi	054H,a1			;060H,5c,58
+	jrgt	cjrix			;Too far above me?
+
+
+
+	move	*a13(plyr_num),a14
+	move	@plyr_maxpower,a0
+	btst	a14,a0
+	jrz	cjrinochng
+	movk	9,a3
+	jruc	cjrimaxp
+cjrinochng
+	move	*a13(plyr_attrib_p),a0,L
+	move	*a0(PAT_POWER),a3
+cjrimaxp
+	move	a3,@last_power		;For later analysis
+
+	move	*a13(plyr_dir),a0
+	move	a0,a1
+	addi	040H,a1
+	sll	32-7,a1
+	srl	32-7,a1
+	move	a1,*a5(plyr_newdir)
+	callr	sinecos_get
+
+	sll	4,a0			;*128
+	sll	4,a1
+
+	move	*a5(plyr_attrib_p),a14,L
+	move	*a14(PAT_POWER),a14
+	sub	a3,a14
+	move	a14,a3
+	cmpi	6,a14
+
+
+	jrge	cjrishortfal
+
+	sll	2,a0			;*128
+	sll	2,a1
+	jruc	cjrish1
+cjrishortfal
+	PUSH	a0,a1
+	movi	push1_snd,a0
+	calla	snd_play1
+	PULL	a0,a1
+cjrish1
+	move	a0,a11
+	move	a0,*a2(OZVEL),L
+	move	a1,*a2(OXVEL),L
+	move	*a5(plyr_jmpcnt),a0
+	jrnz	cjriinjmp
+	movk	1,a0
+	move	a0,*a5(plyr_jmpcnt)
+	movi	-GRAVB*18,a0		;Up	;19
+	move	@HCOUNT,a14
+	andi	07,a14
+	jrnz	cjrinotlow
+	movi	-GRAVB*14,a0		;Up
+cjrinotlow
+	move	a0,*a2(OYVEL),L
+cjriinjmp
+	movk	32,a0
+	cmpi	7,a3
+	jrlt	cjrinotsml
+
+	movi	650,a0
+	calla	RNDPER
+	jrhi	cjrinotsml
+
+
+	movi	-GRAVB*8,a0		;7
+	move	a0,*a2(OYVEL),L
+	movk	16,a0			;16
+cjrinotsml
+
+	move	*a5(plyr_num),a14
+	move	@plyr_maxpower,a1
+	btst	a14,a1
+	jrz	cjrinochng1
+	movi	-GRAVB*8,a0		;7
+	move	a0,*a2(OYVEL),L
+	move	*a2(OZVEL),a0,L
+	sra	2,a0
+	move	a0,*a2(OZVEL),L
+	move	*a2(OXVEL),a0,L
+	sra	2,a0
+	move	a0,*a2(OXVEL),L
+
+	movi	push1_snd,a0
+	calla	snd_play1
+
+	movk	16,a0
+	move	@HCOUNT,a1
+	btst	0,a1
+	jrz	cjrinochng1
+	movk	24,a0			;16
+cjrinochng1
+	move	a0,*a5(plyr_stagcnt)
+
+	move	@ballpnum,a0
+	move	*a5(plyr_num),a1
+	cmp	a0,a1
+	jrne	cjrinobl			;Doesn't have ball?
+
+
+	movk	PS_STEALS,a0
+	move	*a13(plyr_num),a1
+	calla	inc_player_stat
+
+	move	@ballobj_p,a4,L
+	movi	01ffffH,a2		;>Give rnd velocity
+	movi	010000H,a3
+	move	a2,a0
+	callr	rnd
+	sub	a3,a0
+	move	a0,*a4(OXVEL),L
+	move	a2,a0
+	callr	rnd
+	sub	a3,a0
+
+
+	move	*a5(plyr_num),a14
+	sll	5,a14
+	addi	plyrobj_t,a14
+	move	*a14,a14,L
+	move	*a14(OZPOS),a1
+	cmpi	0410H,a1
+	jrgt	cjrinot_rear
+
+	movi	40,a0
+	move	a0,*a5(plyr_shtdly)	;can't scoop up ball
+
+	movi	-1,a0
+	move	a0,@ballpnum
+	move	a0,@ballpnumlast
+
+	movi	[2,0],a0
+cjrinot_rear
+	move	a0,*a4(OZVEL),L
+cjrinobl
+	move	*a5(plyr_num),a14
+	sll	5,a14
+	addi	plyrobj_t,a14
+	move	*a14,a14,L
+	move	*a14(OZPOS),a1
+	cmpi	0410H,a1
+	jrgt	cjrinot_rear2
+
+	move	a11,a11
+	jrnn	cjrinot_rear2
+
+	movi	intostands,a0
+	calla	snd_play1
+
+cjrinot_rear2
+
+	move	*a13(plyr_num),a0	;If on fire, don't use turbo on push
+	move	@plyrnumonfire,a1
+	cmp	a0,a1
+	jrz	cjrix
+
+	move	*a13(plyr_PDATA_p),a2,L
+	move	*a2(ply_turbo),a1
+	cmpi	10,a1
+	jrlt	cjriclrbl
+	subk	7,a1
+	move	a1,*a2(ply_turbo)
+	move	*a2(ply_meter_imgs+40h),a0,L
+	move	*a0(OFSET),a1		;Shrink meter
+	addk	7,a1
+	move	a1,*a0(OFSET)
+	jruc	cjrix
+
+cjriclrbl
+	move	*a13(plyr_PDATA_p),a2,L
+	move	*a2(ply_turbo),a14
+	clr	a0
+	move	a0,*a2(ply_turbo)
+	move	*a2(ply_meter_imgs+40h),a0,L
+	move	*a0(OFSET),a1		;Shrink meter
+	add	a14,a1
+	move	a1,*a0(OFSET)
+
+
+cjrix	PULL	a11
+	rets
+
+
+
+ SUBR	seq_elbo
+
+	move	*a13(plyr_num),a4
+	srl	1,a4
+	XORK	1,a4
+	sll	6,a4			;*64
+	addi	plyrproc_t,a4
+
+	move	*a13(plyr_o1dist),a14
+	subi	40,a14
+	jrge	wnveo1far			;Too far?
+
+	move	@HCOUNT,a14
+	btst	0,a14
+	jrz	wnveo1far			;Skip? (50%)
+
+	move	*a4,a5,L		;A5=*O proc
+	move	*a13(plyr_o1dir),a0
+	callr	wnveelbo
+wnveo1far
+
+	move	*a13(plyr_o2dist),a14
+	subi	40,a14
+	jrge	wnvex			;Too far?
+
+	move	@HCOUNT,a14
+	btst	0,a14
+	jrz	wnvex			;Skip? (50%)
+
+	addk	32,a4
+	move	*a4,a5,L		;A5=*O proc
+	move	*a13(plyr_o2dir),a0
+	callr	wnveelbo
+
+wnvex	rets
+
+
+wnveelbo
+	move	*a5(PA8),a2,L		;>Make opponent fly
+
+	move	a0,a1
+	addi	040H,a1
+	sll	32-7,a1
+	srl	32-7,a1
+	move	a1,*a5(plyr_newdir)
+	callr	sinecos_get
+
+	sll	5,a0			;*32
+	sll	5,a1
+	move	a0,*a2(OZVEL),L
+	move	a1,*a2(OXVEL),L
+	move	*a5(plyr_jmpcnt),a0
+	jrnz	wnveinjmp
+	movk	1,a0
+	move	a0,*a5(plyr_jmpcnt)
+	movi	-GRAVB*12,a0		;Up 15
+	move	a0,*a2(OYVEL),L
+
+	move	*a5(plyr_num),a14
+	move	@plyr_maxpower,a1
+	btst	a14,a1
+	jrz	wnveinjmp
+	movi	-GRAVB*8,a0		;7
+	move	a0,*a2(OYVEL),L
+	movk	24,a0			;16
+	move	@HCOUNT,a1
+	btst	0,a1
+	jrz	wnveko
+	movk	16,a0			;16
+wnveko
+	move	a0,*a5(plyr_stagcnt)
+	rets
+
+wnveinjmp
+	movk	32,a0
+	move	a0,*a5(plyr_stagcnt)
+
+	rets
+
+
+
+GAME_QTR	equ	PDATA
+
+	.asg	22,DIAM
+
+ SUBRP	no_good_check
+
+	move	@gmqrtr,a0
+	move	a0,*a13(GAME_QTR)
+
+sfnlloop
+ 	SLEEPK	1
+
+	move	@game_time,a0,L		;If at beginning of
+	cmpi	02050400H,a0		;qrtr, no speech!
+	jrgt	sfnlsnuffit
+
+	move	@gmqrtr,a0
+	move	*a13(GAME_QTR),a1
+	cmp	a0,a1
+	jrne	sfnlsnuffit
+
+	move	*a8(OYPOS),a0
+	cmpi	HOOPY+15,a0
+	jrgt	sfnlno_good
+
+	move	*a8(OXPOS),a0
+	move	*a8(OXANI+10h),a1
+	add	a1,a0
+	sub	a11,a0
+	abs	a0
+	subk	DIAM,a0
+	jrgt	sfnlno_good
+
+
+	move	*a8(OZPOS),a0
+	subi	CZMID,a0		;0CHheck backboard
+	abs	a0
+	subk	DIAM,a0
+	jrgt	sfnlno_good
+
+	jruc	sfnlloop
+
+
+sfnlno_good
+	calla	nogood_speech
+
+sfnlsnuffit
+	DIE
+
+	.end
+

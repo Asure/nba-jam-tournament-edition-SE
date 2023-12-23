@@ -1,0 +1,102 @@
+	.file	"plyrstnd.asm"
+	.title	"basketball plyr sequence code"
+	.width	132
+	.option	b,d,l,t
+	.mnolist
+
+
+	.include	"mproc.equ"
+	.include	"disp.equ"
+	.include	"sys.equ"
+	.include	"imgtbl.glo"
+	.include	"imgtbl2.glo"
+	.include	"game.equ"
+	.include	"shawn.hdr"
+	.asg		0,SEQT
+	.include	"plyr.equ"
+	.include	"stand.tbl"
+
+
+
+
+
+
+
+
+M_YF	.equ	08000H	;Y free (OFLAGS)
+
+	.text
+
+
+
+	.asg	M_WRNONZ,F
+	.asg	M_WRNONZ|M_FLIPH,FF
+
+
+stnd_t	.word	EASYSTAG_M
+	.long	0
+	.long	bylhstnd1_l,bylhstnd2_l,bylhstnd3_l,bylhstnd4_l
+	.long	bylhstnd5_l,bylhstnd4_l,bylhstnd3_l,bylhstnd2_l
+
+stndwb2_t
+	.word	EASYSTAG_M|NOMV_M
+	.long	0
+	.long	bylhstnd1_l,bylhstnd2_l,bylhstnd3_l,bylhstnd4_l
+	.long	bylhstnd5_l,bylhstnd4_l,bylhstnd3_l,bylhstnd2_l
+
+	.asg	4,N		;5
+bylhstnd1_l
+	WLW	N,W1ST1,F
+	WLW	N,W1ST2,F
+	WLW	N,W1ST3,F
+	WLW	N,W1ST4,F
+	WLW	N,W1ST5,F
+	WLW	N,W1ST4,F
+	WLW	N,W1ST3,F
+	WLW	N,W1ST2,F
+	W0
+bylhstnd2_l
+	WLW	N,W2ST1,F
+	WLW	N,W2ST2,F
+	WLW	N,W2ST3,F
+	WLW	N,W2ST4,F
+	WLW	N,W2ST5,F
+	WLW	N,W2ST4,F
+	WLW	N,W2ST3,F
+	WLW	N,W2ST2,F
+	W0
+bylhstnd3_l
+	WLW	N,W3ST1,F
+	WLW	N,W3ST2,F
+	WLW	N,W3ST3,F
+	WLW	N,W3ST4,F
+	WLW	N,W3ST5,F
+	WLW	N,W3ST4,F
+	WLW	N,W3ST3,F
+	WLW	N,W3ST2,F
+	W0
+bylhstnd4_l
+	WLW	N,W4ST1,F
+	WLW	N,W4ST2,F
+	WLW	N,W4ST3,F
+	WLW	N,W4ST4,F
+	WLW	N,W4ST5,F
+	WLW	N,W4ST4,F
+	WLW	N,W4ST3,F
+	WLW	N,W4ST2,F
+	W0
+bylhstnd5_l
+	WLW	N,W5ST1,F
+	WLW	N,W5ST2,F
+	WLW	N,W5ST3,F
+	WLW	N,W5ST4,F
+	WLW	N,W5ST5,F
+	WLW	N,W5ST4,F
+	WLW	N,W5ST3,F
+	WLW	N,W5ST2,F
+	W0
+
+
+	.end
+
+

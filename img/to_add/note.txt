@@ -1,0 +1,38 @@
+Shaq:
+Missing mugshot. -> hangtime img\arc\mugshots.img - ?ONE_ORL
+head:
+hds5
+oniel1/2/3/4/5-16
+score/name label
+TVSCORE
+ONEAL/scorep
+
+Smoke:
+SMOKE_P for subz?
+How does the lightening work (lighten0x images for raiden..?)
+
+Raiden lighten:
+PLYRAT.ASM has them def'd but does nothing?
+SCORE.ASM has them ref'd 
+used in subr stick_spark
+BB.ASM uses that in start_arws
+it checks heads. EB_H and JTO_H have it enabled.
+TOB aug 24
+EJB feb 22
+RAD jul 9 - he has no lightning! huh?
+
+Jordan:
+Missing mugshot. -> hangtime img\arc\mugshots.img - JOR_CHI
+Heads from rewind.
+scorep..
+
+Magic johnson
+Mug?
+HDS10
+
+head1 = back of head.
+head2 = up right 
+head3 = facing right
+head4 = down right
+head5 = facing camera
+head16 = looking up

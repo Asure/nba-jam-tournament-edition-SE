@@ -1,0 +1,3013 @@
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE    1
+
+       1                            .file   "adjust.asm"
+       2                            .width  132
+       3                            .option b,d,l,t
+       4                            .mnolist
+       5                    
+       6                            .include        "mproc.equ"
+       7                            .include        "disp.equ"
+       8                            .include        "sys.equ"
+       9                            .include        "imgtbl.glo"
+      10                            .include        "game.equ"
+      11                            .include        "link.equ"
+      12                            .include        "menu.equ"
+      13                            .include        "shawn.hdr"
+      14                            .INCLUDE        DIPEQU.ASM
+      15                    
+      16                    
+      17 00000000                   .text
+      18                    
+      19                    
+      20                            .DEF GO_ADJ
+      21                            .DEF DO_ADJH
+      22                            .DEF BCDBIN
+      23                            .DEF BINBCD
+      24                            .DEF SET_COIN_ADJ, MEN_ADJ, CKDIP, TAMPEREDP
+      25                    
+      26                    
+      27                            .REF CMOS_VAL
+      28                            .REF P_FORK
+      29                            .REF INIT_HSR
+      30                    
+      31                    
+      32                            .REF    B_MENU,RED_BOX
+      33                            .REF    L_MESS,TOP_BOX
+      34                            .REF    LM_FINIS
+      35                            .REF    LM_SETUP
+      36                            .REF    AREUSURE
+      37                            .REF    ST_STICK
+      38                            .REF    GETSTICK
+      39                            .REF    SUR_MESS
+      40                            .REF    SURE_BOX
+      41                            .REF    GET_FAC
+      42                            .REF    MENU_TOP
+      43                            .REF    DOBORDER
+      44                            .REF    BLNKHELP
+      45                            .REF    H_SLAVE
+      46                            .REF    COL_INST
+      47                            .REF    STD_BORD
+      48                            .REF    LD_CTAB
+      49                    
+      50                    
+      51                            .REF    ANY_BUT
+      52                            .REF    MESS_MM
+      53                            .REF    GET_CSPT
+      54                    
+      55                    
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE    2
+
+      56                            .REF    GET_ADJ,HTOHXASC,FAC_SET
+      57                            .REF    PUT_ADJ
+      58                            .REF    F_ADC_S
+      59                            .REF    CS_ENTS                 ;# OF HIGHEST IN COIN TABLE
+      60                            .REF    STRCAT
+      61                            .REF    NO_CREDS
+      62                            .REF    CRED_P
+      63                    
+      64                    
+      65                    
+      66                            .REF    RD15FONT,RD7FONT,STRCNRM,BLNKAREA,HEXTOASC
+      67                            .REF    STRRNRM,STRLNRM,CLR_SCRN, READ_DIP
+      68                    
+      69                    
+      70                    
+      71 00000000           GO_ADJ
+      72 00000000     09e8          MOVI    MEN_ADJ,A8
+         00000010 000023c0" 
+      73                    
+      74 00000030           GEN_ADJUST
+      75 00000030     a30c          MOVE    A8,-*A12,L              ;PUSH MENU ON STACK
+      76                    
+      77 00000040     0d5f          CALLA   CMOS_VAL                ;CHECK OUT THE REGION
+         00000050 00000000! 
+      78 00000070     ca12          JRZ     SET_OK                  ;ITS OK.....CONTINUE....
+      79                    
+      80 00000080                   JSRP    GET_FAC                 ;BRING TO FACTORY SETTINGS OR QUIT.
+      81 000000f0                   JSRP    ANY_BUT
+      82                    
+      83 00000160     0d5f          CALLA   CMOS_VAL                ;CAN'T GO IF WE'RE NOT OK NOW
+         00000170 00000000! 
+      84 00000190     cb30          JRNZ    GO_ADQ                  ;ITS NOT VALID....NO ADJUSTING!
+      85                    
+      86 000001a0           SET_OK
+      87 000001a0     1820          MOVK    1,A0
+      88 000001b0     a00c          MOVE    A0,-*A12,W              ;LIKE GEN_MENU...KEEP NUMBER ON STACK
+      89                    
+      90 000001c0           ADJ_LOOP
+      91 000001c0     0d5f          CALLA   CLR_SCRN                ;CLEAR THE SCREEN!
+         000001d0 00000000! 
+      92                    
+      93 000001f0     09e8          MOVI    ADJ_ADV,A8
+         00000200 00004d80" 
+      94 00000220                   JSRP    L_MESS                  ;PRINT THE NEW INSTRUCTIONS
+      95                    
+      96 00000290     b788          MOVE    *A12(WORD_SIZE),A8,L ;GET THE MENU
+         000002a0     0010  
+      97 000002b0                   JSRP    MENU_TOP             ;PRINT OUT THE TOP.
+      98 00000320     09c9          MOVI    COLOR_RED,A9
+         00000330     0303  
+      99 00000340     0d5f          CALLA   COL_INST             ;PUT UP A DIFFERENT INSTR. BOX
+         00000350 00000000! 
+     100                    
+     101 00000370     8589          MOVE    *A12,A9,W            ;GET INDEX TO USE.
+     102 00000380                   JSRP    B_MENU               ;FETCH THE ENTRY TO ADJUST.
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE    3
+
+     103                    
+     104                    
+     105 000003f0     4d29          MOVE    A9,A9                ;0 IS RETURN TO MAIN MENU
+     106 00000400     ca08          JRZ     GO_ADJX
+     107                    
+     108                    
+     109 00000410     810c          MOVE    A8,*A12,W            ;PUT IT SAFELY ON OUR STACK.
+     110                    
+     111 00000420     b720          MOVE    *A9(AD_ROUT),A0,L    ;GET THE ROUTINE TO CALL FOR ACTIVATION
+         00000430     0000  
+     112 00000440     09e7          MOVI    ADJ_LOOP,A7
+         00000450 000001c0' 
+     113 00000470     a2ec          MOVE    A7,-*A12,L           ;PUSH RETURN ADDRESS
+     114 00000480     0160          JUMP    A0                   ;"CALL THE ROUTINE (PASSING STRUCT IN A9)
+     115                    
+     116 00000490           GO_ADJX
+     117 00000490     120c          addk    WORD_SIZE,a12        ;"pop" the position indicator
+     118 000004a0           GO_ADQ
+     119 000004a0     100c          addk    LONG_SIZE,a12        ;Pop menu
+     120 000004b0                   RETP                         ;OK...RETURN!
+     121                    
+     122 000004e0           PRICE_ADJ
+     123 000004e0     09e8          MOVI    MEN_CUST,A8           ;HANDLE JUST LIKE MAIN ADJ. MENU
+         000004f0 000029c0" 
+     124 00000510     c080          JAUC    GEN_ADJUST
+         00000520 00000030' 
+     125                    
+     126 00000540           GEN_ADJ:
+     127 00000540     b32d          MOVE    A9,*A13(PDATA),L     ;SAVE THE STRUCTURE POINTER
+         00000550     0100  
+     128                    
+     129 00000560     4d28          MOVE    A9,A8                ;GET TO GENERAL POINTING REGISTER
+     130 00000570                   JSRP    DO_IN_WHITE          ;GO FROM LF TO WHITE RIGHT AWAY.
+     131                    
+     132 000005e0     4c00          MOVE    A0,A0
+     133 000005f0     cb52          JRNZ    ADJ_CAN              ;CANCELLED
+     134 00000600     0d3f          CALLR   CLR_MAIN             ;CLEAR OUT THE MAIN MENU REGION
+         00000610     00dd  
+     135 00000620     0d3f          CALLR   ADJ_INST             ;PUT INSTRUCTIONS AT BOTTOM.
+         00000630     00ef  
+     136 00000640                   JSRP    ST_STICK             ;LOCKOUT STUCK SWITCHES
+     137                    
+     138 000006b0                   SLEEPK  2                    ;STOP RACE ON INSTRUCTIONS
+     139 000006f0           ADJ_CHNG
+     140 000006f0                   SLEEPK  1                    ;NOW LOOP ON STICK...EXIT
+     141                    
+     142 00000730     09e5          MOVI    31000H,A5                ;TYPOMATIC....BOT HALF SAYS DON'T TIME OUT
+         00000740 00031000  
+     143 00000760                   JSRP    GETSTICK                 ;ASK THE STICK HANDLER.......
+     144 000007d0     b7a8          MOVE    *A13(PDATA),A8,L         ;GET OUR POINTER
+         000007e0     0100  
+     145 000007f0     4c01          MOVE    A0,A1                    ;KEEP GETSTICK VALUE
+     146 00000800     caee          JRZ     ADJ_CHNG                 ;ITS ZERO....NO MORE WORK NEEDED
+     147                    
+     148 00000810     b500          MOVE    *A8(AD_CMOS),A0,W        ;GET ADJ NUMBER
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE    4
+
+         00000820     0060  
+     149 00000830     4c02          MOVE    A0,A2                    ;COPY FOR LATER
+     150                    
+     151 00000840     0d3f          CALLR   GET_EADJ                  ;READ IT OUT (FIXING ZERO IF NEC)
+         00000850     0409  
+     152 00000860     4c03          MOVE    A0,A3                     ;SAVE "OLD" VALUE
+     153 00000870     0b41          CMPI    3,A1                     ;BUTTON......BACK TO ADJ MENU!
+         00000880     fffc  
+     154 00000890     ca22          JRZ     ADJ_BUTT                 ;YEP....WE'RE OUT OF HERE.
+     155                    
+     156 000008a0     0b41          CMPI    2,A1
+         000008b0     fffd  
+     157 000008c0     ca03          JRZ     ADJ_DOWN                 ;ITS DOWN....
+     158 000008d0     0d3f          CALLR   INC_ADJ                   ;INCREMENT IT
+         000008e0     002f  
+     159 000008f0     c002          JRUC    ADJ_JOIN
+     160                    
+     161 00000900           ADJ_DOWN:
+     162 00000900     0d3f          CALLR   DEC_ADJ                   ;DECREMENT IT
+         00000910     0023  
+     163 00000920           ADJ_JOIN:
+     164 00000920     4c40          MOVE    A2,A0                     ;ADJUSTMENT NUMBER
+     165 00000930     0d3f          CALLR   GET_EADJ                  ;READ IT OUT (FIXING ZERO IF NEC)
+         00000940     03fa  
+     166 00000950     4803          CMP     A0,A3                     ;DID IT NOT CHANGE?
+     167 00000960     cad8          JRZ     ADJ_CHNG                  ;NOPE....NO ACTION!
+     168 00000970                   SOUND1  ADJ_BEEP               ;MAKE A BEEP.
+     169 000009d0                   JSRP    DO_IN_WHITE            ;AND UPDATE THE ADJUSTMENT
+     170                    
+     171 00000a40     c0ca          JRUC    ADJ_CHNG               ;AND LOOP!
+     172                    
+     173 00000a50           DO_IN_WHITE
+     174 00000a50     0d3f          CALLR   CLR_CUR                ;CLEAR OUT CURRENT SETTING
+         00000a60     0084  
+     175 00000a70     09cb          MOVI    COLOR_WHITE,A11       ;THEY'RE STARING....NO HEADACHES
+         00000a80     0202  
+     176 00000a90     c080          JAUC    AD_CRVAL               ;PRINT THE NEW VALUE
+         00000aa0 000040e0' 
+     177                    
+     178 00000ac0           ADJ_BUTT:
+     179 00000ac0                   SOUND1  ADJ_CASH
+     180 00000b20           ADJ_CAN:
+     181 00000b20                   RETP
+     182                    
+     183 00000b50           DEC_ADJ:
+     184 00000b50     098f          MMTM    SP,A0,A1,A2,A3
+         00000b60     f000  
+     185 00000b70     4c03          MOVE    A0,A3                          ;COPY ORIGINAL VALUE
+     186 00000b80     b701          MOVE    *A8(AD_DELTA),A1,L             ;GET UNITS BETWEEN VALUES
+         00000b90     00b0  
+     187 00000ba0     0d3f          CALLR   MAKE_BIN_IF_NEC                ;CHANGE RADIX FOR MATH IF NECESSARY
+         00000bb0     0048  
+     188 00000bc0     4420          SUB     A1,A0                          ;REMOVE THIS FROM READ VALUE
+     189 00000bd0     c008          JRUC    FINISH_CHANGE                  ;GO TO COMMON ROUTINE TO WRAP IT UP
+     190                    
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE    5
+
+     191 00000be0           INC_ADJ:
+     192 00000be0     098f          MMTM    SP,A0,A1,A2,A3
+         00000bf0     f000  
+     193 00000c00     4c03          MOVE    A0,A3                          ;COPY ORIGINAL VALUE
+     194 00000c10     b701          MOVE    *A8(AD_DELTA),A1,L             ;GET UNITS BETWEEN VALUES
+         00000c20     00b0  
+     195 00000c30     0d3f          CALLR   MAKE_BIN_IF_NEC
+         00000c40     003f  
+     196 00000c50     4020          ADD      A1,A0                         ;REMOVE THIS FROM READ VALUE
+     197                    
+     198 00000c60           FINISH_CHANGE:
+     199 00000c60     0d3f          CALLR   BCD_IF_NEC                     ;BACK TO BCD AFTER THE MATH
+         00000c70     004f  
+     200 00000c80     0d3f          CALLR   PUT_IN_RANGE                   ;ADJUST TO ACCOUNT FOR WRAP AND LIMITS
+         00000c90     03d2  
+     201 00000ca0     b701          MOVE    *A8(AD_ZEQU),A1,L              ;This number becomes zero
+         00000cb0     00d0  
+     202 00000cc0     4801          CMP     A0,A1                          ;is this the number?
+     203 00000cd0     cb01          JRNZ    FC_NZ                          ;NOPE...STORE IT!
+     204 00000ce0     5600          CLR     A0                             ;USE ZERO IN PLACE OF THIS NUMBER!
+     205                    
+     206 00000cf0           FC_NZ:  
+     207 00000cf0     4c01          MOVE    A0,A1                          ;WRITING REG
+     208 00000d00     4c40          MOVE    A2,A0                          ;ADJUSTMENT NUMBER
+     209 00000d10     0d5f          CALLA   PUT_ADJ                        ;WRITE IT BACK
+         00000d20 00000000! 
+     210 00000d40     4823          CMP     A1,A3                          ;DID THE NUMBER CHANGE?
+     211 00000d50     ca0e          JRZ     NOT_COIN                       ;NOPE...DON'T LOAD IT UP!
+     212 00000d60     0d3f          CALLR   DIRTY_IF_NEC            ;IF ITS A COIN VALUE TAKE NOTE!
+         00000d70     0012  
+     213                    
+     214 00000d80     0b40          CMPI    ADJPRICE,A0             ;IS IT?
+         00000d90     fffe  
+     215 00000da0     cb09          JRNZ    NOT_COIN                ;NOT COIN
+     216                    
+     217 00000db0     0d5f          CALLA   LD_CTAB                 ;BATCH WRITE THE VALUES IN!
+         00000dc0 00000000! 
+     218 00000de0     0d5f          CALLA   NO_CREDS                ;REMOVE CREDITS AND FRACTIONS WHEN
+         00000df0 00000000! 
+     219 00000e10     0d5f          CALLA   CRED_P                  ;LINK-OUT!
+         00000e20 00000000! 
+     220                    
+     221 00000e40           NOT_COIN:
+     222 00000e40     0d5f          CALLA   F_ADC_S                 ;MAKE CHECKSUM VALID!
+         00000e50 00000000! 
+     223 00000e70     09af          MMFM    SP,A0,A1,A2,A3
+         00000e80     000f  
+     224 00000e90     0960          RETS
+     225                    
+     226 00000ea0           DIRTY_IF_NEC
+     227                            
+     228 00000ea0     098f          MMTM    SP,A0,A1,A2
+         00000eb0     e000  
+     229 00000ec0     b502          MOVE    *A8(AD_FLAGS),A2,W        ;FETCH THE FLAGS
+         00000ed0     0110  
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE    6
+
+     230                    
+     231 00000ee0     1fa2          BTST    VIRG_BIT,A2               ;DOES CHANGING THIS SAY SET VIRG BIT.
+     232 00000ef0     ca05          JRZ     NOT_1ST_8                 ;NOPE
+     233                    
+     234 00000f00     1a60          movk    ADJVIRGIN,a0
+     235 00000f10     5621          CLR     A1
+     236 00000f20     0d5f          CALLA   PUT_ADJ
+         00000f30 00000000! 
+     237                    
+     238 00000f50           NOT_1ST_8
+     239 00000f50     1f82          BTST    SIX_BIT,A2                ;1ST 6?
+     240 00000f60     ca05          JRZ     NOT_1ST_6
+     241                    
+     242 00000f70     1aa0          movk    ADJ1ST6,a0
+     243 00000f80     5621          CLR     A1
+     244 00000f90     0d5f          CALLA   PUT_ADJ
+         00000fa0 00000000! 
+     245 00000fc0           NOT_1ST_6
+     246 00000fc0     1f62          BTST    HSR_BIT,A2                ;HIGH SCORE RESET NUM?
+     247 00000fd0     ca03          JRZ     NOT_HSR                   ;NOPE
+     248                    
+     249 00000fe0     0d5f          CALLA   INIT_HSR                  ;IT WAS CHANGED....STUFF THE VALUE!
+         00000ff0 00000000! 
+     250                    
+     251 00001010           NOT_HSR
+     252 00001010     09af          MMFM    SP,A0,A1,A2
+         00001020     0007  
+     253 00001030     0960          RETS
+     254                    
+     255 00001040           MAKE_BIN_IF_NEC:
+     256 00001040     098f          MMTM    SP,A2
+         00001050     2000  
+     257 00001060     b502          MOVE    *A8(AD_FLAGS),A2,W             ;GET THE FLAGS
+         00001070     0110  
+     258 00001080     1fc2          BTST    BCD_BIT,A2                     ;BCD?
+     259 00001090     ca0a          JRZ     MBINX                          ;NOPE
+     260                    
+     261 000010a0     0d5f          CALLA   BCDBIN                         ;CONVERT A0 TO BINARY
+         000010b0 000050c0' 
+     262 000010d0     4c02          MOVE    A0,A2                          ;SAVE
+     263 000010e0     4c20          MOVE    A1,A0                          ;NOW A1
+     264 000010f0     0d5f          CALLA   BCDBIN
+         00001100 000050c0' 
+     265 00001120     4c01          MOVE    A0,A1
+     266 00001130     4c40          MOVE    A2,A0                          ;NOW PUT A0 BACK
+     267 00001140           MBINX:  
+     268 00001140     09af          MMFM    SP,A2
+         00001150     0004  
+     269 00001160     0960          RETS
+     270                    
+     271 00001170           BCD_IF_NEC:
+     272 00001170     098f          MMTM    SP,A2
+         00001180     2000  
+     273 00001190     b502          MOVE    *A8(AD_FLAGS),A2,W             ;GET THE FLAGS
+         000011a0     0110  
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE    7
+
+     274 000011b0     1fc2          BTST    BCD_BIT,A2                     ;BCD?
+     275 000011c0     ca03          JRZ     BINX                           ;NOPE
+     276                    
+     277 000011d0     0d5f          CALLA   BINBCD                         ;BACK TO BCD
+         000011e0 00004f30' 
+     278                    
+     279 00001200           BINX:   
+     280 00001200     09af          MMFM    SP,A2
+         00001210     0004  
+     281 00001220     0960          RETS
+     282                    
+     283 00001230           ADJ_CASH
+     284 00001230     f795          .WORD   0F7A5H-10H,8,08085H,0           ;CASH REGISTER SOUND
+     285 00001270           ADJ_LBEEP
+     286 00001270     f3e7  ADJ_BEEP        .WORD   0F3F7H-10H,020H,08081H,0                ;BEEP TONE
+     287                    
+     288 000012b0           CLR_CUR:
+     289 000012b0     098f          MMTM    SP,A3,A4
+         000012c0     1800  
+     290 000012d0     09e3          MOVI    AM_HX,A3             ;THIS IS LEFT MARGIN OF HELP AREA
+         000012e0 000000b8  
+     291                    
+     292 00001300     09c4          MOVI    CUR_LRX,A4           ;RIGHT X
+         00001310     0185  
+     293 00001320     4464          SUB     A3,A4                ;A4 HAS X DISTANCE
+     294                    
+     295 00001330     0b23          ADDI    ADJ_ULY*10000H,A3    ;UPPER LEFT Y
+         00001340 00ac0000  
+     296 00001360     0b24          ADDI    (256-ADJ_ULY)*10000H,A4  ;Y GOES TO BOTTOM OF SCREEN
+         00001370 00540000  
+     297 00001390     0d5f          CALLA   BLNKAREA                 ;ITS BLANK NOW!
+         000013a0 00000000! 
+     298 000013c0     09af          MMFM    SP,A3,A4
+         000013d0     0018  
+     299 000013e0     0960          RETS
+     300                    
+     301 000013f0           CLR_MAIN
+     302 000013f0     098f          MMTM    SP,A3,A4
+         00001400     1800  
+     303 00001410     09c3          MOVI    TIT_ULX,A3           ;LEFT EDGE
+         00001420     0005  
+     304 00001430     09e4          MOVI    AM_HX,A4         ;UP TO THIS EDGE
+         00001440 000000b8  
+     305 00001460     4464          SUB     A3,A4                ;X'S ARE SET.
+     306 00001470     0b23          ADDI    INST_ULY*10000H,A3   ;TOP Y
+         00001480 002d0000  
+     307 000014a0     0b24          ADDI    (400-INST_ULY)*10000H,A4  ;Y DISTANCE
+         000014b0 01630000  
+     308 000014d0     0d5f          CALLA   BLNKAREA
+         000014e0 00000000! 
+     309 00001500     09af          MMFM    SP,A3,A4
+         00001510     0018  
+     310 00001520     0960          RETS
+     311                    
+     312                    
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE    8
+
+     313                    
+     314                    
+     315                    
+     316                    
+     317                    
+     318                    
+     319 00001530           ADJ_INST:
+     320 00001530     b7a8          MOVE    *A13(PDATA),A8,L     ;PASS THE ADJUSTMENT POINTER
+         00001540     0100  
+     321 00001550     09e7          MOVI    ADJ_INST_P,A7
+         00001560 000015c0' 
+     322 00001580     0d5f          CALLA   P_FORK               ;START IT UP!
+         00001590 00000000! 
+     323 000015b0     0960          RETS
+     324                    
+     325                    
+     326 000015c0           ADJ_INST_P:
+     327 000015c0                   JSRP   ADJUSTING        ;PUT UP "ADJUSTING DIFFICULTY" MESSAGE
+     328                    
+     329 00001630     4d43          MOVE    A10,A3          ;STASH # OF ARROWS WHERE IT WILL BE SAFE
+     330 00001640     0d3f          CALLR   ADINBOX         ;PUT THE BOX OUT
+         00001650     0017  
+     331                    
+     332 00001660     09e8          MOVI    INST_TO_ADJ,A8
+         00001670 00004710" 
+     333 00001690                   JSRP    L_MESS          ;PRINT OUT INSTRUCTIONS
+     334                    
+     335 00001700     09e8          MOVI    ADJ_ARROW,A8
+         00001710 00005050" 
+     336 00001730                   JSRP    L_MESS
+     337                    
+     338 000017a0     c080          JAUC    SUCIDE
+         000017b0 00000000! 
+     339                    
+     340              007b  INBOX_HEIGHT     EQU     7BH
+     341                    
+     342 000017d0           ADINBOX:
+     343 000017d0     098f          MMTM    SP,A10
+         000017e0     0020  
+     344 000017f0     09ca          MOVI    CUR_ULY-2,A10   
+         00001800     007b  
+     345 00001810     260a          SLL     16,A10
+     346 00001820     09c4          MOVI    TIT_ULX,A4           ;UPPER RIGHT X
+         00001830     0005  
+     347 00001840     ef44          MOVY    A10,A4               ;UPPER RIGHT
+     348                    
+     349 00001850     09e5          MOVI    AM_RX,A5
+         00001860 000000b6  
+     350 00001880     ef45          MOVY    A10,A5               ;START WITH BASE Y
+     351 00001890     0b25          ADDI    INBOX_HEIGHT*10000H,A5
+         000018a0 007b0000  
+     352                    
+     353 000018c0     0d3f          CALLR   WH_BORD
+         000018d0     035b  
+     354 000018e0     09af          MMFM    SP,A10
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE    9
+
+         000018f0     0400  
+     355 00001900     0960          RETS
+     356                    
+     357 00001910           ADJUSTING:
+     358 00001910     4d02          MOVE    A8,A2                ;PUT ADJUSTMENT BLOCK PTR WHERE ITS SAFE
+     359 00001920     09e4          MOVI    (CUR_ULY-31H)*10000H,A4        ;FOR DO_BORDER
+         00001930 004c0000  
+     360 00001950     0b04          ADDI    TIT_ULX,A4                     ;A4 IS REASONABLY EASY
+         00001960     0005  
+     361                    
+     362 00001970     09e5          MOVI    ((CUR_ULY-2)+MB_YWID)*10000H,A5    ;OVERLAP THE ONE BELOW IT
+         00001980 007e0000  
+     363 000019a0     0b25          ADDI    AM_RX,A5                       ;THIS IS RIGHT EDGE
+         000019b0 000000b6  
+     364                    
+     365 000019d0     0d3f          CALLR   WH_BORD                        ;DO A WHITE BORDER
+         000019e0     034a  
+     366                    
+     367 000019f0     09e8          MOVI    MES_ADNAME,A8                  ;PUT THE ADJUSTMENT NAME UP
+         00001a00 00004ce0" 
+     368 00001a20     0d5f          CALLA   LM_SETUP
+         00001a30 00000000! 
+     369 00001a50     b648          MOVE    *A2(AD_MAIN),A8,L              ;GET THE MAIN MENU MESSAGE
+         00001a60     0140  
+     370 00001a70                   JSRP    LM_FINIS
+     371                    
+     372 00001ae0     09e8          MOVI    MES_ADJUSTING,A8
+         00001af0 00004be0" 
+     373 00001b10                   JSRP    L_MESS
+     374 00001b80                   RETP
+     375                    
+     376                    
+     377              000c  PDY      EQU     HELP_DY
+     378              0006  PMARG    EQU     6
+     379                    
+     380 00001bb0           PARAM_VAL
+     381 00001bb0     18a1          movk    5,a1                      ;Setup a box for our 3 lines
+     382 00001bc0     0d3f          CALLR   ADJ_BOX                   ;(a10 is set as y for the 3 lines)
+         00001bd0     0308  
+     383                    
+     384                    
+     385 00001be0     0d3f          CALLR   GET_COIN_TITLE            ;COIN MODE
+         00001bf0     0150  
+     386 00001c00     09e8          MOVI    MESS_GP,A8
+         00001c10 00005390" 
+     387 00001c30                   JSRP    SMALL_LEFT_RIGHT          ;PRINT THE LINES
+     388                    
+     389 00001ca0     0b0a          ADDI    PDY,A10                 ;PUSH TO NEXT LINE
+         00001cb0     000c  
+     390                    
+     391 00001cc0     09e2          MOVI    M_NO,A2                   ;ASSUME "NO"
+         00001cd0 0000cc50" 
+     392 00001cf0     1a40          movk    ADJFREPL,a0
+     393 00001d00     0d5f          CALLA   GET_ADJ                   ;GET THE FREE PLAY ADJUSTMENT
+         00001d10 00000000! 
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   10
+
+     394 00001d30     ca03          JRZ     NOT_FREE
+     395 00001d40     09e2          MOVI    M_YES,A2
+         00001d50 0000cc70" 
+     396                    
+     397 00001d70           NOT_FREE
+     398 00001d70     09e8          MOVI    MESS_FP,A8
+         00001d80 00005400" 
+     399 00001da0                   JSRP    SMALL_LEFT_RIGHT          ;PRINT THE LINES
+     400                    
+     401 00001e10     0b0a          ADDI    PDY,A10                 ;PUSH TO NEXT LINE
+         00001e20     000c  
+     402                            
+     403 00001e30     1a20          movk    ADJMAXC,a0
+     404 00001e40     09e8          MOVI    MESS_MAX,A8
+         00001e50 00005460" 
+     405 00001e70                   JSRP    ADJ_LEFT_RIGHT          ;A0 = ADJUST  A8 = MESSAGE
+     406 00001ee0     0b0a          ADDI    PDY,A10                 ;PUSH TO NEXT LINE
+         00001ef0     000c  
+     407 00001f00     1960          movk    ADJCSTRT,a0             ;Get credits required to start
+     408 00001f10     09e8          MOVI    M_CTS_PL,A8                                     
+         00001f20 000054f0" 
+     409 00001f40                   JSRP    ADJ_LEFT_RIGHT          ;A0 = ADJUST  A8 = MESSAGE
+     410 00001fb0     0b0a          ADDI    PDY,A10                 ;PUSH TO NEXT LINE
+         00001fc0     000c  
+     411 00001fd0     1980          movk    ADJCCONT,a0             ;Get credits required to continu
+     412 00001fe0     09e8          MOVI    M_CTC_PL,A8                                     
+         00001ff0 00005580" 
+     413 00002010                   JSRP    ADJ_LEFT_RIGHT       ;A0 = ADJUST  A8 = MESSAGE
+     414                    
+     415 00002080                   RETP
+     416                    
+     417 000020b0           ADJ_LEFT_RIGHT
+     418 000020b0     4d03          MOVE    A8,A3                ;STASH MESSAGE
+     419                    
+     420 000020c0     0d5f          CALLA   GET_ADJ
+         000020d0 00000000! 
+     421 000020f0     4c08          MOVE    A0,A8
+     422 00002100     0d5f          CALLA   HEXTOASC             ;A8 POINTS TO NUMBER STRING
+         00002110 00000000! 
+     423                    
+     424 00002130     4d02          MOVE    A8,A2
+     425 00002140     4c68          MOVE    A3,A8                ;GET MESSAGE IN A8
+     426                    
+     427 00002150     0300          JRUC    SMALL_LEFT_RIGHT
+     428                    
+     429 00002160           SMALL_LEFT_RIGHT
+     430 00002160     098c          MMTM    A12,A11,A6,A10,A9,A3
+         00002170     1270  
+     431                    
+     432 00002180     09c6          MOVI    COLOR_WHITE,A6      ;SOLID WHITE FOR THESE MULTI-LINERS
+         00002190     0202  
+     433 000021a0     09eb          MOVI    RD7FONT,A11          ;USE BABY FONT
+         000021b0 00000000! 
+     434                    
+     435 000021d0     09e9          MOVI    AM_HX+PMARG,A9    ;LEFT X IS INSIDE LEFT LINE
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   11
+
+         000021e0 000000be  
+     436                    
+     437 00002200     4d43          MOVE    A10,A3                  ;SAVE Y IN A3
+     438 00002210     2603          SLL     16,A3
+     439 00002220     ee69          MOVY    A3,A9                ;POINTER SET!
+     440                    
+     441 00002230     09ca          MOVI    SPACING07,A10
+         00002240     0001  
+     442                    
+     443 00002250     5600          CLR     A0
+     444                    
+     445 00002260                   JSRP    STRLNRM              ;DO IT!
+     446                    
+     447 000022d0     4c48          MOVE    A2,A8                ;GET RIGHT JUSTIFIED STRING
+     448 000022e0     09c9          MOVI    TIT_LRX-PMARG,A9  ;INSIDE RIGHT MARGIN
+         000022f0     017f  
+     449 00002300     ee69          MOVY    A3,A9                ;AT OUR Y
+     450 00002310                   JSRP    STRRNRM              ;PRINT IT!
+     451                    
+     452 00002380     09ac          MMFM    A12,A11,A6,A10,A9,A3
+         00002390     0e48  
+     453 000023a0                   RETP
+     454                    
+     455 000023d0           COIN_SET
+     456 000023d0     0d3f          CALLR   TAMPEREDP       ;HAS THE 1ST 6 COIN VALUE BEEN TAMPERED WITH?
+         000023e0     00e7  
+     457 000023f0     ca07          JRZ     SBO             ;YEP....SMALL BOX ONLY!
+     458                    
+     459                    
+     460 00002400     0d3f          CALLR   CLR_CUR
+         00002410     fee9  
+     461 00002420     09c1          MOVI    6,A1                    ;BIG BOX FOR OUTSIDE
+         00002430     0006  
+     462 00002440     18a4          MOVK    5,A4                    ; GROSS KLUDGE TO OFFSET BOX
+     463 00002450     0d3f          CALLR   CADJ_BOX
+         00002460     0275  
+     464 00002470     09c1  SBO     MOVI    1,A1                    ;DRAW A BOX TO HOLD 1 LINE
+         00002480     0001  
+     465 00002490     5684          CLR     A4
+     466 000024a0     0d3f          CALLR   CADJ_BOX                  ;DRAW THE BOX....PASS BACK 1ST PLOT LINE
+         000024b0     0270  
+     467                    
+     468 000024c0     09e3          MOVI    [ADJ_CULY+5,AM_HX+5],A3
+         000024d0 009d00bd  
+     469 000024f0     09e4          MOVI    [21,185],A4
+         00002500 001500b9  
+     470 00002520     0d5f          CALLA   BLNKAREA
+         00002530 00000000! 
+     471 00002550     09e3          MOVI    [ADJ_CULY+31,AM_HX+5],A3
+         00002560 00b700bd  
+     472 00002580     09e4          MOVI    [58,185],A4
+         00002590 003a00b9  
+     473 000025b0     0d5f          CALLA   BLNKAREA
+         000025c0 00000000! 
+     474                    
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   12
+
+     475 000025e0     14aa          SUBK    5,A10
+     476 000025f0     4d44          MOVE    A10,A4               ;KEEP THE Y HANDY.
+     477                    
+     478                    
+     479 00002600     0d3f          CALLR   GET_COIN_TITLE       ;GET TITLE FOR BIG BOX IN A2.
+         00002610     00ae  
+     480                    
+     481                    
+     482 00002620           COIN_TIT
+     483 00002620                   JSRP    DO_BIG_LINE             ;PRINT THIS LINE!
+     484                    
+     485 00002690     09cb          MOVI    COLOR_WHITE,A11         ;DON'T GLOW INSIDE BOX IF THAT'S THE MODE
+         000026a0     0202  
+     486                    
+     487 000026b0     0d3f          CALLR   TAMPEREDP               ;HAS THE 1ST 6 COIN VALUE BEEN TAMPERED WITH?
+         000026c0     00b9  
+     488 000026d0     ca74          JRZ     NO_INFO                 ;YEP....JUST GIVE THE STARTS AND CONTINUES
+     489                    
+     490 000026e0     116a          ADDK    11,A10
+     491 000026f0     260a          SLL     16,A10
+     492 00002700                   PUSHP   A10                     ;SAVE Y POSITION
+     493                    
+     494 00002710     0d5f          CALLA   GET_CSPT                ;A6 POINTS AT THE CSELECT BLOCK
+         00002720 00000000! 
+     495 00002740     b6c2          MOVE    *A6(CS_LIST),A2,L       ;FETCH POINTER TO MESSAGE LIST
+         00002750     0170  
+     496 00002760     ca0d          JRZ     NO_HEADERS              ;NO LIST!
+     497                    
+     498 00002770     09ca          MOVI    COIN_HEAD_Y,A10         ;AT THIS HEIGHT
+         00002780     00ba  
+     499                    
+     500 00002790           NEXT_HEADER
+     501 00002790     9648          MOVE    *A2+,A8,L       
+     502 000027a0     ca09          JRZ     NO_HEADERS              ;HEADERS ARE OUT...CONTINUE
+     503                    
+     504 000027b0                   JSRP    PRINT_SMALL_LINE        ;PRINT THE LINE
+     505 00002820     118a          addk    12,a10                  ;Push to next line
+     506 00002830     c0f5          JRUC    NEXT_HEADER
+     507                    
+     508 00002840           NO_HEADERS
+     509 00002840     09e8          MOVI    M_SLOTVAL,A8
+         00002850 00005300" 
+     510 00002870     09ca          MOVI    MESS_CTS,A10            ;SET Y FOR COIN SLOT LINE.
+         00002880     00dd  
+     511 00002890     09cb          movi    01212H,a11              ;Med blue
+         000028a0     1212  
+     512 000028b0                   JSRP    PRINT_SMALL_LINE        ;HEADER FOR COIN SLOT VALUE
+     513                    
+     514 00002920     0d5f          CALLA   GET_CSPT                ;A6 POINTS AT THE CSELECT BLOCK
+         00002930 00000000! 
+     515 00002950     b6c8          MOVE    *A6(CS_SLOTS),A8,L      ;PRINT COIN SLOT INFO
+         00002960     01a0  
+     516 00002970     118a          addk    12,a10                  ;Push y up for a gap
+     517 00002980                   JSRP    PRINT_SMALL_LINE        ;PRINT THE LINE
+     518                    
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   13
+
+     519 000029f0     09e8          MOVI    TOST_MESS,A8
+         00002a00 00002fc0' 
+     520 00002a20     0d5f          CALLA   LM_SETUP
+         00002a30 00000000! 
+     521 00002a50                   PUSH    A0
+     522 00002a60     8780          MOVE    *A12,A0,L
+     523 00002a70     ee09          MOVY    A0,A9
+     524 00002a80     09c0          MOVI    ADJCSTRT,A0             ; CREDITS TO START
+         00002a90     000b  
+     525 00002aa0     0d5f          CALLA   GET_ADJ 
+         00002ab0 00000000! 
+     526 00002ad0     4c08          MOVE    A0,A8
+     527 00002ae0                   PULL    A0
+     528 00002af0     0d5f          CALLA   HEXTOASC
+         00002b00 00000000! 
+     529 00002b20                   JSRP    LM_FINIS
+     530                            
+     531 00002b90     09e8          MOVI    TOCONT_MESS,A8
+         00002ba0 00003060' 
+     532 00002bc0     0d5f          CALLA   LM_SETUP
+         00002bd0 00000000! 
+     533 00002bf0                   PUSH    A0
+     534 00002c00     8780          MOVE    *A12,A0,L
+     535 00002c10     ee09          MOVY    A0,A9
+     536 00002c20     09c0          MOVI    ADJCCONT,A0             ; CREDITS TO START
+         00002c30     000c  
+     537 00002c40     0d5f          CALLA   GET_ADJ 
+         00002c50 00000000! 
+     538 00002c70     4c08          MOVE    A0,A8
+     539 00002c80                   PULL    A0
+     540 00002c90     0d5f          CALLA   HEXTOASC
+         00002ca0 00000000! 
+     541 00002cc0                   JSRP    LM_FINIS
+     542                    
+     543 00002d30     09e8          MOVI    TOSTOC_MESS,A8
+         00002d40 00002e50' 
+     544 00002d60     0d5f          CALLA   LM_SETUP
+         00002d70 00000000! 
+     545 00002d90                   PULLP   A3
+     546 00002da0     ee69          MOVY    A3,A9
+     547 00002db0                   JSRP    LM_FINIS
+     548                    
+     549                    
+     550 00002e20           NO_INFO
+     551 00002e20                   RETP                            ;DONE FOR NOW
+     552                    
+     553 00002e50           TOSTOC_MESS
+     554 00002e50                    MESS_MAC  RD7FONT,SPACING07,AM_HX+116,0,COLOR_WHITE,STRCNRM,0
+     555 00002ef0       54          .STRING "TO START.    TO CONTINUE.",0
+     556 00002fc0                   .EVEN
+     557                    
+     558 00002fc0           TOST_MESS
+     559 00002fc0                    MESS_MAC  RD7FONT,SPACING07,AM_HX+27,0,COLOR_WHITE,STRRNRM,0
+     560                    
+     561 00003060           TOCONT_MESS
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   14
+
+     562 00003060                    MESS_MAC  RD7FONT,SPACING07,AM_HX+110,0,COLOR_WHITE,STRRNRM,0
+     563                    
+     564 00003100           GET_COIN_TITLE
+     565 00003100                   PUSH    a6
+     566                    
+     567 00003110     0d5f          CALLA   GET_CSPT                ;A6 POINTS AT THE CSELECT BLOCK
+         00003120 00000000! 
+     568 00003140     09e2          MOVI    MESS_DIP,A2
+         00003150 000052b0" 
+     569 00003170     0d3f          CALLR   CKDIP
+         00003180     0015  
+     570 00003190     ca0a          JRZ     gctx
+     571                    
+     572 000031a0     09e2          MOVI    MESS_TAMPERED,A2
+         000031b0 00005270" 
+     573 000031d0     1aa0          movk    ADJ1ST6,a0              ;Non-standard title if 1st 6 modified
+     574 000031e0     0d5f          CALLA   GET_ADJ
+         000031f0 00000000! 
+     575 00003210     ca02          jrz     gctx                    ;Changed?
+     576 00003220     b6c2          MOVE    *A6(CS_TITLE),A2,L      ;GET THE CSELECT TITLE FOR ITS VALUES
+         00003230     0150  
+     577                    
+     578 00003240           gctx    PULL    a6
+     579 00003250     0960          RETS
+     580                    
+     581 00003260           TAMPEREDP
+     582 00003260                   PUSH    a0
+     583 00003270     1aa0          movk    ADJ1ST6,a0      ;Just check the 1st 6
+     584 00003280     0d5f          CALLA   GET_ADJ         ;HAS IT BEEN TAMPERED WITH (0 MEANS YES)
+         00003290 00000000! 
+     585 000032b0     09af          MMFM    SP,A0
+         000032c0     0001  
+     586 000032d0     0960          RETS
+     587                    
+     588 000032e0           CKDIP
+     589 000032e0     0d5f          CALLA   READ_DIP
+         000032f0 00000000! 
+     590 00003310     0b80          ANDI    DPUSECMOS,A0
+         00003320 fffffeff  
+     591 00003340     4c00          MOVE    A0,A0
+     592 00003350     0960          RETS
+     593                    
+     594                    
+     595                    
+     596 00003360           SET_COIN_ADJ:
+     597 00003360     098f          MMTM    SP,A0,A1,A6,A7
+         00003370     c300  
+     598 00003380     09c0          MOVI    ADJLMULT,A0
+         00003390     0002  
+     599 000033a0     94c1          MOVE    *A6+,A1,W
+     600 000033b0     0d5f          CALLA   PUT_ADJ
+         000033c0 00000000! 
+     601 000033e0     09c0          MOVI    ADJCMULT,A0
+         000033f0     0003  
+     602 00003400     94c1          MOVE    *A6+,A1,W
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   15
+
+     603 00003410     0d5f          CALLA   PUT_ADJ
+         00003420 00000000! 
+     604 00003440     09c0          MOVI    ADJRMULT,A0
+         00003450     0004  
+     605 00003460     94c1          MOVE    *A6+,A1,W
+     606 00003470     0d5f          CALLA   PUT_ADJ
+         00003480 00000000! 
+     607 000034a0     09c0          MOVI    ADJXMULT,A0             ; NEW ADDITION, FOLKS!
+         000034b0     0005  
+     608 000034c0     94c1          MOVE    *A6+,A1,W
+     609 000034d0     0d5f          CALLA   PUT_ADJ
+         000034e0 00000000! 
+     610 00003500     09c0          MOVI    ADJCUNIT,A0
+         00003510     0006  
+     611 00003520     94c1          MOVE    *A6+,A1,W
+     612 00003530     0d5f          CALLA   PUT_ADJ
+         00003540 00000000! 
+     613 00003560     09c0          MOVI    ADJBUNIT,A0
+         00003570     0007  
+     614 00003580     94c1          MOVE    *A6+,A1,W
+     615 00003590     0d5f          CALLA   PUT_ADJ
+         000035a0 00000000! 
+     616 000035c0     09c0          MOVI    ADJMUNIT,A0
+         000035d0     0008  
+     617 000035e0     94c1          MOVE    *A6+,A1,W
+     618 000035f0     0d5f          CALLA   PUT_ADJ
+         00003600 00000000! 
+     619 00003620     09c0          MOVI    ADJCSTRT,A0
+         00003630     000b  
+     620 00003640     94c1          MOVE    *A6+,A1,W
+     621 00003650     0d5f          CALLA   PUT_ADJ
+         00003660 00000000! 
+     622 00003680     09c0          MOVI    ADJCCONT,A0
+         00003690     000c  
+     623 000036a0     94c1          MOVE    *A6+,A1,W
+     624 000036b0     0d5f          CALLA   PUT_ADJ
+         000036c0 00000000! 
+     625 000036e0     09c0          MOVI    ADJCDIV,A0
+         000036f0     0009  
+     626 00003700     94c1          MOVE    *A6+,A1,W
+     627 00003710     0d5f          CALLA   PUT_ADJ
+         00003720 00000000! 
+     628 00003740     09c0          MOVI    ADJFRAC,A0
+         00003750     000a  
+     629 00003760     94c1          MOVE    *A6+,A1,W
+     630 00003770     0d5f          CALLA   PUT_ADJ
+         00003780 00000000! 
+     631                    
+     632 000037a0     1a60          movk    ADJVIRGIN,a0            ;THIS SAYS 1ST 8 UNTOUCHED.
+     633 000037b0     1821          movk    1,a1
+     634 000037c0     0d3f          callr   PUT_ADJ
+         000037d0     fc82! 
+     635                    
+     636 000037e0     1aa0          movk    ADJ1ST6,a0              ;THIS SAYS 1ST 6 UNTOUCHED.
+     637 000037f0     1821          movk    1,a1
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   16
+
+     638 00003800     0d3f          callr   PUT_ADJ                 ;DONE!
+         00003810     fc7e! 
+     639                    
+     640 00003820     0d5f          CALLA   F_ADC_S                 ; KEEP THE WORLD A HAPPY PLACE
+         00003830 00000000! 
+     641                    
+     642 00003850     09af          MMFM    SP,A0,A1,A6,A7
+         00003860     00c3  
+     643 00003870     0960          RETS
+     644                    
+     645 00003880           PRINT_SMALL_LINE
+     646 00003880     098c          MMTM    A12,A11,A6,A10,A9
+         00003890     0270  
+     647                    
+     648 000038a0     4d66          MOVE    A11,A6               ;COLOR SET
+     649 000038b0     09eb          MOVI    RD7FONT,A11          ;USE BABY FONT
+         000038c0 00000000! 
+     650                    
+     651 000038e0     09c9          MOVI    AM_HX,A9,W           ;GET LEFT X
+         000038f0     00b8  
+     652 00003900     0d3f          CALLR   LEFT_TO_CENTER       ;CONVERT IT
+         00003910     0076  
+     653                    
+     654 00003920     4d40          MOVE    A10,A0
+     655 00003930     2600          SLL     16,A0
+     656 00003940     ee09          MOVY    A0,A9                ;POINTER SET!
+     657                    
+     658 00003950     09ca          MOVI    SPACING07,A10
+         00003960     0001  
+     659                    
+     660 00003970     5600          CLR     A0
+     661                    
+     662 00003980                   JSRP    STRCNRM              ;DO IT!
+     663                    
+     664 000039f0     09ac          MMFM    A12,A11,A6,A10,A9
+         00003a00     0e40  
+     665 00003a10                   RETP
+     666                    
+     667                    
+     668 00003a40           DO_ADJH
+     669 00003a40     0d5f          CALLA   BLNKHELP             ;BLANK OUT THE AREA WE'RE PLOTTING!
+         00003a50 00000000! 
+     670 00003a70     4c28          MOVE    A1,A8                ;PASS THE STRUCTURE POINTER TO NEW PROCESS!
+     671 00003a80     09e7          MOVI    AD_SLAVE,A7
+         00003a90 00003af0' 
+     672 00003ab0     0d5f          CALLA   P_FORK               ;THIS CREATES IT!
+         00003ac0 00000000! 
+     673 00003ae0     0960          RETS                         ;NOW RETURN TO MENU HANDLER!
+     674                    
+     675              0100  ADS_STRUCT       EQU     PDATA                  ;LONG-POINTER TO ADJUSTMENT STRUCTURE
+     676              0120  ADS_LX           EQU     ADS_STRUCT+LONG_SIZE   ;WORD-LEFT X TO WORK FROM
+     677              0130  ADS_CX           EQU     ADS_LX+WORD_SIZE       ;WORD-CENTER X FOR WORK
+     678                    
+     679 00003af0           AD_SLAVE:
+     680 00003af0     b70b          MOVE    *A8(MENU_ROUTINE),A11,L   ;NOW WE HAVE OUR SPECIAL STRUCTURE!
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   17
+
+         00003b00     0020  
+     681 00003b10     b36d          MOVE    A11,*A13(ADS_STRUCT),L    ;STASH IT...WE'LL NEED IT
+         00003b20     0100  
+     682 00003b30     b12d          MOVE    A9,*A13(ADS_LX),W         ;ALSO THE X.....
+         00003b40     0120  
+     683                    
+     684 00003b50     4d24          MOVE    A9,A4                     ;COPY LEFT FOR BORDER ROUT
+     685 00003b60     0d3f          CALLR   LEFT_TO_CENTER
+         00003b70     0050  
+     686                    
+     687 00003b80     b12d          MOVE    A9,*A13(ADS_CX),W         ;STASH THE CENTER
+         00003b90     0130  
+     688 00003ba0     0b24          ADDI    INST_ULY*10000H,A4           ;ADD IN THE Y
+         00003bb0 002d0000  
+     689 00003bd0     09e5          MOVI    (INST_LRY*10000H)+TIT_LRX,A5 ;THIS IS OTHER EDGE.
+         00003be0 004a0185  
+     690 00003c00     09c9          MOVI    COLOR_WHITE,A9
+         00003c10     0202  
+     691 00003c20     0d5f          CALLA   STD_BORD                       ;ADJUSTMENT BORDER IS UP.
+         00003c30 00000000! 
+     692                    
+     693 00003c50     09e8          MOVI    ADJT_SETUP,A8
+         00003c60 00004300" 
+     694 00003c80     0d5f          CALLA   LM_SETUP                       ;SETUP TO PRINT TITLE
+         00003c90 00000000! 
+     695                    
+     696 00003cb0     b5a2          MOVE    *A13(ADS_CX),A2,W              ;GET THE X
+         00003cc0     0130  
+     697 00003cd0     ec49          MOVX    A2,A9                          ;SUBSTITUTE OUR X IN.
+     698                    
+     699 00003ce0     b7a2          MOVE    *A13(ADS_STRUCT),A2,L          ;GET STRUCTURE POINTER
+         00003cf0     0100  
+     700 00003d00     b648          MOVE    *A2(AD_TITLE),A8,L             ;GET MESSAGE POINTER
+         00003d10     0020  
+     701                    
+     702 00003d20                   JSRP    LM_FINIS                       ;BOX AND TITLE ARE UP.
+     703                    
+     704 00003d90     b648          MOVE    *A2(AD_HELP),A8,L              ;HELP STRUCTURE
+         00003da0     0040  
+     705 00003db0     0d3f          CALLR   CKDIP
+         00003dc0     ff51  
+     706 00003dd0     cb0f          JRNZ    ADSSKIP
+     707 00003de0     0b68          CMPI    HELP_PRICE,A8           ; PRICING HELP
+         00003df0 ffffa24f" 
+     708 00003e10     ca08          JRZ     ADSDIP
+     709 00003e20     0b68          CMPI    HELP_PARAM,A8           ; PARAMETER HELP
+         00003e30 ffffa10f" 
+     710 00003e50     ca04          JRZ     ADSDIP
+     711 00003e60     0b68          CMPI    HELP_FREE,A8            ; FREEPLAY HELP
+         00003e70 ffff9e5f" 
+     712 00003e90     cb03          JRNZ    ADSSKIP
+     713 00003ea0           ADSDIP
+     714 00003ea0     09e8          MOVI    HELP_DIP,A8
+         00003eb0 00005e60" 
+     715 00003ed0           ADSSKIP
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   18
+
+     716                    
+     717 00003ed0     b5a9          MOVE    *A13(ADS_LX),A9,W              ;LEFT X FOR HELP BOX
+         00003ee0     0120  
+     718 00003ef0     09ca          MOVI    INST_LRY+BOX_YGAP,A10          ;THIS IS HELP BOX POSITION
+         00003f00     004d  
+     719 00003f10     0b2a          ADDI    10000H,A10                     ;FLAG THAT THIS IS TOP..NOT CENTER!
+         00003f20 00010000  
+     720                    
+     721 00003f40     09e7          MOVI    H_SLAVE,A7           ;FORK OFF SO IT CAN USE PDATA!
+         00003f50 00000000! 
+     722 00003f70     0d5f          CALLA   P_FORK               ;START UP ANOTHER W/ SAME ID
+         00003f80 00000000! 
+     723 00003fa0     b7a8          MOVE    *A13(ADS_STRUCT),A8,L   ;GET THE ADJUSTMENT STRUCTURE
+         00003fb0     0100  
+     724 00003fc0     09cb          MOVI    COLOR_LF,A11          ;INDICATE STANDARD COLOR.
+         00003fd0     3e3e  
+     725 00003fe0                   JSRP    AD_CRVAL                ;PRINT SCREEN SHOWING THE CURRENT VALUE
+     726                    
+     727 00004050     c080          JAUC    SUCIDE               ;OUR JOB IS DONE!...EXIT
+         00004060 00000000! 
+     728                    
+     729 00004080           LEFT_TO_CENTER:
+     730 00004080     0b09          ADDI    TIT_LRX,A9                ;FIND BOX CENTER
+         00004090     0185  
+     731 000040a0     2fe9          SRL     1,A9                      ;NOW WE HAVE THE CENTER
+     732 000040b0     0b09          ADDI    C_KLUDGE,A9               ;MAKE IT CENTER CORRECTLY
+         000040c0     0001  
+     733 000040d0     0960          RETS
+     734                    
+     735                    
+     736 000040e0           AD_CRVAL:
+     737 000040e0     b700          MOVE    *A8(AD_NAMEIT),A0,L       ;FETCH THE "NAME-IT" ROUTINE
+         000040f0     00f0  
+     738 00004100     0160          JUMP    A0                        ;AND "JSRP" THAT ROUTINE
+     739                    
+     740 00004110           HEX_OR_MESS
+     741 00004110                   PUSH    a8
+     742                    
+     743 00004120     0d3f          CALLR   ADJ_STUFF                 ;GET THE REGGIES FIXED UP.
+         00004130     0057  
+     744                    
+     745                    
+     746 00004140     b701          MOVE    *A8(AD_MIN),A1,L          ;GET MINIMUM VALUE
+         00004150     0070  
+     747 00004160     4801          CMP     A0,A1                     ;ARE WE AT MINIMUM?
+     748 00004170     cb03          JRNZ    NOT_MIN                   ;NOPE
+     749                    
+     750 00004180     b708  AT_MIN  MOVE    *A8(AD_NAMPTR),A8,L       ;GET THE MESSAGE POINTER
+         00004190     0120  
+     751 000041a0     c005          JRUC    PRT_MIN
+     752                    
+     753 000041b0     4c08  NOT_MIN MOVE    A0,A8
+     754 000041c0     1823          MOVK    1,A3                      ;INDICATE COMMAS ARE DESIRED
+     755 000041d0     0d5f          CALLA   HTOHXASC                  ;CONVERT A8 TO THIS NUMBER
+         000041e0 00000000! 
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   19
+
+     756                    
+     757 00004200     4d02  PRT_MIN MOVE    A8,A2
+     758 00004210                   PULL    a8
+     759                    
+     760 00004220                   JSRP    DO_BIG_LINE               ;NOW PRINT IT OUT
+     761 00004290                   RETP                              ;AND RETURN
+     762                    
+     763 000042c0           BIN_OR_MESS:
+     764 000042c0     098f          MMTM    SP,A8                     ;PRESERVE A8 PLEASE
+         000042d0     0080  
+     765                    
+     766 000042e0     0d3f          CALLR   ADJ_STUFF                 ;GET THE REGGIES FIXED UP.
+         000042f0     003b  
+     767 00004300     b701          MOVE    *A8(AD_MIN),A1,L          ;GET MINIMUM VALUE
+         00004310     0070  
+     768 00004320     4801          CMP     A0,A1                     ;ARE WE AT MINIMUM?
+     769 00004330     cae4          JRZ     AT_MIN                    ;YEP.....PRINT "OFF"
+     770                    
+     771 00004340     0d5f          CALLA   BINBCD                    ;TURN TO BCD PLEASE
+         00004350 00004f30' 
+     772 00004370     c0e3          JRUC    NOT_MIN                   ;AND NOW PRINT WITH COMMAS.
+     773                    
+     774 00004380           JUST_BIN:
+     775 00004380     098f          MMTM    SP,A8                     ;PRESERVE A8 PLEASE
+         00004390     0080  
+     776                    
+     777 000043a0     0d3f          CALLR   ADJ_STUFF                 ;GET THE REGGIES FIXED UP.
+         000043b0     002f  
+     778 000043c0     0d5f          CALLA   BINBCD                    ;TURN IT TO BCD!
+         000043d0 00004f30' 
+     779 000043f0     c0db          JRUC    NOT_MIN
+     780                    
+     781 00004400           LIST_1LINE
+     782 00004400     0d3f          CALLR   ADJ_STUFF                 ;GET THE REGGIES FIXED UP.
+         00004410     0029  
+     783                    
+     784 00004420     b701          MOVE    *A8(AD_MAX),A1,L          ;IS IT TOO HIGH?
+         00004430     0090  
+     785 00004440     4820          CMP     A1,A0                     ;COMPARE TO ADJUSTMENT
+     786 00004450     c204          JRLS    L1L1                      ;IN RANGE.....
+     787 00004460     09e2          MOVI    M_NULL,A2                 ;USE NULL POINTER
+         00004470 00007498" 
+     788 00004490     c017          JRUC    L1L2
+     789                    
+     790 000044a0           L1L1    
+     791 000044a0     b701          MOVE    *A8(AD_MIN),A1,L          ;GET THE LOWEST VALUE
+         000044b0     0070  
+     792 000044c0     4420          SUB     A1,A0                     ;THIS IS OFFSET
+     793 000044d0     1801          MOVK    LONG_SIZE,A1              ;THIS MANY LONG WORDS
+     794 000044e0     5e01          MPYU    A0,A1                     ;THIS IS OFFSET INTO TABLE
+     795 000044f0     b700          MOVE    *A8(AD_NAMPTR),A0,L       ;THIS IS TABLE BASE
+         00004500     0120  
+     796                    
+     797 00004510     0b68          CMPI    DO_FREE,A8              ; IS IT A FREEPLAY ITEM
+         00004520 ffffdeff" 
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   20
+
+     798 00004540     cb0a          JRNZ    LIGO
+     799 00004550                   PUSH    A0
+     800 00004560     0d5f          CALLA   CKDIP                   ; CHECK FOR DIP SWITCH SETTING
+         00004570 000032e0' 
+     801 00004590     09af          MMFM    SP,A0
+         000045a0     0001  
+     802 000045b0     cb03          JRNZ    LIGO
+     803 000045c0     09e0          MOVI    LIST_DIPNOYES,A0
+         000045d0 0000cc10" 
+     804 000045f0           LIGO
+     805                    
+     806 000045f0     4020          ADD     A1,A0                     ;A0 HAS THE TEXT OF THE SINGLE LINE
+     807 00004600     8602          MOVE    *A0,A2,L                  ;GET THE VECTOR
+     808 00004610           L1L2
+     809 00004610                   JSRP    DO_BIG_LINE               ;PRINT OUT THIS LINE
+     810 00004680                   RETP                              ;NOW RETURN
+     811                    
+     812 000046b0           ADJ_STUFF
+     813 000046b0     1821          movk    1,a1                      ;Indicate 2 puny lines (for our big one)
+     814 000046c0     0d3f          CALLR   ADJ_BOX                   ;DRAW THE BOX....PASS BACK 1ST PLOT LINE
+         000046d0     0058  
+     815 000046e0     b500          MOVE    *A8(AD_CMOS),A0,W         ;GET ADJUSTMENT NUMBER
+         000046f0     0060  
+     816 00004700     0d3f          CALLR   GET_EADJ                  ;FETCH THE CURRENT VALUE.
+         00004710     001d  
+     817                    
+     818 00004720     c029          jruc    PUT_IN_RANGE              ;IF ITS OUT OF RANGE, FIX IT!
+     819                    
+     820 00004730           DO_BIG_LINE
+     821 00004730     098c          MMTM    A12,A10,A11,A8       ;SAVE STUFF FOR CALLER
+         00004740     00b0  
+     822 00004750     4d66          MOVE    A11,A6
+     823 00004760     09c9          MOVI    AM_HX,A9,W           ;GET LEFT X
+         00004770     00b8  
+     824 00004780     0d3f          CALLR   LEFT_TO_CENTER       ;CONVERT IT
+         00004790     ff8e  
+     825 000047a0     260a          SLL     16,A10               ;SHIFT Y DOWN
+     826 000047b0     ef49          MOVY    A10,A9               ;X,Y SET
+     827 000047c0     4c48          MOVE    A2,A8                ;TEXT POINTER
+     828 000047d0     5600          CLR     A0                   ;NO SLEEP
+     829 000047e0     09ca          MOVI    SPACING20,A10
+         000047f0     0002  
+     830 00004800     09eb          MOVI    RD7FONT,A11
+         00004810 00000000! 
+     831 00004830                   JSRP    STRCNRM              ;DO IT!
+     832 000048a0     09ac          MMFM    A12,A10,A11,A8       ;POP THE STUFF.
+         000048b0     0d00  
+     833 000048c0                   RETP
+     834                    
+     835 000048f0           GET_EADJ
+     836 000048f0     098f          MMTM    SP,A1
+         00004900     4000  
+     837 00004910     0d5f          CALLA   GET_ADJ              ;FETCH THE ADJUSTMENT
+         00004920 00000000! 
+     838 00004940     cb04          JRNZ    GET_EA1              ;ITS NOT ZERO....RETURN
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   21
+
+     839 00004950     b701          MOVE    *A8(AD_ZEQU),A1,L    ;IS THERE A SUB VALUE?
+         00004960     00d0  
+     840 00004970     ca01          JRZ     GET_EA1              ;NOPE...RETURN THE ZERO (AND FLAG)
+     841                    
+     842 00004980     4c20          MOVE    A1,A0                ;RETURN THE SUBSTITUTE VALUE
+     843 00004990           GET_EA1
+     844 00004990     09af          MMFM    SP,A1
+         000049a0     0002  
+     845 000049b0     0960          RETS
+     846                    
+     847 000049c0           PUT_IN_RANGE:
+     848 000049c0     098f          MMTM    SP,A1,A2,A3
+         000049d0     7000  
+     849 000049e0     b701          MOVE    *A8(AD_MIN),A1,L          ;GET MINIMUM
+         000049f0     0070  
+     850 00004a00     b702          MOVE    *A8(AD_MAX),A2,L          ;GET MAXIMUM
+         00004a10     0090  
+     851 00004a20     b503          MOVE    *A8(AD_FLAGS),A3,W        ;ARE WE WRAPPING AROUND
+         00004a30     0110  
+     852 00004a40     1fe3          BTST    WRAP_BIT,A3               ;WELL?
+     853 00004a50     cb0b          JRNZ    CK_WRAP                   ;YEP....USE A FANCY HANDLER.
+     854                    
+     855 00004a60     4820          CMP     A1,A0                     ;ARE WE TOO LOW?
+     856 00004a70     c901          JRHS    NOT_LO
+     857 00004a80           USE_LO: 
+     858 00004a80     4c20          MOVE    A1,A0
+     859                    
+     860 00004a90           NOT_LO: 
+     861 00004a90     0b60          CMPI    090000000H,A0           
+         00004aa0 6fffffff  
+     862 00004ac0     c3fb          JRHI    USE_LO                    ;USE THE LOW VALUE!
+     863                    
+     864 00004ad0     4840          CMP     A2,A0
+     865 00004ae0     c20a          JRLS    PIRX
+     866                    
+     867 00004af0           USE_HI: 
+     868 00004af0     4c40          MOVE    A2,A0
+     869 00004b00     c008          JRUC    PIRX
+     870 00004b10           CK_WRAP:
+     871 00004b10     0b60          CMPI    090000000H,A0             ;IN THIS RANGE, WE MUST HAVE WRAPPED DOWN
+         00004b20 6fffffff  
+     872 00004b40     c3fa          JRHI    USE_HI                    ;SO USE HIGH VALUE
+     873                    
+     874 00004b50     4820          CMP     A1,A0                     ;IS IT LOWER THAN LO?
+     875 00004b60     c8f8          JRLO    USE_HI                    ;IT IS ....USE THE HIGH ONE.
+     876                    
+     877 00004b70     4840          CMP     A2,A0                     ;IS IT TOO HIGH?
+     878 00004b80     c3ef          JRHI    USE_LO                    ;IT IS....USE THE LOW ONE.
+     879                    
+     880 00004b90           PIRX:   
+     881 00004b90     09af          MMFM    SP,A1,A2,A3
+         00004ba0     000e  
+     882 00004bb0     0960          RETS
+     883                    
+     884 00004bc0           CADJ_BOX
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   22
+
+     885 00004bc0     098f          MMTM    SP,A4,A5,A0,A9
+         00004bd0     8c40  
+     886 00004be0     09ca          MOVI    ADJ_CULY,A10
+         00004bf0     0098  
+     887 00004c00     c00a          JRUC    ADJ_ENT
+     888                    
+     889 00004c10           PADJ_BOX
+     890 00004c10     098f          MMTM    SP,A4,A5,A0,A9
+         00004c20     8c40  
+     891 00004c30     09ca          MOVI    ADJ_PULY,A10
+         00004c40     0090  
+     892 00004c50     c005          JRUC    ADJ_ENT
+     893 00004c60     098f  ADJ_BOX MMTM    SP,A4,A5,A0,A9
+         00004c70     8c40  
+     894 00004c80     09ca          MOVI    ADJ_ULY,A10              ;THIS IS TOP OF BOX
+         00004c90     00ac  
+     895 00004ca0     5684          CLR     A4
+     896                    
+     897 00004cb0           ADJ_ENT
+     898 00004cb0     0b41          CMPI    2,A1
+         00004cc0     fffd  
+     899 00004cd0     cb02          JRNZ    ADJ_ENT_NORMAL
+     900 00004ce0     1905          MOVK    8,A5                    ; 1 LINER KLUDGE
+     901 00004cf0     c003          JRUC    ADJ_ENT_GO
+     902 00004d00           ADJ_ENT_NORMAL
+     903 00004d00     09c5          MOVI    HELP_DY,A5              ;DISTANCE PER ENTRY
+         00004d10     000c  
+     904 00004d20     5e25          MPYU    A1,A5               ;DISTANCE FOR ALL ENTRIES
+     905 00004d30           ADJ_ENT_GO
+     906 00004d30     4085          ADD     A4,A5                   ; FIX IT UP A LITTLE
+     907 00004d40     0b05          ADDI    HELP_Y_MARGIN+(MB_YWID*2)+HELP_YLO_MARGIN,A5
+         00004d50     0012  
+     908                    
+     909                    
+     910 00004d60     4d44          MOVE    A10,A4                    ;MOVE Y OVER
+     911 00004d70     2604          SLL     16,A4                     ;MAKE ROOM FOR X
+     912 00004d80     0b24          ADDI    AM_HX,A4                     ;PUT IN THE X...THIS IS UPPER LEFT!
+         00004d90 000000b8  
+     913                    
+     914 00004db0     4145          ADD     A10,A5                    ;ADD BASE TO OFFSET
+     915 00004dc0     2605          SLL     16,A5                     ;PUT IN Y POSITION
+     916 00004dd0     0b05          ADDI    TIT_LRX,A5                ;ADD IN THE X FOR THE CORNER
+         00004de0     0185  
+     917 00004df0     0b0a          ADDI    MB_YWID+HELP_Y_MARGIN,A10  ;Y OF 1ST ENTRY
+         00004e00     000b  
+     918 00004e10     09c9          MOVI    COLOR_YELLOW,A9           ;MAKE THESE BOXES YELLOW
+         00004e20     0505  
+     919                    
+     920 00004e30     0d5f          CALLA   STD_BORD
+         00004e40 00000000! 
+     921 00004e60     09af          MMFM    SP,A4,A5,A0,A9
+         00004e70     0231  
+     922 00004e80     0960          RETS
+     923                    
+     924 00004e90           WH_BORD
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   23
+
+     925 00004e90     098f          MMTM    SP,A9
+         00004ea0     0040  
+     926 00004eb0     09c9          MOVI    COLOR_WHITE,A9
+         00004ec0     0202  
+     927 00004ed0     0d5f          CALLA   STD_BORD
+         00004ee0 00000000! 
+     928 00004f00     09af          MMFM    SP,A9
+         00004f10     0200  
+     929 00004f20     0960          RETS
+     930 00004f30     098f  BINBCD   MMTM    SP,A1,A2,A3,A4,A5
+         00004f40     7c00  
+     931 00004f50     0b60           CMPI    99999999,A0               ;ARE WE TOO BIG?
+         00004f60 fa0a1f00  
+     932 00004f80     c204           JRLS    BBIR                      ;IN RANGE
+     933 00004f90     09e0           MOVI    99999999H,A0              ;RETURN THE LARGEST NUMBER WE HAVE!
+         00004fa0 99999999  
+     934 00004fc0     c00c           JRUC    BB_RET
+     935                    
+     936 00004fd0     1941  BBIR     MOVK    10,A1                     ;ALWAYS DIVIDE BY A0
+     937 00004fe0     56a5           CLR     A5                        ;ACCUMULATE RESULT IN A5
+     938 00004ff0     5684           CLR     A4                        ;A4 HAS CURRENT SHIFT COUNT
+     939 00005000     4c03           MOVE    A0,A3                     ;<A2><A3> HAS NUMERATOR
+     940 00005010           DO_BCD_AGAIN
+     941 00005010     5642           CLR     A2
+     942 00005020     5a22           DIVU    A1,A2                     ;A2 HAS LEFTOVER...A3 HAS CURRENT DIGIT
+     943 00005030     6283           SLL     A4,A3                     ;SHIFT IT CORRECT NUMBER OF TIMES
+     944 00005040     4065           ADD     A3,A5                     ;ADD IT INTO RESULT REG
+     945 00005050     1084           ADDK    4,A4                      ;ADD 4 TO SHIFT COUNT
+     946 00005060     4c43           MOVE    A2,A3                     ;REFRESH NUMERATOR
+     947 00005070     cbf9           JRNZ    DO_BCD_AGAIN
+     948                    
+     949 00005080     4ca0           MOVE    A5,A0                     ;PUT OUT RESULT
+     950 00005090     09af  BB_RET  MMFM    SP,A1,A2,A3,A4,A5
+         000050a0     003e  
+     951 000050b0     0960          RETS
+     952                    
+     953 000050c0     098f  BCDBIN  MMTM    SP,A1,A2,A3,A4,A5       ;WORK REGGIES.
+         000050d0     7c00  
+     954 000050e0     5642          CLR     A2                      ;ACCUMULATE IN A2
+     955 000050f0     1823          movk    1,a3                    ;Current factor is 1.
+     956 00005100     1944          movk    10,a4                   ;Save some movi insts later
+     957 00005110     1a05          movk    16,a5                   ;Divide it down by 16 at a time
+     958 00005120     4c01  BCBLOOP MOVE    A0,A1                   ;DIVIDEND IN <A0><A1>
+     959 00005130     ca06          JRZ     BCBDONE                 ;ALL UNITS EXHAUSTED!
+     960 00005140     5600          CLR     A0
+     961 00005150     5aa0          DIVU    A5,A0                   ;DIVIDE BY 10H...(REMAINDER IN A1)
+     962 00005160     5e61          MPYU    A3,A1                   ;TIMES POSITION FACTOR
+     963 00005170     4022          ADD     A1,A2                   ;INTO ACCUMULATION REGISTER
+     964 00005180     5e83          MPYU    A4,A3                   ;NEXT DIGIT IS WORTH 10 TIMES THIS ONE
+     965 00005190     c0f8          JRUC    BCBLOOP
+     966                    
+     967 000051a0     4c40  BCBDONE MOVE    A2,A0                   ;RETURN RESULT IN A0
+     968 000051b0     09af          MMFM    SP,A1,A2,A3,A4,A5       ;WORK REGGIES.
+         000051c0     003e  
+     969 000051d0     0960          RETS
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   24
+
+     970                    
+     971                    
+     972                    
+     973 00000000                   .DATA
+     974 00000000           DO_PRICE
+     975 00000000 00000540'         .LONG   GEN_ADJ              ;ROUTINE TO RUN
+     976 00000020 00003170"         .LONG   MESS_PRICE           ;POINTER TO HEADER MESSAGE
+     977 00000040 00005db0"         .LONG   HELP_PRICE           ;POINTER TO HELP MESSAGES FOR RIGHT SIDE
+     978 00000060     0001          .WORD   ADJPRICE             ;CMOS ADJUSTMENT WE'RE SETTING
+     979 00000070 00000001          .LONG   1                    ;MINIMUM VALUE
+     980 00000090 00000000!         .LONG   CS_ENTS              ;MAXIMUM VALUE
+     981 000000b0 00000001          .LONG   1                    ;MOVE UP AND DOWN BY 1'S
+     982 000000d0 00000000          .LONG   0                    ;DON'T SUB ZERO FOR ANY
+     983 000000f0 000023d0'         .LONG   COIN_SET             ;MESSAGE LIST USED FOR VALUES.
+     984 00000110     0001          .WORD   WRAP_VAL             ;WRAP AROUND ON COIN MODES
+     985 00000120 00000000          .LONG   0                    ;LIST OF MESSAGES FOR THIS ADJ.
+     986 00000140 00003170"         .LONG   MESS_PRICE           ;POINTER TO HEADER MESSAGE
+     987                    
+     988 00000160           DO_PARAM
+     989 00000160 000004e0'         .LONG   PRICE_ADJ            ;ROUTINE TO RUN
+     990 00000180 00003200"         .LONG   MESS_PARAM           ;POINTER TO HEADER MESSAGE
+     991 000001a0 00005ef0"         .LONG   HELP_PARAM           ;POINTER TO HELP MESSAGES FOR RIGHT SIDE
+     992 000001c0     0001          .WORD   ADJPRICE             ;CMOS ADJUSTMENT WE'RE SETTING
+     993 000001d0 00000001          .LONG   1                    ;MINIMUM VALUE
+     994 000001f0 00000000!         .LONG   CS_ENTS              ;MAXIMUM VALUE
+     995 00000210 00000001          .LONG   1                    ;MOVE UP AND DOWN BY 1'S
+     996 00000230 00000000          .LONG   0                    ;DON'T SUB ZERO FOR ANY
+     997 00000250 00001bb0'         .LONG   PARAM_VAL            ;Routine for showing current value
+     998 00000270     0001          .WORD   WRAP_VAL             ;WRAP AROUND ON COIN MODES
+     999 00000280 00000000          .LONG   0                    ;LIST OF MESSAGES FOR THIS ADJ.
+    1000 000002a0 00003200"         .LONG   MESS_PARAM           ;POINTER TO HEADER MESSAGE
+    1001                    
+    1002                    
+    1003 000002c0           DO_CNTR
+    1004 000002c0 00000540'         .LONG   GEN_ADJ              ;ROUTINE TO RUN
+    1005 000002e0 000036a0"         .LONG   MESS_CNTR            ;POINTER TO HEADER MESSAGE
+    1006 00000300 00005cc0"         .LONG   HELP_CNTR            ;POINTER TO HELP MESSAGES FOR RIGHT SIDE
+    1007 00000320     0017          .WORD   ADJCNTR              ;CMOS ADJUSTMENT WE'RE SETTING
+    1008 00000330 00000001          .LONG   1                    ;MINIMUM VALUE
+    1009 00000350 00000003          .LONG   3                    ;MAXIMUM VALUE
+    1010 00000370 00000001          .LONG   1                    ;MOVE UP AND DOWN BY 1'S
+    1011 00000390 00000000          .LONG   0                    ;DON'T SUB ZERO FOR ANY
+    1012 000003b0 00004400'         .LONG   LIST_1LINE           ;MESSAGE LIST USED FOR VALUES.
+    1013 000003d0     0000          .WORD   0                    ;DON'T WRAP AROUND
+    1014 000003e0 0000c620"         .LONG   LIST_CNTR            ;JUST SHOW THE NUMBER
+    1015 00000400 000036a0"         .LONG   MESS_CNTR            ;POINTER TO HEADER MESSAGE
+    1016                    
+    1017 00000420           DO_HEAD:
+    1018 00000420 00000540'         .LONG   GEN_ADJ              ;ROUTINE TO RUN
+    1019 00000440 00003310"         .LONG   MESS_HEAD            ;POINTER TO HEADER MESSAGE
+    1020 00000460 00005630"         .LONG   HELP_HEAD            ;POINTER TO HELP MESSAGES FOR RIGHT SIDE
+    1021 00000480     0019          .WORD   ADJHEADSZ            ;CMOS ADJUSTMENT WE'RE SETTING
+    1022 00000490 00000001          .LONG   1                    ;MINIMUM VALUE
+    1023 000004b0 00000002          .LONG   2                    ;MAXIMUM VALUE
+    1024 000004d0 00000001          .LONG   1                    ;MOVE UP AND DOWN BY 1'S
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   25
+
+    1025 000004f0 00000000          .LONG   0                    ;DON'T SUB ZERO FOR ANY
+    1026 00000510 00004400'         .LONG   LIST_1LINE           ;MESSAGE LIST USED FOR VALUES.
+    1027 00000530     0000          .WORD   0                    ;DON'T WRAP AROUND
+    1028 00000540 0000c680"         .LONG   LIST_HEAD            ;LIST OF MESSAGES FOR THIS ADJ.
+    1029 00000560 00003310"         .LONG   MESS_HEAD            ;POINTER TO HEADER MESSAGE
+    1030                    
+    1031 00000580           DO_DIFF:
+    1032 00000580 00000540'         .LONG   GEN_ADJ              ;ROUTINE TO RUN
+    1033 000005a0 00003280"         .LONG   MESS_DIFF            ;POINTER TO HEADER MESSAGE
+    1034 000005c0 00005720"         .LONG   HELP_DIFF            ;POINTER TO HELP MESSAGES FOR RIGHT SIDE
+    1035 000005e0     000d          .WORD   ADJDIFF              ;CMOS ADJUSTMENT WE'RE SETTING
+    1036 000005f0 00000001          .LONG   1                    ;MINIMUM VALUE
+    1037 00000610 00000005          .LONG   5                     ;MAXIMUM VALUE
+    1038 00000630 00000001          .LONG   1                    ;MOVE UP AND DOWN BY 1'S
+    1039 00000650 00000000          .LONG   0                    ;DON'T SUB ZERO FOR ANY
+    1040 00000670 00004400'         .LONG   LIST_1LINE           ;MESSAGE LIST USED FOR VALUES.
+    1041 00000690     0000          .WORD   0                    ;DON'T WRAP AROUND
+    1042 000006a0 0000c6c0"         .LONG   LIST_DIFF            ;LIST OF MESSAGES FOR THIS ADJ.
+    1043 000006c0 00003280"         .LONG   MESS_DIFF            ;POINTER TO HEADER MESSAGE
+    1044                    
+    1045 000006e0           DO_SPEEDS:
+    1046 000006e0 00000540'         .LONG   GEN_ADJ              ;ROUTINE TO RUN
+    1047 00000700 000033a0"         .LONG   MESS_SPEEDS          ;POINTER TO HEADER MESSAGE
+    1048 00000720 00005810"         .LONG   HELP_SPEEDS          ;POINTER TO HELP MESSAGES FOR RIGHT SIDE
+    1049 00000740     0018          .WORD   ADJSPEED             ;CMOS ADJUSTMENT WE'RE SETTING
+    1050 00000750 00000001          .LONG   1                    ;MINIMUM VALUE
+    1051 00000770 00000005          .LONG   5                     ;MAXIMUM VALUE
+    1052 00000790 00000001          .LONG   1                    ;MOVE UP AND DOWN BY 1'S
+    1053 000007b0 00000000          .LONG   0                    ;DON'T SUB ZERO FOR ANY
+    1054 000007d0 00004400'         .LONG   LIST_1LINE           ;MESSAGE LIST USED FOR VALUES.
+    1055 000007f0     0000          .WORD   0                    ;DON'T WRAP AROUND
+    1056 00000800 0000c760"         .LONG   LIST_SPEEDS          ;LIST OF MESSAGES FOR THIS ADJ.
+    1057 00000820 000033a0"         .LONG   MESS_SPEEDS          ;POINTER TO HEADER MESSAGE
+    1058                    
+    1059 00000840           DO_FULLG:
+    1060 00000840 00000540'         .LONG   GEN_ADJ              ;ROUTINE TO RUN
+    1061 00000860 00003430"         .LONG   MESS_FULLG           ;POINTER TO HEADER MESSAGE
+    1062 00000880 00005900"         .LONG   HELP_FULLG           ;POINTER TO HELP MESSAGES FOR RIGHT SIDE
+    1063 000008a0     0014          .WORD   ADJFULLG             ;CMOS ADJUSTMENT WE'RE SETTING
+    1064 000008b0 00000004          .LONG   4                    ;MINIMUM VALUE
+    1065 000008d0 00000010          .LONG   16                    ;MAXIMUM VALUE
+    1066 000008f0 00000001          .LONG   1                    ;MOVE UP AND DOWN BY 1'S
+    1067 00000910 00000000          .LONG   0                    ;DON'T SUB ZERO FOR ANY
+    1068 00000930 00004400'         .LONG   LIST_1LINE           ;MESSAGE LIST USED FOR VALUES.
+    1069 00000950     0000          .WORD   0                    ;DON'T WRAP AROUND
+    1070 00000960 0000c800"         .LONG   LIST_FULLG           ;LIST OF MESSAGES FOR THIS ADJ.
+    1071 00000980 00003430"         .LONG   MESS_FULLG           ;POINTER TO HEADER MESSAGE
+    1072                    
+    1073 000009a0           DO_WINM:
+    1074 000009a0 00000540'         .LONG   GEN_ADJ              ;ROUTINE TO RUN
+    1075 000009c0 000034e0"         .LONG   MESS_WINM            ;POINTER TO HEADER MESSAGE
+    1076 000009e0 000059f0"         .LONG   HELP_WINM            ;POINTER TO HELP MESSAGES FOR RIGHT SIDE
+    1077 00000a00     001a          .WORD   ADJWINMODE           ;CMOS ADJUSTMENT WE'RE SETTING
+    1078 00000a10 00000000          .LONG   0                    ;MINIMUM VALUE
+    1079 00000a30 00000001          .LONG   1                    ;MAXIMUM VALUE
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   26
+
+    1080 00000a50 00000001          .LONG   1                    ;MOVE UP AND DOWN BY 1'S
+    1081 00000a70 00000000          .LONG   0                    ;DON'T SUB ZERO FOR ANY
+    1082 00000a90 00004400'         .LONG   LIST_1LINE           ;MESSAGE LIST USED FOR VALUES.
+    1083 00000ab0     0001          .WORD   WRAP_VAL             ;DON'T WRAP AROUND
+    1084 00000ac0 0000c9a0"         .LONG   LIST_WINM            ;LIST OF MESSAGES FOR THIS ADJ.
+    1085 00000ae0 000034e0"         .LONG   MESS_WINM            ;POINTER TO HEADER MESSAGE
+    1086                    
+    1087                    
+    1088 00000b00           DO_COMPASS:
+    1089 00000b00 00000540'         .LONG   GEN_ADJ              ;ROUTINE TO RUN
+    1090 00000b20 00003580"         .LONG   MESS_COMPASS         ;POINTER TO HEADER MESSAGE
+    1091 00000b40 00005ae0"         .LONG   HELP_COMPASS         ;POINTER TO HELP MESSAGES FOR RIGHT SIDE
+    1092 00000b60     001b          .WORD   ADJCOMPASS           ;CMOS ADJUSTMENT WE'RE SETTING
+    1093 00000b70 00000000          .LONG   0                    ;MINIMUM VALUE
+    1094 00000b90 00000001          .LONG   1                    ;MAXIMUM VALUE
+    1095 00000bb0 00000001          .LONG   1                    ;MOVE UP AND DOWN BY 1'S
+    1096 00000bd0 00000000          .LONG   0                    ;DON'T SUB ZERO FOR ANY
+    1097 00000bf0 00004400'         .LONG   LIST_1LINE           ;MESSAGE LIST USED FOR VALUES.
+    1098 00000c10     0001          .WORD   WRAP_VAL             ;DON'T WRAP AROUND
+    1099 00000c20 0000ca80"         .LONG   LIST_COMPASS         ;LIST OF MESSAGES FOR THIS ADJ.
+    1100 00000c40 00003580"         .LONG   MESS_COMPASS         ;POINTER TO HEADER MESSAGE
+    1101                    
+    1102 00000c60           DO_TOURNEY:
+    1103 00000c60 00000540'         .LONG   GEN_ADJ              ;ROUTINE TO RUN
+    1104 00000c80 00003620"         .LONG   MESS_TOURNEY         ;POINTER TO HEADER MESSAGE
+    1105 00000ca0 00005bd0"         .LONG   HELP_TOURNEY         ;POINTER TO HELP MESSAGES FOR RIGHT SIDE
+    1106 00000cc0     001c          .WORD   ADJTOURNEY           ;CMOS ADJUSTMENT WE'RE SETTING
+    1107 00000cd0 00000000          .LONG   0                    ;MINIMUM VALUE
+    1108 00000cf0 00000001          .LONG   1                    ;MAXIMUM VALUE
+    1109 00000d10 00000001          .LONG   1                    ;MOVE UP AND DOWN BY 1'S
+    1110 00000d30 00000000          .LONG   0                    ;DON'T SUB ZERO FOR ANY
+    1111 00000d50 00004400'         .LONG   LIST_1LINE           ;MESSAGE LIST USED FOR VALUES.
+    1112 00000d70     0001          .WORD   WRAP_VAL             ;DON'T WRAP AROUND
+    1113 00000d80 0000ca80"         .LONG   LIST_TOURNEY         ;LIST OF MESSAGES FOR THIS ADJ.
+    1114 00000da0 00003620"         .LONG   MESS_TOURNEY         ;POINTER TO HEADER MESSAGE
+    1115                    
+    1116                    
+    1117                    
+    1118                    
+    1119                    
+    1120                    
+    1121                    
+    1122 00000dc0           DO_AMODE:
+    1123 00000dc0 00000540'         .LONG   GEN_ADJ              ;ROUTINE TO RUN
+    1124 00000de0 00003850"         .LONG   MESS_AMOD2           ;POINTER TO HEADER MESSAGE
+    1125 00000e00 00005fe0"         .LONG   HELP_AMODE           ;POINTER TO HELP MESSAGES FOR RIGHT SIDE
+    1126 00000e20     0010          .WORD   ADJMUSIC             ;CMOS ADJUSTMENT WE'RE SETTING
+    1127 00000e30 00000000          .LONG   0                    ;MINIMUM VALUE
+    1128 00000e50 00000001          .LONG   1                    ;MAXIMUM VALUE
+    1129 00000e70 00000001          .LONG   1                    ;MOVE UP AND DOWN BY 1'S
+    1130 00000e90 00000000          .LONG   0                    ;DON'T SUB ZERO FOR ANY
+    1131 00000eb0 00004400'         .LONG   LIST_1LINE           ;MESSAGE LIST USED FOR VALUES.
+    1132 00000ed0     0001          .WORD   WRAP_VAL             ;WRAP AROUND
+    1133 00000ee0 0000cb50"         .LONG   LIST_AMODE           ;LIST OF MESSAGES FOR THIS ADJ.
+    1134 00000f00 000037b0"         .LONG   MESS_AMODE           ;POINTER TO HEADER MESSAGE
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   27
+
+    1135                    
+    1136 00000f20           DO_AHSRES:
+    1137 00000f20 00000540'         .LONG   GEN_ADJ              ;ROUTINE TO RUN
+    1138 00000f40 00003970"         .LONG   MESS_HSR2            ;POINTER TO HEADER MESSAGE
+    1139 00000f60 000060b0"         .LONG   HELP_AHSRES          ;POINTER TO HELP MESSAGES FOR RIGHT SIDE
+    1140 00000f80     000e          .WORD   ADJHSRES             ;CMOS ADJUSTMENT WE'RE SETTING
+    1141 00000f90 00000000          .LONG   0                    ;MINIMUM VALUE
+    1142 00000fb0 000061a8          .LONG   25000                ;MAXIMUM VALUE
+    1143 00000fd0 000000fa          .LONG   250                  ;MOVE UP AND DOWN BY 250'S
+    1144 00000ff0 00000000          .LONG   0                    ;DON'T SUB ZERO FOR ANY
+    1145 00001010 000042c0'         .LONG   BIN_OR_MESS          ;MESSAGE LIST USED FOR VALUES.
+    1146 00001030     0011          .WORD   WRAP_VAL^HSR_VAL     ;WRAP AROUND AND RESET HSC IF TOUCHED
+    1147 00001040 0000d580"         .LONG   MESS_OFF             ;LIST OF MESSAGES FOR THIS ADJ.
+    1148 00001060 000038c0"         .LONG   MESS_AHSRES          ;POINTER TO HEADER MESSAGE
+    1149                    
+    1150              000d  COINBITS:       EQU     WRAP_VAL+VIRG_VAL+SIX_VAL
+    1151                    
+    1152 00001080           DO_LCOIN:
+    1153 00001080 00000540'         .LONG   GEN_ADJ              ;ROUTINE TO RUN
+    1154 000010a0 000039f0"         .LONG   M_LCU                ;POINTER TO HEADER MESSAGE
+    1155 000010c0 00006360"         .LONG   HELP_LCU             ;POINTER TO HELP MESSAGES FOR RIGHT SIDE
+    1156 000010e0     0002          .WORD   ADJLMULT             ;CMOS ADJUSTMENT WE'RE SETTING
+    1157 000010f0 00000000          .LONG   0                    ;MINIMUM VALUE
+    1158 00001110 00000063          .LONG   99                   ;MAXIMUM VALUE
+    1159 00001130 00000001          .LONG   1                    ;MOVE UP AND DOWN BY 1'S
+    1160 00001150 00000000          .LONG   0                    ;DON'T SUB ZERO FOR ANY
+    1161 00001170 00004380'         .LONG   JUST_BIN             ;JUST SHOW THE NUMBER
+    1162 00001190     000d          .WORD   COINBITS             ;WRAP AROUND
+    1163 000011a0 00000000          .LONG   0                    ;NO EXTRA INFO NEEDED
+    1164 000011c0 000039f0"         .LONG   M_LCU                ;POINTER TO HEADER MESSAGE
+    1165                    
+    1166 000011e0           DO_CCOIN:
+    1167 000011e0 00000540'         .LONG   GEN_ADJ              ;ROUTINE TO RUN
+    1168 00001200 00003aa0"         .LONG   M_CCU               ;POINTER TO HEADER MESSAGE
+    1169 00001220 00006450"         .LONG   HELP_CCU             ;POINTER TO HELP MESSAGES FOR RIGHT SIDE
+    1170 00001240     0003          .WORD   ADJCMULT             ;CMOS ADJUSTMENT WE'RE SETTING
+    1171 00001250 00000000          .LONG   0                    ;MINIMUM VALUE
+    1172 00001270 00000063          .LONG   99                   ;MAXIMUM VALUE
+    1173 00001290 00000001          .LONG   1                    ;MOVE UP AND DOWN BY 1'S
+    1174 000012b0 00000000          .LONG   0                    ;DON'T SUB ZERO FOR ANY
+    1175 000012d0 00004380'         .LONG   JUST_BIN             ;JUST SHOW THE NUMBER
+    1176 000012f0     000d          .WORD   COINBITS             ;WRAP AROUND
+    1177 00001300 00000000          .LONG   0                    ;NO EXTRA INFO NEEDED
+    1178 00001320 00003aa0"         .LONG   M_CCU                ;POINTER TO HEADER MESSAGE
+    1179                    
+    1180 00001340           DO_RCOIN:
+    1181 00001340 00000540'         .LONG   GEN_ADJ              ;ROUTINE TO RUN
+    1182 00001360 00003b20"         .LONG   M_RCU                ;POINTER TO HEADER MESSAGE
+    1183 00001380 00006540"         .LONG   HELP_RCU             ;POINTER TO HELP MESSAGES FOR RIGHT SIDE
+    1184 000013a0     0004          .WORD   ADJRMULT             ;CMOS ADJUSTMENT WE'RE SETTING
+    1185 000013b0 00000000          .LONG   0                    ;MINIMUM VALUE
+    1186 000013d0 00000063          .LONG   99                   ;MAXIMUM VALUE
+    1187 000013f0 00000001          .LONG   1                    ;MOVE UP AND DOWN BY 1'S
+    1188 00001410 00000000          .LONG   0                    ;DON'T SUB ZERO FOR ANY
+    1189 00001430 00004380'         .LONG   JUST_BIN             ;JUST SHOW THE NUMBER
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   28
+
+    1190 00001450     000d          .WORD   COINBITS             ;WRAP AROUND
+    1191 00001460 00000000          .LONG   0                    ;NO EXTRA INFO NEEDED
+    1192 00001480 00003b20"         .LONG   M_RCU                ;POINTER TO HEADER MESSAGE
+    1193 000014a0           DO_XCOIN:
+    1194 000014a0 00000540'         .LONG   GEN_ADJ              ;ROUTINE TO RUN
+    1195 000014c0 00003bd0"         .LONG   M_XCU                ;POINTER TO HEADER MESSAGE
+    1196 000014e0 00006630"         .LONG   HELP_XCU             ;POINTER TO HELP MESSAGES FOR RIGHT SIDE
+    1197 00001500     0005          .WORD   ADJXMULT             ;CMOS ADJUSTMENT WE'RE SETTING
+    1198 00001510 00000000          .LONG   0                    ;MINIMUM VALUE
+    1199 00001530 00000063          .LONG   99                   ;MAXIMUM VALUE
+    1200 00001550 00000001          .LONG   1                    ;MOVE UP AND DOWN BY 1'S
+    1201 00001570 00000000          .LONG   0                    ;DON'T SUB ZERO FOR ANY
+    1202 00001590 00004380'         .LONG   JUST_BIN             ;JUST SHOW THE NUMBER
+    1203 000015b0     000d          .WORD   COINBITS             ;WRAP AROUND
+    1204 000015c0 00000000          .LONG   0                    ;NO EXTRA INFO NEEDED
+    1205 000015e0 00003bd0"         .LONG   M_XCU                ;POINTER TO HEADER MESSAGE
+    1206                    
+    1207 00001600           DO_UC:  
+    1208 00001600 00000540'         .LONG   GEN_ADJ              ;ROUTINE TO RUN
+    1209 00001620 00003c50"         .LONG   M_UC                 ;POINTER TO HEADER MESSAGE
+    1210 00001640 00006720"         .LONG   HELP_UC              ;POINTER TO HELP MESSAGES FOR RIGHT SIDE
+    1211 00001660     0006          .WORD   ADJCUNIT             ;CMOS ADJUSTMENT WE'RE SETTING
+    1212 00001670 00000001          .LONG   1                    ;MINIMUM VALUE
+    1213 00001690 00000063          .LONG   99                   ;MAXIMUM VALUE
+    1214 000016b0 00000001          .LONG   1                    ;MOVE UP AND DOWN BY 1'S
+    1215 000016d0 00000000          .LONG   0                    ;DON'T SUB ZERO FOR ANY
+    1216 000016f0 00004380'         .LONG   JUST_BIN             ;JUST SHOW THE NUMBER
+    1217 00001710     000d          .WORD   COINBITS             ;WRAP AROUND
+    1218 00001720 00000000          .LONG   0                    ;NO EXTRA INFO NEEDED
+    1219 00001740 00003c50"         .LONG   M_UC                 ;POINTER TO HEADER MESSAGE
+    1220                    
+    1221 00001760           DO_UB:  
+    1222 00001760 00000540'         .LONG   GEN_ADJ              ;ROUTINE TO RUN
+    1223 00001780 00003cd0"         .LONG   M_UB                 ;POINTER TO HEADER MESSAGE
+    1224 000017a0 000067b0"         .LONG   HELP_UB              ;POINTER TO HELP MESSAGES FOR RIGHT SIDE
+    1225 000017c0     0007          .WORD   ADJBUNIT             ;CMOS ADJUSTMENT WE'RE SETTING
+    1226 000017d0 00000000          .LONG   0                    ;MINIMUM VALUE
+    1227 000017f0 00000063          .LONG   99                   ;MAXIMUM VALUE
+    1228 00001810 00000001          .LONG   1                    ;MOVE UP AND DOWN BY 1'S
+    1229 00001830 00000000          .LONG   0                    ;DON'T SUB ZERO FOR ANY
+    1230 00001850 000042c0'         .LONG   BIN_OR_MESS          ;JUST SHOW THE NUMBER
+    1231 00001870     000d          .WORD   COINBITS             ;WRAP AROUND
+    1232 00001880 0000d5a0"         .LONG   M_NOBONUS            ;NO EXTRA INFO NEEDED
+    1233 000018a0 00003cd0"         .LONG   M_UB                 ;POINTER TO HEADER MESSAGE
+    1234                    
+    1235 000018c0           DO_UM:  
+    1236 000018c0 00000540'         .LONG   GEN_ADJ              ;ROUTINE TO RUN
+    1237 000018e0 00003de0"         .LONG   M_UM2                ;POINTER TO HEADER MESSAGE
+    1238 00001900 00006840"         .LONG   HELP_UM              ;POINTER TO HELP MESSAGES FOR RIGHT SIDE
+    1239 00001920     0008          .WORD   ADJMUNIT             ;CMOS ADJUSTMENT WE'RE SETTING
+    1240 00001930 00000000          .LONG   0                    ;MINIMUM VALUE
+    1241 00001950 00000063          .LONG   99                   ;MAXIMUM VALUE
+    1242 00001970 00000001          .LONG   1                    ;MOVE UP AND DOWN BY 1'S
+    1243 00001990 00000000          .LONG   0                    ;DON'T SUB ZERO FOR ANY
+    1244 000019b0 000042c0'         .LONG   BIN_OR_MESS          ;JUST SHOW THE NUMBER
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   29
+
+    1245 000019d0     000d          .WORD   COINBITS             ;WRAP AROUND
+    1246 000019e0 0000d620"         .LONG   M_NOMIN              ;NO EXTRA INFO NEEDED
+    1247 00001a00 00003d40"         .LONG   M_UM                 ;POINTER TO HEADER MESSAGE
+    1248                    
+    1249              0004  CREDBITS:       EQU     VIRG_VAL
+    1250                    
+    1251 00001a20           DO_CST: 
+    1252 00001a20 00000540'         .LONG   GEN_ADJ              ;ROUTINE TO RUN
+    1253 00001a40 00003e50"         .LONG   M_CST                ;POINTER TO HEADER MESSAGE
+    1254 00001a60 000068d0"         .LONG   HELP_CS              ;POINTER TO HELP MESSAGES FOR RIGHT SIDE
+    1255 00001a80     000b          .WORD   ADJCSTRT             ;CMOS ADJUSTMENT WE'RE SETTING
+    1256 00001a90 00000001          .LONG   1                    ;MINIMUM VALUE
+    1257 00001ab0 00000004          .LONG   4                    ;MAXIMUM VALUE
+    1258 00001ad0 00000001          .LONG   1                    ;MOVE UP AND DOWN BY 1'S
+    1259 00001af0 00000000          .LONG   0                    ;DON'T SUB ZERO FOR ANY
+    1260 00001b10 00004380'         .LONG   JUST_BIN            ;JUST SHOW THE NUMBER
+    1261 00001b30     000d          .WORD   COINBITS             ;WRAP AROUND
+    1262 00001b40 00000000          .LONG   0                    ;NO EXTRA INFO NEEDED
+    1263 00001b60 00003e50"         .LONG   M_CST                ;POINTER TO HEADER MESSAGE
+    1264                    
+    1265 00001b80           DO_CONT:
+    1266 00001b80 00000540'         .LONG   GEN_ADJ              ;ROUTINE TO RUN
+    1267 00001ba0 00003f80"         .LONG   M_CONT2               ;POINTER TO HEADER MESSAGE
+    1268 00001bc0 00006960"         .LONG   HELP_CC              ;POINTER TO HELP MESSAGES FOR RIGHT SIDE
+    1269 00001be0     000c          .WORD   ADJCCONT             ;CMOS ADJUSTMENT WE'RE SETTING
+    1270 00001bf0 00000001          .LONG   1                    ;MINIMUM VALUE
+    1271 00001c10 00000004          .LONG   4                    ;MAXIMUM VALUE
+    1272 00001c30 00000001          .LONG   1                    ;MOVE UP AND DOWN BY 1'S
+    1273 00001c50 00000000          .LONG   0                    ;DON'T SUB ZERO FOR ANY
+    1274 00001c70 00004380'         .LONG   JUST_BIN             ;JUST SHOW THE NUMBER
+    1275 00001c90     000d          .WORD   COINBITS             ;WRAP AROUND
+    1276 00001ca0 00000000          .LONG   0                    ;NO EXTRA INFO NEEDED
+    1277 00001cc0 00003ee0"         .LONG   M_CONT               ;POINTER TO HEADER MESSAGE
+    1278                    
+    1279 00001ce0           DO_CRFR:
+    1280 00001ce0 00000540'         .LONG   GEN_ADJ              ;ROUTINE TO RUN
+    1281 00001d00 000040c0"         .LONG   M_CRFR2              ;POINTER TO HEADER MESSAGE
+    1282 00001d20 000069f0"         .LONG   HELP_CRFR            ;POINTER TO HELP MESSAGES FOR RIGHT SIDE
+    1283 00001d40     000a          .WORD   ADJFRAC              ;CMOS ADJUSTMENT WE'RE SETTING
+    1284 00001d50 00000000          .LONG   0                    ;MINIMUM VALUE
+    1285 00001d70 00000001          .LONG   1                    ;MAXIMUM VALUE
+    1286 00001d90 00000001          .LONG   1                    ;MOVE UP AND DOWN BY 1
+    1287 00001db0 00000000          .LONG   0                    ;DON'T SUB ZERO FOR ANY
+    1288 00001dd0 00004400'         .LONG   LIST_1LINE           ;MESSAGE LIST USED FOR VALUES.
+    1289 00001df0     0001          .WORD   WRAP_VAL             ;WRAP AROUND
+    1290 00001e00 0000cb90"         .LONG   LIST_NOYES           ;LIST OF MESSAGES FOR THIS ADJ.
+    1291 00001e20 00004010"         .LONG   M_CRFR               ;POINTER TO HEADER MESSAGE
+    1292                    
+    1293 00001e40           DO_CPD: 
+    1294 00001e40 00000540'         .LONG   GEN_ADJ              ;ROUTINE TO RUN
+    1295 00001e60 00004150"         .LONG   M_CPD                ;POINTER TO HEADER MESSAGE
+    1296 00001e80 00006ae0"         .LONG   HELP_CPD             ;POINTER TO HELP MESSAGES FOR RIGHT SIDE
+    1297 00001ea0     0009          .WORD   ADJCDIV              ;CMOS ADJUSTMENT WE'RE SETTING
+    1298 00001eb0 00000000          .LONG   0                    ;MINIMUM VALUE
+    1299 00001ed0 00000014          .LONG   20                   ;MAXIMUM VALUE
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   30
+
+    1300 00001ef0 00000001          .LONG   1                    ;MOVE UP AND DOWN BY 1'S
+    1301 00001f10 00000000          .LONG   0                    ;DON'T SUB ZERO FOR ANY
+    1302 00001f30 000042c0'         .LONG   BIN_OR_MESS             ;JUST SHOW THE NUMBER
+    1303 00001f50     0000          .WORD   0                    ;NO WRAP AROUND
+    1304 00001f60 0000d680"         .LONG   M_NO_COL             ;NO EXTRA INFO NEEDED
+    1305 00001f80 00004150"         .LONG   M_CPD                ;POINTER TO HEADER MESSAGE
+    1306                    
+    1307 00001fa0           DO_MAX: 
+    1308 00001fa0 00000540'         .LONG   GEN_ADJ              ;ROUTINE TO RUN
+    1309 00001fc0 000041e0"         .LONG   M_MAX                ;POINTER TO HEADER MESSAGE
+    1310 00001fe0 00006bd0"         .LONG   HELP_MAX             ;POINTER TO HELP MESSAGES FOR RIGHT SIDE
+    1311 00002000     0011          .WORD   ADJMAXC              ;CMOS ADJUSTMENT WE'RE SETTING
+    1312 00002010 00000005          .LONG   5                    ;MINIMUM VALUE
+    1313 00002030 00000063          .LONG   99                   ;MAXIMUM VALUE
+    1314 00002050 00000001          .LONG   1                    ;MOVE UP AND DOWN BY 1'S
+    1315 00002070 00000000          .LONG   0                    ;DON'T SUB ZERO FOR ANY
+    1316 00002090 00004380'         .LONG   JUST_BIN             ;JUST SHOW THE NUMBER
+    1317 000020b0     0001          .WORD   WRAP_VAL             ;WRAP AROUND
+    1318 000020c0 00000000          .LONG   0                    ;NO EXTRA INFO NEEDED
+    1319 000020e0 000041e0"         .LONG   M_MAX                ;POINTER TO HEADER MESSAGE
+    1320                    
+    1321 00002100           DO_FREE:
+    1322 00002100 00000540'         .LONG   GEN_ADJ              ;ROUTINE TO RUN
+    1323 00002120 00003120"         .LONG   MESS_FREE            ;POINTER TO HEADER MESSAGE
+    1324 00002140 000061a0"         .LONG   HELP_FREE            ;POINTER TO HELP MESSAGES FOR RIGHT SIDE
+    1325 00002160     0012          .WORD   ADJFREPL             ;CMOS ADJUSTMENT WE'RE SETTING
+    1326 00002170 00000000          .LONG   0                    ;MINIMUM VALUE
+    1327 00002190 00000001          .LONG   1                    ;MAXIMUM VALUE
+    1328 000021b0 00000001          .LONG   1                    ;MOVE UP AND DOWN BY 250'S
+    1329 000021d0 00000000          .LONG   0                    ;DON'T SUB ZERO FOR ANY
+    1330 000021f0 00004400'         .LONG   LIST_1LINE           ;MESSAGE LIST USED FOR VALUES.
+    1331 00002210     0001          .WORD   WRAP_VAL             ;WRAP AROUND
+    1332 00002220 0000cb90"         .LONG   LIST_NOYES           ;LIST OF MESSAGES FOR THIS ADJ.
+    1333 00002240 00003120"         .LONG   MESS_FREE            ;POINTER TO HEADER MESSAGE
+    1334                    
+    1335 00002260           DO_CTIT:
+    1336 00002260 00000540'         .LONG   GEN_ADJ              ;ROUTINE TO RUN
+    1337 00002280 00003730"         .LONG   MESS_CTIT            ;POINTER TO HEADER MESSAGE
+    1338 000022a0 00006290"         .LONG   CTIT_HELP            ;POINTER TO HELP MESSAGES FOR RIGHT SIDE
+    1339 000022c0     0016          .WORD   ADJNOCPAG            ;CMOS ADJUSTMENT WE'RE SETTING
+    1340 000022d0 00000000          .LONG   0                    ;MINIMUM VALUE
+    1341 000022f0 00000001          .LONG   1                    ;MAXIMUM VALUE
+    1342 00002310 00000001          .LONG   1                    ;MOVE UP AND DOWN BY 1'S
+    1343 00002330 00000000          .LONG   0                    ;DON'T SUB ZERO FOR ANY
+    1344 00002350 00004400'         .LONG   LIST_1LINE           ;MESSAGE LIST USED FOR VALUES.
+    1345 00002370     0001          .WORD   WRAP_VAL             ;WRAP AROUND
+    1346 00002380 0000cbd0"         .LONG   LIST_YESNO           ;LIST OF MESSAGES FOR THIS ADJ.
+    1347 000023a0 00003730"         .LONG   MESS_CTIT            ;POINTER TO HEADER MESSAGE
+    1348                    
+    1349              fffe  AM_BDY  EQU     -2
+    1350              00a7  AM_WID  EQU     0A7H
+    1351              005e  AM_X    EQU     TIT_ULX+GAP+MB_XWID+(AM_WID/2)+C_KLUDGE
+    1352              0054  AM_Y    EQU     INST_LRY+BOX_YGAP+MB_YWID+GAP-AM_BDY
+    1353              00b6  AM_RX   EQU     TIT_ULX+(2*GAP)+AM_WID+(2*MB_XWID)
+    1354              00b8  AM_HX   EQU     AM_RX+BOX_XGAP
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   31
+
+    1355                    
+    1356 000023c0           MEN_ADJ:
+    1357 000023c0 00000000!         .LONG   RD7FONT         ;FONT
+    1358 000023e0 00000000!         .LONG   STRCNRM         ;CENTER PLEASE
+    1359 00002400 00003020"         .LONG   M_GADJ          ;TITLE
+    1360 00002420     0202          .WORD   COLOR_WHITE    ;COLOR OF TITLE
+    1361 00002430     005e          .WORD   AM_X            ;UL X
+    1362 00002440     0054          .WORD   AM_Y            ;UL Y
+    1363 00002450     000c          .WORD   12
+    1364 00002460     0202          .WORD   COLOR_WHITE     ;COLOR WHEN NOT SELECTED
+    1365 00002470     000c          .WORD   12              ;HEIGHT OF SELECTION BAR
+    1366 00002480     fffe          .WORD   AM_BDY          ;DISTANCE OF BAR FROM TOP OF TEXT (NEGATIVE)
+    1367 00002490     0006          .WORD   BAR_DX          ;EXTRA X ON EACH SIDE.
+    1368 000024a0     00a7          .WORD   AM_WID          ;WIDTH OF BAR!
+    1369 000024b0     3d3d          .WORD   COLOR_DECAY     ;TEXT COLOR OF SELECTED ITEM
+    1370 000024c0 00000000!         .LONG   MESS_MM,0,BLNK_HELP        ;RETURN TO MAIN MENU
+    1371 00002520 00003170"         .LONG   MESS_PRICE,DO_PRICE,ADJ_HELP
+    1372 00002580 00003200"         .LONG   MESS_PARAM,DO_PARAM,ADJ_HELP
+    1373 000025e0 00003120"         .LONG   MESS_FREE,DO_FREE,ADJ_HELP      ;FREE PLAY
+    1374                    
+    1375 00002640 00003310"         .LONG   MESS_HEAD,DO_HEAD,ADJ_HELP
+    1376                    
+    1377 000026a0 00003280"         .LONG   MESS_DIFF,DO_DIFF,ADJ_HELP
+    1378 00002700 000033a0"         .LONG   MESS_SPEEDS,DO_SPEEDS,ADJ_HELP
+    1379 00002760 00003430"         .long   MESS_FULLG,DO_FULLG,ADJ_HELP
+    1380 000027c0 000034e0"         .LONG   MESS_WINM,DO_WINM,ADJ_HELP
+    1381                    
+    1382 00002820 00003580"         .long   MESS_COMPASS,DO_COMPASS,ADJ_HELP
+    1383 00002880 00003620"         .long   MESS_TOURNEY,DO_TOURNEY,ADJ_HELP
+    1384                    
+    1385 000028e0 000037b0"         .LONG   MESS_AMODE,DO_AMODE,ADJ_HELP
+    1386 00002940 00000000!         .LONG   MESS_MM,0,BLNK_HELP        ;RETURN TO MAIN MENU
+    1387 000029a0 00000000          .LONG   0               ;END
+    1388                    
+    1389 000029c0           MEN_CUST:
+    1390 000029c0 00000000!         .LONG   RD7FONT                 ;FONT
+    1391 000029e0 00000000!         .LONG   STRCNRM                 ;CENTER PLEASE
+    1392 00002a00 000030a0"         .LONG   M_CUSPRI                ;TITLE
+    1393 00002a20     0707          .WORD   COLOR_BLUE              ;COLOR OF TITLE
+    1394 00002a30     005e          .WORD   AM_X                    ;UL X
+    1395 00002a40     0054          .WORD   AM_Y                    ;UL Y
+    1396 00002a50     000b          .WORD   11                      ;VERTICAL SPACING
+    1397 00002a60     0707          .WORD   COLOR_BLUE              ;COLOR WHEN NOT SELECTED
+    1398 00002a70     000c          .WORD   12                      ;HEIGHT OF SELECTION BAR
+    1399 00002a80     fffe          .WORD   AM_BDY                  ;DISTANCE OF BAR FROM TOP OF TEXT (NEGATIVE)
+    1400 00002a90     0006          .WORD   BAR_DX                  ;EXTRA X ON EACH SIDE.
+    1401 00002aa0     00a7          .WORD   AM_WID                  ;WIDTH OF BAR!
+    1402 00002ab0     3d3d          .WORD   COLOR_DECAY             ;TEXT COLOR OF SELECTED ITEM
+    1403 00002ac0 00004260"         .LONG   MESS_AM,0,BLNK_HELP     ;RETURN TO MAIN MENU
+    1404 00002b20 000039f0"         .LONG   M_LCU,DO_LCOIN,ADJ_HELP ;LEFT SLOT UNITS
+    1405 00002b80 00003b20"         .LONG   M_RCU,DO_RCOIN,ADJ_HELP ;RIGHT SLOT UNITS
+    1406 00002be0 00003aa0"         .LONG   M_CCU,DO_CCOIN,ADJ_HELP ;CENTER SLOT UNITS
+    1407 00002c40 00003bd0"         .LONG   M_XCU,DO_XCOIN,ADJ_HELP ;RIGHT SLOT UNITS
+    1408 00002ca0 00003c50"         .LONG   M_UC,DO_UC,ADJ_HELP     ;UNITS FOR CREDIT
+    1409 00002d00 00003cd0"         .LONG   M_UB,DO_UB,ADJ_HELP     ;UNITS FOR BONUS
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   32
+
+    1410 00002d60 00003d40"         .LONG   M_UM,DO_UM,ADJ_HELP     ;MINIMUM UNITS
+    1411 00002dc0 00003e50"         .LONG   M_CST,DO_CST,ADJ_HELP   ;CREDITS REQUIRED TO START
+    1412 00002e20 00003ee0"         .LONG   M_CONT,DO_CONT,ADJ_HELP         ;CREDITS REQUIRED TO CONTINUE
+    1413 00002e80 00003730"         .LONG   MESS_CTIT,DO_CTIT,ADJ_HELP      ;COIN PAGE HELP LINE
+    1414 00002ee0 00004010"         .LONG   M_CRFR,DO_CRFR,ADJ_HELP         ;SHOW CREDIT FRACTIONS
+    1415 00002f40 00004150"         .LONG   M_CPD,DO_CPD,ADJ_HELP           ;COINS PER DOLLAR
+    1416 00002fa0 000041e0"         .LONG   M_MAX,DO_MAX,ADJ_HELP           ;MAXIMUM CREDITS
+    1417 00003000 00000000          .LONG   0
+    1418                    
+    1419 00003020           M_GADJ  
+    1420 00003020       47          .STRING         "GAME ADJUSTMENT"
+    1421 00003098       00          .BYTE     0
+    1422 000030a0                   .EVEN
+    1423                    
+    1424 000030a0           M_CUSPRI:
+    1425 000030a0       43          .STRING         "CUSTOM PRICING"
+    1426 00003110       00          .BYTE     0
+    1427 00003120                   .EVEN
+    1428                    
+    1429 00003120           MESS_FREE:      
+    1430 00003120       46          .STRING "FREE PLAY"
+    1431 00003168       00          .BYTE 0
+    1432 00003170                   .EVEN
+    1433                    
+    1434 00003170           MESS_PRICE:
+    1435 00003170       53          .STRING "STANDARD PRICING"
+    1436 000031f0       00          .BYTE 0
+    1437 00003200                   .EVEN
+    1438 00003200           MESS_PARAM:
+    1439 00003200       43          .STRING "CUSTOM PRICING"
+    1440 00003270       00          .BYTE 0
+    1441 00003280                   .EVEN
+    1442 00003280           MESS_DIFF
+    1443 00003280       44          .byte   "DRONE DIFFICULTY",0
+    1444 00003310                   .EVEN
+    1445 00003310           MESS_HEAD:
+    1446 00003310       50          .STRING "PLAYER HEAD SIZE"
+    1447 00003390       00          .BYTE 0
+    1448 000033a0                   .EVEN
+    1449 000033a0           MESS_SPEEDS:
+    1450 000033a0       47          .string "GAME TIMER SPEED",0
+    1451 00003430                   .even
+    1452 00003430           MESS_FULLG:
+    1453 00003430       43          .string "CREDITS FOR FULLGAME",0
+    1454 000034e0                   .even
+    1455 000034e0           MESS_WINM:
+    1456 000034e0       34          .string "4 PLAYER WIN BONUS",0
+    1457 00003580                   .even
+    1458                    
+    1459 00003580           MESS_COMPASS:
+    1460 00003580       43          .string "COMPUTER ASSISTANCE",0
+    1461 00003620                   .even
+    1462                    
+    1463 00003620           MESS_TOURNEY:
+    1464 00003620       54          .string "TOURNAMENT MODE",0
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   33
+
+    1465 000036a0                   .even
+    1466                    
+    1467 000036a0           MESS_CNTR:
+    1468 000036a0       43          .STRING "COIN COUNTER MODE"
+    1469 00003728       00          .BYTE 0
+    1470 00003730                   .EVEN
+    1471 00003730           MESS_CTIT:
+    1472 00003730       43          .STRING "COIN PAGE HELP"
+    1473 000037a0       00          .BYTE 0
+    1474 000037b0                   .EVEN
+    1475 000037b0           MESS_AMODE:     
+    1476 000037b0       41          .STRING "ATTRACT-MODE SOUND"   ;FOR MENU
+    1477 00003840       00          .BYTE 0
+    1478 00003850                   .EVEN
+    1479 00003850           MESS_AMOD2:     
+    1480 00003850       41          .STRING "A-MODE SOUND"        ;FOR TITLE BOX (SHORTER VER.)
+    1481 000038b0       00          .BYTE 0
+    1482 000038c0                   .EVEN
+    1483 000038c0           MESS_AHSRES:    
+    1484 000038c0       41          .STRING "AUTO HIGH SCORE RESET"    ;FOR MENU
+    1485 00003968       00          .BYTE 0
+    1486 00003970                   .EVEN
+    1487 00003970           MESS_HSR2:
+    1488 00003970       41          .STRING "AUTO H.S. RESET"
+    1489 000039e8       00          .BYTE 0
+    1490 000039f0                   .EVEN
+    1491                    
+    1492 000039f0           M_LCU:  
+    1493 000039f0       4c          .STRING "LEFT CHUTE (1) UNITS"
+    1494 00003a90       00          .BYTE 0
+    1495 00003aa0                   .EVEN
+    1496 00003aa0           M_CCU:  
+    1497 00003aa0       43          .STRING "CHUTE (3) UNITS"
+    1498 00003b18       00          .BYTE 0
+    1499 00003b20                   .EVEN
+    1500 00003b20           M_RCU:  
+    1501 00003b20       52          .STRING "RIGHT CHUTE (2) UNITS"
+    1502 00003bc8       00          .BYTE 0
+    1503 00003bd0                   .EVEN
+    1504 00003bd0           M_XCU:  
+    1505 00003bd0       43          .STRING "CHUTE (4) UNITS"
+    1506 00003c48       00          .BYTE 0
+    1507 00003c50                   .EVEN
+    1508 00003c50           M_UC:   
+    1509 00003c50       55          .STRING "UNITS / CREDIT"
+    1510 00003cc0       00          .BYTE 0
+    1511 00003cd0                   .EVEN
+    1512 00003cd0           M_UB:   
+    1513 00003cd0       55          .STRING "UNITS / BONUS"
+    1514 00003d38       00          .BYTE 0
+    1515 00003d40                   .EVEN
+    1516 00003d40           M_UM:   
+    1517 00003d40       4d          .STRING "MIN. UNITS REQUIRED"
+    1518 00003dd8       00          .BYTE 0
+    1519 00003de0                   .EVEN
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   34
+
+    1520 00003de0           M_UM2:  
+    1521 00003de0       4d          .STRING  "MINIMUM UNITS"
+    1522 00003e48       00          .BYTE 0
+    1523 00003e50                   .EVEN
+    1524 00003e50           M_CST:  
+    1525 00003e50       43          .STRING "CREDITS TO START"
+    1526 00003ed0       00          .BYTE 0
+    1527 00003ee0                   .EVEN
+    1528 00003ee0           M_CONT: 
+    1529 00003ee0       43          .STRING "CREDITS TO CONTINUE"
+    1530 00003f78       00          .BYTE 0
+    1531 00003f80                   .EVEN
+    1532 00003f80           M_CONT2:
+    1533 00003f80       43          .STRING "CRED. TO CONTINUE"
+    1534 00004008       00          .BYTE 0
+    1535 00004010                   .EVEN
+    1536 00004010           M_CRFR: 
+    1537 00004010       53          .STRING "SHOW CREDIT FRACTIONS"
+    1538 000040b8       00          .BYTE 0
+    1539 000040c0                   .EVEN
+    1540 000040c0           M_CRFR2:
+    1541 000040c0       43          .STRING "CREDIT FRACTIONS"
+    1542 00004140       00          .BYTE 0
+    1543 00004150                   .EVEN
+    1544 00004150           M_CPD:  
+    1545 00004150       43          .STRING "COINS PER DOLLAR"
+    1546 000041d0       00          .BYTE 0
+    1547 000041e0                   .EVEN
+    1548 000041e0           M_MAX:  
+    1549 000041e0       4d          .STRING "MAXIMUM CREDITS"
+    1550 00004258       00          .BYTE 0
+    1551 00004260                   .EVEN
+    1552 00004260           MESS_AM:
+    1553 00004260       52          .STRING "RETURN TO ADJ. MENU"
+    1554 000042f8       00          .BYTE 0
+    1555 00004300                   .EVEN
+    1556              0036  ADJT_Y  EQU     INST_ULY+9                ;CENTER IN THE BOX
+    1557 00004300           ADJT_SETUP:
+    1558 00004300                   MESS_MAC  RD7FONT,SPACING20,200,ADJT_Y,COLOR_LF,STRCNRM,0
+    1559                    
+    1560              0084  CSET_Y  EQU     CUR_ULY+7
+    1561 000043a0                   .EVEN
+    1562                    
+    1563              0098  MOC_Y1   EQU     CSET_Y+20
+    1564              00a2  MOC_Y2   EQU     MOC_Y1+10
+    1565              00ac  MOC_Y3   EQU     MOC_Y2+10
+    1566                    
+    1567 000043a0           MESS_OPEN_OR_CANCEL
+    1568 000043a0                    MESS_MAC  RD7FONT,SPACING20,AM_X,MOC_Y1,COLOR_LF,STRCNRM,0
+    1569 00004440       4f           .STRING   "OPEN COIN DOOR, OR"
+    1570 000044d0       00           .BYTE   0,1
+    1571 000044e0                    .EVEN
+    1572 000044e0                    MESS_MAC  RD7FONT,SPACING20,AM_X,MOC_Y2,COLOR_LF,STRCNRM,0
+    1573 00004580       50           .STRING   "PRESS ANY BUTTON"
+    1574 00004600       00           .BYTE   0,1
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   35
+
+    1575 00004610                    .EVEN
+    1576 00004610                    MESS_MAC  RD7FONT,SPACING20,AM_X,MOC_Y3,COLOR_LF,STRCNRM,0
+    1577 000046b0       54           .STRING   "TO CANCEL"
+    1578 000046f8       00           .BYTE   0,0
+    1579 00004710                    .EVEN
+    1580                    
+    1581              009d  IN_Y1    EQU     CUR_ULY+32
+    1582              00a9  IN_Y2    EQU     IN_Y1+12
+    1583              00d0  IN_Y3    EQU     IN_Y2+39
+    1584              00dc  IN_Y4    EQU     IN_Y3+12
+    1585                    
+    1586 00004710           INST_TO_ADJ
+    1587 00004710                     MESS_MAC  RD7FONT,SPACING07,AM_X,IN_Y1,COLOR_WHITE,STRCNRM,0
+    1588 000047b0       4d           .STRING   "MODIFY VALUE WITH"
+    1589 00004838       00           .BYTE   0,1
+    1590 00004850                    .EVEN
+    1591 00004850                     MESS_MAC  RD7FONT,SPACING07,AM_X,IN_Y2,COLOR_WHITE,STRCNRM,0
+    1592 000048f0       41           .STRING   "ANY STICK"
+    1593 00004938       00           .BYTE   0,1
+    1594 00004950                    .EVEN
+    1595 00004950                    MESS_MAC  RD7FONT,SPACING07,AM_X,IN_Y3,COLOR_WHITE,STRCNRM,0
+    1596 000049f0       50           .STRING   "PRESS ANY BUTTON"
+    1597 00004a70       00           .BYTE   0,1
+    1598 00004a80                    .EVEN
+    1599 00004a80                    MESS_MAC  RD7FONT,SPACING07,AM_X,IN_Y4,COLOR_WHITE,STRCNRM,0
+    1600 00004b20       57           .STRING   "WHEN VALUE IS CORRECT."
+    1601 00004bd0       00           .BYTE   0,0
+    1602 00004be0                    .EVEN
+    1603              005a  ADNOW_Y1 EQU     CUR_ULY-35
+    1604              0066  ADNOW_Y2 EQU     ADNOW_Y1+12
+    1605                    
+    1606 00004be0           MES_ADJUSTING
+    1607 00004be0                    MESS_MAC  RD7FONT,SPACING07,AM_X,ADNOW_Y1,COLOR_LF,STRCNRM,0
+    1608 00004c80       41           .STRING   "ADJUSTING"
+    1609 00004cc8       00           .BYTE   0,0
+    1610 00004ce0                    .EVEN
+    1611                    
+    1612 00004ce0           MES_ADNAME
+    1613 00004ce0                    MESS_MAC  RD7FONT,SPACING07,AM_X,ADNOW_Y2,COLOR_LF,STRCNRM,0
+    1614                    
+    1615              0032  INSTR_Y  EQU     INST_ULY+5
+    1616              003c  INSTR_2Y EQU     INSTR_Y+10
+    1617                    
+    1618 00004d80           ADJ_ADV
+    1619 00004d80                     MESS_MAC  RD7FONT,SPACING07,AM_X,INSTR_Y,COLOR_BPR,STRCNRM,0
+    1620 00004e20       53           .STRING   "SELECT WITH ANY STICK"
+    1621 00004ec8       00           .BYTE   0,1
+    1622 00004ee0                    .EVEN
+    1623 00004ee0                    MESS_MAC  RD7FONT,SPACING07,AM_X,INSTR_2Y,COLOR_BPR,STRCNRM,0
+    1624 00004f80       50           .STRING   "PRESS A BUTTON TO MODIFY"
+    1625 00005040       00           .BYTE   0,0
+    1626 00005050                    .EVEN
+    1627                    
+    1628              00b6  AAY      EQU     IN_Y1+19H
+    1629                    
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   36
+
+    1630 00005050           ADJ_ARROW
+    1631 00005050                    MESS_MAC  RD7FONT,0FFFDH,AM_X,AAY,COLOR_LF,STRCNRM,0
+    1632 000050f0       2d           .STRING   "----->    ----->    ----->    ----->    ----->"
+    1633 00005260       00           .BYTE   0,0
+    1634 00005270                    .EVEN
+    1635                    
+    1636                    
+    1637 00005270           MESS_TAMPERED
+    1638 00005270       43           .STRING "CUSTOM"
+    1639 000052a0       00           .BYTE   0
+    1640 000052b0                    .EVEN
+    1641                    
+    1642 000052b0           MESS_DIP
+    1643 000052b0       44          .STRING "DIPSWITCH",0
+    1644 00005300                   .EVEN
+    1645                    
+    1646 00005300           M_SLOTVAL
+    1647 00005300       43           .STRING "COIN SLOT VALUES"
+    1648 00005380       00           .BYTE   0
+    1649 00005390                    .EVEN
+    1650                    
+    1651 00005390       47  MESS_GP  .STRING "GAME PRICING:"
+    1652 000053f8       00           .BYTE   0
+    1653 00005400                    .EVEN
+    1654 00005400       46  MESS_FP  .STRING "FREE PLAY:"
+    1655 00005450       00           .BYTE   0
+    1656 00005460                    .EVEN
+    1657 00005460       4d  MESS_MAX .STRING "MAXIMUM CREDITS:"
+    1658 000054e0       00           .BYTE   0
+    1659 000054f0                    .EVEN
+    1660                    
+    1661 000054f0       43  M_CTS_PL         .STRING "CREDITS TO START:"
+    1662 00005578       00           .BYTE 0
+    1663 00005580                    .EVEN
+    1664 00005580       43  M_CTC_PL         .STRING "CREDITS TO CONTINUE:"
+    1665 00005620       00           .BYTE 0
+    1666 00005630                    .EVEN
+    1667                    
+    1668 00005630           HELP_HEAD
+    1669 00005630     0001           .WORD  1               ;CENTER JUSTIFY
+    1670 00005640     0707           .WORD  COLOR_BLUE      ;COLOR
+    1671 00005650     0006           .WORD  6               ;6 ENTRIES
+    1672 00005660 000070c0"          .LONG  DHH_0
+    1673 00005680 00007180"          .LONG  DHH_1
+    1674 000056a0 00007498"          .LONG  M_NULL
+    1675 000056c0 00007250"          .LONG  DHH_3
+    1676 000056e0 000072d0"          .LONG  DHH_4
+    1677 00005700 00007340"          .LONG  DHH_5
+    1678 00005720           HELP_DIFF
+    1679 00005720     0001           .WORD  1               ;CENTER JUSTIFY
+    1680 00005730     0707           .WORD  COLOR_BLUE      ;COLOR
+    1681 00005740     0006           .WORD  6               ;6 ENTRIES
+    1682 00005750 000073e0"          .LONG  DH_0
+    1683 00005770 000074a0"          .LONG  DH_1
+    1684 00005790 00007550"          .LONG  DH_2
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   37
+
+    1685 000057b0 000075f0"          .LONG  DH_3
+    1686 000057d0 00007690"          .LONG  DH_4
+    1687 000057f0 00007728"          .LONG  DH_5
+    1688 00005810           HELP_SPEEDS
+    1689 00005810     0001           .WORD  1               ;CENTER JUSTIFY
+    1690 00005820     0707           .WORD  COLOR_BLUE      ;COLOR
+    1691 00005830     0006           .WORD  6               ;6 ENTRIES
+    1692 00005840 000077c0"          .LONG  SH_0
+    1693 00005860 00007890"          .LONG  SH_1
+    1694 00005880 00007498"          .LONG  M_NULL
+    1695 000058a0 00007920"          .LONG  SH_3
+    1696 000058c0 000079c0"          .LONG  SH_4
+    1697 000058e0 00007a60"          .LONG  SH_5
+    1698 00005900           HELP_FULLG
+    1699 00005900     0001           .WORD  1               ;CENTER JUSTIFY
+    1700 00005910     0707           .WORD  COLOR_BLUE      ;COLOR
+    1701 00005920     0006           .WORD  6               ;6 ENTRIES
+    1702 00005930 00007b00"          .LONG  FGH_0
+    1703 00005950 00007bd0"          .LONG  FGH_1
+    1704 00005970 00007c90"          .LONG  FGH_2
+    1705 00005990 00007d70"          .LONG  FGH_3
+    1706 000059b0 00007e10"          .LONG  FGH_4
+    1707 000059d0 00007eb0"          .LONG  FGH_5
+    1708 000059f0           HELP_WINM
+    1709 000059f0     0001           .WORD   1               ;CENTER JUSTIFY
+    1710 00005a00     0707           .WORD   COLOR_BLUE     ;COLOR
+    1711 00005a10     0006           .WORD   6               ;6 ENTRIES
+    1712 00005a20 00007f50"          .LONG   WGH_0
+    1713 00005a40 00008030"          .LONG   WGH_1
+    1714 00005a60 00007498"          .LONG   M_NULL
+    1715 00005a80 00008110"          .LONG   WGH_3
+    1716 00005aa0 000081f0"          .LONG   WGH_4
+    1717 00005ac0 000082b0"          .LONG   WGH_5
+    1718 00005ae0           HELP_COMPASS
+    1719 00005ae0     0001           .WORD   1               ;CENTER JUSTIFY
+    1720 00005af0     0707           .WORD   COLOR_BLUE     ;COLOR
+    1721 00005b00     0006           .WORD   6               ;6 ENTRIES
+    1722 00005b10 00008390"          .LONG   CPH_0
+    1723 00005b30 00008450"          .LONG   CPH_1
+    1724 00005b50 00008530"          .LONG   CPH_2
+    1725 00005b70 00008610"          .LONG   CPH_3
+    1726 00005b90 000086f0"          .LONG   CPH_3A
+    1727 00005bb0 00008790"          .LONG   CPH_4
+    1728 00005bd0           HELP_TOURNEY
+    1729 00005bd0     0001           .WORD   1               ;CENTER JUSTIFY
+    1730 00005be0     0707           .WORD   COLOR_BLUE     ;COLOR
+    1731 00005bf0     0006           .WORD   6               ;6 ENTRIES
+    1732 00005c00 00008860"          .LONG   TRH_0
+    1733 00005c20 00008930"          .LONG   TRH_1
+    1734 00005c40 00008a00"          .LONG   TRH_2
+    1735 00005c60 00008ac0"          .LONG   TRH_3
+    1736 00005c80 00008b60"          .LONG   TRH_4
+    1737 00005ca0 00008c20"          .LONG   TRH_5
+    1738                    
+    1739 00005cc0           HELP_CNTR
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   38
+
+    1740 00005cc0     0001           .WORD   1               ;CENTER JUSTIFY
+    1741 00005cd0     0707           .WORD   COLOR_BLUE     ;COLOR
+    1742 00005ce0     0006           .WORD   6               ;6 ENTRIES
+    1743 00005cf0 00006cc0"          .LONG   CNTRH_0
+    1744 00005d10 00006d90"          .LONG   CNTRH_1
+    1745 00005d30 00007498"          .LONG   M_NULL
+    1746 00005d50 00006e20"          .LONG   CNTRH_3
+    1747 00005d70 00006f00"          .LONG   CNTRH_4
+    1748 00005d90 00006fe0"          .LONG   CNTRH_5
+    1749                    
+    1750 00005db0           HELP_PRICE
+    1751 00005db0     0000           .WORD   0               ;CENTER JUSTIFY
+    1752 00005dc0     0707           .WORD   COLOR_BLUE     ;COLOR
+    1753 00005dd0     0004           .WORD   4               ;5 ENTRIES
+    1754 00005de0 00008cf0"          .LONG   PH_0
+    1755 00005e00 00008db0"          .LONG   PH_1
+    1756 00005e20 00008e60"          .LONG   PH_2
+    1757 00005e40 00008ee0"          .LONG   PH_3
+    1758                    
+    1759 00005e60           HELP_DIP
+    1760 00005e60     0000          .WORD   0             ;CENTER JUSTIFY
+    1761 00005e70     0303          .WORD   COLOR_RED       ;COLOR
+    1762 00005e80     0003          .WORD   3
+    1763 00005e90 00008f70"         .LONG   DIH_0
+    1764 00005eb0 00009020"         .LONG   DIH_1
+    1765 00005ed0 000090e0"         .LONG   DIH_2
+    1766                    
+    1767 00005ef0           HELP_PARAM
+    1768 00005ef0     0000           .WORD   0               ;CENTER JUSTIFY
+    1769 00005f00     0707           .WORD   COLOR_BLUE     ;COLOR
+    1770 00005f10     0006           .WORD   6               ;5 ENTRIES
+    1771 00005f20 0000a560"          .LONG   PP_0
+    1772 00005f40 0000a620"          .LONG   PP_1
+    1773 00005f60 0000a6d0"          .LONG   PP_2
+    1774 00005f80 0000a7a0"          .LONG   PP_3
+    1775 00005fa0 0000a880"          .LONG   PP_4
+    1776 00005fc0 0000a950"          .LONG   PP_5
+    1777                    
+    1778                    
+    1779                    
+    1780                    
+    1781                    
+    1782                    
+    1783 00005fe0           HELP_AMODE
+    1784 00005fe0     0000           .WORD   0               ;CENTER JUSTIFY
+    1785 00005ff0     0707           .WORD   COLOR_BLUE     ;COLOR
+    1786 00006000     0005           .WORD   5               ;6 ENTRIES
+    1787 00006010 00009450"          .LONG   HAM_1
+    1788 00006030 00009510"          .LONG   HAM_2
+    1789 00006050 000095e0"          .LONG   HAM_3
+    1790 00006070 00007498"          .LONG   M_NULL
+    1791 00006090 00009690"          .LONG   HAM_4
+    1792                    
+    1793 000060b0           HELP_AHSRES
+    1794 000060b0     0000           .WORD   0               ;CENTER JUSTIFY
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   39
+
+    1795 000060c0     0707           .WORD   COLOR_BLUE     ;COLOR
+    1796 000060d0     0006           .WORD   6               ;6 ENTRIES
+    1797 000060e0 00009740"          .LONG   HAH_1
+    1798 00006100 00009800"          .LONG   HAH_2
+    1799 00006120 000098c0"          .LONG   HAH_3
+    1800 00006140 00009990"          .LONG   HAH_4
+    1801 00006160 00007498"          .LONG   M_NULL
+    1802 00006180 00009a50"          .LONG   HAH_5
+    1803                    
+    1804 000061a0           HELP_FREE
+    1805 000061a0     0000           .WORD   0
+    1806 000061b0     0707           .WORD   COLOR_BLUE
+    1807 000061c0     0006           .WORD   6
+    1808 000061d0 00009dd0"          .LONG   FP_M1
+    1809 000061f0 00009e80"          .LONG   FP_M2
+    1810 00006210 00009f40"          .LONG   FP_M3
+    1811 00006230 0000a000"          .LONG   FP_M4
+    1812 00006250 00007498"          .LONG   M_NULL
+    1813 00006270 0000a060"          .LONG   FP_M5
+    1814                    
+    1815 00006290           CTIT_HELP
+    1816 00006290     0000           .WORD   0
+    1817 000062a0     0202           .WORD   COLOR_WHITE
+    1818 000062b0     0005           .WORD   5
+    1819 000062c0 0000a100"          .LONG   CT_M1
+    1820 000062e0 0000a1d0"          .LONG   CT_M2
+    1821 00006300 0000a2a0"          .LONG   CT_M3
+    1822 00006320 0000a380"          .LONG   CT_M4
+    1823 00006340 0000a470"          .LONG   CT_M5
+    1824                    
+    1825 00006360           HELP_LCU
+    1826 00006360     0000           .WORD   0
+    1827 00006370     0202           .WORD   COLOR_WHITE
+    1828 00006380     0006           .WORD   6
+    1829 00006390 0000aa20"          .LONG   LC_M1
+    1830 000063b0 0000ab00"          .LONG   LC_M2
+    1831 000063d0 0000abf0"          .LONG   LC_M3
+    1832 000063f0 0000ace0"          .LONG   LC_M4
+    1833 00006410 0000ad90"          .LONG   LC_M5
+    1834 00006430 0000ae60"          .LONG   LC_M6
+    1835                    
+    1836 00006450           HELP_CCU
+    1837 00006450     0000           .WORD   0
+    1838 00006460     0202           .WORD   COLOR_WHITE
+    1839 00006470     0006           .WORD   6
+    1840 00006480 0000aa20"          .LONG   LC_M1
+    1841 000064a0 0000ab00"          .LONG   LC_M2
+    1842 000064c0 0000abf0"          .LONG   LC_M3
+    1843 000064e0 0000ace0"          .LONG   LC_M4
+    1844 00006500 0000af20"          .LONG   CC_M5
+    1845 00006520 0000ae60"          .LONG   LC_M6
+    1846                    
+    1847 00006540           HELP_RCU
+    1848 00006540     0000           .WORD   0
+    1849 00006550     0202           .WORD   COLOR_WHITE
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   40
+
+    1850 00006560     0006           .WORD   6
+    1851 00006570 0000aa20"          .LONG   LC_M1
+    1852 00006590 0000ab00"          .LONG   LC_M2
+    1853 000065b0 0000abf0"          .LONG   LC_M3
+    1854 000065d0 0000ace0"          .LONG   LC_M4
+    1855 000065f0 0000aff0"          .LONG   RC_M5
+    1856 00006610 0000ae60"          .LONG   LC_M6
+    1857 00006630           HELP_XCU
+    1858 00006630     0000           .WORD   0
+    1859 00006640     0202           .WORD   COLOR_WHITE
+    1860 00006650     0006           .WORD   6
+    1861 00006660 0000aa20"          .LONG   LC_M1
+    1862 00006680 0000ab00"          .LONG   LC_M2
+    1863 000066a0 0000abf0"          .LONG   LC_M3
+    1864 000066c0 0000ace0"          .LONG   LC_M4
+    1865 000066e0 0000b0c0"          .LONG   XC_M5
+    1866 00006700 0000ae60"          .LONG   LC_M6
+    1867                    
+    1868 00006720     0000  HELP_UC  .WORD   0
+    1869 00006730     0202           .WORD   COLOR_WHITE
+    1870 00006740     0003           .WORD   3
+    1871 00006750 0000b1a0"          .LONG   UC_M1
+    1872 00006770 0000b280"          .LONG   UC_M2
+    1873 00006790 0000b350"          .LONG   UC_M3
+    1874                    
+    1875 000067b0     0000  HELP_UB  .WORD   0
+    1876 000067c0     0202           .WORD   COLOR_WHITE
+    1877 000067d0     0003           .WORD   3
+    1878 000067e0 0000b390"          .LONG   UB_M1
+    1879 00006800 0000b460"          .LONG   UB_M2
+    1880 00006820 0000b540"          .LONG   UB_M3
+    1881                    
+    1882 00006840     0000  HELP_UM  .WORD   0
+    1883 00006850     0202           .WORD   COLOR_WHITE
+    1884 00006860     0003           .WORD   3
+    1885 00006870 0000b5d0"          .LONG   UM_M1
+    1886 00006890 0000b6b0"          .LONG   UM_M2
+    1887 000068b0 0000b760"          .LONG   UM_M3
+    1888                    
+    1889                    
+    1890 000068d0     0000  HELP_CS  .WORD   0
+    1891 000068e0     0202           .WORD   COLOR_WHITE
+    1892 000068f0     0003           .WORD   3
+    1893 00006900 0000b820"          .LONG   CS_M1
+    1894 00006920 0000b8e0"          .LONG   CS_M2
+    1895 00006940 0000b960"          .LONG   CS_M3
+    1896                    
+    1897 00006960     0000  HELP_CC  .WORD   0
+    1898 00006970     0202           .WORD   COLOR_WHITE
+    1899 00006980     0003           .WORD   3
+    1900 00006990 0000b820"          .LONG   CS_M1
+    1901 000069b0 0000b8e0"          .LONG   CS_M2
+    1902 000069d0 0000b9c0"          .LONG   CC_M3
+    1903                    
+    1904 000069f0           HELP_CRFR
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   41
+
+    1905 000069f0     0000           .WORD   0
+    1906 00006a00     0202           .WORD   COLOR_WHITE
+    1907 00006a10     0006           .WORD   6
+    1908 00006a20 0000ba50"          .LONG   FR_M1
+    1909 00006a40 0000bae0"          .LONG   FR_M2
+    1910 00006a60 0000bbc0"          .LONG   FR_M3
+    1911 00006a80 00007498"          .LONG   M_NULL
+    1912 00006aa0 0000bca0"          .LONG   FR_M4
+    1913 00006ac0 0000bd40"          .LONG   FR_M5
+    1914                    
+    1915 00006ae0     0000  HELP_CPD .WORD   0
+    1916 00006af0     0202           .WORD   COLOR_WHITE
+    1917 00006b00     0006           .WORD   6
+    1918 00006b10 0000be30"          .LONG   CPD_M1
+    1919 00006b30 0000bf00"          .LONG   CPD_M2
+    1920 00006b50 0000bfa0"          .LONG   CPD_M3
+    1921 00006b70 0000c070"          .LONG   CPD_M4
+    1922 00006b90 0000c130"          .LONG   CPD_M5
+    1923 00006bb0 0000c210"          .LONG   CPD_M6
+    1924                    
+    1925 00006bd0     0000  HELP_MAX .WORD   0
+    1926 00006be0     0202           .WORD   COLOR_WHITE
+    1927 00006bf0     0006           .WORD   6
+    1928 00006c00 0000c2e0"          .LONG   MC_M1
+    1929 00006c20 0000c390"          .LONG   MC_M2
+    1930 00006c40 0000c440"          .LONG   MC_M3
+    1931 00006c60 0000c510"          .LONG   MC_M4
+    1932 00006c80 00007498"          .LONG   M_NULL
+    1933 00006ca0 0000c580"          .LONG   MC_M5
+    1934                    
+    1935                    
+    1936 00006cc0       54  CNTRH_0     .STRING "THIS CONTROLS MECHANICAL"
+    1937 00006d80       00           .BYTE 0
+    1938 00006d90                    .EVEN
+    1939 00006d90       43  CNTRH_1     .STRING "COIN COUNTER MODE"
+    1940 00006e18       00             .BYTE 0
+    1941 00006e20                    .EVEN
+    1942 00006e20       43  CNTRH_3     .STRING "CNTR1 = MULT OF LOW COIN: 1"
+    1943 00006ef8       00           .BYTE 0
+    1944 00006f00                    .EVEN
+    1945 00006f00       43  CNTRH_4     .STRING "CNTR1 = 1 COUNT/COIN:     2"
+    1946 00006fd8       00           .BYTE 0                
+    1947 00006fe0                    .EVEN
+    1948 00006fe0       43  CNTRH_5     .STRING "CNTR1=LCOIN, CNTR2=RCOIN: 3"
+    1949 000070b8       00           .BYTE 0
+    1950 000070c0                    .EVEN
+    1951                    
+    1952 000070c0       54  DHH_0   .STRING "THIS CONTROLS HEAD SIZE",0
+    1953 00007180                   .EVEN
+    1954 00007180       46  DHH_1   .STRING "FOR PLAYERS IN THE GAME.",0
+    1955 00007250                   .EVEN
+    1956 00007250       4e  DHH_3   .STRING "NORMAL SIZE: 1",0
+    1957 000072d0                   .EVEN
+    1958 000072d0       4c  DHH_4   .STRING "LARGE SIZE: 2",0
+    1959 00007340                   .EVEN
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   42
+
+    1960 00007340       46  DHH_5   .STRING "FACTORY SETTING: 1",0
+    1961 000073e0                   .EVEN
+    1962                    
+    1963                    
+    1964 000073e0       54  DH_0    .byte   "THIS CONTROLS THE SKILL"
+    1965 00007498       00  M_NULL  .byte   0
+    1966 000074a0       4c  DH_1    .byte   "LEVEL OF THE COMPUTER",0
+    1967 00007550       43  DH_2    .byte   "CONTROLLED PLAYERS.",0
+    1968 000075f0       45  DH_3    .byte   "EASIEST  SETTING: 1",0
+    1969 00007690       48  DH_4    .byte   "HARDEST SETTING: 5",0
+    1970 00007728       46  DH_5    .byte   "FACTORY SETTING: 3",0
+    1971 000077c0                   .even
+    1972                    
+    1973                    
+    1974 000077c0       54  SH_0    .STRING "THIS CONTROLS THE OVERALL"
+    1975 00007888       00          .BYTE 0
+    1976 00007890                   .EVEN
+    1977 00007890       47  SH_1    .STRING "GAME TIMER SPEED."
+    1978 00007918       00          .BYTE 0
+    1979 00007920                   .EVEN
+    1980 00007920       53  SH_3    .STRING "SLOWEST SETTING: 1"
+    1981 000079b0       00          .BYTE 0
+    1982 000079c0                   .EVEN
+    1983 000079c0       46  SH_4    .STRING "FASTEST SETTING: 5"
+    1984 00007a50       00          .BYTE 0
+    1985 00007a60                   .EVEN
+    1986 00007a60       46  SH_5    .STRING "FACTORY SETTING: 3"
+    1987 00007af0       00          .BYTE 0
+    1988 00007b00                   .EVEN
+    1989                    
+    1990                    
+    1991                    
+    1992 00007b00       41  FGH_0    .STRING "ALLOWS PURCHASING A FULL"
+    1993 00007bc0       00           .BYTE 0
+    1994 00007bd0                    .EVEN
+    1995 00007bd0       47  FGH_1    .STRING "GAME AT A DISCOUNT FROM"
+    1996 00007c88       00           .BYTE 0
+    1997 00007c90                    .EVEN
+    1998 00007c90       4e  FGH_2    .STRING "NORMAL START/BUYIN PRICING."
+    1999 00007d68       00           .BYTE 0
+    2000 00007d70                    .EVEN
+    2001 00007d70       4d  FGH_3    .STRING "MINIMUM CREDITS: 4"
+    2002 00007e00       00           .BYTE 0
+    2003 00007e10                    .EVEN
+    2004 00007e10       4d  FGH_4    .STRING "MAXIMUM CREDITS: 16"
+    2005 00007ea8       00           .BYTE 0
+    2006 00007eb0                    .EVEN
+    2007 00007eb0       46  FGH_5    .STRING "FACTORY SETTING: 8"
+    2008 00007f40       00           .BYTE 0
+    2009 00007f50                    .EVEN
+    2010                    
+    2011 00007f50       42  WGH_0    .STRING "BONUS FOR WINNERS IN A FOUR",0
+    2012 00008030                    .EVEN
+    2013 00008030       50  WGH_1    .STRING "PLAYER GAME.  ALL 4 PLAYERS",0
+    2014 00008110                    .EVEN
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   43
+
+    2015 00008110       4d  WGH_3    .STRING "MUST HAVE PURCHASED A FULL",0
+    2016 000081f0                    .EVEN
+    2017 000081f0       47  WGH_4    .STRING "GAME FOR THIS TO WORK.",0
+    2018 000082b0                    .EVEN
+    2019 000082b0       46  WGH_5    .STRING "FACTORY SETTING: FREE GAME",0
+    2020 00008390                    .EVEN
+    2021                    
+    2022                    
+    2023 00008390       57  CPH_0   .string "WHEN ENABLED, COMPUTER",0
+    2024 00008450                   .even
+    2025 00008450       4b  CPH_1   .string "KEEPS GAME CLOSE.  HOWEVER,",0
+    2026 00008530                   .even
+    2027 00008530       45  CPH_2   .string "EXPERIENCED ARCADE PLAYERS",0
+    2028 00008610                   .even
+    2029 00008610       50  CPH_3   .string "PREFER GAMES OF PURE SKILL.",0
+    2030 000086f0                   .even
+    2031 000086f0       4c  CPH_3A  .string "LOCATIONS MAY VARY.",0
+    2032 00008790                   .even
+    2033 00008790       46  CPH_4   .string "FACTORY SETTING: DISABLED",0
+    2034 00008860                   .even
+    2035                    
+    2036 00008860       57  TRH_0   .string "WHEN IN TOURNAMENT MODE,",0
+    2037 00008930                   .even
+    2038 00008930       43  TRH_1   .string "CPU ASSISTANCE IS TURNED",0
+    2039 00008a00                   .even
+    2040 00008a00       4f  TRH_2   .string "OFF AND NO POWERUPS OR",0
+    2041 00008ac0                   .even
+    2042 00008ac0       53  TRH_3   .string "SPECIAL GUESTS ARE",0
+    2043 00008b60                   .even
+    2044 00008b60       41  TRH_4   .string "ALLOWED!  NO CHEATING!",0
+    2045 00008c20                   .even
+    2046 00008c20       46  TRH_5   .string "FACTORY SETTING: DISABLED",0
+    2047 00008cf0                   .even
+    2048                    
+    2049                    
+    2050 00008cf0       53  PH_0     .STRING "SELECT BUILT-IN PRICING"
+    2051 00008da8       00           .BYTE 0
+    2052 00008db0                    .EVEN
+    2053 00008db0       4d  PH_1     .STRING "MODE, SELECTING COINS"
+    2054 00008e58       00           .BYTE 0
+    2055 00008e60                    .EVEN
+    2056 00008e60       50  PH_2     .STRING "PER CREDIT, AND"
+    2057 00008ed8       00           .BYTE 0
+    2058 00008ee0                    .EVEN
+    2059 00008ee0       43  PH_3     .STRING "COIN SLOT VALUE."
+    2060 00008f60       00           .BYTE 0
+    2061 00008f70                    .EVEN
+    2062                    
+    2063 00008f70       54  DIH_0   .STRING "THIS OPTION IS BEING",0
+    2064 00009020                   .EVEN
+    2065 00009020       41  DIH_1   .STRING "ADJUSTED FROM DIPSWITCH",0
+    2066 000090e0                   .EVEN
+    2067 000090e0       53  DIH_2   .STRING "SETTINGS.",0
+    2068 00009130                   .EVEN
+    2069                    
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   44
+
+    2070                    
+    2071 00009130       54  LH_0     .STRING "THE NUMBER OF LIVES"
+    2072 000091c8       00           .BYTE 0
+    2073 000091d0                    .EVEN
+    2074 000091d0       41  LH_1     .STRING "A PLAYER RECEIVES"
+    2075 00009258       00           .BYTE 0
+    2076 00009260                    .EVEN
+    2077 00009260       45  LH_2     .STRING "EACH TIME HE STARTS"
+    2078 000092f8       00           .BYTE 0
+    2079 00009300                    .EVEN
+    2080 00009300       4f  LH_3     .STRING "OR CONTINUES A GAME."
+    2081 000093a0       00           .BYTE 0
+    2082 000093b0                    .EVEN
+    2083 000093b0       46  LH_4     .STRING "FACTORY SETTING: 3"
+    2084 00009440       00           .BYTE 0
+    2085 00009450                    .EVEN
+    2086                    
+    2087                    
+    2088                    
+    2089 00009450       54  HAM_1    .STRING "THIS DETERMINES WHETHER"
+    2090 00009508       00           .BYTE 0
+    2091 00009510                    .EVEN
+    2092 00009510       54  HAM_2    .STRING "THE GAME WILL MAKE SOUNDS"
+    2093 000095d8       00           .BYTE 0
+    2094 000095e0                    .EVEN
+    2095 000095e0       49  HAM_3    .STRING "IN THE ATTRACT MODE."
+    2096 00009680       00           .BYTE 0
+    2097 00009690                    .EVEN
+    2098 00009690       46  HAM_4    .STRING "FACTORY SETTING: OFF"
+    2099 00009730       00           .BYTE 0
+    2100 00009740                    .EVEN
+    2101 00009740       54  HAH_1    .STRING "THE ALL TIME HIGH SCORE"
+    2102 000097f8       00           .BYTE 0
+    2103 00009800                    .EVEN
+    2104 00009800       54  HAH_2    .STRING "TABLE WILL BE RESET TO"
+    2105 000098b0       00           .BYTE 0
+    2106 000098c0                    .EVEN
+    2107 000098c0       46  HAH_3    .STRING "FACTORY VALUES EACH TIME"
+    2108 00009980       00           .BYTE 0
+    2109 00009990                    .EVEN
+    2110 00009990       54  HAH_4    .STRING "THIS MANY PLAYS OCCURS."
+    2111 00009a48       00           .BYTE 0
+    2112 00009a50                    .EVEN
+    2113 00009a50       46  HAH_5    .STRING "FACTORY SETTING: 5000"
+    2114 00009af8       00           .BYTE 0
+    2115 00009b00                    .EVEN
+    2116 00009b00       54  HG_1     .STRING "THIS ALLOWS THE GRAPHIC"
+    2117 00009bb8       00           .BYTE 0
+    2118 00009bc0                    .EVEN
+    2119 00009bc0       56  HG_2     .STRING "VIOLENCE SHOWN ON SCREEN"
+    2120 00009c80       00           .BYTE 0
+    2121 00009c90                    .EVEN
+    2122 00009c90       54  HG_3     .STRING "TO BE ADJUSTED."
+    2123 00009d08       00           .BYTE 0
+    2124 00009d10                    .EVEN
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   45
+
+    2125 00009d10       46  HG_4     .STRING "FACTORY SETTING: NORMAL"
+    2126 00009dc8       00           .BYTE 0
+    2127 00009dd0                    .EVEN
+    2128                    
+    2129 00009dd0       53  FP_M1    .STRING "SETTING FREE PLAY TO"
+    2130 00009e70       00           .BYTE 0
+    2131 00009e80                    .EVEN
+    2132 00009e80       22  FP_M2    .BYTE   ASCII_DQ
+    2133 00009e88       59           .STRING "YES"
+    2134 00009ea0       22           .BYTE   ASCII_DQ
+    2135 00009ea8       20           .STRING " ALLOWS UNLIMITED"
+    2136 00009f30       00           .BYTE 0
+    2137 00009f40                    .EVEN
+    2138 00009f40       50  FP_M3    .STRING "PLAY WITHOUT INSERTING"
+    2139 00009ff0       00           .BYTE 0
+    2140 0000a000                    .EVEN
+    2141 0000a000       41  FP_M4    .STRING "ANY COINS."
+    2142 0000a050       00           .BYTE 0
+    2143 0000a060                    .EVEN
+    2144 0000a060       46  FP_M5    .STRING "FACTORY SETTING: NO"
+    2145 0000a0f8       00           .BYTE 0
+    2146 0000a100                    .EVEN
+    2147 0000a100       57  CT_M1    .STRING "WHENEVER STANDARD PRICING"
+    2148 0000a1c8       00           .BYTE 0
+    2149 0000a1d0                    .EVEN
+    2150 0000a1d0       49  CT_M2    .STRING "IS USED, A CORRESPONDING"
+    2151 0000a290       00           .BYTE 0
+    2152 0000a2a0                    .EVEN
+    2153 0000a2a0       4d  CT_M3    .STRING "MESSAGE IS DISPLAYED ON THE"
+    2154 0000a378       00           .BYTE 0
+    2155 0000a380                    .EVEN
+    2156 0000a380       43  CT_M4    .STRING "CREDITS SCREEN.  SETTING THIS"
+    2157 0000a468       00           .BYTE 0
+    2158 0000a470                    .EVEN
+    2159 0000a470       54  CT_M5    .STRING "TO "
+    2160 0000a488       22           .BYTE ASCII_DQ
+    2161 0000a490       4e           .STRING "NO"
+    2162 0000a4a0       22           .BYTE ASCII_DQ
+    2163 0000a4a8       20           .STRING " DISABLES THE MESSAGE."
+    2164 0000a558       00           .BYTE 0
+    2165 0000a560                    .EVEN
+    2166                    
+    2167 0000a560       54  PP_0     .STRING "THIS ALLOWS ADJUSTMENT"
+    2168 0000a610       00           .BYTE 0
+    2169 0000a620                    .EVEN
+    2170 0000a620       4f  PP_1     .STRING "OF PRICING PARAMETERS"
+    2171 0000a6c8       00           .BYTE 0
+    2172 0000a6d0                    .EVEN
+    2173 0000a6d0       28  PP_2     .STRING "(FOR NON-STANDARD MODES),"
+    2174 0000a798       00           .BYTE 0
+    2175 0000a7a0                    .EVEN
+    2176 0000a7a0       46  PP_3     .STRING "FREE PLAY, MAXIMUM CREDITS,"
+    2177 0000a878       00           .BYTE 0
+    2178 0000a880                    .EVEN
+    2179 0000a880       43  PP_4     .STRING "CREDITS REQUIRED TO START"
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   46
+
+    2180 0000a948       00           .BYTE 0
+    2181 0000a950                    .EVEN
+    2182 0000a950       41  PP_5     .STRING "AND CREDITS TO CONTINUE."
+    2183 0000aa10       00           .BYTE 0
+    2184 0000aa20                    .EVEN
+    2185                    
+    2186                    
+    2187 0000aa20       45  LC_M1    .STRING "EACH COIN INSERTED ADDS TO"
+    2188 0000aaf0       00           .BYTE 0
+    2189 0000ab00                    .EVEN
+    2190 0000ab00       43  LC_M2    .STRING "COIN UNITS.  THIS ADJUSTMENT"
+    2191 0000abe0       00           .BYTE 0
+    2192 0000abf0                    .EVEN
+    2193 0000abf0       53  LC_M3    .STRING "SPECIFIES THE NUMBER OF COIN"
+    2194 0000acd0       00           .BYTE 0
+    2195 0000ace0                    .EVEN
+    2196 0000ace0       55  LC_M4    .STRING "UNITS GIVEN FOR EACH"
+    2197 0000ad80       00           .BYTE 0
+    2198 0000ad90                    .EVEN
+    2199 0000ad90       43  LC_M5    .STRING "COIN IN LEFT COIN CHUTE."
+    2200 0000ae50       00           .BYTE 0
+    2201 0000ae60                    .EVEN
+    2202 0000ae60       28  LC_M6    .STRING "(SEE "
+    2203 0000ae88       22           .BYTE ASCII_DQ
+    2204 0000ae90       55           .STRING "UNITS / CREDIT"
+    2205 0000af00       22           .BYTE ASCII_DQ
+    2206 0000af08       29           .STRING ")"
+    2207 0000af10       00           .BYTE 0
+    2208 0000af20                    .EVEN
+    2209 0000af20       43  CC_M5    .STRING "COIN IN THIRD COIN CHUTE."
+    2210 0000afe8       00           .BYTE 0
+    2211 0000aff0                    .EVEN
+    2212 0000aff0       43  RC_M5    .STRING "COIN IN RIGHT COIN CHUTE."
+    2213 0000b0b8       00           .BYTE 0
+    2214 0000b0c0                    .EVEN
+    2215 0000b0c0       43  XC_M5    .STRING "COIN IN FOURTH COIN CHUTE."
+    2216 0000b190       00           .BYTE 0
+    2217 0000b1a0                    .EVEN
+    2218 0000b1a0       54  UC_M1    .STRING "THIS IS THE NUMBER OF COIN"
+    2219 0000b270       00           .BYTE 0
+    2220 0000b280                    .EVEN
+    2221 0000b280       55  UC_M2    .STRING "UNITS REQUIRED TO BUY ONE"
+    2222 0000b348       00           .BYTE 0
+    2223 0000b350                    .EVEN
+    2224 0000b350       43  UC_M3    .STRING "CREDIT."
+    2225 0000b388       00           .BYTE 0
+    2226 0000b390                    .EVEN
+    2227 0000b390       31  UB_M1    .STRING "1 BONUS CREDIT IS AWARDED"
+    2228 0000b458       00           .BYTE 0
+    2229 0000b460                    .EVEN
+    2230 0000b460       41  UB_M2    .STRING "AFTER THIS MANY COIN UNITS"
+    2231 0000b530       00           .BYTE 0
+    2232 0000b540                    .EVEN
+    2233 0000b540       48  UB_M3    .STRING "HAVE ACCUMULATED."
+    2234 0000b5c8       00           .BYTE 0
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   47
+
+    2235 0000b5d0                    .EVEN
+    2236                    
+    2237 0000b5d0       4e  UM_M1    .STRING "NO CREDITS WILL BE AWARDED"
+    2238 0000b6a0       00           .BYTE 0
+    2239 0000b6b0                    .EVEN
+    2240 0000b6b0       55  UM_M2    .STRING "UNTIL THIS MANY COIN"
+    2241 0000b750       00           .BYTE 0
+    2242 0000b760                    .EVEN
+    2243 0000b760       55  UM_M3    .STRING "UNITS HAVE ACCUMULATED."
+    2244 0000b818       00           .BYTE 0
+    2245 0000b820                    .EVEN
+    2246                    
+    2247 0000b820       45  CS_M1    .STRING "EACH PLAYER NEEDS THIS"
+    2248 0000b8d0       00           .BYTE 0
+    2249 0000b8e0                    .EVEN
+    2250 0000b8e0       4d  CS_M2    .STRING "MANY CREDITS TO"
+    2251 0000b958       00           .BYTE 0
+    2252 0000b960                    .EVEN
+    2253 0000b960       42  CS_M3    .STRING "BEGIN PLAY."
+    2254 0000b9b8       00           .BYTE 0
+    2255 0000b9c0                    .EVEN
+    2256                    
+    2257 0000b9c0       43  CC_M3    .STRING "CONTINUE A GAME."
+    2258 0000ba40       00           .BYTE 0
+    2259 0000ba50                    .EVEN
+    2260                    
+    2261 0000ba50       57  FR_M1    .STRING "WHEN SET TO YES,"
+    2262 0000bad0       00           .BYTE 0
+    2263 0000bae0                    .EVEN
+    2264 0000bae0       46  FR_M2    .STRING "FRACTIONAL CREDITS WILL BE"
+    2265 0000bbb0       00           .BYTE 0
+    2266 0000bbc0                    .EVEN
+    2267 0000bbc0       53  FR_M3    .STRING "SEEN ON THE CREDITS SCREEN."
+    2268 0000bc98       00           .BYTE 0
+    2269 0000bca0                    .EVEN
+    2270 0000bca0       46  FR_M4    .STRING "FRACTION SHOWN IS:"
+    2271 0000bd30       00           .BYTE 0
+    2272 0000bd40                    .EVEN
+    2273 0000bd40       28  FR_M5    .STRING "(COIN UNITS / "
+    2274 0000bdb0       22           .BYTE ASCII_DQ
+    2275 0000bdb8       55           .STRING "UNITS/CREDIT"
+    2276 0000be18       22           .BYTE ASCII_DQ
+    2277 0000be20       29           .STRING ")"
+    2278 0000be28       00           .BYTE 0
+    2279 0000be30                    .EVEN
+    2280                    
+    2281 0000be30       54  CPD_M1   .STRING "THE DETAILED BOOKKEEPING"
+    2282 0000bef0       00           .BYTE 0
+    2283 0000bf00                    .EVEN
+    2284 0000bf00       53  CPD_M2   .STRING "SCREEN SHOWS TOTAL"
+    2285 0000bf90       00           .BYTE 0
+    2286 0000bfa0                    .EVEN
+    2287 0000bfa0       43  CPD_M3   .STRING "COLLECTIONS BASED ON THIS"
+    2288 0000c068       00           .BYTE 0
+    2289 0000c070                    .EVEN
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   48
+
+    2290 0000c070       4d  CPD_M4   .STRING "MANY COINS PER DOLLAR."
+    2291 0000c120       00           .BYTE 0
+    2292 0000c130                    .EVEN
+    2293 0000c130       28  CPD_M5   .STRING "(SET TO ZERO TO DISABLE THE"
+    2294 0000c208       00           .BYTE 0
+    2295 0000c210                    .EVEN
+    2296 0000c210       44  CPD_M6   .STRING "DISPLAY OF MONEY TOTALS.)"
+    2297 0000c2d8       00           .BYTE 0
+    2298 0000c2e0                    .EVEN
+    2299                    
+    2300 0000c2e0       54  MC_M1    .STRING "THIS IS THE LIMIT FOR"
+    2301 0000c388       00           .BYTE 0
+    2302 0000c390                    .EVEN
+    2303 0000c390       54  MC_M2    .STRING "THE CREDITS COUNTER."
+    2304 0000c430       00           .BYTE 0
+    2305 0000c440                    .EVEN
+    2306 0000c440       41  MC_M3    .STRING "ADDITIONAL COINS INSERTED"
+    2307 0000c508       00           .BYTE 0
+    2308 0000c510                    .EVEN
+    2309 0000c510       57  MC_M4    .STRING "WILL BE LOST."
+    2310 0000c578       00           .BYTE 0
+    2311 0000c580                    .EVEN
+    2312 0000c580       46  MC_M5    .STRING "FACTORY SETTING: 50"
+    2313 0000c618       00           .BYTE 0
+    2314 0000c620                    .EVEN
+    2315                    
+    2316 0000c620           LIST_CNTR       
+    2317 0000c620 0000cd90"          .LONG   CNTR_1,CNTR_2,CNTR_3
+    2318 0000c680           LIST_HEAD
+    2319 0000c680 0000d290"         .long   HEAD_1,HEAD_2
+    2320 0000c6c0           LIST_DIFF       
+    2321 0000c6c0 0000d340"          .LONG   DIFF_1,DIFF_2,DIFF_3,DIFF_4,DIFF_5
+    2322                    
+    2323 0000c760           LIST_SPEEDS
+    2324 0000c760 0000cf30"         .long   SPEED_1,SPEED_2,SPEED_3
+    2325 0000c7c0 0000d060"         .long   SPEED_4,SPEED_5
+    2326                    
+    2327 0000c800           LIST_FULLG
+    2328 0000c800 0000d130"         .long   N_4,N_5,N_6,N_7
+    2329 0000c880 0000d170"         .long   N_8,N_9,N_10,N_11
+    2330 0000c900 0000d210"         .long   N_12,N_13,N_14,N_15
+    2331 0000c980 0000d270"         .long   N_16
+    2332                    
+    2333 0000c9a0           LIST_WINM
+    2334 0000c9a0 0000c9e0"         .long   WG_NONE,WG_FREE
+    2335 0000c9e0       4e  WG_NONE .string "NO BONUS",0
+    2336 0000ca30                   .even
+    2337 0000ca30       46  WG_FREE .string "FREE GAME",0
+    2338 0000ca80                   .even
+    2339                    
+    2340 0000ca80           LIST_COMPASS
+    2341 0000ca80           LIST_TOURNEY
+    2342 0000ca80 0000cac0"         .long   CP_ENABLED
+    2343 0000caa0 0000cb00"         .long   CP_DISABLED
+    2344                    
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   49
+
+    2345 0000cac0       45  CP_ENABLED      .string "ENABLED",0
+    2346 0000cb00                           .even
+    2347 0000cb00       44  CP_DISABLED     .string "DISABLED",0
+    2348 0000cb50                           .even
+    2349                    
+    2350                    
+    2351                    
+    2352 0000cb50           LIST_AMODE
+    2353 0000cb50 0000d540"          .LONG   M_AMS,M_NOAMS
+    2354                    
+    2355 0000cb90           LIST_NOYES
+    2356 0000cb90 0000cc50"          .LONG   M_NO,M_YES
+    2357                    
+    2358 0000cbd0           LIST_YESNO
+    2359 0000cbd0 0000cc70"          .LONG   M_YES,M_NO
+    2360                    
+    2361 0000cc10           LIST_DIPNOYES
+    2362 0000cc10 0000cd10"         .LONG   M_DNO, M_DYES
+    2363                    
+    2364 0000cc50       4e  M_NO     .STRING "NO"
+    2365 0000cc60       00           .BYTE   0
+    2366 0000cc70                    .EVEN
+    2367                    
+    2368 0000cc70       59  M_YES    .STRING "YES"
+    2369 0000cc88       00           .BYTE   0
+    2370 0000cc90                    .EVEN
+    2371                    
+    2372 0000cc90       44  M_DYES  .STRING "DIPSWITCH - YES",0
+    2373 0000cd10                   .EVEN
+    2374                    
+    2375 0000cd10       44  M_DNO   .STRING "DIPSWITCH - NO",0
+    2376 0000cd90                   .EVEN
+    2377                    
+    2378 0000cd90       31  CNTR_1   .STRING "1 (PROPORTIONAL)"
+    2379 0000ce10       00           .BYTE   0
+    2380 0000ce20                    .EVEN
+    2381 0000ce20       32  CNTR_2   .STRING "2 (1 COUNT/COIN)"
+    2382 0000cea0       00           .BYTE   0
+    2383 0000ceb0                    .EVEN
+    2384 0000ceb0       33  CNTR_3   .STRING "3 (2 COUNTERS)"
+    2385 0000cf20       00           .BYTE   0
+    2386 0000cf30                    .EVEN
+    2387                    
+    2388 0000cf30       31  SPEED_1 .string "1 (EXTRA SLOW)",0
+    2389 0000cfb0                   .even
+    2390 0000cfb0       32  SPEED_2 .string "2 (SLOW)",0
+    2391 0000d000                   .even
+    2392 0000d000       33  SPEED_3 .string "3 (NORMAL)",0
+    2393 0000d060                   .even
+    2394 0000d060       34  SPEED_4 .string "4 (FAST)",0
+    2395 0000d0b0                   .even
+    2396 0000d0b0       35  SPEED_5 .string "5 (EXTRA FAST)",0
+    2397 0000d130                   .even
+    2398                    
+    2399 0000d130       34  N_4     .string "4",0
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   50
+
+    2400 0000d140       35  N_5     .string "5",0
+    2401 0000d150       36  N_6     .string "6",0
+    2402 0000d160       37  N_7     .string "7",0
+    2403 0000d170       38  N_8     .string "8 (DEFAULT)",0
+    2404 0000d1d0       39  N_9     .string "9",0
+    2405 0000d1e0       31  N_10    .string "10",0
+    2406 0000d1f8       31  N_11    .string "11",0
+    2407 0000d210       31  N_12    .string "12",0
+    2408 0000d228       31  N_13    .string "13",0
+    2409 0000d240       31  N_14    .string "14",0
+    2410 0000d258       31  N_15    .string "15",0
+    2411 0000d270       31  N_16    .string "16",0
+    2412 0000d290                   .even
+    2413                    
+    2414 0000d290       31  HEAD_1  .string "1 (NORMAL)",0
+    2415 0000d2f0                   .even
+    2416 0000d2f0       32  HEAD_2  .string "2 (LARGE)",0
+    2417 0000d340                   .even
+    2418                    
+    2419 0000d340       31  DIFF_1   .STRING "1 (EXTRA EASY)"
+    2420 0000d3b0       00           .BYTE   0
+    2421 0000d3c0                    .EVEN
+    2422 0000d3c0       32  DIFF_2   .STRING "2 (EASY)"
+    2423 0000d400       00           .BYTE   0
+    2424 0000d410                    .EVEN
+    2425 0000d410       33  DIFF_3   .STRING "3 (NORMAL)"
+    2426 0000d460       00           .BYTE   0
+    2427 0000d470                    .EVEN
+    2428 0000d470       34  DIFF_4   .STRING "4 (HARD)"
+    2429 0000d4b0       00           .BYTE   0
+    2430 0000d4c0                    .EVEN
+    2431 0000d4c0       35  DIFF_5   .STRING "5 (EXTRA HARD)"
+    2432 0000d530       00           .BYTE   0
+    2433 0000d540                    .EVEN
+    2434                    
+    2435                    
+    2436                    
+    2437                    
+    2438 0000d540       4f  M_AMS    .STRING "ON"
+    2439 0000d550       00           .BYTE 0
+    2440 0000d560                    .EVEN
+    2441 0000d560       4f  M_NOAMS  .STRING "OFF"
+    2442 0000d578       00           .BYTE 0
+    2443 0000d580                    .EVEN
+    2444 0000d580       4f  MESS_OFF .STRING "OFF"
+    2445 0000d598       00           .BYTE 0
+    2446 0000d5a0                    .EVEN
+    2447                    
+    2448 0000d5a0       4e  M_NOBONUS  .STRING "NO BONUS CREDIT"
+    2449 0000d618       00           .BYTE 0
+    2450 0000d620                    .EVEN
+    2451                    
+    2452 0000d620       4e  M_NOMIN  .STRING "NO MINIMUM"
+    2453 0000d670       00           .BYTE 0
+    2454 0000d680                    .EVEN
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:18 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE   51
+
+    2455                    
+    2456 0000d680       4e  M_NO_COL .STRING "NO MONEY TOTALS"
+    2457 0000d6f8       00           .BYTE 0
+    2458 0000d700                    .EVEN
+    2459                    
+    2460                             .END
+
+ No Errors,  No Warnings

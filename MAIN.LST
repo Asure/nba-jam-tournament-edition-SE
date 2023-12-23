@@ -1,0 +1,852 @@
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:58 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE    1
+
+       1                            .file   "main.asm"
+       3                            .width  132
+       4                            .option b,d,l,t
+       5                            .mnolist
+       6                    
+       7                    
+       8                            .include        "mproc.equ"
+       9                            .include        "disp.equ"
+      10                            .include        "gsp.equ"
+      11                            .include        "sys.equ"
+      12                            .include        "game.equ"
+      13                            .include        "shawn.hdr"
+      14                            .include        dipequ.asm
+      15                                            
+      16                    
+      17                    
+      18                            .ref    init_prog
+      19                            .ref    display_init
+      20                            .ref    process_init
+      21                            .ref    snd_reset
+      22                            .ref    pal_transfer
+      23                            .ref    dma_irq
+      24                    
+      25                            .ref    GAMSTATE
+      26                            .ref    C_FRAC,C_FLAGS,COINCNTR
+      27                            .ref    COLRTEMP
+      28                            .ref    swstack_p,swstackbot, swstacktop
+      29                            .ref    READ_DIP
+      30                            
+      31                    
+      32                    
+      33 00000000                   BSSX    SYSCOPY         ,16     ;Copy of SYSCTRL latch
+      34                    
+      35 00000000                   BSSX    WDOGRAM         ,32     ;INITIALIZED LONG FOR WATCH DOG DETECT
+      36                    
+      37 00000000                   BSSX    IRQSKYE         ,16     ;Erase color
+      38 00000000                   BSSX    dpageflip       ,16     ;1=Enable page flip and erasure, -1=No erasure
+      39                    
+      40 00000000                   BSSX    dirqtimer       ,16     ;+1 by dirq, cleared by mproc
+      41 00000060                   .bss    dirqcnt         ,16     ;+1 each dirq
+      42 00000070                   .bss    dirqdraw        ,16     ;!0=Still drawing last frame
+      43                    
+      44 00000080                   .bss    swtemp1         ,32
+      45 000000a0                   .bss    swtemp2         ,32
+      46                    
+      47                    
+      48 000000c0                   .bss    FSWITCH         ,64
+      49 00000000                   BSSX    switches_old    ,64
+      50 00000000                   BSSX    switches_cur    ,64
+      51 00000000                   BSSX    switches_down   ,64
+      52                    
+      53 00000000                   BSSX    NPLAYERS        ,16     ;NUMBER OF PLAYERS ALLOWED - GNP 1/17/93
+      54 00000000                   BSSX    COUNTER_MODE    ,16     ;COIN COUNTER MODE - GNP 1/17/93
+      55 00000000                   BSSX    VALIDATOR       ,16     ;VALIDATOR FLAG 0 = NONE, 1 = INSTALLED - GNP 1/22/93
+      56                    
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:58 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+initialization and interrupts                                        PAGE    2
+
+      57 00000000                   BSSX    TWOPLAYERS      ,16     ;0 = NO, 1 = YES 2 players
+      58 00000000                   .text
+      59                    
+      60                    
+      61                    
+      62 00000000            SUBR   init_all
+      63                    
+      64 00000000     5600          clr     a0                      ;0CHlr scratch mem
+      65 00000010     09e1          movi    SCRATCH,a1
+         00000020 01000000  
+      66 00000040     09c2          movi    08000H-20,a2            ;128K minus some stack
+         00000050     7fec  
+      67 00000060     9201  dtlxlp  move    a0,*a1+,L
+      68 00000070     3c42          dsjs    a2,dtlxlp
+      69                    
+      70                    
+      71 00000080     09e0          movi    WDOGNUM,a0
+         00000090 1a2b3c4d  
+      72 000000b0     0780          move    a0,@WDOGRAM,L           ;Mark system as initialized
+         000000c0 00000010- 
+      73                    
+      74 000000e0     09e0          movi    SYSCINIT,a0
+         000000f0 0000fff8  
+      75 00000110     0580          move    a0,@SYSCTRL
+         00000120 01f00000  
+      76 00000140     0580          move    a0,@SYSCOPY             ;Copy
+         00000150 00000000- 
+      77                    
+      78 00000170     0d3f          callr   io_init                 ;Initialize the I/O regs
+         00000180     0053  
+      79                    
+      80 00000190     0d5f          calla   snd_reset               ;Sound board reset (makes sound!)
+         000001a0 00000000! 
+      81                    
+      82 000001c0     0d5f          calla   display_init            ;Init display system
+         000001d0 00000000! 
+      83                    
+      84 000001f0     0d5f          calla   process_init            ;Init process list
+         00000200 00000000! 
+      85                    
+      86 00000220     1820          movk    INAMODE,a0
+      87 00000230     0580          move    a0,@GAMSTATE
+         00000240 00000000! 
+      88 00000260     09e0          movi    81261A8CH,a0            ;Random seed
+         00000270 81261a8c  
+      89 00000290     0780          move    a0,@RAND,L
+         000002a0 00000000! 
+      90                    
+      91 000002c0     09e0          movi    swstacktop,a0           ;Initialize switch stack
+         000002d0 00000000! 
+      92 000002f0     0780          move    a0,@swstack_p,L
+         00000300 00000000! 
+      93                    
+      94 00000320     0d3f          callr   dip_init                ;Initialize the dipswitches
+         00000330     0006  
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:58 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+initialization and interrupts                                        PAGE    3
+
+      95                    
+      96 00000340     1820          movk    1,a0
+      97 00000350     0580          move    a0,@DISPLAYON
+         00000360 00000000! 
+      98                    
+      99 00000380     0d60          eint
+     100                    
+     101 00000390     0960          rets
+     102                    
+     103                    
+     104                    
+     105 000003a0           dip_init
+     106 000003a0                   PUSH    a0,a1
+     107                    
+     108 000003c0     0d5f          calla   READ_DIP                ;Get the current dip switch bits
+         000003d0 00000000! 
+     109 000003f0     4c01          move    a0,a1
+     110                    
+     111 00000400     0b80          andi    DPPLAYERS,a0            ;AQUIRE THE NUMBER OF PLAYERS
+         00000410 fffffffe  
+     112 00000430     2460          sll     3,a0
+     113 00000440     0b20          addi    dtlxpnum_t,a0
+         00000450 00000690' 
+     114 00000470     8e00          movb    *a0,a0
+     115 00000480     0580          move    a0,@NPLAYERS
+         00000490 000001c0- 
+     116                    
+     117 000004b0     4c20          move    a1,a0
+     118 000004c0     0b80          andi    DPCOUNTER,a0
+         000004d0 ffff3fff  
+     119 000004f0     2ea0          srl     DPCOUNTER_SRL-3,a0
+     120 00000500     0b20          addi    dtlxcntr_t,a0
+         00000510 000006a0' 
+     121 00000530     8e00          movb    *a0,a0                  ;Match eugene's old shit
+     122 00000540     0580          move    a0,@COUNTER_MODE
+         00000550 000001d0- 
+     123                    
+     124 00000570     4c20          move    a1,a0
+     125 00000580     0b80          andi    DPVALIDATOR,a0          ;AQUIRE THE VALIDATOR STATUS
+         00000590 fffffffd  
+     126 000005b0     2fe0          srl     DPVALIDATOR_SRL,a0
+     127 000005c0     0580          move    a0,@VALIDATOR           ;SAVE IT
+         000005d0 000001e0- 
+     128                    
+     129 000005f0     4c20          move    a1,a0
+     130 00000600     0b80          andi    DPPLAYERS,a0
+         00000610 fffffffe  
+     131 00000630     0580          move    a0,@TWOPLAYERS          ;0=4 plyrs, 1=2 plyrs
+         00000640 000001f0- 
+     132                    
+     133 00000660                   PULL    a0,a1
+     134 00000680     0960          rets
+     135                    
+     136                    
+     137 00000690       04  dtlxpnum_t      .byte   4,2
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:58 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+initialization and interrupts                                        PAGE    4
+
+     138                    
+     139                    
+     140 000006a0       02  dtlxcntr_t      .byte   2,3,1,2
+     141 000006c0                   .even
+     142                    
+     143                    
+     144                    
+     145 000006c0            SUBR   io_init
+     146                    
+     147 000006c0                   PUSH    b2,b6
+     148 000006e0     09f6          movi    INTIO,b6
+         000006f0 00000750' 
+     149 00000710     0136          exgpc   b6
+     150 00000720                   PULL    b2,b6
+     151 00000740     0960          rets
+     152                    
+     153                    
+     154                    
+     155 00000750            SUBR   INTIO
+     156                    
+     157 00000750     09f2          movi    HESYNC,b2
+         00000760 c0000000  
+     158 00000780     09f0          movi    gspioinit_t,b0
+         00000790 00001e90' 
+     159 000007b0     09f1          movi    (giiend-gspioinit_t)/16,b1
+         000007c0 0000001c  
+     160 000007e0     9812  iajzlp  move    *b0+,*b2+
+     161 000007f0     3c51          dsj     b1,iajzlp
+     162                    
+     163 00000800     0136          exgpc   b6
+     164                    
+     165                    
+     166                    
+     167 00000810            SUBR   WDOGDIS
+     168                    
+     169                            .if     TUNIT=0
+     170                    
+     171                            PUSH    a0,a1,a2,a3,a4
+     172                    
+     173                            pushst
+     174                            setf    16,1,0
+     175                    
+     176                            movi    ctlndis_t,a1
+     177                            move    @SYSCOPY,a2
+     178                            movk    1,a3
+     179                            movi    SYSCTRL,a4
+     180                            move    *a1+,a0
+     181                    
+     182                    ctlnlp  or      a2,a0
+     183                            move    a0,*a4
+     184                            xor     a3,a0
+     185                            move    a0,*a4
+     186                            move    *a1+,a0
+     187                            jrnn    ctlnlp
+     188                    
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:58 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+initialization and interrupts                                        PAGE    5
+
+     189                            move    a2,*a4
+     190                    
+     191                            popst
+     192                            PULL    a0,a1,a2,a3,a4
+     193                            rets
+     194                    
+     195                    
+     196                    ctlndis_t       .word   0,0,0,0, 2,0,2,0, -1    ;WATCH DOG DISABLE TABLE
+     197                    
+     198                            .else
+     199                    
+     200 00000810     0960          rets
+     201                    
+     202                            .endif
+     203                    
+     204                    
+     205                    
+     206 00000820           DIRQ
+     207 00000820     099f          mmtm    sp,b0,b1,b2,b3,b4,b5,b6,b7,b11
+         00000830     ff10  
+     208 00000840     098f          mmtm    sp,a0,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14
+         00000850     fffe  
+     209                    
+     210                    
+     211 00000860     0541          setf    1,0,0
+     212 00000870     058f          move    sp,@INTPEND+DIP         ;Clear int pending
+         00000880 c000012a  
+     213 000008a0     058f          move    sp,@INTENB+DIP          ;Disable display int
+         000008b0 c000011a  
+     214                    
+     215 000008d0     0d60          eint                            ;Let DMA int run
+     216                    
+     217 000008e0     0570          setf    16,1,0                  ;Word sign extend
+     218                    
+     219 000008f0     09e8          movi    DPYCTL,a8
+         00000900 c0000080  
+     220                    
+     221 00000920     8507          move    *a8,a7                  ;>Shift register read to restart DMA
+     222 00000930     09c0          movi    NIL|DXV|SRT|010H,a0
+         00000940     6810  
+     223 00000950     8008          move    a0,*a8
+     224 00000960     09e2          movi    510*01000H,a2           ;*Autoerase lines
+         00000970 001fe000  
+     225 00000990     fa42          pixt    *a2,a2                  ;Mem to shift reg xfer
+     226                    
+     227                    
+     228 000009a0     05a0          move    @dirqdraw,a0
+         000009b0 00000070- 
+     229 000009d0     cb14          jrnz    di50                    ;In draw code?
+     230                    
+     231 000009e0     4db0          move    b13,b0
+     232 000009f0     ce14          jrn     ctlnchkmp                       ;DMA done?
+     233                    
+     234                    
+     235 00000a00     05a0          move    @GAMSTATE,a0
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:58 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+initialization and interrupts                                        PAGE    6
+
+         00000a10 00000000! 
+     236 00000a30     ce10          jrn     ctlnchkmp                       ;In diagnostics? (B13 invalid)
+     237                    
+     238 00000a40     09c1          movi    26000/4,a1              ;>Make sure DMA is OK
+         00000a50     1964  
+     239 00000a60     49b0  ctlndqwait      cmp     b13,b0
+     240 00000a70     cb0a          jrne    di50                    ;DMAQ changed?
+     241 00000a80     3c61          dsj     a1,ctlndqwait
+     242                    
+     243                            .if     DEBUG
+     244                            trap    29
+     245                            .endif
+     246                    
+     247 00000a90     5621          clr     a1
+     248 00000aa0     0581          move    a1,@DMACTRL             ;Timed out
+         00000ab0 01a80010  
+     249 00000ad0     0581          move    a1,@DMACTRL
+         00000ae0 01a80010  
+     250 00000b00     1421          subk    1,a1
+     251 00000b10     4e2d          move    a1,b13
+     252                    
+     253 00000b20     80e8  di50    move    a7,*a8                  ;Restore
+     254 00000b30     c061          jruc    ctln60hzcode            ;Skip flip
+     255                    
+     256                    
+     257 00000b40     05a1  ctlnchkmp       move    @dirqtimer,a1
+         00000b50 00000050- 
+     258 00000b70     cbfa          jrnz    di50                    ;Mproc not done?
+     259                    
+     260 00000b80     05a2          move    @dpageflip,a2
+         00000b90 00000040- 
+     261 00000bb0     ca3c          jrz     di400                   ;Flipping off?
+     262                    
+     263                    
+     264 00000bc0     09c0          movi    -4,a0                   ;Page0
+         00000bd0     fffc  
+     265 00000be0     09f2          movi    PAGE1YO*01000H,b2       ;*Page1
+         00000bf0 00100000  
+     266 00000c10     05a1          move    @dpage,a1
+         00000c20 00000000! 
+     267 00000c40     cb03          jrnz    ctlnonp1
+     268 00000c50     09c0          movi    -01004H,a0              ;Page1
+         00000c60     effc  
+     269 00000c70     5652          clr     b2                      ;*Page0
+     270 00000c80     0580  ctlnonp1        move    a0,@DPYADR              ;Override DPYSTRT
+         00000c90 c00001e0  
+     271 00000cb0     0580          move    a0,@DPYSTRT             ;If we don't page flip next time
+         00000cc0 c0000090  
+     272 00000ce0     03e1          not     a1                      ;Flip
+     273 00000cf0     0581          move    a1,@dpage
+         00000d00 00000000! 
+     274                    
+     275                    
+     276 00000d20     0360          dint
+     277 00000d30     09c1          movi    26000/8,a1              ;>Wait on last DMA
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:58 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+initialization and interrupts                                        PAGE    7
+
+         00000d40     0cb2  
+     278 00000d50     05a0  ctlndwait       move    @DMACTRL,a0
+         00000d60 01a80010  
+     279 00000d80     cf04          jrnn    ctlndmaoff                      ;DMA stopped?
+     280 00000d90     3ca1          dsj     a1,ctlndwait
+     281 00000da0     0581          move    a1,@DMACTRL             ;Timed out
+         00000db0 01a80010  
+     282                            .if     DEBUG
+     283                            trap    29
+     284                            .endif
+     285 00000dd0           ctlndmaoff
+     286                    
+     287 00000dd0     4c42          move    a2,a2
+     288 00000de0     ce19          jrn     ctlnnoerase             ;Erase off?
+     289                    
+     290 00000df0     09e9          movi    CONTROL,a9              ;0CHlear whole page
+         00000e00 c00000b0  
+     291 00000e20     8526          move    *a9,a6
+     292 00000e30     1900          movk    8,a0
+     293 00000e40     8009          move    a0,*a9                  ;Transparency off
+     294 00000e50     1a00          movk    16,a0
+     295 00000e60     0580          move    a0,@PSIZE
+         00000e70 c0000150  
+     296 00000e90     09d3          movi    SCRN_PTCH*2,b3          ;Pitch (2 lines)
+         00000ea0     2000  
+     297 00000eb0                   PUSH    b10,b11,b12,b13,b14
+     298 00000ed0     09f7          movi    [127,1],b7              ;Rows:Columns
+         00000ee0 007f0001  
+     299 00000f00     0fc0          fill    l
+     300 00000f10                   PULL    b10,b11,b12,b13,b14
+     301                    
+     302 00000f30     80c9          move    a6,*a9                  ;Restore
+     303 00000f40     1900          movk    PXSIZE,a0
+     304 00000f50     0580          move    a0,@PSIZE               ;Normal
+         00000f60 c0000150  
+     305 00000f80           ctlnnoerase
+     306                    
+     307 00000f80     80e8  di400   move    a7,*a8                  ;Restore
+     308 00000f90     0d60          eint
+     309                    
+     310                    
+     311 00000fa0     0d5f          calla   pal_transfer            ;Copy new PALs
+         00000fb0 00000000! 
+     312                    
+     313 00000fd0     05c0          move    @IRQSKYE,@ERASELOC      ;Copy bkgnd color
+         00000fe0 00000030- 
+         00001000 01800000  
+     314                    
+     315 00001020     0d3f          callr   switch_stack            ;Scan misc switches
+         00001030     00b0  
+     316                    
+     317 00001040     1820          movk    1,a0
+     318                    
+     319 00001050     0580          move    a0,@dirqdraw
+         00001060 00000070- 
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:58 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+initialization and interrupts                                        PAGE    8
+
+     320                    
+     321 00001080     0541          setf    1,0,0                   ;Enable display int
+     322 00001090     0580          move    a0,@INTENB+DIP
+         000010a0 c000011a  
+     323 000010c0     0570          setf    16,1,0
+     324                    
+     325                    
+     326 000010d0     0d5f          calla   DISPLAY                 ;Build DMAQ, update XYPOS
+         000010e0 00000000! 
+     327                    
+     328 00001100     0360          dint
+     329 00001110     5600          clr     a0
+     330 00001120     0580          move    a0,@dirqdraw            ;Draw done
+         00001130 00000070- 
+     331                    
+     332                    
+     333                    
+     334                    
+     335 00001150           ctln60hzcode                            ;*** This code must run at 60HZ
+     336                    
+     337 00001150     09e2          movi    SWITCH,a2
+         00001160 01600000  
+     338 00001180     09e3          movi    FSWITCH,a3
+         00001190 000000c0- 
+     339                    
+     340 000011b0     9640          move    *a2+,a0,L
+     341 000011c0     03e0          not     a0
+     342 000011d0     9203          move    a0,*a3+,L
+     343 000011e0     8641          move    *a2,a1,L
+     344 000011f0     03e1          not     a1
+     345 00001200     8223          move    a1,*a3,L
+     346                    
+     347 00001210     05ae          move    @TWOPLAYERS,a14         ;if 2-player kit then fudge
+         00001220 000001f0- 
+     348 00001240     ca09          jrz     ctlnnot_2                       ;the switches
+     349                    
+     350 00001250     57ce          clr     a14
+     351 00001260     83c3          move    a14,*a3,L
+     352                    
+     353 00001270     4c01          move    a0,a1                   ;copy player 2 switches -> player 3
+     354 00001280     0520          zext    a0
+     355 00001290     2f00          srl     8,a0
+     356 000012a0     8003          move    a0,*a3
+     357                    
+     358 000012b0     1403          subk    32,a3
+     359 000012c0     2501          sll     8,a1                    ;copy player 1 switches -> player 2
+     360 000012d0     8023          move    a1,*a3
+     361                    
+     362 000012e0           ctlnnot_2
+     363                    
+     364 000012e0     09e2          movi    switches_cur,a2
+         000012f0 00000140- 
+     365 00001310     09e3          movi    switches_old,a3
+         00001320 00000100- 
+     366 00001340     09e4          movi    switches_down,a4
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:58 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+initialization and interrupts                                        PAGE    9
+
+         00001350 00000180- 
+     367                    
+     368 00001370     8641          move    *a2,a1,L
+     369 00001380     9223          move    a1,*a3+,L
+     370 00001390     07a0          move    @FSWITCH,a0,L
+         000013a0 000000c0- 
+     371 000013c0     9202          move    a0,*a2+,L
+     372 000013d0     5601          xor     a0,a1                   ;bits that have changed
+     373 000013e0     5001          and     a0,a1                   ;down transitions
+     374 000013f0     9224          move    a1,*a4+,L
+     375                    
+     376 00001400     8641          move    *a2,a1,L
+     377 00001410     9223          move    a1,*a3+,L
+     378 00001420     07a0          move    @FSWITCH+20h,a0,L
+         00001430 000000e0- 
+     379 00001450     9202          move    a0,*a2+,L
+     380 00001460     5601          xor     a0,a1                   ;bits that have changed
+     381 00001470     5001          and     a0,a1                   ;down transitions
+     382 00001480     9224          move    a1,*a4+,L
+     383                    
+     384                    
+     385                    
+     386                    
+     387 00001490     05a1          move    @dirqtimer,a1           ;Tell mproc to run
+         000014a0 00000050- 
+     388 000014c0     1021          addk    1,a1
+     389 000014d0     0581          move    a1,@dirqtimer
+         000014e0 00000050- 
+     390                    
+     391 00001500     0d3f          callr   switch_stack            ;Scan misc switches
+         00001510     0062  
+     392                    
+     393                    
+     394 00001520     07a0          move    @C_FLAGS,a0,L           ;0CHoin timers
+         00001530 00000000! 
+     395 00001550     ca0b          jrz     ctlnctoff
+     396 00001560     09e2          movi    C_FLAGS+24,a2
+         00001570 00000018! 
+     397 00001590           ctlnctlp
+     398 00001590     4c01          move    a0,a1
+     399 000015a0     2d01          srl     32-8,a1
+     400 000015b0     ca02          jrz     ctim1                   ;Inactive?
+     401 000015c0     1421          subk    1,a1
+     402 000015d0     8c22          movb    a1,*a2
+     403 000015e0           ctim1
+     404 000015e0     1502          subk    8,a2
+     405 000015f0     2500          sll     8,a0
+     406 00001600     cbf8          jrnz    ctlnctlp                        ;More?
+     407 00001610           ctlnctoff
+     408                    
+     409 00001610     0360          dint
+     410 00001620     0541          setf    1,0,0                   ;Enable display int
+     411 00001630     1821          movk    1,a1
+     412 00001640     0581          move    a1,@INTENB+DIP
+         00001650 c000011a  
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:58 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+initialization and interrupts                                        PAGE   10
+
+     413 00001670     0570          setf    16,1,0
+     414                    
+     415                    
+     416 00001680     05a0          move    @dirqcnt,a0
+         00001690 00000060- 
+     417 000016b0     1020          addk    1,a0
+     418 000016c0     0580          move    a0,@dirqcnt
+         000016d0 00000060- 
+     419 000016f0     27a0          sll     32-3,a0
+     420 00001700     cb38          jrnz    dirqx                   ;Skip?
+     421                    
+     422                    
+     423                                                            ;0DHo every 8 ticks
+     424                            .if     DEBUG
+     425                            .else
+     426 00001710     05a0          move    @dirqtimer,a0
+         00001720 00000050- 
+     427 00001740     0b40          cmpi    400,a0
+         00001750     fe6f  
+     428 00001760     c980          jahs    init_prog               ;Reset?
+         00001770 00000000! 
+     429                            .endif
+     430                    
+     431                    
+     432 00001790     05a0          move    @C_FRAC,a0              ;0CHount down coin fraction timer
+         000017a0 00000000! 
+     433 000017c0     ca06          jrz     ctlnnfrc                        ;No frac?
+     434 000017d0     2700          sll     32-8,a0
+     435 000017e0     2d00          srl     32-8,a0
+     436 000017f0     1420          subk    1,a0
+     437 00001800     0580          move    a0,@C_FRAC
+         00001810 00000000! 
+     438 00001830           ctlnnfrc
+     439                    
+     440                                                            ;0CHoin counters
+     441 00001830     07a0          move    @COINCNTR,a0,L
+         00001840 00000000! 
+     442 00001860     ca1f          jrz     l_dog                   ;Counters, timers inactive?
+     443                    
+     444 00001870     1844          movk    2,a4                    ;do both counters
+     445 00001880     09e5          movi    COINCNTR,a5
+         00001890 00000000! 
+     446 000018b0           ccntr0l
+     447 000018b0     8ea1          movb    *a5,a1                  ;more counts for counter ?
+     448 000018c0     ca08          jrz     c_cntr0                 ;no
+     449 000018d0     aea2          movb    *a5(16),a2              ;previous pulse time out?
+         000018e0     0010  
+     450 000018f0     cb05          jrnz    c_cntr0                 ;no
+     451 00001900     1842          movk    2,a2
+     452 00001910     ac45          movb    a2,*a5(16)              ;start new pulse
+         00001920     0010  
+     453 00001930     1421          dec     a1                      ;decrement counts
+     454 00001940     8c25          movb    a1,*a5
+     455 00001950           c_cntr0
+     456 00001950     1105          addk    8,a5
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:58 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+initialization and interrupts                                        PAGE   11
+
+     457 00001960     3d84          dsjs    a4,ccntr0l
+     458                    
+     459 00001970     5642          clr     a2                      ;counter on mask
+     460 00001980     1823          MOVK    01H,a3
+     461 00001990     1844          movk    2,a4
+     462 000019a0           c_cntr1l
+     463 000019a0     8ea0          movb    *a5,a0                  ;counter timer active?
+     464 000019b0     ca04          jreq    c_cntr1                 ;no
+     465 000019c0     1420          dec     a0                      ;yes, dec it and store
+     466 000019d0     8c05          movb    a0,*a5
+     467 000019e0     ca01          jreq    c_cntr1                 ;done
+     468 000019f0     4062          add     a3,a2                   ;turn counter solenoid on
+     469 00001a00           c_cntr1
+     470 00001a00     2423          sll     1,a3
+     471 00001a10     1105          addk    8,a5
+     472 00001a20     3d24          dsjs    a4,c_cntr1l
+     473                    
+     474                    
+     475                            .if     YUNIT
+     476 00001a30     0582          MOVE    A2,@COIN_COUNTERS,W     ;STICK IT TO 'EM
+         00001a40 01d01020  
+     477                            .endif
+     478 00001a60           l_dog
+     479                            .if     TUNIT2
+     480 00001a60     0580          move    a0,@WATCHDOG            ;Hit
+         00001a70 01d81070  
+     481                    
+     482                            .else
+     483                    
+     484                            movi    wdogbone_t,a1           ;0CHlock watchdog
+     485                            move    @SYSCOPY,a2
+     486                            movk    1,a3
+     487                            movi    SYSCTRL,a4
+     488                            move    *a1+,a0
+     489                    
+     490                    roverl  or      a2,a0
+     491                            move    a0,*a4
+     492                            xor     a3,a0
+     493                            move    a0,*a4
+     494                            move    *a1+,a0
+     495                            jrnn    roverl                  ;More?
+     496                    
+     497                            move    a2,*a4                  ;Restore
+     498                            .endif
+     499                    
+     500                    
+     501 00001a90     09af  dirqx   mmfm    sp,a0,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14
+         00001aa0     7fff  
+     502 00001ab0     09bf          mmfm    sp,b0,b1,b2,b3,b4,b5,b6,b7,b11
+         00001ac0     08ff  
+     503 00001ad0     0940          reti
+     504                    
+     505                    
+     506 00001ae0           wdogbone_t
+     507 00001ae0     0000          .word   0,2,0,2,2,-1    ;Watchdog feed table
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:58 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+initialization and interrupts                                        PAGE   12
+
+     508                    
+     509                    
+     510                    
+     511 00001b40            SUBRP  switch_stack
+     512                    
+     513 00001b40     07a0          move    @SWITCH,a0,L
+         00001b50 01600000  
+     514                    
+     515                            .if     TUNIT
+     516 00001b70     0ba0          ori     0f800ffffH,a0   ;Set ignore bits
+         00001b80 f800ffff  
+     517                            .else
+     518                            ori     0ff007f7fH,a0   ;Set ignore bits
+     519                            movb    @COINS+16,a1
+     520                            jrn     swst30          ;No P4 start?
+     521                            subk    1,a0            ;Clr bit 0
+     522                    swst30
+     523                            .endif
+     524 00001ba0     07a1          move    @swtemp1,a1,L   ;previous state t=n-1
+         00001bb0 00000080- 
+     525 00001bd0     07a2          move    @swtemp2,a2,L   ;previous previous t=n-2
+         00001be0 000000a0- 
+     526 00001c00     0781          move    a1,@swtemp2,L   ;new previous previous
+         00001c10 000000a0- 
+     527 00001c30     0780          move    a0,@swtemp1,L   ;new previous
+         00001c40 00000080- 
+     528 00001c60     5022          and     a1,a2
+     529 00001c70     5202          andn    a0,a2           ;look for 110
+     530 00001c80     ca12          jrz     fxzdx           ;No switches?
+     531                    
+     532 00001c90     07a3          move    @swstack_p,a3,L
+         00001ca0 00000000! 
+     533                    
+     534 00001cc0     0b63  fxzdlp  cmpi    swstackbot,a3
+         00001cd0 ffffffff! 
+     535 00001cf0     ca0b          jreq    fxzdx           ;Switch stack overflow?
+     536 00001d00     6a40          lmo     a2,a0           ;1's comp leftmost bit
+     537 00001d10     6802          rl      a0,a2           ;get rid of bit
+     538 00001d20     2422          sll     1,a2
+     539 00001d30     1be1          movk    31,a1           ;calc true bit #
+     540 00001d40     4401          sub     a0,a1
+     541 00001d50     a023          move    a1,-*a3         ;Stack switch number (0-31)
+     542 00001d60     6822          rl      a1,a2           ;Restore switch word without bit
+     543 00001d70     cbf4          jrnz    fxzdlp
+     544                    
+     545 00001d80     0783          move    a3,@swstack_p,L ;restore switch stack
+         00001d90 00000000! 
+     546                    
+     547 00001db0     0960  fxzdx   rets
+     548                    
+     549                    
+     550                    
+     551                    
+     552 00001dc0           badtrap31
+     553 00001dc0           badtrap30
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:58 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+initialization and interrupts                                        PAGE   13
+
+     554 00001dc0           badtrap28
+     555 00001dc0           badtrap27
+     556 00001dc0           badtrap26
+     557 00001dc0           badtrap25
+     558 00001dc0           badtrap24
+     559 00001dc0           badtrap23
+     560 00001dc0           badtrap22
+     561 00001dc0           badtrap21
+     562 00001dc0           badtrap20
+     563 00001dc0           badtrap19
+     564 00001dc0           badtrap18
+     565 00001dc0           badtrap17
+     566 00001dc0           badtrap16
+     567 00001dc0           badtrap15
+     568 00001dc0           badtrap14
+     569 00001dc0           badtrap13
+     570 00001dc0           badtrap12
+     571 00001dc0           badtrap11
+     572 00001dc0           badtrap9
+     573 00001dc0           badtrap8
+     574 00001dc0           badtrap7
+     575 00001dc0           badtrap6
+     576 00001dc0           badtrap5
+     577 00001dc0           badtrap4
+     578 00001dc0           badtrap3
+     579 00001dc0           badtrap2
+     580                    
+     581 00001dc0           badtrap
+     582                            .if     DEBUG
+     583                            LOCKUP
+     584                            eint
+     585                            .else
+     586 00001dc0                   CALLERR 9,0
+     587                            .endif
+     588                    
+     589 00001e70     0940          reti
+     590                    
+     591 00001e80           badtrap29
+     592                            .if     DEBUG
+     593                            reti
+     594                            .endif
+     595 00001e80     c0f3          jruc    badtrap
+     596                    
+     597                    
+     598                    
+     599 00001e90           gspioinit_t
+     600 00001e90     0015          .word   015h            ;0C0000000H -- HESYNC
+     601 00001ea0     0032          .word   HEBLNKINIT      ;0C0000010H -- HEBLNK
+     602 00001eb0     00fa          .word   0fah            ;0C0000020H -- HSBLNK
+     603 00001ec0     00fc          .word   0fch            ;0C0000030H -- HTOTAL
+     604 00001ed0     0003          .word   3               ;0C0000040H -- VESYNC
+     605 00001ee0     0014          .word   20              ;0C0000050H -- VEBLNK
+     606 00001ef0     0112          .word   274             ;0C0000060H -- VSBLNK   ;254 lines
+     607 00001f00     0120          .word   288             ;0C0000070H -- VTOTAL
+     608 00001f10     f010          .word   0f010H          ;0C0000080H -- DPYCTL   ENV|NIL|DXV|SRE|010H
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:58 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+initialization and interrupts                                        PAGE   14
+
+     609 00001f20     fffc          .word   0fffch          ;0C0000090H -- DPYSTRT
+     610 00001f30     0112          .word   EOSINT          ;0C00000A0H -- DPYINT 
+     611 00001f40     002c          .word   2ch             ;0C00000B0H -- CONTROL
+     612 00001f50     0000          .word   0               ;0C00000C0H -- HSTDATA
+     613 00001f60     0000          .word   0               ;0C00000D0H -- HSTADRL
+     614 00001f70     0000          .word   0               ;0C00000E0H -- HSTADRH
+     615 00001f80     0000          .word   0               ;0C00000F0H -- HSTCTLL
+     616 00001f90     0000          .word   0               ;0C0000100H -- HSTCTLH
+     617 00001fa0     0000          .word   0               ;0C0000110H -- INTENBL
+     618 00001fb0     0000          .word   0               ;0C0000120H -- INTPEND
+     619 00001fc0     0000          .word   0               ;0C0000130H -- CONVSP
+     620 00001fd0     0000          .word   0               ;0C0000140H -- CONVDP
+     621 00001fe0     0008          .word   PXSIZE          ;0C0000150H -- PSIZE
+     622 00001ff0     0000          .word   0               ;0C0000160H -- PMASK
+     623 00002000     0000          .word   0               ;0C0000170H -- RESERVED
+     624 00002010     0000          .word   0               ;0C0000180H -- RESERVED
+     625 00002020     0000          .word   0               ;0C0000190H -- RESERVED
+     626 00002030     0000          .word   0               ;0C00001A0H -- RESERVED
+     627 00002040     001c          .word   28              ;0C00001B0H -- DPYTAP
+     628 00002050           giiend
+     629                    
+     630                    
+     631                    
+     632 00000000                   .sect   "VECTORS"
+     633                    
+     634 00000000 00001dc0'         .long   badtrap31       ;TRAP 31
+     635 00000020 00001dc0'         .long   badtrap30       ;TRAP 30        ILLOP --- ILLEGAL OPCODE
+     636 00000040 00001e80'         .long   badtrap29       ;TRAP 29
+     637 00000060 00001dc0'         .long   badtrap28       ;TRAP 28
+     638 00000080 00001dc0'         .long   badtrap27       ;TRAP 27
+     639 000000a0 00001dc0'         .long   badtrap26       ;TRAP 26
+     640 000000c0 00001dc0'         .long   badtrap25       ;TRAP 25
+     641 000000e0 00001dc0'         .long   badtrap24       ;TRAP 24
+     642 00000100 00001dc0'         .long   badtrap23       ;TRAP 23
+     643 00000120 00001dc0'         .long   badtrap22       ;TRAP 22
+     644 00000140 00001dc0'         .long   badtrap21       ;TRAP 21
+     645 00000160 00001dc0'         .long   badtrap20       ;TRAP 20
+     646 00000180 00001dc0'         .long   badtrap19       ;TRAP 19
+     647 000001a0 00001dc0'         .long   badtrap18       ;TRAP 18
+     648 000001c0 00001dc0'         .long   badtrap17       ;TRAP 17
+     649 000001e0 00001dc0'         .long   badtrap16       ;TRAP 16
+     650 00000200 00001dc0'         .long   badtrap15       ;TRAP 15
+     651 00000220 00001dc0'         .long   badtrap14       ;TRAP 14
+     652 00000240 00001dc0'         .long   badtrap13       ;TRAP 13
+     653 00000260 00001dc0'         .long   badtrap12       ;TRAP 12
+     654 00000280 00001dc0'         .long   badtrap11       ;TRAP 11        WV --- WINDOW VIOLATION
+     655 000002a0 00000820'         .long   DIRQ            ;TRAP 10        DI --- DISPLAY INTERRUPT
+     656 000002c0 00001dc0'         .long   badtrap9        ;TRAP 9         HI --- HOST INTERRUPT
+     657 000002e0 00001dc0'         .long   badtrap8        ;TRAP 8         NMI -- NONMASKABLE INTERRUPT
+     658 00000300 00001dc0'         .long   badtrap7        ;TRAP 7
+     659 00000320 00001dc0'         .long   badtrap6        ;TRAP 6
+     660 00000340 00001dc0'         .long   badtrap5        ;TRAP 5
+     661 00000360 00001dc0'         .long   badtrap4        ;TRAP 4
+     662 00000380 00001dc0'         .long   badtrap3        ;TRAP 3
+     663 000003a0 00001dc0'         .long   badtrap2        ;TRAP 2         INT2 --- EXTERNAL INTERRUPT 2
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:58 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+initialization and interrupts                                        PAGE   15
+
+     664 000003c0 00000000!         .long   dma_irq         ;TRAP 1         INT1 --- EXTERNAL INTERRUPT 1
+     665 000003e0 00000000!         .long   init_prog       ;TRAP 0         RESET
+     666                    
+     667                    
+     668                            .end
+
+ No Errors,  No Warnings

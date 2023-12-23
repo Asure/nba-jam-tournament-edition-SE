@@ -1,0 +1,6 @@
+for griffey:
+rebuild bbmug with griffey mug.
+lod is there.
+new mugshot.tbl
+inject bbmug.irw into mame. test if mugs are OK.
+

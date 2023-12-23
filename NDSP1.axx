@@ -1,0 +1,2921 @@
+	.file	"ndsp1.asm"
+	.title	"GSP display processor V 4.3"
+	.width	132
+	.option	b,d,l,t
+	.mnolist
+
+
+	.include	gsp.equ
+	.include	sys.equ
+	.include	mproc.equ
+	.include	disp.equ
+	.include	shawn.hdr
+	.include	imgtbl.glo
+
+
+	.if	DEBUG
+	.ref	SLDEBUG
+	.endif
+
+
+	.REF	COURT
+
+	.ref	HALT,pal_getf,FRANIMQ
+	.ref	PCNT
+	.ref	crt_colors
+	.ref	dirq_wait
+	.ref	SYSCOPY,IRQSKYE
+
+	.def	scale74f_t,scale59_t,scale61f_t,scale63f_t
+	.def	scale57_t,scale58_t,scale60_t
+	.def	scale61_t,scale61t_t,scale62_t
+	.def	scale62t_t,scale63_t,scale64_t,scale64t_t
+	.def	scale65_t,scale65t_t,scale65f_t
+	.def	scale66_t,scale66t_t,scale66f_t
+	.def	scale67_t,scale67t_t,scale67f_t
+	.def	scale68_t,scale68t_t,scale68f_t
+	.def	scale69_t,scale69f_t
+	.def	scale610_t,scale610t_t,scale610f_t
+	.def	scale611_t,scale611t_t,scale611f_t
+	.def	scale70_t,scale70t_t,scale70f_t
+	.def	scale71_t,scale72_t,scale72f_t
+	.def	scale74_t,scale76et_t
+
+
+
+	.sect	"OFIXED"
+
+OBJLST		.long	0	;*Active object list
+OFREE		.long	0	;*Free object block
+BAKLST		.long	0	;*Background list
+
+
+
+GND_Y		.equ	116-40
+GNDI_Y		.equ	116
+GNDI_W		.equ	1277
+GNDI_H		.equ	138
+GND_H		.equ	GNDI_H+40
+GZBASE		.equ	894
+
+	.bss	SCROLLX		,32	;X scroll value
+	.bss	SCROLLY		,32	;Y scroll value
+					;/ Must stay in order
+	.bss	WORLDTLX	,32	;Left X screen coord (16:16)
+	.bss	WORLDTLY	,32	;Top Y screen coord (16:16)
+	.bss	WORLDTL		,32	;Top left world Y:X
+
+	.bss	SCRNTL		,32	;TOP LEFT [Y,X] SCREEN (SCRN COORD.)
+	.bss	SCRNLR		,32	;LOWER RIGHT [Y,X] SCREEN (SCRN COORD.)
+
+	.bss	dpage		,16	;Display page; 0=Page0, -1=Page1
+	.bss	dtype		,16	;Display type; 0=2D, 1=3D, -=Special
+	.bss	dcode_p		,32	;!0=*Special code (^ must = neg)
+	.bss	DMAQCUR		,32	;Misc DMAQ position
+
+	.bss	OBJSTR,NOBJ*OBSIZ	;Object structure mem
+
+QSIZE	.set	(NOBJ+GNDI_H)*BQCELL
+QMSIZE	.set	NOBJ*BQCELL
+	.bss	dmaq0		,QSIZE	;Main DMA queue
+	BSSX	DMAQ		,QMSIZE	;Misc DMA queue
+
+	BSSX	gndstat		,16	;!0=Show ground
+	BSSX	gndpos_t	,16*GND_H
+	BSSX	gndx		,32
+	.bss	DISPLAYON	,16	;!0=Do display processing
+
+	BSSX	_3dstat		,16	;!0=Show polygons
+
+
+	.text
+
+
+
+
+ SUBR	dma_irq
+
+	move	-*b14,-*b12,L
+	move	-*b14,-*b12,L
+	move	-*b14,-*b12,L
+	move	-*b14,-*b12,L
+	move	-*b14,-*b12,L
+	move	-*b14,-*b12,L		;DMA go!
+
+	addi	0c0H,b12			;DMAREGS (End of DMA)
+	subk	1,b13
+	jrn	dmaint1			;Queue empty?
+	reti
+
+dmaint1
+	setf	1,0,0			;0DHisable dma interrupt
+	move	b12,@INTENB+1		;Clr X1E
+	clr	b13			;For safety!
+	subk	1,b13			;-1
+	reti
+
+
+
+	.align
+
+ebnolp
+	move	b5,a3
+	add	a0,a3
+	move	*a3+,a1			;Get OFLAGS
+	mmfm	a3,a12,a11,a9,a8
+	move	*a0(OYVAL),a10,L	;Get int Y
+
+	btst	B_3DQ,a1
+	jrz	ebnochk3d
+
+	move	b4,a6			;World TL Y:X
+	subxy	a6,a10			;-world coord to get screen coord
+	move	*a0(OXPOS),a2		;X
+	move	*a0(ODATA_p),a3,L	;*gndpos_t
+	move	*a3,a3			;Get X shift
+	sub	a3,a2
+	movx	a2,a10			;A10=Obj Y:X
+	jruc	ebnonoscl
+
+
+ebnochk3d	btst	B_3D,a1
+	jrnz	ebno3d
+
+	move	*a0(OXPOS),a2		;X
+	movx	a2,a10			;A10=Obj Y:X
+	btst	B_SCRNREL,a1
+	jrnz	ebnonoscl			;Screen relative XY?
+	move	b4,a6			;World TL Y:X
+	subxy	a6,a10			;-world coord to get screen coord
+ebnonoscl	move	b7,a5			;A5=Y:X scale
+
+					;A8=Const:PAL
+					;A9=VSize:HSize
+					;A10=Dest Y:X
+					;A11=*SAG
+					;A12=Offset:Ctrl
+
+
+				;0CaHlc top,bot,lft,rgt clips
+	clr	a3		;A3=TL clip size
+	move	a10,a2
+	addxy	a9,a2		;BR Y:X
+	subxy	a13,a2		;A2=BR clip size
+	JRYGE	ebno10
+	movy	a3,a2		;Clr bclip if y neg
+ebno10	JRXGE	ebno20
+	movx	a3,a2		;Clr rclip if x neg
+
+ebno20	move	a14,a6
+	subxy	a10,a6		;tc : lc
+	JRYLT	ebno30
+	movy	a6,a3		;Top clip size
+	movy	a14,a10		;Adjust start position to window edge
+
+ebno30	JRXLT	ebno35
+	movx	a6,a3		;Left clip size
+	movx	a14,a10		;Adjust start position to window edge
+
+ebno35	move	a2,b0		;Save
+	add	a3,a2		;TL clip+BR clip
+	jrz	ebnonoclip		;Zero clip?
+
+
+	movx	a9,a6		;HSize
+
+	subxy	a2,a9		;Get clipped size
+	JRXLE	ebnonxt		;Totally clipped?
+	JRYLE	ebnonxt
+
+	clr	a1
+	movx	a2,a1
+	move	a1,a1
+	jrz	ebnoxclipzero
+	movx	a9,a1
+	subk	8,a1
+	jrle	ebnonxt		;<=8 wide? Skip so DMA doesn't lockup
+
+ebnoxclipzero
+	movx	a6,a9		;Restore hsize
+
+	movx	a3,a1		;A1=Left clip
+
+
+	btst	B_FLIPH,a12
+	jrz	ebnonofh
+
+	subxy	a1,a10		;Original X
+
+	move	b0,a1		;LClip=RClip
+	zext	a1
+	subxy	a1,a10		;X-RClip
+
+
+ebnonofh	btst	B_FLIPV,a12
+	jrz	ebnonofv
+
+	move	b0,a3		;Bot clip
+
+ebnonofv	srl	16,a3		;A3=Top or bot clip
+	jrz	ebnot0
+	zext	a6
+	mpyu	a6,a3		;T or B clip * total hsize
+
+
+ebnot0
+	add	a1,a3		;Add left clip + tc*ths
+	move	a12,a1
+	sll	32-15,a1	;Get bits 12-14
+	srl	32-15+12,a1
+	jrnz	ebnonot8
+	movk	8,a1
+ebnonot8	mpys	a1,a3		;# of bits to skip
+	add	a3,a11		;Add to SAG
+	sll	16,a2
+	addxy	a2,a12		;Add clip offset to offset
+
+
+ebnonoclip
+	btst	B_FLIPV,a12
+	jrz	ebnonofv2
+
+	movy	a9,a1			;VSize
+	srl	16,a1
+	subk	1,a1
+	sll	16,a1
+	addxy	a1,a10
+ebnonofv2
+ebnochkhflip
+	btst	B_FLIPH,a12
+	jrz	ebnonofh2
+
+	movx	a9,a1			;HSize
+	subk	1,a1
+	zext	a1
+	addxy	a1,a10
+ebnonofh2
+
+	move	b2,a1
+	addxy	a1,a10			;Add the page y offset : XPad
+	rl	16,a12			;Flip ctrl & offset
+	mmtm	a4,a5,a8,a9,a10,a11,a12	;Save the dma regs
+	addk	1,b13			;+1 Q cnt
+	jrle	ebnostrtdma		;DMA not going?
+
+ebnonxt
+dma_objlst
+	move	*a0,a0,L		;Get next link
+	jrnz	ebnolp			;More?
+	rets
+
+
+
+ebno3d					;03DH
+	move	*a0(OXVAL),a7,L		;X
+	move	b4,a2
+	subxy	a2,a10			;-World Y
+	move	b6,a2
+	sub	a2,a7			;-World center X
+	move	*a0(OXANI),a5,L		;X anipt
+	add	a5,a7
+	sra	16-5,a7			;/2048 (leave 5 bits frac)
+
+	move	*a0(OZPOS),a2		;894 to 1379 (Z range 486)
+	move	*a0(OMISC),a3		;Z offset
+	add	a3,a2
+	move	a2,a6
+
+	addi	(819-GZBASE),a2		;768 to ?
+	mpys	a2,a7
+	move	a7,a3
+	sra	2,a3			;/4
+	sub	a3,a7
+	sra	1,a3			;/2
+	sub	a3,a7
+	sra	14,a7			;/16k
+	addi	200,a7
+	sra	16,a5
+	sub	a5,a7			;-X anipt
+	movx	a7,a10
+
+	subi	GZBASE,a6		;-Base
+	jrge	ebnozok
+	clr	a6
+ebnozok	move	a6,a2
+	move	a6,a3
+	sra	1,a6			;Z/2
+	sra	3,a3			;Z/8
+	sub	a3,a6			;=Z/2.667
+
+	addi	GND_Y,a6
+	sll	16,a6
+	addxy	a6,a10			;+Z
+
+	btst	B_NOSCALE,a1
+	jrnz	ebnonoscl			;Scale off?
+
+	btst	B_SHAD,a1
+	jrz	ebnonots
+	srl	1,a10
+	move	@PCNT,a5		;Set X to even or odd
+	srl	1,a5
+	addc	a10,a10
+	jruc	ebnonoscl
+
+ebnonots
+	cmpxy	a13,a10
+	JRXGE	ebnonxt			;Left edge past rclip?
+
+	move	a10,a3
+	addxy	a9,a3
+	cmpxy	a14,a3
+	JRXLT	ebnonxt			;Rgt edge past lclip?
+
+	srl	4,a2			;/16
+	sll	6,a2			;*64
+
+	move	*a0(ODATA_p),a5,L	;*Scale_t
+	add	a2,a5
+	move	*a5,a5,L		;A5=Y:X scale
+
+	jruc	ebnochkhflip		;Visable
+
+
+
+ebnostrtdma				;>Start DMA if necessary
+	dint
+
+	setf	1,0,0			;Enable DMA int
+	movk	1,a1
+	move	a1,@INTENB+1		;X1E
+	setf	16,1,0
+
+	move	*b11,b0
+	jrn	ebnodmaok			;DMA busy?
+
+	move	b13,b13
+	jrn	ebnodmaok			;DMA int done?
+
+	trap	1			;Cause DMA int
+
+ebnodmaok	eint
+	.if	DEBUG
+	addk	1,b3			;Restart cnt
+	.endif
+	jruc	ebnonxt
+
+
+
+
+SCLT	.macro	sx,sy,sxa,sya
+	.eval	:sx:*1048,X	;Convert (has slight error)
+	.eval	:sy:*1048,Y
+	.eval	:sxa:*1048,XA
+	.eval	:sya:*1048,YA
+	.loop	10
+	.word	010000000H/X,010000000H/Y
+	.word	0100000H/(010000000H/X),0100000H/(010000000H/Y)
+	.eval	X+XA*1/4,X
+	.eval	Y+YA*1/4,Y
+	.endloop
+	.loop	10
+	.word	010000000H/X,010000000H/Y
+	.word	0100000H/(010000000H/X),0100000H/(010000000H/Y)
+	.eval	X+XA*2/4,X
+	.eval	Y+YA*2/4,Y
+	.endloop
+	.loop	10
+	.word	010000000H/X,010000000H/Y
+	.word	0100000H/(010000000H/X),0100000H/(010000000H/Y)
+	.eval	X+XA*3/4,X
+	.eval	Y+YA*3/4,Y
+	.endloop
+	.loop	10
+	.word	010000000H/X,010000000H/Y
+	.word	0100000H/(010000000H/X),0100000H/(010000000H/Y)
+	.eval	X+XA,X
+	.eval	Y+YA,Y
+	.endloop
+	.loop	10
+	.word	010000000H/X,010000000H/Y
+	.word	0100000H/(010000000H/X),0100000H/(010000000H/Y)
+	.eval	X+XA*5/4,X
+	.eval	Y+YA*5/4,Y
+	.endloop
+	.endm
+
+
+				;>Generate scale tables
+scale57_t
+scale58_t
+scale59_t
+	SCLT	594,594,37,37	;5'8 (68)
+	SCLT	507,507,31,31
+	SCLT	360,360,20,20
+scale60_t
+scale61_t
+scale61t_t
+	SCLT	629,629,39,39	;6'0 (72)
+	SCLT	537,537,34,34
+	SCLT	360,360,20,20
+scale61f_t
+scale62_t
+scale63f_t
+scale63_t
+	SCLT	646,646,41,41	;6'2 (74)
+	SCLT	552,552,35,35
+	SCLT	360,360,20,20
+scale62t_t
+	SCLT	607,646,39,41	;6'2 (74) thin (.94)
+	SCLT	519,552,33,35
+	SCLT	360,360,20,20
+scale64_t
+scale65_t
+	SCLT	664,664,42,42	;6'4 (76)
+	SCLT	567,567,35,35
+	SCLT	360,360,20,20
+scale64t_t
+scale65t_t
+	SCLT	624,664,39,42	;6'4 (76) thin (.94)
+	SCLT	533,567,33,35
+	SCLT	360,360,20,20
+scale65f_t
+	SCLT	730,664,46,42	;6'4 (76) fat (1.10)
+	SCLT	624,567,39,35
+	SCLT	360,360,20,20
+scale66_t
+scale67_t
+	SCLT	681,681,43,43	;6'6 (78)
+	SCLT	582,582,36,36
+	SCLT	360,360,20,20
+scale66t_t
+scale67t_t
+	SCLT	640,681,40,43	;6'6 (78) thin (.94)
+	SCLT	547,582,34,36
+	SCLT	360,360,20,20
+scale66f_t
+scale67f_t
+	SCLT	749,681,47,43	;6'6 (78) fat (1.10)
+	SCLT	640,582,40,36
+	SCLT	360,360,20,20
+scale68_t
+scale69_t
+	SCLT	698,698,44,44	;6'8 (80)
+	SCLT	597,597,37,37
+	SCLT	360,360,20,20
+scale68t_t
+scale69t_t
+	SCLT	656,698,41,44	;6'8 (80) thin (.94)
+	SCLT	561,597,35,37
+	SCLT	360,360,20,20
+scale68f_t
+scale69f_t
+	SCLT	768,698,48,44	;6'8 (80) fat (1.10)
+	SCLT	657,597,41,37
+	SCLT	360,360,20,20
+scale610_t
+scale611_t
+	SCLT	715,715,45,45	;6'10 (82)
+	SCLT	611,611,38,38
+	SCLT	360,360,20,20
+scale610t_t
+scale611t_t
+	SCLT	672,715,42,45	;6'10 (82) thin (.94)
+	SCLT	574,611,36,38
+	SCLT	360,360,20,20
+scale610f_t
+scale611f_t
+	SCLT	801,715,50,45	;6'10 (82) fat (1.12)
+	SCLT	684,611,43,38
+	SCLT	360,360,20,20
+scale70_t
+	SCLT	733,733,46,46	;7'0 (84)
+	SCLT	627,627,39,39
+	SCLT	360,360,20,20
+scale70t_t
+	SCLT	689,733,43,46	;7'0 (84) thin (.94)
+	SCLT	589,627,37,39
+	SCLT	360,360,20,20
+scale70f_t
+	SCLT	806,733,51,46	;7'0 (84) fat (1.10)
+	SCLT	690,627,43,39
+	SCLT	360,360,20,20
+scale71_t
+scale72_t
+	SCLT	751,751,47,47	;7'2 (86)
+	SCLT	642,642,40,40
+	SCLT	360,360,20,20
+scale72f_t
+	SCLT	841,751,53,47	;7'2 (86) fat (1.12)
+	SCLT	719,642,45,40
+	SCLT	360,360,20,20
+scale74_t
+scale74f_t
+	SCLT	768,768,49,49	;7'4 (88)
+	SCLT	657,657,41,41
+	SCLT	360,360,20,20
+scale76et_t
+	SCLT	628,786,40,50	;7'6 (90) extra thin (.80)
+	SCLT	538,672,34,42
+	SCLT	360,360,20,20
+
+
+
+
+dma_objlst2d
+	movi	01000100H,a5		;A5=Y:X scale
+	jruc	fxsgnxt
+
+	.align
+
+fxsglp
+	move	b5,a3
+	add	a0,a3
+	move	*a3+,a1			;Get OFLAGS
+	mmfm	a3,a12,a11,a9,a8
+
+	move	*a0(OYVAL),a10,L	;Get int Y
+
+	move	*a0(OXPOS),a2		;X
+	movx	a2,a10			;A10=Obj Y:X
+	btst	B_SCRNREL,a1
+	jrnz	fxsgnoscl			;Screen relative XY?
+	move	b4,a6			;A6=World TL Y:X
+	subxy	a6,a10			;-world coord to get screen coord
+fxsgnoscl
+					;A8=Const:PAL
+					;A9=VSize:HSize
+					;A10=Dest Y:X
+					;A11=*SAG
+					;A12=Offset:Ctrl
+
+
+				;0CaHlc top,bot,lft,rgt clips
+	clr	a3		;A3=TL clip size
+	move	a10,a2
+	addxy	a9,a2		;BR Y:X
+	subxy	a13,a2		;A2=BR clip size
+	JRYGE	fxsg10
+	movy	a3,a2		;Clr bclip if y neg
+fxsg10	JRXGE	fxsg20
+	movx	a3,a2		;Clr rclip if x neg
+
+fxsg20	move	a14,a7
+	subxy	a10,a7		;wstart - pt -> a7 (tc : lc)
+	JRYLT	fxsg30
+	movy	a7,a3		;Top clip size
+	btst	7,a12
+	jrnz	fxsg30		;Zero compression on?
+	movy	a14,a10		;Adjust start position to window edge
+
+fxsg30	JRXLT	fxsg35
+	movx	a7,a3		;Left clip size
+	btst	7,a12
+	jrnz	fxsg35		;Zero compression on?
+	movx	a14,a10		;Adjust start position to window edge
+
+fxsg35	move	a2,b0		;Save
+	add	a3,a2		;TL clip+BR clip
+	jrz	fxsgnoclip		;Zero clip?
+
+
+	move	a9,a6		;Save VSize:HSize
+
+	subxy	a2,a9		;Get clipped size
+	JRXLE	fxsgnxt		;Totally clipped?
+	JRYLE	fxsgnxt
+
+	btst	7,a12
+	jrz	fxsgnozc		;Zero compression off?
+	move	a6,a9		;Restore v:h size
+	jruc	fxsgnoclip
+
+fxsgnozc
+	clr	a1
+	movx	a2,a1
+	move	a1,a1
+	jrz	fxsgxclipzero
+	movx	a9,a1
+	subk	8,a1
+	jrle	fxsgnxt		;<=8 wide? Skip so DMA doesn't lockup
+
+fxsgxclipzero
+	movx	a6,a9		;Restore hsize
+
+	movx	a3,a1		;A1=Left clip
+
+
+	btst	B_FLIPH,a12
+	jrz	fxsgnofh
+
+	subxy	a1,a10		;Original X
+
+	move	b0,a1		;LClip=RClip
+	zext	a1
+	subxy	a1,a10		;X-RClip
+
+
+fxsgnofh	btst	B_FLIPV,a12
+	jrz	fxsgnofv
+
+	move	b0,a3		;Bot clip
+
+fxsgnofv	srl	16,a3		;A3=Top or bot clip
+	jrz	fxsgt0
+	zext	a6
+	mpyu	a6,a3		;T or B clip * total hsize
+
+
+fxsgt0
+	add	a1,a3		;Add left clip + tc*ths
+	move	a12,a1
+	sll	32-15,a1	;Get bits 12-14
+	srl	32-15+12,a1
+	jrnz	fxsgnot8
+	movk	8,a1
+fxsgnot8	mpys	a1,a3		;# of bits to skip
+	add	a3,a11		;Add to SAG
+	sll	16,a2
+	addxy	a2,a12		;Add clip offset to offset
+
+
+fxsgnoclip
+	btst	B_FLIPH,a12
+	jrz	fxsg300
+
+	movx	a9,a1			;HSize
+	subk	1,a1
+	zext	a1
+	addxy	a1,a10
+
+fxsg300	btst	B_FLIPV,a12
+	jrz	fxsg400
+
+	movy	a9,a1			;VSize
+	srl	16,a1
+	subk	1,a1
+	sll	16,a1
+	addxy	a1,a10
+
+fxsg400
+	move	b2,a1
+	addxy	a1,a10			;Add the page y offset : XPad
+	rl	16,a12			;Flip ctrl & offset
+	mmtm	a4,a5,a8,a9,a10,a11,a12	;Save the dma regs
+	addk	1,b13			;+1 Q cnt
+	jrgt	fxsgnxt			;DMA going?
+
+	dint
+
+	setf	1,0,0			;0EHnable DMA int
+	movk	1,a1
+	move	a1,@INTENB+1		;X1E
+	setf	16,1,0
+
+	move	*b11,b0
+	jrn	fxsgdmaok			;DMA busy?
+
+	move	b13,b13
+	jrn	fxsgdmaok			;DMA int done?
+
+	trap	1			;Cause DMA int
+
+fxsgdmaok	eint
+fxsgnxt
+	move	*a0,a0,L		;Get next link
+	jrnz	fxsglp			;More?
+	rets
+
+
+
+
+dma_objlst2dscl
+
+	jruc	blqtnxt
+
+	.align
+
+blqtlp
+	move	b5,a3
+	add	a0,a3
+	move	*a3+,a1			;Get OFLAGS
+	mmfm	a3,a12,a11,a9,a8
+
+	move	*a0(ODATA_p),a5,L	;Get scale value
+
+	move	*a0(OYVAL),a10,L	;Get int Y
+
+	move	*a0(OXPOS),a2		;X
+	movx	a2,a10			;A10=Obj Y:X
+	btst	B_SCRNREL,a1
+	jrnz	blqtnoscl			;Screen relative XY?
+	move	b4,a6			;A6=World TL Y:X
+	subxy	a6,a10			;-world coord to get screen coord
+blqtnoscl
+					;A8=Const:PAL
+					;A9=VSize:HSize
+					;A10=Dest Y:X
+					;A11=*SAG
+					;A12=Offset:Ctrl
+
+
+				;0CaHlc top,bot,lft,rgt clips
+	clr	a3		;A3=TL clip size
+	move	a10,a2
+	addxy	a9,a2		;BR Y:X
+	subxy	a13,a2		;A2=BR clip size
+	JRYGE	blqt10
+	movy	a3,a2		;Clr bclip if y neg
+blqt10	JRXGE	blqt20
+	movx	a3,a2		;Clr rclip if x neg
+
+blqt20	move	a14,a7
+	subxy	a10,a7		;wstart - pt -> a7 (tc : lc)
+	JRYLT	blqt30
+	movy	a7,a3		;Top clip size
+	movy	a14,a10		;Adjust start position to window edge
+
+blqt30	JRXLT	blqt35
+	movx	a7,a3		;Left clip size
+	movx	a14,a10		;Adjust start position to window edge
+
+blqt35	move	a2,b0		;Save
+	add	a3,a2		;TL clip+BR clip
+	jrz	blqtnoclip		;Zero clip?
+
+
+	movx	a9,a6		;HSize
+
+	subxy	a2,a9		;Get clipped size
+	JRXLE	blqtnxt		;Totally clipped?
+	JRYLE	blqtnxt
+
+	clr	a1
+	movx	a2,a1
+	move	a1,a1
+	jrz	blqtxclipzero
+	movx	a9,a1
+	subk	8,a1
+	jrle	blqtnxt		;<=8 wide? Skip so DMA doesn't lockup
+
+blqtxclipzero
+	movx	a6,a9		;Restore hsize
+
+	movx	a3,a1		;A1=Left clip
+
+
+	btst	B_FLIPH,a12
+	jrz	blqtnofh
+
+	subxy	a1,a10		;Original X
+
+	move	b0,a1		;LClip=RClip
+	zext	a1
+	subxy	a1,a10		;X-RClip
+
+
+blqtnofh	btst	B_FLIPV,a12
+	jrz	blqtnofv
+
+	move	b0,a3		;Bot clip
+
+blqtnofv	srl	16,a3		;A3=Top or bot clip
+	jrz	blqtt0
+	zext	a6
+	mpyu	a6,a3		;T or B clip * total hsize
+
+
+blqtt0
+	add	a1,a3		;Add left clip + tc*ths
+	move	a12,a1
+	sll	32-15,a1	;Get bits 12-14
+	srl	32-15+12,a1
+	jrnz	blqtnot8
+	movk	8,a1
+blqtnot8	mpys	a1,a3		;# of bits to skip
+	add	a3,a11		;Add to SAG
+	sll	16,a2
+	addxy	a2,a12		;Add clip offset to offset
+
+
+blqtnoclip
+	btst	B_FLIPH,a12
+	jrz	blqt300
+
+	movx	a9,a1			;HSize
+	subk	1,a1
+	zext	a1
+	addxy	a1,a10
+
+blqt300	btst	B_FLIPV,a12
+	jrz	blqt400
+
+	movy	a9,a1			;VSize
+	srl	16,a1
+	subk	1,a1
+	sll	16,a1
+	addxy	a1,a10
+
+blqt400
+	move	b2,a1
+	addxy	a1,a10			;Add the page y offset : XPad
+	rl	16,a12			;Flip ctrl & offset
+	mmtm	a4,a5,a8,a9,a10,a11,a12	;Save the dma regs
+	addk	1,b13			;+1 Q cnt
+	jrgt	blqtnxt			;DMA going?
+
+	dint
+
+	setf	1,0,0			;0EHnable DMA int
+	movk	1,a1
+	move	a1,@INTENB+1		;X1E
+	setf	16,1,0
+
+	move	*b11,b0
+	jrn	blqtdmaok			;DMA busy?
+
+	move	b13,b13
+	jrn	blqtdmaok			;DMA int done?
+
+	trap	1			;Cause DMA int
+
+blqtdmaok	eint
+blqtnxt
+	move	*a0,a0,L		;Get next link
+	jrnz	blqtlp			;More?
+	rets
+
+
+
+
+
+DISPLAY
+	movi	DMACTRL,b11		;B11=*DMACTRL
+
+
+	movi	SCRNXP,b2		;B2=Page y offset : XPad offset
+	movi	[253,0],b3
+	move	@dpage,a1
+	jrnz	ytkqp1
+	movi	[PAGE1YO,SCRNXP],b2
+	movi	[509,256],b3
+ytkqp1
+	movi	dmaq0+QSIZE,a4		;A4=*DMAQ for new data (Top)
+	clr	b13			;Kill DMA
+	move	b13,*b11
+	move	b13,*b11
+	movi	DMAREGS,b12		;B12=*DMAREGS
+	subk	1,b13			;B13=Q count (-1)
+	move	a4,b14			;B14=*DMAQ for next fetch (Top)
+
+	movi	030H,b0
+	move	b0,*b12(30h)		;DMACONF (Top/Bottom)
+	move	b3,*b12,L		;DMAWINDOW
+
+
+
+	move	@DISPLAYON,a0
+	jrz	ytkqdoff			;Stop DMA of objects except for score?
+
+
+	movi	WORLDTLX,b0		;>Scroll world
+
+	move	*b0+,b3,L		;Quick version of ^
+	move	*b0+,b4,L
+
+	srl	16,b3
+	movx	b3,b4			;B4=World top left Y:X
+	move	b4,*b0,L		;WORLDTL
+
+	movi	OFLAGS,b5		;B5=Obj data offset
+	move	b4,b6
+	addi	200,b6
+	sll	16,b6			;B6=World center scrn X * 64K
+	move	@SCRNLR,a13,L		;A13=Screen BR
+	move	@SCRNTL,a14,L		;A14=Screen TL
+
+	.if	DEBUG
+	clr	b3			;trap1 cnt
+	.endif
+
+	move	@gndstat,a0
+	jrz	ytkq70			;Off?
+	callr	gnd_dodma
+ytkq70
+	move	@_3dstat,a0
+	jrz	ytkq80			;Off?
+ytkq80
+
+	move	@dtype,a1
+	jrnz	ytkq3dtype
+
+
+	movi	BAKLST,a0
+	callr	dma_objlst2d
+
+	.if	DEBUG
+	move	@SLDEBUG,a0
+	jrnn	ytkqnol2d
+	movi	31<<10+10<<5,a0		;Proc usage
+	move	a0,@ERASELOC
+ytkqnol2d
+	.endif
+
+	movi	OBJLST,a0
+	callr	dma_objlst2d
+	jruc	ytkqdoff
+
+
+ytkq3dtype
+	jrgt	ytkq3dgame
+
+	move	@dcode_p,a0,L
+	jrnn	ytkq3dgame			;No special code?
+	call	a0
+	jruc	ytkqx
+
+
+ytkq3dgame
+
+	.if	DEBUG
+	move	@SLDEBUG,a0
+	jrnn	ytkqnol3d
+	movi	31<<10+10<<5,a0		;Proc usage
+	move	a0,@ERASELOC
+ytkqnol3d
+	.endif
+
+	movi	OBJLST,a0
+	movi	01000100H,b7		;Original scale
+	callr	dma_objlst
+
+
+
+ytkqdoff
+	move	@DMAQCUR,a2,L
+	movi	DMAQ+QMSIZE,a1
+	cmp	a1,a2
+	jrhs	ytkqnoman			;Empty?
+	move	a1,@DMAQCUR,L		;Reset top of queue
+
+	move	b2,a5
+
+ytkqlp	move	-*a1,-*a4,L		;0CHopy manual DMAQ to end of Q
+	move	-*a1,-*a4,L
+	move	-*a1,-*a4,L
+	move	-*a1,a0,L
+	addxy	a5,a0			;+Y
+	move	a0,-*a4,L
+	move	-*a1,-*a4,L
+	move	-*a1,-*a4,L
+	addk	1,b13
+	cmp	a2,a1
+	jrhi	ytkqlp
+
+
+	move	*b11,b0
+	jrn	ytkqnoman			;DMA busy?
+
+	move	b13,b13
+	jrn	ytkqnoman			;DMA int done?
+
+	setf	1,0,0			;0EHnable DMA int
+	movk	1,a1
+	move	a1,@INTENB+1		;X1E
+	setf	16,1,0
+
+	trap	1			;Cause DMA int
+
+ytkqnoman
+
+
+	move	@HALT,a0
+	jrnz	ytkqnovel			;Skip vel update?
+	movi	OBJLST,a0
+	callr	vel_add
+ytkqnovel
+ytkqx
+
+
+	rets
+
+
+nulldma	.long	080000000H,IROM,0,000010001H,0,01000100H
+
+
+
+cuyzlp	move	a0,a1
+	addk	OXVEL,a1
+
+	mmfm	a1,a2,a3,a4,a5,a6,a7	;A7=XV, A6=YV, A5=ZV, A4=X, A3=Y, A2=Z
+
+	add	a5,a2			;Add ZVEL to Z
+	move	a2,-*a1,L
+	add	a6,a3			;Add YVEL to Y (Uses hidden cycle!)
+	move	a3,-*a1,L
+	add	a7,a4			;Add XVEL to X ^
+	move	a4,-*a1,L
+
+vel_add	move	*a0,a0,L
+	jrnz	cuyzlp			;!End?
+	rets
+
+
+
+
+ SUBRP	gnd_dodma
+
+	PUSH	a13,a14
+
+
+
+
+
+	move	@gndx,a14,L		;16:16
+
+
+	movi	gndpos_t,a0		;0CaHlc gnd x positions
+	movi	GND_H,a7
+	move	a14,a1
+	movi	0120H,a2
+	divs	a2,a1
+ptdgglp	move	a14,a8
+	sra	16,a8
+	move	a8,*a0+
+	add	a1,a14
+	dsj	a7,ptdgglp
+
+
+	move	@crt_colors,a0,L
+	calla	pal_getf
+	move	a0,a8			;A8=Const:palette
+
+	movi	gndpos_t+40*16,a0	;Start on 1st court pos
+	movi	GNDI_H,a7
+	move	b4,a1
+	sra	16,a1
+	add	a1,a7
+	jrle	ptdgx			;No lines visable?
+	movi	[1,400],a9		;A9=VSIZE:HSIZE
+	move	b2,a10
+	sll	16,a1
+	subxy	a1,a10
+	addi	[GNDI_Y,0],a10		;A10=Dest Y:X
+
+	movi	01000100H,a5		;A5=Y:X scale
+	movi	COURT+(GNDI_W/2-200)*8,a6 ;A6=*Middle of img line
+	movi	(08000H|DMAWNZ)<<16,a12	;A12=OFFSET:CONTROL
+
+
+	movi	GNDI_W*8,a2		;Const: Next line
+	movi	[1,0],a3		;Const: Next Y
+
+ptdglp	move	*a0+,a11
+	sll	3,a11			;*8
+	add	a6,a11			;A11=*Image data
+
+	mmtm	a4,a5,a8,a9,a10,a11,a12	;Save the dma regs
+	addk	1,b13			;+1 Q cnt
+	jrle	ptdgstrtdma		;DMA not going?
+
+ptdgnext
+	add	a2,a6			;SAG+1 line
+	add	a3,a10			;Next Y
+
+
+	dsj	a7,ptdglp
+
+
+ptdgx	PULL	a13,a14
+	rets
+
+
+	.align
+ptdgstrtdma				;>Start DMA if necessary
+	dint
+	setf	1,0,0			;Enable DMA int
+	movk	1,a1
+	move	a1,@INTENB+1		;X1E
+	setf	16,1,0
+
+	move	*b11,b0
+	jrn	ptdgdmaok			;DMA busy?
+
+	move	b13,b13
+	jrn	ptdgdmaok			;DMA int done?
+
+	trap	1			;Cause DMA int
+ptdgdmaok	eint
+	.if	DEBUG
+	addk	1,b3			;DEBUG cnt
+	.endif
+	jruc	ptdgnext
+
+
+
+	.if	0
+
+
+
+	.bss	linelsxy	,32
+	.bss	linersxy	,32
+
+D3XPTS	.equ	0140H		;UHL *Xformed points array (Cnt, XYZ,XYZ..)
+
+ SUBRP	_3d_draw	;B1 Free (B14)
+
+	PUSH	a4,a13,a14
+	PUSH	b3,b4,b5,b6,b7,b8,b9,b10,b13,b14
+
+
+	setf	1,0,0			;0DHisable DMA interrupt
+	move	sp,@INTENB+1		;Clr X1E
+	setf	16,1,0
+
+	movi	[1,1],b13		;B13=Const 1:1
+
+
+	movi	01000100H,b5		;B5=1:1 scale
+	movi	IROM,b9			;B9=*IROM
+	movi	0800cH<<16,b10		;B10=OFFSET:CONTROL
+
+	movi	d3vis_p,a12		;A12=*3D object
+
+
+
+
+
+	.align
+
+iphjlpobj	move	*a12,a12,L
+	jrz	iphjx			;End?
+	move	a12,a14
+	addi	D3XPTS,a14
+	move	*a14+,a13,L		;A13=*Base of points_t
+	move	*a14+,a14,L		;A14=*1st entry of face line_t
+
+	move	*a13+,a0		;# pts
+	jrz	iphjlpobj			;Not visable?
+
+
+iphjfacelp
+	move	*a14+,a0
+	move	a0,b6			;B6=Const:Pal for face
+	sll	16,b6
+	move	a14,a4
+	movi	07fffH,a8		;0FHind lowest/highest X Y
+
+	move	a8,a9
+	not	a9			;08000H
+	move	a8,a10
+	move 	a9,a11
+	jruc	dd150
+
+iphjlp2	add	a13,a1			;+Base
+	move	*a1+,a2			;Get X
+	cmp	a8,a2
+	jrge	iphjxbig			;Bigger X?
+	move	a2,a8			;New low
+iphjxbig	cmp	a9,a2
+	jrle	iphjxsml			;Smaller X?
+	move	a2,a9			;New high
+iphjxsml
+	move	*a1,a1			;Get Y
+	cmp	a10,a1
+	jrge	iphjybig			;Bigger Y?
+	move	a1,a10			;New low
+	move	a4,a5			;A5=*Left line line table
+iphjybig	cmp	a11,a1
+	jrle	dd150
+	move	a1,a11			;New high
+
+dd150	move	*a4+,a1
+	jrnn	iphjlp2			;Good offset?
+
+
+	subk	16,a4			;A4=*Null end entry of line_t
+
+
+	cmpi	200,a8
+	jrge	iphjnextf			;Face off screen?
+	cmpi	-200,a9
+	jrle	iphjnextf			;Face off screen?
+
+
+	move	a11,a0
+	sub	a10,a11
+	jreq	iphjnextf			;Height of 1?
+
+	cmpi	254,a10
+	jrge	iphjnextf			;Off screen bottom?
+	cmpi	-400,a10
+	jrle	iphjnextf			;Way off screen top?
+
+	subi	253,a0
+	jrle	dd300
+	sub	a0,a11
+dd300	addk	1,a11			;A11=Main loop cnt
+
+
+	sll	16,a10			;A10=Dest Y:X
+
+	move	a5,a6			;A6=*Rgt line line table
+	subk	16,a6
+
+	move	-*a5,a0			;Get offset
+	add	a13,a0
+	cmp	a14,a5
+	jrhi	dd500			;!At start?
+	move	a4,a5			;Put at end
+
+dd500	move	*a6+,a1			;Get offset
+	add	a13,a1
+	cmp	a4,a6
+	jrlo	dd550			;!Past end
+	move	a14,a6			;Put at start
+dd550
+	move	*a0,a2,L
+	move	*a1,a3,L
+	move	a2,@linelsxy,L		;Needed???
+	move	a3,@linersxy,L
+
+	movk	1,b3			;B3=Y cntdn till end of left line
+	movk	1,b4			;B4=Y cntdn till end of rgt line
+
+
+	;A8 Free
+	movi	[1,0],a8		;A8=Const 1:0
+
+iphjlinelp
+
+	dsj	b3,dd750
+
+dd700	move	-*a5,a0			;Get offset
+	add	a13,a0
+	cmp	a14,a5
+	jrhi	dd720			;!At start?
+	move	a4,a5			;Put at end
+dd720
+	move	*a0,a1,L
+	move	@linelsxy,a2,L		;Start XY
+	move	a1,@linelsxy,L
+	subxy	a2,a1
+	move	a1,a7
+	jrn	iphjnextf			;Neg Y?
+	srl	16,a1
+	jrz	dd700			;Same Y?
+
+	move	a1,b3			;New Y cnt
+	sll	16,a7			;A7=Delta X
+	divs	a1,a7			;Divide DeltaX into Y increments
+
+	sll	16,a2			;A2=Left line X (16:16)
+
+
+dd750	dsj	b4,dd850
+
+dd800	move	*a6+,a0			;Get offset
+	add	a13,a0
+	cmp	a4,a6
+	jrlo	dd820			;!Past end
+	move	a14,a6			;Put at start
+dd820
+	move	*a0,a1,L
+	move	@linersxy,a3,L		;Start XY
+	move	a1,@linersxy,L
+	subxy	a3,a1
+	move	a1,a9
+	jrn	iphjnextf			;Neg Y?
+	srl	16,a1
+	jrz	dd800			;Different Y?
+
+dd840	move	a1,b4			;New Y cnt
+	sll	16,a9			;A9=Delta X
+	divs	a1,a9			;Divide DeltaX into Y increments
+
+	sll	16,a3			;A3=Rgt line X (16:16)
+
+
+dd850	add	a7,a2			;+Offset to left X
+	add	a9,a3			;^ rgt X
+
+	cmp	a3,a2
+	jrgt	iphjnextf			;X flipped?
+
+	move	a10,a10
+	jrn	iphjnextl			;Off screen top?
+
+	move	a2,a0
+	sra	16,a0			;Int (0=Screen center)
+	cmpi	200,a0
+	jrge	iphjnextl			;L line to rgt of screen?
+	addi	200,a0
+	jrge	dd1000			;On screen?
+	clr	a0
+dd1000	movx	a0,a10			;X pos
+
+	move	a3,a1			;0CaHlc HSize
+	sra	16,a1			;Int
+	addi	200,a1
+	jrlt	iphjnextl			;R line to left of screen?
+	sub	a0,a1			;Width
+
+	add	a1,a0			;Rgt X
+	subi	400,a0
+	jrlt	dd1500			;On screen?
+	subxy	a0,a1			;-difference
+
+dd1500
+	move	a1,b7
+	addxy	b13,b7			;B7=VSIZE:HSIZE
+
+	move	a10,b8
+	addxy	b2,b8			;Add the page y offset
+
+
+iphjdwait	move	*b11,b0
+	jrn	iphjdwait			;DMA busy?
+
+
+iphjdfree	mmtm	b12,b5,b6,b7,b8,b9,b10	;Set the dma regs
+	addi	0c0H,b12			;Fix DMAREGS
+
+
+iphjnextl
+	add	a8,a10			;Next Y
+	dsj	a11,iphjlinelp
+
+
+iphjnextf	move	a4,a14
+	addk	16,a14
+	move	*a14,a0
+	jrnn	iphjfacelp			;Another set of lines?
+
+	jruc	iphjlpobj
+
+
+iphjx	PULL	b3,b4,b5,b6,b7,b8,b9,b10,b13,b14
+	PULL	a4,a13,a14
+	rets
+
+	.endif
+
+
+
+QDMAN
+
+	move	@DMAQCUR,a14,L
+	cmpi	DMAQ,a14
+	jrls	uehyx			;Q full?
+
+	movi	01000100H,a0		;No scale
+	rl	16,a5			;Flip DMA & offset
+	mmtm	a14,a0,a1,a2,a3,a4,a5
+	rl	16,a5			;Flip DMA & offset
+	move	a14,@DMAQCUR,L
+
+uehyx
+	rets
+
+
+
+ SUBRP	display_2dsclmodeon
+
+	movi	gtdqdrawcode,a0
+	move	a0,@dcode_p,L
+	movi	-1,a0
+	move	a0,@dtype
+
+	rets
+
+gtdqdrawcode
+	movi	BAKLST,a0
+	callr	dma_objlst2d
+
+	movi	OBJLST,a0
+	jruc	dma_objlst2dscl
+
+
+
+	.asg	SCRATCH+8*128*1024,STARBUF
+NSTARS	.equ	900
+STARSIZE .equ	32*6+16
+
+ SUBRP	display_2dsclstarmodeon
+
+	movi	NSTARS,b0		;>Init star array
+	movi	STARBUF,a1
+	movi	-1,a0
+xebtsilp	move	a0,*a1,L		;X
+	addi	STARSIZE,a1
+	dsj	b0,xebtsilp
+
+	movi	xebtdrawcode,a0
+	move	a0,@dcode_p,L
+	movi	-1,a0
+	move	a0,@dtype
+
+	rets
+
+
+CFRAC	.equ	2
+
+	.bss	starcolor	,16
+
+xebtdrawcode
+	PUSH	a13,a14
+	PUSH	b4
+
+	movk	3,a0
+	callr	rnd
+	move	@starcolor,a6
+	add	a0,a6
+	move	a6,@starcolor
+	sll	32-3-6,a6
+	srl	32-3,a6			;Remove fraction
+	sll	5+CFRAC,a6
+
+
+	movi	NSTARS,a5		;0FHind a free star
+	movi	STARBUF,a2
+	movk	3,a3
+xebtflp	move	*a2,a0,L		;X
+	jrn	xebtfound
+	addi	STARSIZE,a2
+xebtfnxt	dsj	a5,xebtflp
+	jruc	xebtnofree
+
+xebtfound	movi	[200,0],a0		;0CHreate star
+	move	a0,*a2+,L		;X
+	movi	[252,0],a0
+	move	a0,*a2+,L		;Y
+
+	clr	a0
+	move	a0,*a2+,L		;XV
+	movi	-03e000H,a0
+	move	a0,*a2+,L		;YV
+
+	movi	07ffH,a0
+	callr	rnd
+	subi	03ffH,a0
+	move	a0,*a2+,L		;XA
+	movi	03ffH,a0
+	callr	rnd
+	addi	07ffH,a0
+	move	a0,*a2+,L		;YA
+
+	move	a6,*a2+			;Color type
+	dsj	a3,xebtfnxt
+xebtnofree
+
+	movi	xebtstar_p,a0		;>Update stars
+	calla	pal_getf
+	move	a0,@DMACMAP
+
+	movi	512*8,b3
+	lmo	b3,b0
+	move	b0,@CONVDP
+	clr	b4
+
+	movi	1<<(32-5-CFRAC),a11
+	movi	[400,0],a13		;A13=X max+1
+	movi	[254,0],a14		;A14=Y max+1
+	move	b2,a12
+	movi	NSTARS,b0
+	movi	STARBUF,a8
+xebtlp
+	mmfm	a8,a2,a3,a5,a6,a9,a10	;YA,XA,YV,XV,Y,X
+	move	*a8+,a1			;Color
+	move	a10,a10
+	jrn	xebtnxt
+
+	add	a2,a5
+	add	a3,a6
+	add	a5,a9
+	add	a6,a10
+	cmp	a13,a10
+	jrhs	xebtoffscr			;X off screen?
+	cmp	a14,a9
+	jrlo	xebtplot			;Y on screen?
+xebtoffscr
+	movi	-1,a0
+	move	a0,*a8(-STARSIZE),L
+	jruc	xebtnxt
+xebtplot
+	move	a10,*a8(-STARSIZE),L
+	move	a9,*a8(-STARSIZE+32),L
+	move	a6,*a8(-STARSIZE+32*2),L
+	move	a5,*a8(-STARSIZE+32*3),L
+
+	move	a1,a0
+	sll	32-5-CFRAC,a0
+	add	a11,a0
+	jrc	xebtmaxc			;Overflow?
+	addk	1,a1
+	move	a1,*a8(-16)
+xebtmaxc	srl	CFRAC,a1		;Remove fraction
+	srl	16,a10
+	movx	a10,a9
+	addxy	a12,a9
+	pixt	a1,*a9.XY
+xebtnxt
+	dsj	b0,xebtlp
+
+	PULL	b4
+	PULL	a13,a14
+
+	movi	BAKLST,a0
+	callr	dma_objlst2d
+
+	movi	OBJLST,a0
+	jruc	dma_objlst2dscl
+
+xebtstar_p
+	.word	256
+	COLORW	01,01,01, 02,02,02, 03,03,03, 04,04,04	;Grey
+	COLORW	05,05,05, 06,06,06, 07,07,07, 08,08,08
+	COLORW	09,09,09, 10,10,10, 11,11,11, 12,12,12
+	COLORW	13,13,13, 14,14,14, 15,15,15, 16,16,16
+	COLORW	17,17,17, 18,18,18, 19,19,19, 20,20,20
+	COLORW	21,21,21, 22,22,22, 23,23,23, 24,24,24
+	COLORW	25,25,25, 26,26,26, 27,27,27, 28,28,28
+	COLORW	29,29,29, 30,30,30, 31,31,31, 31,31,31
+	COLORW	01,01,00, 02,02,00, 03,03,00, 04,04,00	;Yellow
+	COLORW	05,05,00, 06,06,00, 07,07,00, 08,08,00
+	COLORW	09,09,00, 10,10,00, 11,11,00, 12,12,00
+	COLORW	13,13,00, 14,14,00, 15,15,00, 16,16,00
+	COLORW	17,17,00, 18,18,00, 19,19,00, 20,20,00
+	COLORW	21,21,00, 22,22,00, 23,23,00, 24,24,00
+	COLORW	25,25,00, 26,26,00, 27,27,00, 28,28,00
+	COLORW	29,29,00, 30,30,00, 31,31,00, 31,31,00
+	COLORW	01,00,00, 02,00,00, 03,00,00, 04,00,00	;Red
+	COLORW	05,00,00, 06,00,00, 07,00,00, 08,00,00
+	COLORW	09,00,00, 10,00,00, 11,00,00, 12,00,00
+	COLORW	13,00,00, 14,00,00, 15,00,00, 16,00,00
+	COLORW	17,00,00, 18,00,00, 19,00,00, 20,00,00
+	COLORW	21,00,00, 22,00,00, 23,00,00, 24,00,00
+	COLORW	25,00,00, 26,00,00, 27,00,00, 28,00,00
+	COLORW	29,00,00, 30,00,00, 31,00,00, 31,00,00
+	COLORW	00,01,00, 00,02,00, 00,03,00, 00,04,00	;Green
+	COLORW	00,05,00, 00,06,00, 00,07,00, 00,08,00
+	COLORW	00,09,00, 00,10,00, 00,11,00, 00,12,00
+	COLORW	00,13,00, 00,14,00, 00,15,00, 00,16,00
+	COLORW	00,17,00, 00,18,00, 00,19,00, 00,20,00
+	COLORW	00,21,00, 00,22,00, 00,23,00, 00,24,00
+	COLORW	00,25,00, 00,26,00, 00,27,00, 00,28,00
+	COLORW	00,29,00, 00,30,00, 00,31,00, 00,31,00
+	COLORW	00,00,01, 00,00,02, 00,00,03, 00,00,04	;Blue
+	COLORW	00,00,05, 00,00,06, 00,00,07, 00,00,08
+	COLORW	00,00,09, 00,00,10, 00,00,11, 00,00,12
+	COLORW	00,00,13, 00,00,14, 00,00,15, 00,00,16
+	COLORW	00,00,17, 00,00,18, 00,00,19, 00,00,20
+	COLORW	00,00,21, 00,00,22, 00,00,23, 00,00,24
+	COLORW	00,00,25, 00,00,26, 00,00,27, 00,00,28
+	COLORW	00,00,29, 00,00,30, 00,00,31, 00,00,31
+	COLORW	00,00,01, 00,00,02, 00,00,03, 00,00,04	;Lt blue
+	COLORW	00,00,05, 00,00,06, 00,00,07, 00,00,08
+	COLORW	00,00,09, 01,01,10, 02,02,11, 03,03,12
+	COLORW	04,04,13, 05,05,14, 06,06,15, 07,07,16
+	COLORW	08,08,17, 09,09,18, 10,10,19, 11,11,20
+	COLORW	12,12,21, 14,14,22, 16,16,23, 18,18,24
+	COLORW	20,20,25, 22,22,26, 24,24,27, 26,26,28
+	COLORW	28,28,29, 30,30,30, 30,30,31, 31,31,31
+	COLORW	01,00,01, 02,00,02, 03,00,03, 04,00,04	;Purple
+	COLORW	05,00,05, 06,00,06, 07,00,07, 08,00,08
+	COLORW	09,00,09, 10,00,10, 11,00,11, 12,00,12
+	COLORW	13,00,13, 14,00,14, 15,00,15, 16,00,16
+	COLORW	17,00,17, 18,00,18, 19,00,19, 20,00,20
+	COLORW	21,00,21, 22,00,22, 23,00,23, 24,00,24
+	COLORW	25,00,25, 26,00,26, 27,00,27, 28,00,28
+	COLORW	29,00,29, 30,00,30, 31,00,31, 31,00,31
+	COLORW	00,01,01, 00,02,02, 00,03,03, 00,04,04	;Cyan
+	COLORW	00,05,05, 00,06,06, 00,07,07, 00,08,08
+	COLORW	00,09,09, 00,10,10, 00,11,11, 00,12,12
+	COLORW	00,13,13, 00,14,14, 00,15,15, 00,16,16
+	COLORW	00,17,17, 00,18,18, 00,19,19, 00,20,20
+	COLORW	00,21,21, 00,22,22, 00,23,23, 00,24,24
+	COLORW	00,25,25, 00,26,26, 00,27,27, 00,28,28
+	COLORW	00,29,29, 00,30,30, 00,31,31, 00,31,31
+
+
+
+ SUBRP	rnd
+
+	move	@RAND,a1,L
+	rl	a1,a1
+	move	@HCOUNT,a14
+	rl	a14,a1
+	add	sp,a1
+	move	a1,@RAND,L
+
+	and	a1,a0
+	rets
+
+
+
+STOPOBJS
+	clr	a0
+	movi	OBJLST,a1
+	jruc	so20
+
+so10	move	a0,*a1(OXVEL),L
+	move	a0,*a1(OYVEL),L
+	move	a0,*a1(OZVEL),L
+so20	move	*a1,a1,L
+	jrnz	so10
+
+	rets
+
+
+
+	.align
+
+ SUBR	obj_yzsort
+
+	movi	OBJLST,a0
+	movk	1,a1			;Lowest Z
+	sll	31,a1			;Make 080000000H
+	jruc	yzlp
+
+yz0	move	*a2(OZPOS),a6		;Get Z
+	move	*a2(OYPOS),a7		;Get Y
+	cmp	a1,a6
+	jrgt	priok			;Next Z > Current Z?
+	jrlt	priswap
+
+	cmp	a5,a7
+	jrge	priok			;Next Y > Current Y?
+
+priswap	dint				;>Make current after next
+	move	a2,*a4,L		;Point last to next
+	move	*a2,*a0,L		;Point current to block after next
+	move	a0,*a2,L		;Point next to current
+	eint
+	move	a2,a4
+	jruc	yzlp			;Continue sort of current obj
+
+priok	move	a0,a4			;A4=*Last obj
+	move	a2,a0			;A0=*Current obj
+	move	a6,a1			;A1=Current Z
+	move	a7,a5			;A5=Current Y
+
+yzlp	move	*a0,a2,L		;A2=*Next obj
+	jrnz	yz0
+
+	rets
+
+
+
+SCRTSTG
+	mmtm	sp,a1,a2,a3
+	jruc	scrtst1
+
+SCRTST
+	mmtm	sp,a1,a2,a3
+	move	@SCRNTL,a2,L		;Get screen top left
+	move	@SCRNLR,a3,L		;Get screen lower rgt
+
+scrtst1	move	*a8(OYPOS),a0
+	move	*a8(OXPOS),a1
+	sll	16,a0
+	movx	a1,a0			;get top left of object
+	move	@WORLDTL,a1,L
+	subxy	a1,a0			;subtract out world base
+	move	*a8(OSIZE),a1,L
+	addxy	a0,a1			;get lower rt of object
+
+	cmpxy	a3,a0			;is it lower than lower rt?
+	JRYGE	scrtf_d			;lower
+	JRXGE	scrtf_r			;to the right
+
+	cmpxy	a2,a1
+	JRYLE	scrtf_u			;above...
+	JRXLE	scrtf_l			;to the left..
+
+	mmfm	sp,a1,a2,a3
+	clr	a0			;On screen Z
+	rets
+scrtf_l	movi	1,a0			;Pass NZ
+	mmfm	sp,a1,a2,a3
+	rets
+
+scrtf_r	movi	2,a0
+	mmfm	sp,a1,a2,a3
+	rets
+
+scrtf_u	movi	3,a0
+	mmfm	sp,a1,a2,a3
+	rets
+
+scrtf_d	movi	4,a0
+	mmfm	sp,a1,a2,a3
+	rets
+
+
+
+
+ SUBR	display_init
+
+	pushst
+	dint
+	movi	DIE+X2E,a0
+	move	a0,@INTENB		;Display int on, DMA int off
+
+	clr	a0
+	move	a0,@DMACTRL		;>Init DMA
+	move	a0,@DMACTRL
+	move	a0,@CMAPSEL		;Clear color map select
+	move	a0,@DMATEST
+	move	a0,@DMACONF
+	movi	[511,0],a1		;L/R (full width to fix glitch)
+	move	a1,@DMAWINDOW,L
+	movi	030H,a1
+	move	a1,@DMACONF		;Top/Bottom
+	movi	[509,0],a1
+	move	a1,@DMAWINDOW,L
+	movi	01000100H,a1
+	move	a1,@DMASCALEX,L
+
+	movi	-1,b13			;DMAQ cnt
+
+	clr	a1			;0CHlr video mem
+	movi	(SCRNE-512*8*2)/64,b0
+njtjclp	move	a0,*a1+,L
+	move	a0,*a1+,L
+	dsj	b0,njtjclp
+					;>Set autoerase lines
+	movi	510*512*8,a1		;Store to last 2 lines of bitmap
+	movi	ERASECOL,a14		;Color pair
+	movi	512*8*2/16,b0
+njtjlp	move	a14,*a1+
+	dsj	b0,njtjlp
+
+
+	movi	SCRNST,a1		;Screen top left [Y,X]
+	move	a1,@SCRNTL,L
+	movi	SCRNEND,a1		;Screen lower right [Y,X]
+	move	a1,@SCRNLR,L
+
+	move	a0,@WORLDTLX,L
+	move	a0,@WORLDTLY,L
+	move	a0,@WORLDTL,L
+	move	a0,@SCROLLX,L
+	move	a0,@SCROLLY,L
+
+	move	a0,@BAKLST,L		;Null backgnd object list
+	move	a0,@OBJLST,L		;Null object list
+
+	move	a0,@dcode_p,L
+
+	movi	DMAQ+QMSIZE,a1
+	move	a1,@DMAQCUR,L		;Init misc DMA queue
+
+	movi	OBJSTR,a1,L		;>Init free list
+	move	a1,@OFREE,L
+	movi	NOBJ,b0			;# of object blocks
+
+njtjolp	move	a1,a14
+	addi	OBSIZ,a1
+	move	a1,*a14,L		;link em up
+	dsj	b0,njtjolp
+
+	move	a0,*a14,L		;Null end
+
+	popst
+
+	rets
+
+
+
+GETOBJ
+	move	@OFREE,a0,L
+	jrz	nonelft			;None free?
+
+	move	*a0,a1,L
+	move	a1,@OFREE,L		;Unlink
+	clr	a1
+	move	a1,*a0(OPLINK),L
+	move	a1,*a0(ODATA_p),L
+getox
+	move	a0,a0
+	rets
+
+nonelft
+	.if	DEBUG
+	LOCKUP
+	eint
+	.else
+	CALLERR	3,0
+	.endif
+	jruc	getox
+
+
+
+FREEOBJ
+	move	@OFREE,*a0+,L
+	subk	32,a0
+	move	a0,@OFREE,L
+	rets
+
+
+
+
+
+
+
+
+INSBOBJ
+	movi	BAKLST,a14
+	jruc	mmivstrt
+
+
+INSOBJ
+
+	movi	OBJLST,a14
+
+mmivstrt	PUSH	a2,a3,a4
+
+	move	*a0(OZPOS),a1
+	move	*a0(OYPOS),a4
+mmivlp
+	move	a14,a2			;A2=*prev
+	move	*a14,a14,L		;A14=*next
+	jrz	mmivx
+	move	*a14(OZPOS),a3
+	cmp	a3,a1
+	jrgt	mmivlp
+	jrlt	mmivx
+
+	move	*a14(OYPOS),a3		;Test y position
+	cmp	a3,a4
+	jrgt	mmivlp
+
+
+mmivx	move	a14,*a0,L		;Put *next in new block
+	move	a0,*a2,L		;Put *new in prev block
+
+	PULL	a2,a3,a4
+	rets
+
+
+
+DELBOBJ
+
+	movi	BAKLST,a14
+	jruc	ksnblp
+
+
+
+DELOBJA8
+
+	move	a8,a0
+
+
+DELOBJ
+	movi	OBJLST,a14
+
+ksnblp	move	a14,a1		;A1=*Prev
+	move	*a14,a14,L	;A14=*Next
+	jrz	delerr
+	cmp	a14,a0
+	jrne	ksnblp
+
+	move	*a0,*a1,L	;Unlink from obj list
+
+	clr	a1
+	move	a1,*a0(OXPOS)	;Indicates not in use for collisions
+
+	move	@OFREE,*a0+,L	;Add to free list
+	subk	32,a0
+	move	a0,@OFREE,L
+
+ksnbx	rets
+
+delerr
+	.if	DEBUG
+	LOCKUP
+	eint
+	.else
+	CALLERR	1,0
+	.endif
+	jruc	ksnbx
+
+
+
+
+FRQDELDIE
+
+	JSRP	FRANIMQ
+
+
+DELOBJDIE
+
+	movi	OBJLST,a14
+
+pqxdlp	move	a14,a1		;A1=*Prev
+	move	*a14,a14,L	;A14=*Next
+	jrz	doderr
+	cmp	a14,a8
+	jrne	pqxdlp
+
+	move	*a8,*a1,L	;Unlink from obj list
+
+	clr	a1
+	move	a1,*a8(OXPOS)	;Indicates not in use for collisions
+
+	move	@OFREE,*a8+,L	;Add to free list
+	subk	32,a8
+	move	a8,@OFREE,L
+
+pqxdx	jauc	SUCIDE
+
+doderr
+	.if	DEBUG
+	LOCKUP
+	eint
+	.else
+	CALLERR	1,0
+	.endif
+	jruc	pqxdx
+
+
+
+
+obj_del1c
+
+	clr	a1
+
+
+obj_delc
+	move	a2,b0
+	move	a3,b1
+
+	movi	OBJLST,a14
+	sext	a0
+	andn	a1,a0		;Form match
+
+vtbelp	move	a14,a3		;A3=*Prev
+	move	*a14,a14,L	;A14=*Next
+	jrz	vtbex
+vtbecmp	move	*a14(OID),a2
+	andn	a1,a2		;Mask
+	cmp	a0,a2
+	jrne	vtbelp
+
+	move	*a14,*a3,L	;Unlink from obj list
+
+	move	@OFREE,*a14+,L	;Add to free list
+	subk	32,a14
+	move	a14,@OFREE,L
+	move	*a3,a14,L
+	jrnz	vtbecmp
+
+vtbex
+	move	b1,a3
+	move	b0,a2
+	rets
+
+
+
+
+EXISTOBJ
+	move	a2,b0
+
+	movi	OBJLST,a14
+	sext	a0
+	andn	a1,a0		;Form match
+uusdlp
+	move	*a14,a14,L
+	jrz	uusdx
+	move	*a14(OID),a2
+	andn	a1,a2		;Mask
+	cmp	a0,a2
+	jrne	uusdlp
+
+uusdx	move	b0,a2
+	move	a14,a0
+	rets
+
+
+
+
+
+
+ISOBJ
+	movi	OBJLST,a1
+
+ryewlp	move	*a1,a1,L
+	jrz	ryewx		;End?
+	cmp	a0,a1
+	jrne	ryewlp		;No match?
+
+	move	a0,a0		;Clr Z
+	rets
+
+ryewx	clr	a0		;Set Z
+	rets
+
+
+
+ SUBR	obj_addworldxy
+
+	move	@WORLDTLX,a14,L
+	move	*a0(OXVAL),a1,L
+	add	a14,a1
+	move	a1,*a0(OXVAL),L
+
+	move	@WORLDTLY,a14,L
+	move	*a0(OYVAL),a1,L
+	add	a14,a1
+	move	a1,*a0(OYVAL),L
+
+	rets
+
+
+
+ADJNEWTL
+	PUSH	a1,a2
+	CALLR	GSCRNREL		;SCREEN RELATIVE PLEASE
+	ADD	A4,A1
+	ADD	A5,A2			;ADJUST
+	MOVE	A1,*A0(OXVAL),L
+	MOVE	A2,*A0(OYVAL),L		;STORE
+	PULL	a1,a2
+	RETS
+
+
+
+GSCRNREL
+	PUSH	a5
+	MOVE	@WORLDTLX,A5,L
+	MOVE	*A0(OXVAL),A1,L
+	SUB	A5,A1
+	MOVE	@WORLDTLY,A5,L
+	MOVE	*A0(OYVAL),A2,L
+	SUB	A5,A2
+	PULL	a5
+	RETS
+
+
+
+SCRNRELV
+	PUSH	a1,a5
+	MOVE	@SCROLLX,A5,L
+	MOVE	*A0(OXVEL),A1,L
+	ADD	A5,A1
+	MOVE	A1,*A0(OXVEL),L
+	MOVE	@SCROLLY,A5,L
+	MOVE	*A0(OYVEL),A1,L
+	ADD	A5,A1
+	MOVE	A1,*A0(OYVEL),L
+	PULL	a1,a5
+	RETS
+
+
+
+GANISAG
+	PUSH	a4,a6,a7
+
+	PUSH	a2
+	move	*a0(OIMG),a1,L
+	move	*a1,a2,L		;ISIZE
+	move	a2,*a0(OSIZE),L
+	callr	GANIOF
+	PULL	a2
+
+	sub	a6,a3
+	sub	a7,a2			;adjust upper left corner
+	move	a3,*a0(OXVAL),L
+	move	a2,*a0(OYVAL),L
+
+	move	*a1(ICTRL),a1		;Get DMA flags
+	andi	0803fH,a4		;Kill mode bits
+	or	a1,a4
+	move	a4,*a0(OCTRL),L		;&OFFSET
+
+	PULL	a4,a6,a7
+	rets
+
+
+
+BEGINOBJ
+	move	@WORLDTLX,a8,L		;Adjust for world coord
+	add	a8,a0
+	btst	B_3D,a4
+	jrnz	BEGINOBJ2		;No Y add for 3D?
+	move	@WORLDTLY,a8,L
+	add	a8,a1
+
+BEGINOBJ2
+	PUSH	a2,a3,a4,a6,a7,a9,a10
+	move	a0,a9			;X
+	move	a1,a10			;Y
+
+	move	*a2(ICMAP),a0,L		;Get *palette
+	.if	DEBUG
+	jrnn	bopalerr		;No pallette?
+	.endif
+	calla	pal_getf
+
+bo20	move	@OFREE,a8,L		;Pointer to next available obj block
+	jrz	begobjerr		;No objs?
+	move	*a8,a1,L
+	move	a1,@OFREE,L		;Adjust pointer to free list
+
+	move	a0,*a8(OPAL),L		;Set pallette & constant
+	clr	a0
+	move	a0,*a8(ODATA_p),L	;Clr stuff
+	move	a0,*a8(OXANI),L
+	move	a0,*a8(OZVEL),L
+	move	a0,*a8(OMISC)
+
+	move	a3,*a8(OZPOS)
+	move	a5,*a8(OID)
+	move	a6,*a8(OXVEL),L
+	move	a7,*a8(OYVEL),L
+
+	move	a2,a1			;*Img
+	move	*a1,a2,L		;ISIZE
+	callr	GANIOF			;Adjust animation offset
+	move	*a1(ISAG),a3,L		;Get top left sag
+
+	sub	a6,a9			;- x anioff
+	sub	a7,a10			;- y anioff
+	move	a9,*a8(OXVAL),L
+	move	a10,*a8(OYVAL),L
+
+	move	a1,*a8(OIMG),L
+	move	a2,*a8(OSIZE),L
+	move	a3,*a8(OSAG),L
+	move	a4,*a8(OFLAGS)
+	move	*a1(ICTRL),a0		;Get DMA flags
+	andi	0803fH,a4		;Kill mode bits
+	or	a0,a4
+	move	a4,*a8(OCTRL),L		;&OFSET
+
+	PULL	a2,a3,a4,a6,a7,a9,a10
+
+	move	a13,*a8(OPLINK),L
+	move	a8,a0
+	jruc	INSOBJ			;Insert object into list
+
+
+	.if	DEBUG
+bopalerr
+	LOCKUP				;Object doesn't have pallette!
+	eint
+	clr	a0
+	jruc	bo20
+	.endif
+
+begobjerr
+	.if	DEBUG
+	LOCKUP				;Out of objects!
+	eint
+	.else
+	CALLERR	3,7
+	.endif
+	move	@OBJLST,a8,L		;Pass 1st obj on list
+	PULL	a2,a3,a4,a6,a7,a9,a10
+	rets
+
+
+
+
+BEGINOBJP
+	move	@WORLDTLX,a8,L		;Adjust for world coord
+	add	a8,a0
+	btst	B_3D,a4
+	jrnz	BEGINOBJP2		;No Y add for 3D?
+	move	@WORLDTLY,a8,L
+	add	a8,a1
+
+BEGINOBJP2
+	PUSH	a2,a3,a4,a6,a7,a9,a10
+	move	a0,a9			;X
+	move	a1,a10			;Y
+
+	move	b0,a0			;Get *palette
+	.if	DEBUG
+	jrnn	fbwjbopalerr		;No pallette?
+	.endif
+	calla	pal_getf
+
+fbwjbo20	move	@OFREE,a8,L		;Pointer to next available obj block
+	jrz	begobjerr		;No objs?
+	move	*a8,a1,L
+	move	a1,@OFREE,L		;Adjust pointer to free list
+
+	move	a0,*a8(OPAL),L		;Set pallette & constant
+	clr	a0
+	move	a0,*a8(ODATA_p),L	;Clr stuff
+	move	a0,*a8(OXANI),L
+	move	a0,*a8(OZVEL),L
+	move	a0,*a8(OMISC)
+
+	move	a3,*a8(OZPOS)
+	move	a5,*a8(OID)
+	move	a6,*a8(OXVEL),L
+	move	a7,*a8(OYVEL),L
+
+	move	a2,a1			;*Img
+	move	*a1,a2,L		;ISIZE
+	callr	GANIOF			;Adjust animation offset
+	move	*a1(ISAG),a3,L		;Get top left sag
+
+	sub	a6,a9			;- x anioff
+	sub	a7,a10			;- y anioff
+	move	a9,*a8(OXVAL),L
+	move	a10,*a8(OYVAL),L
+
+	move	a1,*a8(OIMG),L
+	move	a2,*a8(OSIZE),L
+	move	a3,*a8(OSAG),L
+	move	a4,*a8(OFLAGS)
+	move	*a1(ICTRL),a0		;Get DMA flags
+	andi	0803fH,a4		;Kill mode bits
+	or	a0,a4
+	move	a4,*a8(OCTRL),L		;&OFSET
+
+	PULL	a2,a3,a4,a6,a7,a9,a10
+
+	move	a13,*a8(OPLINK),L
+	move	a8,a0
+	jruc	INSOBJ			;Insert object into list
+
+
+	.if	DEBUG
+fbwjbopalerr
+	LOCKUP				;Object doesn't have pallette!
+	eint
+	clr	a0
+	jruc	fbwjbo20
+	.endif
+
+
+
+ SUBR	ANI
+
+	PUSH	a0,a2,a3,a4,a5,a6,a7
+
+	cmpi	ROM,a1
+	jrlo	anierr
+
+	move	a1,a3
+	move	a4,a5
+	move	*a8(OIMG),a1,L
+	move	*a8(OCTRL),a4
+	cmp	a1,a3
+	jrne	svbg1			;Different img?
+
+	sext	a5
+	cmp	a4,a5
+	jreq	svbgx			;All the same?
+
+svbg1	move	*a8(OSIZE),a2,L
+	callr	GANIOF			;Get old animation offset
+	move	a3,a1			;New OIMG
+	srl	6,a4
+	sll	6,a4
+	or	a5,a4			;Set new OCTRL
+	move	a6,a0
+	move	a7,a5
+	move	*a1(ISAG),a3,L		;Get top left sag
+	move	*a1,a2,L		;ISIZE
+	callr	GANIOF			;Get new animation offset
+	move	a1,*a8(OIMG),L
+	sub	a6,a0			;Subtract new from old
+	sub	a7,a5
+	zext	a4			;Zero offset in A4
+
+	move	a8,a6			;Get push address of octrl,osag,osize
+	addi	OCTRL+060H,a6
+	mmtm	a6,a2,a3,a4		;Save new data
+
+	subi	OCTRL-OXVAL,a6
+	move	*a6,a7,L		;New OXVAL
+	add	a0,a7
+	move	a7,*a6+,L
+	move	*a6,a7,L		;New OYVAL
+	add	a5,a7
+	move	a7,*a6,L
+
+svbgx	PULL	a0,a2,a3,a4,a5,a6,a7
+	rets
+
+anierr
+	.if	DEBUG
+	LOCKUP
+	eint
+	.else
+	CALLERR	2,7
+	.endif
+	jruc	svbgx
+
+
+
+ SUBRP	obj_aniq
+
+
+	PUSH	a2,a3
+
+	cmpi	ROM,a0
+	jrlo	kltdanierr
+
+	move	a0,a2
+	move	a1,a3
+
+	callr	anipt_getxy
+
+	move	a2,*a8(OIMG),L
+	move	*a2(0),*a8(OSIZE),L
+	move	*a2(ISAG),*a8(OSAG),L
+
+	setf	5,0,0
+	move	*a2(ICTRL+7),*a8(OCTRL+7) ;Write 5 z comp bits
+	setf	6,0,0
+	move	a3,*a8(OCTRL)		;Write 6 low bits
+	setf	16,1,0
+
+	move	a0,a2
+	move	a1,a3
+	callr	anipt_getxy
+
+	sub	a0,a2			;Subtract new from old
+	sub	a1,a3
+
+	move	a8,a0			;Get base address
+	addi	OXVAL,a0
+	move	*a0,a14,L		;New OXVAL
+	add	a2,a14
+	move	a14,*a0+,L
+	move	*a0,a14,L		;New OYVAL
+	add	a3,a14
+	move	a14,*a0,L
+
+kltdx	PULL	a2,a3
+	rets
+
+kltdanierr 
+	.if	DEBUG
+	LOCKUP
+	eint
+	.else
+	CALLERR	2,2
+	.endif
+	jruc	kltdx
+
+
+
+ SUBRP	anipt_getxy
+
+	move	a2,b0
+
+	move	*a8(OIMG),a2,L
+
+	move	*a2(IANIOFFX),a0
+	sll	16,a0
+	move	*a2(IANIOFFY),a1
+	sll	16,a1
+
+	move	*a8(OCTRL),a14
+	btst	B_FLIPH,a14
+	jrz	vzvsx			;No flip?
+
+	move	*a2,a2			;ISIZEX
+	subk	1,a2
+	sll	16,a2			;*64K
+	neg	a0
+	add	a2,a0			;+size
+
+
+vzvsx	move	b0,a2
+	rets
+
+
+
+
+ SUBRP	obj_aniq_cnoff
+
+	move	a2,b0
+
+	move	a1,*a8(OCTRL)		;Write new ctrl
+
+	move	*a8(OIMG),a14,L
+	move	*a14(IANIOFFX),a2
+	move	*a14(IANIOFFY),a14
+
+	move	a0,*a8(OIMG),L
+	move	*a0(0),*a8(OSIZE),L
+	move	*a0(ISAG),*a8(OSAG),L
+
+	move	*a0(IANIOFFY),a1
+	move	*a0(IANIOFFX),a0
+
+	sub	a0,a2			;Subtract new from old
+	sub	a1,a14
+	sll	16,a2
+	sll	16,a14
+
+	move	a8,a0			;Get base address
+	addi	OXVAL,a0
+	move	*a0,a1,L		;New OXVAL
+	add	a2,a1
+	move	a1,*a0+,L
+	move	*a0,a1,L		;New OYVAL
+	add	a14,a1
+	move	a1,*a0,L
+
+	move	b0,a2
+	rets
+
+
+
+
+	.ref	anipt_getsclxy
+
+ SUBRP	obj_aniq_scld
+
+
+	cmpi	ROM,a0
+	jrlo	halzanierr
+
+	move	a0,a2
+	move	a1,a3
+
+	calla	anipt_getsclxy
+
+	movb	a3,*a8(OCTRL)
+
+	move	a2,*a8(OIMG),L
+	move	*a2(0),*a8(OSIZE),L
+	move	*a2(ISAG),*a8(OSAG),L
+
+	move	a0,a2
+	move	a1,a3
+	calla	anipt_getsclxy
+
+	sub	a0,a2			;Subtract new from old
+	sub	a1,a3
+
+	move	a0,*a8(OXANI),L		;Save scaled anipt
+
+	move	a8,a0			;Get base address
+	addi	OXVAL,a0
+	move	*a0,a14,L		;New OXVAL
+	add	a2,a14
+	move	a14,*a0+,L
+	move	*a0,a14,L		;New OYVAL
+	add	a3,a14
+	move	a14,*a0,L
+
+halzx	rets
+
+
+halzanierr 
+	.if	DEBUG
+	LOCKUP
+	eint
+	.else
+	CALLERR	2,0
+	.endif
+	jruc	halzx
+
+
+
+
+GETANIXY
+	PUSH	a4,a6,a7
+	move	*a8(OIMG),a1,L
+	move	*a8(OSIZE),a2,L
+	move	*a8(OCTRL),a4
+	callr	GANIOF
+	move	*a8(OXVAL),a3,L
+	move	*a8(OYVAL),a2,L
+	add	a6,a3
+	add	a7,a2
+	PULL	a4,a6,a7
+	rets
+
+
+
+GANIOF
+	move	*a1(IANIOFF),a6,L
+	cmpi	IROM,a6
+	jrge	ddscerr
+
+ddsch	clr	a7
+	movy	a6,a7
+	sll	16,a6		;Move to upper word
+
+	btst	B_FLIPH,a4
+	jrz	ddscv
+	move	a2,a14
+	subk	1,a14
+	sll	16,a14		;Move W to upper word
+	neg	a6
+	add	a14,a6		;Sub Width-1
+
+ddscv	btst	B_FLIPV,a4
+	jrz	ddscx
+	move	a2,a14
+	neg	a7
+	srl	16,a14
+	subk	1,a14
+	sll	16,a14
+	add	a14,a7		;Sub Hgt-1
+
+ddscx	rets
+
+ddscerr	clr	a6
+	jruc	ddsch
+
+
+
+	.asg	SCRATCH+8*256*1024,SCRNBUF
+	.asg	SCRNBUF+8*128*1024,PALBUF
+
+	.bss	scrnscl		,16
+
+ SUBR	scrn_scaleout
+
+	movk	1,a0
+	move	a0,@HALT
+
+	move	@dtype,a0
+	PUSHP	a0
+	move	@gndstat,a0
+	PUSHP	a0
+
+	movi	0160H,a0
+	move	a0,@scrnscl
+
+	movi	rnmtinitcode,a0
+	move	a0,@dcode_p,L
+
+	movi	-1,a0
+	move	a0,@dtype
+	clr	a0
+	move	a0,@gndstat
+	move	a0,@IRQSKYE
+
+rnmtlp	SLEEPK	1
+
+	movi	scrnscl,a14
+	move	*a14,a5
+	move	a5,a0
+	srl	3,a0
+	add	a0,a5
+	move	a5,*a14
+	cmpi	07000H,a5
+	jrlt	rnmtlp
+
+	clr	a0
+	move	a0,@dcode_p,L
+
+	PULLP	a0
+	move	a0,@gndstat
+	PULLP	a0
+	move	a0,@dtype
+
+
+	RETP
+
+rnmtinitcode
+	callr	scrn_copy
+	movi	scrn_scale,a0
+	move	a0,@dcode_p,L
+	jump	a0
+
+
+
+ SUBR	scrn_scaleininit
+
+	dint
+nfqvlp	move	@VCOUNT,a0
+	cmpi	EOSINT,a0
+	jrlt	nfqvlp
+	move	@HSBLNK,a0	;Blank screen
+	move	a0,@HEBLNK
+	eint
+	SLEEPK	2
+
+	RETP
+
+
+ SUBR	scrn_scalein
+
+	PUSHP	a8
+
+	move	@HALT,a0
+	PUSHP	a0
+	movk	1,a0
+	move	a0,@HALT
+
+	move	@dtype,a0
+	PUSHP	a0
+	move	@gndstat,a0
+	PUSHP	a0
+	move	@dcode_p,a0,L
+	PUSHP	a0
+
+	movi	07000H,a0
+	move	a0,@scrnscl
+
+	movi	ycjwinitcode,a0
+	move	a0,@dcode_p,L
+	movi	-1,a0
+	move	a0,@dtype
+	clr	a0
+	move	a0,@gndstat
+
+
+	.if	DEBUG
+	.endif
+
+
+ycjwlp	SLEEPK	1
+
+	movi	scrnscl,a14
+	move	*a14,a5
+	move	a5,a0
+	srl	2,a0
+	sub	a0,a5
+	move	a5,*a14
+	cmpi	0100H,a5
+	jrgt	ycjwlp
+
+
+	PULLP	a0
+	move	a0,@dcode_p,L
+	PULLP	a0
+	move	a0,@gndstat
+	PULLP	a0
+	move	a0,@dtype
+
+	PULLP	a0
+	move	a0,@HALT
+
+
+	PULLP	a8
+	RETP
+
+
+ycjwinitcode
+	callr	scrn_copy
+	movi	scrn_scaledison,a0
+	move	a0,@dcode_p,L
+	jruc	scrn_scale
+
+
+
+ SUBRP	scrn_copy
+
+	move	b2,a0
+	srl	16,a0
+	xori	0100H,a0			;Flip to the page being shown
+	sll	12,a0			;*512*8
+	addi	SCRNXP*8,a0		;A0=*Scrn mem
+	PUSH	a0
+
+	movi	SCRNBUF,a1
+	movi	254,a3
+	movi	(512-400)*8,a7
+hoczcslp
+	movi	400/16,a2
+hoczcslp2	move	*a0+,*a1+,L
+	move	*a0+,*a1+,L
+	move	*a0+,*a1+,L
+	move	*a0+,*a1+,L
+	dsj	a2,hoczcslp2
+
+	add	a7,a0
+	add	a7,a1
+	dsj	a3,hoczcslp
+
+	move	@SYSCOPY,a0
+	andni	100000b,a0
+	move	a0,@SYSCOPY
+	.if	DEBUG
+	andni	1000000b,a0
+	.endif
+	move	a0,@SYSCTRL
+
+	PULL	a0
+	movi	PALBUF,a1
+	movi	254,a3
+hoczcplp
+	movi	400/16,a2
+hoczcplp2	move	*a0+,*a1+,L
+	move	*a0+,*a1+,L
+	move	*a0+,*a1+,L
+	move	*a0+,*a1+,L
+	dsj	a2,hoczcplp2
+
+	add	a7,a0
+	add	a7,a1
+	dsj	a3,hoczcplp
+
+	move	@SYSCOPY,a0
+	ori	100000b,a0
+	move	a0,@SYSCOPY
+	.if	DEBUG
+	andni	1000000b,a0
+	.endif
+	move	a0,@SYSCTRL
+
+	rets
+
+
+
+ SUBRP	scrn_scale140
+
+	PUSH	a4,a14
+
+	movi	0140H,a5
+
+	move	b2,a1
+	srl	16,a1
+	addi	25,a1
+	sll	12,a1			;*512*8
+	addi	SCRNXP*8+40*8,a1	;A1=*Scrn mem
+
+	movi	DMACMAP,a6
+	clr	a7			;Y line 8:8
+enazlp
+	move	a7,a2
+	srl	8,a2
+	sll	12,a2			;*512*8
+	move	a2,a3
+
+	addi	SCRNBUF,a2
+	addi	PALBUF,a3
+	movi	400/2/5,b0		;Copy 1 line
+enazcslp
+	move	*a3,*a6			;Set pal latch
+	addk	16,a3
+	move	*a2+,*a1+		;Copy 2 pixels
+
+	move	*a3,*a6
+	addk	16,a3
+	move	*a2+,*a1+
+
+	move	*a3,*a6
+	addk	16,a3
+	move	*a2+,*a1+
+
+	move	*a3,*a6
+	addk	16,a3
+	move	*a2+,*a1+
+
+	addk	16,a3
+	addk	16,a2
+
+	dsj	b0,enazcslp
+
+	addi	(512-320)*8,a1
+
+	add	a5,a7
+	cmpi	254<<8,a7
+	jrlt	enazlp
+
+
+enazx	PULL	a4,a14
+	rets
+
+
+
+
+ SUBRP	scrn_scale180
+
+	PUSH	a4,a14
+
+	movi	0180H,a5
+
+	move	b2,a1
+	srl	16,a1
+	addi	42,a1
+	sll	12,a1			;*512*8
+	addi	SCRNXP*8+68*8,a1	;A1=*Scrn mem
+
+	movi	DMACMAP,a6
+	clr	a7			;Y line 8:8
+alzqlp
+	move	a7,a2
+	srl	8,a2
+	sll	12,a2			;*512*8
+	move	a2,a3
+
+	addi	SCRNBUF,a2
+	addi	PALBUF,a3
+	movi	400/2/3,b0		;Copy 1 line
+alzqcslp
+	move	*a3,*a6			;Set pal latch
+	addk	16,a3
+	move	*a2+,*a1+		;Copy 2 pixels
+
+	move	*a3,*a6
+	addk	16,a3
+	move	*a2+,*a1+
+
+	addk	16,a3
+	addk	16,a2
+
+	dsj	b0,alzqcslp
+
+	addi	(512-264)*8,a1
+
+	add	a5,a7
+	cmpi	254<<8,a7
+	jrlt	alzqlp
+
+
+alzqx	PULL	a4,a14
+	rets
+
+
+
+ SUBRP	scrn_scaledison
+
+	movi	HEBLNKINIT,a0		;Display on
+	move	a0,@HEBLNK
+	movi	scrn_scale,a0
+	move	a0,@dcode_p,L
+
+
+
+ SUBRP	scrn_scale
+
+	move	@scrnscl,a5
+	cmpi	0168H,a5
+	jrlt	scrn_scale140
+	cmpi	0190H,a5
+	jrlt	scrn_scale180
+
+	PUSH	a4,a14
+
+	move	b2,a9
+	srl	16,a9
+	movi	127<<8,a3
+	divu	a5,a3
+	sub	a3,a9
+	addi	127,a9
+	sll	12,a9			;*512*8
+
+	addi	(SCRNXP+200)*8,a9	;A9=*Scrn mem
+	movi	100<<8,a3
+	divu	a5,a3
+	sll	4,a3			;*16
+	sub	a3,a9
+
+	movi	DMACMAP,a6
+	clr	a7			;Y line 8:8
+	movi	200<<8,a10
+slawlp
+	move	a7,a2
+	srl	8,a2
+	sll	12,a2			;*512*8
+	move	a2,a3
+
+	move	a9,a1
+	addi	SCRNBUF,a2
+	addi	PALBUF,a3
+	clr	a8			;X 8:8
+slawcslp
+	move	*a3,*a6			;Set pal latch
+	move	*a2,*a1			;Copy 2 pixels
+	addk	16,a1
+
+	move	a8,a0
+	add	a5,a8
+	sra	8,a0
+	move	a8,a14
+	sra	8,a14
+	sub	a0,a14
+
+slawnxtp
+	addk	16,a3
+	addk	16,a2
+	subk	1,a14
+	jrgt	slawnxtp
+
+	cmp	a10,a8
+	jrlt	slawcslp
+
+
+	addi	512*8,a9		;Next line
+
+	add	a5,a7
+	cmpi	254<<8,a7
+	jrlt	slawlp
+
+
+slawx	PULL	a4,a14
+	rets
+
+
+
+
+
+	.end
+

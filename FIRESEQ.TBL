@@ -1,0 +1,645 @@
+	.DATA
+F4FALL01:
+	.word   88,77,55,74
+	.long   058c3000H
+	.word   00H
+	.long   FIREFALP
+	.word   48,22,4,0,39,2,-1,14,0
+F4FALL02:
+	.word   87,82,48,79
+	.long   058d03c0H
+	.word   00H
+	.long   FIREFALP
+	.word   46,25,4,0,36,8,-1,14,0
+F4FALL03:
+	.word   98,73,41,73
+	.long   058de2b0H
+	.word   00H
+	.long   FIREFALP
+	.word   38,24,4,0,31,8,-1,14,0
+F4FALL04:
+	.word   88,69,30,68
+	.long   058ec240H
+	.word   00H
+	.long   FIREFALP
+	.word   31,22,-4,0,17,5,-1,14,0
+F4FALL05:
+	.word   77,91,30,90
+	.long   058f8000H
+	.word   00H
+	.long   FIREFALP
+	.word   32,38,4,0,14,24,-1,14,0
+F4FALL06:
+	.word   82,90,39,86
+	.long   05905af8H
+	.word   00H
+	.long   FIREFALP
+	.word   37,36,4,0,19,26,-1,14,0
+F4FALL07:
+	.word   83,81,50,77
+	.long   05914198H
+	.word   00H
+	.long   FIREFALP
+	.word   46,30,4,0,30,19,-1,14,0
+F4FALL08:
+	.word   87,83,53,78
+	.long   059213b0H
+	.word   00H
+	.long   FIREFALP
+	.word   46,32,4,0,31,25,-1,14,0
+F4FALL09:
+	.word   81,79,47,72
+	.long   0592f558H
+	.word   00H
+	.long   FIREFALP
+	.word   38,31,4,0,25,25,-1,14,0
+F4FALL10:
+	.word   88,58,41,54
+	.long   0593bd50H
+	.word   00H
+	.long   FIREFALP
+	.word   33,26,-4,0,18,25,-1,14,0
+F4FALL11:
+	.word   98,56,43,42
+	.long   05945cd0H
+	.word   00H
+	.long   FIREFALP
+	.word   37,29,4,0,24,29,-1,14,0
+F4FALL12:
+	.word   111,55,54,38
+	.long   05950850H
+	.word   00H
+	.long   FIREFALP
+	.word   48,26,4,0,35,24,-1,14,0
+F4FALL13:
+	.word   121,49,59,29
+	.long   0595c718H
+	.word   00H
+	.long   FIREFALP
+	.word   53,17,4,0,40,14,-1,14,0
+F4FALL14:
+	.word   125,52,60,31
+	.long   05968060H
+	.word   00H
+	.long   FIREFALP
+	.word   54,19,4,0,41,16,-1,14,0
+F4FALL15:
+	.word   123,52,58,32
+	.long   05974b80H
+	.word   00H
+	.long   FIREFALP
+	.word   52,20,4,0,39,17,-1,14,0
+F4FALL16:
+	.word   116,48,49,35
+	.long   05981360H
+	.word   00H
+	.long   FIREFALP
+	.word   37,23,4,0,30,20,-1,14,0
+F4FALL17:
+	.word   109,49,50,37
+	.long   0598c160H
+	.word   00H
+	.long   FIREFALP
+	.word   38,25,4,0,31,22,-1,14,0
+F4FALL18:
+	.word   91,48,33,36
+	.long   05996848H
+	.word   00H
+	.long   FIREFALP
+	.word   21,24,4,0,14,21,-1,14,0
+F4FALL19:
+	.word   90,45,31,32
+	.long   0599f0c8H
+	.word   00H
+	.long   FIREFALP
+	.word   19,20,4,0,12,17,-1,14,0
+F4FALL20:
+	.word   74,41,19,32
+	.long   059a6f58H
+	.word   00H
+	.long   FIREFALP
+	.word   25,15,4,0,9,7,-1,9,0
+F4FALL21:
+	.word   71,40,19,31
+	.long   059ace28H
+	.word   00H
+	.long   FIREFALP
+	.word   25,17,4,0,19,2,1,9,0
+F4FALL22:
+	.word   68,41,17,33
+	.long   059b26e8H
+	.word   00H
+	.long   FIREFALP
+	.word   28,17,4,0,23,3,1,9,0
+F4FALL23:
+	.word   52,46,21,37
+	.long   059b7e08H
+	.word   00H
+	.long   FIREFALP
+	.word   31,19,4,0,21,4,1,11,0
+F4FALL24:
+	.word   50,45,19,38
+	.long   059bc8c8H
+	.word   00H
+	.long   FIREFALP
+	.word   36,16,4,0,21,14,1,11,0
+F4FALL25:
+	.word   42,59,11,51
+	.long   059c0f18H
+	.word   00H
+	.long   FIREFALP
+	.word   30,24,4,0,20,15,1,11,0
+F4FALL26:
+	.word   46,72,17,64
+	.long   059c5c88H
+	.word   00H
+	.long   FIREFALP
+	.word   31,24,4,0,30,10,1,11,0
+F2FALL01:
+	.word   59,72,26,70
+	.long   059cc408H
+	.word   00H
+	.long   FIREFALP
+	.word   31,23,-4,0,18,3,-1,12,0
+F2FALL02:
+	.word   73,76,40,72
+	.long   059d48c8H
+	.word   00H
+	.long   FIREFALP
+	.word   47,26,-4,0,30,5,-1,12,0
+F2FALL03:
+	.word   79,73,56,72
+	.long   059df628H
+	.word   00H
+	.long   FIREFALP
+	.word   63,25,-4,0,45,8,-1,12,0
+F2FALL04:
+	.word   61,66,36,65
+	.long   059eaa60H
+	.word   00H
+	.long   FIREFALP
+	.word   43,18,-4,0,19,3,-1,12,0
+F2FALL05:
+	.word   69,81,39,81
+	.long   059f2830H
+	.word   00H
+	.long   FIREFALP
+	.word   37,34,-4,0,12,26,1,12,0
+F2FALL06:
+	.word   72,73,31,73
+	.long   059fd6d8H
+	.word   00H
+	.long   FIREFALP
+	.word   28,33,-4,0,6,24,1,12,0
+F2FALL07:
+	.word   92,66,45,57
+	.long   05a07b18H
+	.word   00H
+	.long   FIREFALP
+	.word   42,24,3,0,25,33,1,12,0
+F2FALL08:
+	.word   95,56,46,50
+	.long   05a138d8H
+	.word   00H
+	.long   FIREFALP
+	.word   40,24,3,0,26,24,1,12,0
+F2FALL09:
+	.word   117,41,63,35
+	.long   05a1df18H
+	.word   00H
+	.long   FIREFALP
+	.word   57,23,3,0,49,28,1,16,0
+F2FALL10:
+	.word   143,39,73,32
+	.long   05a27500H
+	.word   00H
+	.long   FIREFALP
+	.word   68,18,3,0,59,23,1,16,0
+F2FALL11:
+	.word   159,44,79,37
+	.long   05a32348H
+	.word   00H
+	.long   FIREFALP
+	.word   74,23,3,0,65,28,1,16,0
+F2FALL12:
+	.word   160,48,83,40
+	.long   05a3fde8H
+	.word   00H
+	.long   FIREFALP
+	.word   78,26,3,0,70,31,1,16,0
+F2FALL13:
+	.word   161,51,84,42
+	.long   05a4ede8H
+	.word   00H
+	.long   FIREFALP
+	.word   79,28,3,0,71,34,1,16,0
+F2FALL14:
+	.word   117,43,59,40
+	.long   05a5ee80H
+	.word   00H
+	.long   FIREFALP
+	.word   54,26,3,0,45,32,1,16,0
+F2FALL15:
+	.word   110,45,53,42
+	.long   05a68bb8H
+	.word   00H
+	.long   FIREFALP
+	.word   48,28,3,0,39,34,1,16,0
+F2FALL16:
+	.word   112,46,54,44
+	.long   05a72668H
+	.word   00H
+	.long   FIREFALP
+	.word   49,30,3,0,40,36,1,16,0
+F2FALL17:
+	.word   114,48,54,46
+	.long   05a7c768H
+	.word   00H
+	.long   FIREFALP
+	.word   49,32,3,0,40,38,1,16,0
+F2FALL18:
+	.word   83,40,39,35
+	.long   05a87268H
+	.word   00H
+	.long   FIREFALP
+	.word   26,15,3,0,10,20,1,12,0
+F2FALL19:
+	.word   64,35,25,33
+	.long   05a8da28H
+	.word   00H
+	.long   FIREFALP
+	.word   27,14,-4,0,15,1,-1,7,0
+F2FALL20:
+	.word   56,37,34,34
+	.long   05a92028H
+	.word   00H
+	.long   FIREFALP
+	.word   29,14,-4,0,20,2,-1,7,0
+F2FALL21:
+	.word   40,41,19,38
+	.long   05a960e8H
+	.word   00H
+	.long   FIREFALP
+	.word   26,13,-4,0,21,3,-1,7,0
+F2FALL22:
+	.word   42,49,21,46
+	.long   05a99428H
+	.word   00H
+	.long   FIREFALP
+	.word   30,19,-4,0,32,10,-1,8,0
+F2FALL23:
+	.word   39,62,19,59
+	.long   05a9d478H
+	.word   00H
+	.long   FIREFALP
+	.word   32,21,-4,0,31,3,-1,8,0
+F2FALL24:
+	.word   43,70,18,67
+	.long   05aa2008H
+	.word   00H
+	.long   FIREFALP
+	.word   37,34,-4,0,31,2,-1,2,0
+F4FALL10a:
+	.word   88,58,41,52
+	.long   0593bd50H
+	.word   00H
+	.long   FIREFALP
+	.word   33,26,-4,0,18,25,-1,14,0
+F4FALL10b:
+	.word   88,58,41,50
+	.long   0593bd50H
+	.word   00H
+	.long   FIREFALP
+	.word   33,26,-4,0,18,25,-1,14,0
+F4FALL10c:
+	.word   88,58,41,46
+	.long   0593bd50H
+	.word   00H
+	.long   FIREFALP
+	.word   33,26,-4,0,18,25,-1,14,0
+F2FALL08a:
+	.word   95,56,46,47
+	.long   05a138d8H
+	.word   00H
+	.long   FIREFALP
+	.word   40,24,3,0,26,24,1,12,0
+F2FALL08b:
+	.word   95,56,46,45
+	.long   05a138d8H
+	.word   00H
+	.long   FIREFALP
+	.word   40,24,3,0,26,24,1,12,0
+F2FALL08c:
+	.word   95,56,46,42
+	.long   05a138d8H
+	.word   00H
+	.long   FIREFALP
+	.word   40,24,3,0,26,24,1,12,0
+w2nda01:
+	.word   54,64,25,63
+	.long   05aa7e18H
+	.word   00H
+	.long   zwilpal
+	.word   29,17,-1,0,18,1,-1,12,0
+w2nda02:
+	.word   52,91,18,86
+	.long   05aaea18H
+	.word   00H
+	.long   zwilpal
+	.word   21,26,-1,0,24,13,-1,12,0
+w2nda03:
+	.word   52,82,23,83
+	.long   05ab7df8H
+	.word   00H
+	.long   zwilpal
+	.word   5,23,-1,0,26,7,-1,12,0
+w2nda04:
+	.word   60,70,34,79
+	.long   05ac0338H
+	.word   00H
+	.long   zwilpal
+	.word   13,48,-1,0,36,8,-1,12,0
+w2nda05:
+	.word   63,63,37,77
+	.long   05ac8678H
+	.word   00H
+	.long   zwilpal
+	.word   24,47,-1,0,42,7,-1,2,0
+w2nda06:
+	.word   61,60,30,76
+	.long   05ad0280H
+	.word   00H
+	.long   zwilpal
+	.word   2,41,-1,0,35,6,-1,2,0
+w2nda07:
+	.word   60,73,28,73
+	.long   05ad74e0H
+	.word   00H
+	.long   zwilpal
+	.word   2,7,-1,0,31,1,-1,2,0
+w2nda08:
+	.word   55,104,28,101
+	.long   05adfdc0H
+	.word   00H
+	.long   zwilpal
+	.word   42,9,-1,0,33,26,1,3,0
+w2nda09:
+	.word   56,100,12,100
+	.long   05aeb080H
+	.word   00H
+	.long   zwilpal
+	.word   57,14,-1,0,22,24,1,7,0
+w2nda10:
+	.word   50,95,10,95
+	.long   05af5f80H
+	.word   00H
+	.long   zwilpal
+	.word   48,13,-1,0,28,29,1,7,0
+w2nda11:
+	.word   57,78,14,77
+	.long   05aff3f0H
+	.word   00H
+	.long   zwilpal
+	.word   125,-1,-1,0,38,21,1,7,0
+w2nda12:
+	.word   50,67,5,65
+	.long   05b07ee0H
+	.word   00H
+	.long   zwilpal
+	.word   -1,-1,-1,0,33,5,1,7,0
+w3ndb01:
+	.word   58,75,30,74
+	.long   05b0e790H
+	.word   00H
+	.long   zwilpal
+	.word   40,10,-1,0,37,5,1,4,0
+w3ndb02:
+	.word   70,109,30,109
+	.long   05b16f80H
+	.word   00H
+	.long   zwilpal
+	.word   35,11,-1,0,43,28,1,13,0
+w3ndb03:
+	.word   81,114,28,116
+	.long   05b25df0H
+	.word   00H
+	.long   zwilpal
+	.word   19,9,-1,0,42,35,1,13,0
+w3ndb04:
+	.word   87,105,25,109
+	.long   05b37e80H
+	.word   00H
+	.long   zwilpal
+	.word   10,5,-1,0,41,27,1,3,0
+w3ndb05:
+	.word   90,99,30,105
+	.long   05b49bf8H
+	.word   00H
+	.long   zwilpal
+	.word   17,5,-1,0,49,25,1,3,0
+w3ndb06:
+	.word   88,106,36,112
+	.long   05b5b268H
+	.word   00H
+	.long   zwilpal
+	.word   40,9,-1,0,59,34,1,8,0
+w3ndb07:
+	.word   79,111,36,115
+	.long   05b6d5e8H
+	.word   00H
+	.long   zwilpal
+	.word   70,9,-1,0,64,39,1,8,0
+w3ndb08:
+	.word   94,90,43,93
+	.long   05b7e7f0H
+	.word   00H
+	.long   zwilpal
+	.word   92,13,-1,0,70,24,-1,8,0
+w3ndb09:
+	.word   81,96,37,95
+	.long   05b8f050H
+	.word   00H
+	.long   zwilpal
+	.word   88,-1,-1,0,68,35,-1,8,0
+w3ndb10:
+	.word   52,79,24,78
+	.long   05b9e350H
+	.word   00H
+	.long   zwilpal
+	.word   105,-1,-1,0,51,24,-1,8,0
+w3ndb11:
+	.word   61,57,31,56
+	.long   05ba63b0H
+	.word   00H
+	.long   zwilpal
+	.word   -1,-1,-1,0,59,6,-1,8,0
+w3ndc01:
+	.word   47,64,23,63
+	.long   05bad058H
+	.word   00H
+	.long   zwilpal
+	.word   42,22,-1,0,14,1,1,4,0
+w3ndc02:
+	.word   44,97,21,96
+	.long   05bb2e58H
+	.word   00H
+	.long   zwilpal
+	.word   25,9,-1,0,21,22,-1,4,0
+w3ndc03:
+	.word   47,96,23,96
+	.long   05bbb3b8H
+	.word   00H
+	.long   zwilpal
+	.word   26,8,-1,0,21,17,-1,4,0
+w3ndc04:
+	.word   69,76,34,75
+	.long   05bc40b8H
+	.word   00H
+	.long   zwilpal
+	.word   47,23,1,0,34,1,1,4,0
+w3ndc05:
+	.word   110,54,54,69
+	.long   05bce498H
+	.word   00H
+	.long   zwilpal
+	.word   56,46,-1,0,55,3,1,4,0
+w3ndc06:
+	.word   118,44,58,69
+	.long   05bd9e38H
+	.word   00H
+	.long   zwilpal
+	.word   56,44,-1,0,59,2,1,4,0
+w3ndc07:
+	.word   107,59,53,73
+	.long   05be4078H
+	.word   00H
+	.long   zwilpal
+	.word   66,34,1,0,57,3,1,4,0
+w3ndc08:
+	.word   85,91,42,95
+	.long   05bf05c0H
+	.word   00H
+	.long   zwilpal
+	.word   69,11,-1,0,49,20,-1,4,0
+w3ndc09:
+	.word   59,101,27,102
+	.long   05bff778H
+	.word   00H
+	.long   zwilpal
+	.word   42,7,-1,0,39,23,1,9,0
+w3ndc10:
+	.word   63,98,25,98
+	.long   05c0b1b0H
+	.word   00H
+	.long   zwilpal
+	.word   50,-1,-1,0,37,31,1,9,0
+w3ndc11:
+	.word   78,62,18,62
+	.long   05c172a0H
+	.word   00H
+	.long   zwilpal
+	.word   -1,-1,-1,0,38,3,1,9,0
+w3ndd01:
+	.word   46,68,21,67
+	.long   05c209c0H
+	.word   00H
+	.long   zwilpal
+	.word   48,40,-1,0,26,2,1,13,0
+w3ndd02:
+	.word   66,80,17,79
+	.long   05c26b80H
+	.word   00H
+	.long   zwilpal
+	.word   65,13,-1,0,26,11,-1,13,0
+w3ndd03:
+	.word   58,106,12,105
+	.long   05c31080H
+	.word   00H
+	.long   zwilpal
+	.word   53,15,-1,0,33,29,-1,13,0
+w3ndd04:
+	.word   50,71,35,96
+	.long   05c3d0a0H
+	.word   00H
+	.long   zwilpal
+	.word   34,13,-1,0,41,20,-1,3,0
+w3ndd05:
+	.word   48,58,33,89
+	.long   05c43f90H
+	.word   00H
+	.long   zwilpal
+	.word   32,9,-1,0,41,16,-1,3,0
+w3ndd06:
+	.word   57,46,29,85
+	.long   05c49690H
+	.word   00H
+	.long   zwilpal
+	.word   45,8,-1,0,46,20,-1,8,0
+w3ndd07:
+	.word   64,49,29,90
+	.long   05c4e880H
+	.word   00H
+	.long   zwilpal
+	.word   59,27,-1,0,49,35,-1,8,0
+w3ndd08:
+	.word   53,49,19,84
+	.long   05c54a80H
+	.word   00H
+	.long   zwilpal
+	.word   49,38,-1,0,37,41,-1,8,0
+w3ndd09:
+	.word   47,64,14,86
+	.long   05c59ba8H
+	.word   00H
+	.long   zwilpal
+	.word   33,57,-1,0,20,50,-1,0,0
+w3ndd10:
+	.word   47,60,14,80
+	.long   05c5f9a8H
+	.word   00H
+	.long   zwilpal
+	.word   17,61,-1,0,10,45,-1,0,0
+w3ndd11:
+	.word   58,46,28,70
+	.long   05c651c8H
+	.word   00H
+	.long   zwilpal
+	.word   14,48,-1,0,13,26,-1,0,0
+w3ndd12:
+	.word   65,49,36,69
+	.long   05c6a528H
+	.word   00H
+	.long   zwilpal
+	.word   12,34,-1,0,14,16,-1,16,0
+w3ndd13:
+	.word   54,50,34,79
+	.long   05c708b0H
+	.word   00H
+	.long   zwilpal
+	.word   3,22,-1,0,15,12,-1,16,0
+w3ndd14:
+	.word   47,64,34,91
+	.long   05c75d10H
+	.word   00H
+	.long   zwilpal
+	.word   13,16,-1,0,23,15,-1,13,0
+w3ndd15:
+	.word   69,72,30,101
+	.long   05c7bb10H
+	.word   00H
+	.long   zwilpal
+	.word   66,12,-1,0,39,22,-1,3,0
+w3ndd16:
+	.word   41,104,8,105
+	.long   05c85650H
+	.word   00H
+	.long   zwilpal
+	.word   -1,-1,-1,0,31,31,-1,8,0
+w3ndd17:
+	.word   52,68,13,66
+	.long   05c8db90H
+	.word   00H
+	.long   zwilpal
+	.word   -1,-1,-1,0,37,2,-1,8,0
+	.TEXT
+

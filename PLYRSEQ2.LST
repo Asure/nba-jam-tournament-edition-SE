@@ -1,0 +1,893 @@
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:06 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE    1
+
+       1                            .file   "plyrseq2.asm"
+       3                            .width  132
+       4                            .option b,d,l,t
+       5                            .mnolist
+       6                    
+       7                    
+       8                            .include        "mproc.equ"
+       9                            .include        "disp.equ"
+      10                            .include        "sys.equ"
+      11                            .include        "imgtbl.glo"
+      12                            .include        "imgtbl2.glo"
+      13                            .include        "game.equ"
+      14                            .include        "shawn.hdr"
+      15                            .asg            0,SEQT
+      16                            .include        "plyr.equ"
+      17                            .include        "plyrseq2.tbl"
+      18                            .include        "pass.tbl"
+      19                            .include        "fireseq.tbl"
+      20                            .include        "imgpal3.asm"
+      21                    
+      22                    
+      23                    
+      24                    
+      25 0001e9b0     fd85  push1_snd       .word   0fd85H,15,08160H,0      ;Push ugh
+      26 0001e9f0     fd85  push2_snd       .word   0fd85H,15,0816cH,0      ;Push ugh
+      27 0001ea30     fd85  push3_snd       .word   0fd85H,15,0816aH,0      ;Push ugh
+      28                    
+      29                    
+      30 0001ea70     fd89  land_snd        .word   0fd89H,40,0811dH,0      ;Body land on grnd
+      31 0001eab0     f894  boo_snd         .word   0f894H,180,08150H,0     ;Boo
+      32                    
+      33                    
+      34                    
+      35                    
+      36 0001eaf0           oof_snd         
+      37 0001eaf0     fd85  ungh_snd        .word   0fd85H,15,0816cH,0      ;Push ugh
+      38                    
+      39 0001eb30     fd88  fall1_snd       .word   0fd88H,20,08164H,0      ;Fall ugh
+      40 0001eb70     fd88  fall2_snd       .word   0fd88H,20,08166H,0      ;Fall ugh
+      41                    
+      42                    
+      43                    
+      44                    
+      45                            .ref    seq_injury
+      46                            .ref    seq_smoke
+      47                            .ref    seq_stuffzx
+      48                            .ref    seq_keepzx
+      49                            .ref    seq_stayinair
+      50                            .ref    seq_elbo,seq_snd,seq_stand,plyr_pass
+      51                    
+      52                            .ref    plyr_shoot
+      53                            .ref    seq_newdir
+      54                            .ref    seq_noballoff
+      55                            .ref    seq_stopfire
+      56                            .ref    seq_strtfire
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:06 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball plyr sequence code                                        PAGE    2
+
+      57                    
+      58                    
+      59                            .def    FIREFALP
+      60                            .def    zwilpal
+      61                    
+      62                    
+      63                    
+      64                    
+      65                    
+      66              8000  M_YF    .equ    08000H  ;Y free (OFLAGS)
+      67                    
+      68                    
+      69 00000000                   .text
+      70                    
+      71                    
+      72                    
+      73                            .asg    M_WRNONZ,F
+      74                            .asg    M_WRNONZ|M_FLIPH,FF
+      75                    
+      76                    
+      77                    
+      78 00000000           tip_t
+      79 00000000     3024          .word   NOJOY_M|NOCOLLP_M|NOBALL_M|NOJUMP_M
+      80 00000010 00000000          .long   0
+      81 00000030 00000130'         .long   zfgd3,zfgd3,zfgd3,zfgd3,zfgd3,zfgd3,zfgd3,zfgd3
+      82                    
+      83                            .asg    12,N
+      84                    
+      85 00000130           zfgd3   WLW     N,w3tip1,F
+      86 00000170                   WLW     N,w3tip2,F
+      87 000001b0                   W0
+      88                    
+      89 000001c0           tipj_t
+      90 000001c0     3024          .word   NOJOY_M|NOCOLLP_M|NOBALL_M|NOJUMP_M
+      91 000001d0 00000000!         .long   seq_stand
+      92 000001f0 000002f0'         .long   xavf3,xavf3,xavf3,xavf3,xavf3,xavf3,xavf3,xavf3
+      93                    
+      94                    
+      95 000002f0           xavf3   WLW     6,w3tip3,F
+      96 00000330                   WLW     25,w3tip4,F
+      97 00000370                   WLW     5,w3tip5,F
+      98 000003b0                   WLW     50,w3tip6,F
+      99 000003f0                   WLW     4,w3tip7,F
+     100 00000430                   W0
+     101                    
+     102                    
+     103                    
+     104 00000440           passnl_t
+     105 00000440     2400          .word   PASS_M|NOJOY_M
+     106 00000450 00000000!         .long   seq_stand
+     107 00000470 00000570'         .long   gjiw1,gjiw2,gjiw3,gjiw4,gjiw5,gjiw4,gjiw3,gjiw2
+     108                    
+     109                            .asg    3,N
+     110                    
+     111 00000570           gjiw1
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:06 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball plyr sequence code                                        PAGE    3
+
+     112 00000570           gjiw2
+     113 00000570           gjiw3
+     114 00000570                   WLW     N,W2NLPR1,F
+     115 000005b0                   WLW     N,W2NLPR2,F
+     116 000005f0                   WLW     1,W2NLPR3,F
+     117 00000630                   WL      -1,plyr_pass
+     118 00000660                   WLW     6,W2NLPR3,F
+     119 000006a0                   WLW     N,W2NLPR2,F
+     120 000006e0                   WLW     9,W2NLPR1,F
+     121 00000720                   W0
+     122                    
+     123 00000730           gjiw4
+     124 00000730           gjiw5
+     125 00000730                   WLW     N,W4NLPR1,F
+     126 00000770                   WLW     N,W4NLPR2,F
+     127 000007b0                   WLW     1,W4NLPR3,F
+     128 000007f0                   WL      -1,plyr_pass
+     129 00000820                   WLW     6,W4NLPR3,F
+     130 00000860                   WLW     N,W4NLPR2,F
+     131 000008a0                   WLW     9,W4NLPR1,F
+     132 000008e0                   W0
+     133                    
+     134 000008f0           passnl3_t
+     135 000008f0     2400          .word   PASS_M|NOJOY_M
+     136 00000900 00000000!         .long   seq_stand
+     137 00000920 00000a20'         .long   ufjp1,ufjp2,ufjp3,ufjp4,ufjp5,ufjp4,ufjp3,ufjp2
+     138                    
+     139                            .asg    3,N
+     140                    
+     141 00000a20           ufjp1
+     142 00000a20           ufjp3
+     143 00000a20           ufjp2
+     144 00000a20           ufjp4
+     145 00000a20           ufjp5
+     146 00000a20                   WLW     N,W4NLPR1,F
+     147 00000a60                   WLW     N,W4NLPR2,F
+     148 00000aa0                   WLW     1,W4NLPR3,F
+     149 00000ae0                   WL      -1,plyr_pass
+     150 00000b10                   WLW     6,W4NLPR3,F
+     151 00000b50                   WLW     N,W4NLPR2,F
+     152 00000b90                   WLW     9,W4NLPR1,F
+     153 00000bd0                   W0
+     154                    
+     155                    
+     156 00000be0           passnl2_t
+     157 00000be0     2400          .word   PASS_M|NOJOY_M
+     158 00000bf0 00000000!         .long   seq_stand
+     159 00000c10 00000d10'         .long   snlj1,snlj2,snlj3,snlj4,snlj5,snlj4,snlj3,snlj2
+     160                    
+     161                            .asg    3,N
+     162                    
+     163 00000d10           snlj1
+     164 00000d10           snlj2
+     165 00000d10           snlj3
+     166 00000d10                   WLW     N,W2NLPL1,F
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:06 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball plyr sequence code                                        PAGE    4
+
+     167 00000d50                   WLW     N,W2NLPL2,F
+     168 00000d90                   WLW     1,W2NLPL3,F
+     169 00000dd0                   WL      -1,plyr_pass
+     170 00000e00                   WLW     6,W2NLPL3,F
+     171 00000e40                   WLW     N,W2NLPL2,F
+     172 00000e80                   WLW     9,W2NLPL1,F
+     173 00000ec0                   W0
+     174 00000ed0           snlj4
+     175 00000ed0           snlj5
+     176 00000ed0                   WLW     N,W4NLPL1,F
+     177 00000f10                   WLW     N,W4NLPL2,F
+     178 00000f50                   WLW     1,W4NLPL3,F
+     179 00000f90                   WL      -1,plyr_pass
+     180 00000fc0                   WLW     6,W4NLPL3,F
+     181 00001000                   WLW     N,W4NLPL2,F
+     182 00001040                   WLW     9,W4NLPL1,F
+     183 00001080                   W0
+     184                    
+     185                    
+     186                    
+     187 00001090           stagger_t
+     188 00001090     602c          .word   NOMV_M|NOBALL_M|NOJUMP_M|NOJOY_M|SAMEDIR_M
+     189 000010a0 00000000!         .long   seq_stand
+     190 000010c0 000011c0'         .long   snljstag2_l,snljstag2_l,snljstag3_l,snljstag4_l
+     191 00001140 000016c0'         .long   snljstag4_l,snljstag4_l,snljstag3_l,snljstag2_l
+     192                            .asg    5,N
+     193 000011c0           snljstag2_l
+     194 000011c0                   WLW     N,w2fall1,F
+     195 00001200                   WLL     -1,seq_snd,push1_snd
+     196 00001250                   WLW     N,w2fall2,F
+     197 00001290                   WLW     N,w2fall3,F
+     198 000012d0                   WLW     N,w2fall4,F
+     199 00001310                   WLW     N,w2fall5,F
+     200 00001350                   WLW     N,w2fall4,F
+     201 00001390                   WLW     N,w2fall3,F
+     202 000013d0                   WLW     N,w2fall2,F
+     203 00001410                   WLW     N,w2fall1,F
+     204 00001450                   W0
+     205 00001460           snljstag3_l
+     206 00001460                   WLW     N,w3fall1,F
+     207 000014a0                   WLL     -1,seq_snd,push2_snd
+     208 000014f0                   WLW     N,w3fall2,F
+     209 00001530                   WLW     N,w3fall3,F
+     210 00001570                   WLW     N,w3fall4,F
+     211 000015b0                   WLW     N,w3fall5,F
+     212 000015f0                   WLW     N,w3fall6,F
+     213 00001630                   WLW     N,w3fall7,F
+     214 00001670                   WLW     N,w3fall8,F
+     215 000016b0                   W0
+     216 000016c0           snljstag4_l
+     217 000016c0                   WLW     N,w4fall1,F
+     218 00001700                   WLL     -1,seq_snd,push3_snd
+     219 00001750                   WLW     N,w4fall2,F
+     220 00001790                   WLW     N,w4fall1,F
+     221 000017d0                   W0
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:06 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball plyr sequence code                                        PAGE    5
+
+     222 000017e0           fall_t
+     223 000017e0     602c          .word   NOMV_M|NOBALL_M|NOJUMP_M|NOJOY_M|SAMEDIR_M
+     224 000017f0 00000000!         .long   seq_stand
+     225 00001810 00001910'         .long   acnx2,acnx2,acnx3,acnx4,acnx4,acnx4,acnx3,acnx2
+     226                            .asg    5,N
+     227                            .asg    4,N2    ;6
+     228 00001910           acnx2
+     229 00001910                   WLW     N,w2fall1,F
+     230 00001950                   WLL     -1,seq_snd,fall1_snd
+     231 000019a0                   WLW     N,w2fall2,F
+     232 000019e0                   WLW     N,w2fall3,F
+     233 00001a20                   WLW     N,w2fall4,F
+     234 00001a60                   WLW     N,w2fall5,F
+     235 00001aa0                   WLW     N,w2fall6,F
+     236 00001ae0                   WLW     N,w2fall7,F
+     237 00001b20                   WLW     N,w2fall8,F
+     238                    
+     239 00001b60                   WL      -1,seq_stayinair
+     240                    
+     241 00001b90                   WLW     N,w2fall9,F
+     242 00001bd0                   WLL     -1,seq_snd,land_snd
+     243 00001c20                   WLW     N2,w2fall10,F
+     244 00001c60                   WLW     N2,w2fall11,F
+     245 00001ca0                   WLW     N2,w2fall12,F
+     246 00001ce0                   WLW     N2,w2fall13,F
+     247 00001d20                   WLW     N2,w2fall14,F
+     248 00001d60                   WLW     N2,w2fall15,F
+     249 00001da0                   WLW     N2,w2fall16,F
+     250 00001de0                   W0
+     251 00001df0           acnx3
+     252 00001df0                   WLW     N,w3fall1,F
+     253 00001e30                   WLL     -1,seq_snd,fall2_snd
+     254 00001e80                   WLW     N,w3fall2,F
+     255 00001ec0                   WLW     N,w3fall3,F
+     256 00001f00                   WLW     N,w4fall1,F
+     257 00001f40                   WLW     N,w4fall2,F
+     258 00001f80                   WLW     N,w4fall3,F
+     259 00001fc0                   WLW     N,w4fall4,F
+     260 00002000                   WLW     N,w4fall5,F
+     261 00002040                   WLW     N,w4fall6,F
+     262 00002080                   WLW     N,w4fall7,F
+     263 000020c0                   WLW     N,w4fall8,F
+     264 00002100                   WLW     N,w4fall9,F
+     265 00002140                   WLW     N,w4fall10,F
+     266                    
+     267 00002180                   WL      -1,seq_stayinair
+     268                    
+     269 000021b0                   WLW     N,w4fall11,F
+     270 000021f0                   WLL     -1,seq_snd,land_snd
+     271 00002240                   WLW     N2,w4fall12,F
+     272 00002280                   WLW     N2,w4fall13,F
+     273 000022c0                   WLW     N2,w4fall14,F
+     274 00002300                   WLW     N2,w4fall15,F
+     275 00002340                   WLW     N2,w4fall16,F
+     276 00002380                   WLW     N2,w4fall17,F
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:06 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball plyr sequence code                                        PAGE    6
+
+     277 000023c0                   WLW     N2,w4fall18,F
+     278 00002400                   W0
+     279 00002410           acnx4
+     280 00002410                   WLW     N,w4fall1,F
+     281 00002450                   WLL     -1,seq_snd,fall2_snd
+     282 000024a0                   WLW     N,w4fall2,F
+     283 000024e0                   WLW     N,w4fall3,F
+     284 00002520                   WLW     N,w4fall4,F
+     285 00002560                   WLW     N,w4fall5,F
+     286 000025a0                   WLW     N,w4fall6,F
+     287 000025e0                   WLW     N,w4fall7,F
+     288 00002620                   WLW     N,w4fall8,F
+     289 00002660                   WLW     N,w4fall9,F
+     290 000026a0                   WLW     N,w4fall10,F
+     291                    
+     292 000026e0                   WL      -1,seq_stayinair
+     293                    
+     294 00002710                   WLW     N,w4fall11,F
+     295 00002750                   WLW     N2,w4fall12,F
+     296 00002790                   WLW     N2,w4fall13,F
+     297 000027d0                   WLW     N2,w4fall14,F
+     298 00002810                   WLW     N2,w4fall15,F
+     299 00002850                   WLW     N2,w4fall16,F
+     300 00002890                   WLW     N2,w4fall17,F
+     301 000028d0                   WLW     N2,w4fall18,F
+     302 00002910                   W0
+     303 00002920           ffall_t
+     304 00002920     602c          .word   NOMV_M|NOBALL_M|NOJUMP_M|NOJOY_M|SAMEDIR_M
+     305 00002930 00000000!         .long   seq_stand
+     306 00002950 00002a50'         .long   rknb2,rknb2,rknb3,rknb4,rknb4,rknb4,rknb3,rknb2
+     307                            .asg    5,N
+     308 00002a50           rknb2
+     309 00002a50                   WL      -1,seq_strtfire
+     310 00002a80                   WLW     N,F2FALL01,F
+     311 00002ac0                   WLL     -1,seq_snd,fall1_snd
+     312 00002b10                   WLW     N,F2FALL02,F
+     313 00002b50                   WLW     N,F2FALL03,F
+     314 00002b90                   WLW     N,F2FALL04,F
+     315 00002bd0                   WLW     N,F2FALL05,F
+     316 00002c10                   WLW     N,F2FALL06,F
+     317 00002c50                   WLW     N,F2FALL07,F
+     318 00002c90                   WLW     N,F2FALL08,F
+     319                    
+     320 00002cd0                   WL      -1,seq_stayinair
+     321                    
+     322 00002d00                   WLW     N,F2FALL09,F
+     323 00002d40                   WLL     -1,seq_snd,land_snd
+     324 00002d90                   WLW     N2,F2FALL10,F
+     325 00002dd0                   WLW     N2,F2FALL11,F
+     326 00002e10                   WLW     N2,F2FALL12,F
+     327 00002e50                   WLW     N2,F2FALL13,F
+     328 00002e90                   WLW     N2,F2FALL14,F
+     329 00002ed0                   WLW     N2,F2FALL15,F
+     330 00002f10                   WL      -1,seq_smoke
+     331 00002f40                   WLW     N2,F2FALL16,F
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:06 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball plyr sequence code                                        PAGE    7
+
+     332 00002f80                   WLW     N2,F2FALL17,F
+     333 00002fc0                   WLW     N2,F2FALL18,F
+     334 00003000                   WLW     N2,F2FALL19,F
+     335 00003040                   WLW     N2,F2FALL20,F
+     336 00003080                   WLW     N2,F2FALL21,F
+     337 000030c0                   WLW     N2,F2FALL22,F
+     338 00003100                   WLW     N2,F2FALL23,F
+     339 00003140                   WLW     N2,F2FALL24,F
+     340 00003180                   WL      -1,seq_stopfire
+     341 000031b0                   W0
+     342 000031c0           rknb3
+     343 000031c0           rknb4
+     344 000031c0                   WL      -1,seq_strtfire
+     345 000031f0                   WLW     N,F4FALL01,F
+     346 00003230                   WLL     -1,seq_snd,fall2_snd
+     347 00003280                   WLW     N,F4FALL02,F
+     348 000032c0                   WLW     N,F4FALL03,F
+     349 00003300                   WLW     N,F4FALL04,F
+     350 00003340                   WLW     N,F4FALL05,F
+     351 00003380                   WLW     N,F4FALL06,F
+     352 000033c0                   WLW     N,F4FALL07,F
+     353 00003400                   WLW     N,F4FALL08,F
+     354                    
+     355 00003440                   WL      -1,seq_stayinair
+     356                    
+     357 00003470                   WLW     N,F4FALL09,F
+     358 000034b0                   WLL     -1,seq_snd,land_snd
+     359 00003500                   WLW     N2,F4FALL10,F
+     360 00003540                   WLW     N2,F4FALL11,F
+     361 00003580                   WLW     N2,F4FALL12,F
+     362 000035c0                   WLW     N2,F4FALL13,F
+     363 00003600                   WLW     N2,F4FALL14,F
+     364 00003640                   WLW     N2,F4FALL15,F
+     365 00003680                   WL      -1,seq_smoke
+     366 000036b0                   WLW     N2,F4FALL16,F
+     367 000036f0                   WLW     N2,F4FALL17,F
+     368 00003730                   WLW     N2,F4FALL18,F
+     369 00003770                   WLW     N2,F4FALL19,F
+     370 000037b0                   WLW     N2,F4FALL20,F
+     371 000037f0                   WLW     N2,F4FALL21,F
+     372 00003830                   WLW     N2,F4FALL22,F
+     373 00003870                   WLW     N2,F4FALL23,F
+     374 000038b0                   WLW     N2,F4FALL24,F
+     375 000038f0                   WLW     N2,F4FALL25,F
+     376 00003930                   WLW     N2,F4FALL26,F
+     377 00003970                   WL      -1,seq_stopfire
+     378 000039a0                   W0
+     379 000039b0           fflyback_t
+     380 000039b0     702c          .word   NOMV_M|NOBALL_M|NOJUMP_M|NOJOY_M|NOCOLLP_M|SAMEDIR_M
+     381 000039c0 00000000!         .long   seq_stand
+     382 000039e0 00003c10'         .long   ufad2,ufad2,ufad3,ufad4,ufad4,ufad4,ufad3,ufad2
+     383 00003ae0           fflybackwb_t
+     384 00003ae0     700c          .word   NOMV_M|NOJUMP_M|NOJOY_M|NOCOLLP_M|SAMEDIR_M
+     385 00003af0 00000000!         .long   seq_stand
+     386 00003b10 00003c10'         .long   ufad2,ufad2,ufad3,ufad4,ufad4,ufad4,ufad3,ufad2
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:06 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball plyr sequence code                                        PAGE    8
+
+     387                            .asg    3,N
+     388                            .asg    3,N2
+     389 00003c10           ufad2
+     390 00003c10                   WL      -1,seq_strtfire
+     391 00003c40                   WL      -1,seq_keepzx
+     392 00003c70                   WLW     N,F2FALL01,F
+     393 00003cb0                   WLL     -1,seq_snd,fall1_snd
+     394 00003d00                   WLW     N,F2FALL02,F
+     395 00003d40                   WLW     N,F2FALL03,F
+     396 00003d80                   WLW     N,F2FALL04,F
+     397 00003dc0                   WLW     N,F2FALL05,F
+     398 00003e00                   WLW     N,F2FALL06,F
+     399 00003e40                   WLW     N,F2FALL07,F
+     400 00003e80                   WLW     N,F2FALL08,F
+     401                    
+     402 00003ec0                   WL      -1,seq_stayinair
+     403 00003ef0                   WL      -1,seq_injury
+     404                    
+     405 00003f20                   WLL     -1,seq_snd,land_snd
+     406 00003f70                   WL      -1,seq_stuffzx
+     407 00003fa0                   WLW     1,F2FALL09,F
+     408 00003fe0                   WL      -1,seq_stuffzx
+     409 00004010                   WLW     4,F2FALL09,F                    ;4
+     410 00004050                   WLL     -1,seq_snd,boo_snd
+     411                    
+     412 000040a0                   WL      -1,seq_noballoff
+     413                    
+     414 000040d0                   WLW     N2,F2FALL10,F
+     415 00004110                   WLW     N2,F2FALL11,F
+     416 00004150                   WLW     N2,F2FALL12,F
+     417 00004190                   WLW     N2,F2FALL13,F
+     418 000041d0                   WLW     N2,F2FALL14,F
+     419 00004210                   WLW     N2,F2FALL15,F
+     420 00004250                   WLW     N2,F2FALL16,F
+     421 00004290                   WL      -1,seq_smoke
+     422 000042c0                   WLW     N2,F2FALL17,F
+     423 00004300                   WLW     N2,F2FALL18,F
+     424 00004340                   WLW     N2,F2FALL19,F
+     425 00004380                   WLW     N2,F2FALL20,F
+     426 000043c0                   WLW     N2,F2FALL21,F
+     427 00004400                   WLW     N2,F2FALL22,F
+     428 00004440                   WLW     N2,F2FALL23,F
+     429 00004480                   WLW     N2,F2FALL24,F
+     430 000044c0                   WL      -1,seq_stopfire
+     431 000044f0                   W0
+     432 00004500           ufad3
+     433 00004500                   WL      -1,seq_strtfire
+     434 00004530                   WLL     -1,seq_snd,ungh_snd
+     435 00004580                   WL      -1,seq_keepzx
+     436 000045b0                   WLW     N,F4FALL01,F
+     437 000045f0                   WLL     -1,seq_snd,fall2_snd
+     438 00004640                   WLW     N,F4FALL02,F
+     439 00004680                   WLW     N,F4FALL03,F
+     440 000046c0                   WLW     N,F4FALL04,F
+     441 00004700                   WLW     N,F4FALL05,F
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:06 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball plyr sequence code                                        PAGE    9
+
+     442 00004740                   WLW     N,F4FALL06,F
+     443 00004780                   WLW     N,F4FALL07,F
+     444 000047c0                   WLW     N,F4FALL08,F
+     445 00004800                   WLW     N,F4FALL09,F
+     446 00004840                   WLW     N,F4FALL10,F
+     447                    
+     448 00004880                   WL      -1,seq_stayinair
+     449 000048b0                   WL      -1,seq_injury
+     450                    
+     451 000048e0                   WLL     -1,seq_snd,land_snd
+     452 00004930                   WL      -1,seq_stuffzx
+     453 00004960                   WLW     1,F4FALL11,F                    ;30
+     454 000049a0                   WL      -1,seq_stuffzx
+     455 000049d0                   WLW     4,F4FALL11,F                    ;30
+     456 00004a10                   WLL     -1,seq_snd,boo_snd
+     457 00004a60                   WL      -1,seq_noballoff
+     458 00004a90                   WLW     N2,F4FALL12,F
+     459 00004ad0                   WLW     N2,F4FALL13,F
+     460 00004b10                   WLW     N2,F4FALL14,F
+     461 00004b50                   WLW     N2,F4FALL15,F
+     462 00004b90                   WLW     N2,F4FALL16,F
+     463 00004bd0                   WL      -1,seq_smoke
+     464 00004c00                   WLW     N2,F4FALL17,F
+     465 00004c40                   WLW     N2,F4FALL18,F
+     466 00004c80                   WLW     N2,F4FALL19,F
+     467 00004cc0                   WLW     N2,F4FALL20,F
+     468 00004d00                   WLW     N2,F4FALL21,F
+     469 00004d40                   WLW     N2,F4FALL22,F
+     470 00004d80                   WLW     N2,F4FALL23,F
+     471 00004dc0                   WLW     N2,F4FALL24,F
+     472 00004e00                   WLW     N2,F4FALL25,F
+     473 00004e40                   WLW     N2,F4FALL26,F
+     474 00004e80                   WL      -1,seq_stopfire
+     475 00004eb0                   W0
+     476                    
+     477 00004ec0           ufad4
+     478 00004ec0                   WL      -1,seq_strtfire
+     479 00004ef0                   WLL     -1,seq_snd,ungh_snd
+     480 00004f40                   WLW     N,F4FALL01,F
+     481 00004f80                   WLL     -1,seq_snd,fall2_snd
+     482 00004fd0                   WLW     N,F4FALL02,F
+     483 00005010                   WLW     N,F4FALL03,F
+     484 00005050                   WLW     N,F4FALL04,F
+     485 00005090                   WLW     N,F4FALL05,F
+     486 000050d0                   WLW     N,F4FALL06,F
+     487 00005110                   WLW     N,F4FALL07,F
+     488 00005150                   WLW     N,F4FALL08,F
+     489 00005190                   WLW     N,F4FALL09,F
+     490 000051d0                   WLW     N,F4FALL10,F
+     491                    
+     492 00005210                   WL      -1,seq_stayinair
+     493 00005240                   WL      -1,seq_injury
+     494                    
+     495 00005270                   WLL     -1,seq_snd,land_snd
+     496 000052c0                   WLW     3,F4FALL11,F                    ;30
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:06 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball plyr sequence code                                        PAGE   10
+
+     497 00005300                   WLL     -1,seq_snd,boo_snd
+     498 00005350                   WL      -1,seq_noballoff
+     499 00005380                   WLW     N2,F4FALL12,F
+     500 000053c0                   WLW     N2,F4FALL13,F
+     501 00005400                   WLW     N2,F4FALL14,F
+     502 00005440                   WLW     N2,F4FALL15,F
+     503 00005480                   WLW     N2,F4FALL16,F
+     504 000054c0                   WL      -1,seq_smoke
+     505 000054f0                   WLW     N2,F4FALL17,F
+     506 00005530                   WLW     N2,F4FALL18,F
+     507 00005570                   WLW     N2,F4FALL19,F
+     508 000055b0                   WLW     N2,F4FALL20,F
+     509 000055f0                   WLW     N2,F4FALL21,F
+     510 00005630                   WLW     N2,F4FALL22,F
+     511 00005670                   WLW     N2,F4FALL23,F
+     512 000056b0                   WLW     N2,F4FALL24,F
+     513 000056f0                   WLW     N2,F4FALL25,F
+     514 00005730                   WLW     N2,F4FALL26,F
+     515 00005770                   WL      -1,seq_stopfire
+     516 000057a0                   W0
+     517 000057b0           flyback_t
+     518 000057b0     702c          .word   NOMV_M|NOBALL_M|NOJUMP_M|NOJOY_M|NOCOLLP_M|SAMEDIR_M
+     519 000057c0 00000000!         .long   seq_stand
+     520 000057e0 00005a10'         .long   ibxh2,ibxh2,ibxh3,ibxh4,ibxh4,ibxh4,ibxh3,ibxh2
+     521 000058e0           flybackwb_t
+     522 000058e0     700c          .word   NOMV_M|NOJUMP_M|NOJOY_M|NOCOLLP_M|SAMEDIR_M
+     523 000058f0 00000000!         .long   seq_stand
+     524 00005910 00005a10'         .long   ibxh2,ibxh2,ibxh3,ibxh4,ibxh4,ibxh4,ibxh3,ibxh2
+     525                            .asg    3,N
+     526                            .asg    4,N2
+     527 00005a10           ibxh2
+     528 00005a10                   WLW     N,w2fall1,F
+     529 00005a50                   WL      -1,seq_keepzx
+     530 00005a80                   WLL     -1,seq_snd,fall1_snd
+     531 00005ad0                   WLW     N,w2fall2,F
+     532 00005b10                   WLW     N,w2fall3,F
+     533 00005b50                   WLW     N,w2fall4,F
+     534 00005b90                   WLW     N,w2fall5,F
+     535 00005bd0                   WLW     N,w2fall6,F
+     536 00005c10                   WLW     N,w2fall7,F
+     537 00005c50                   WLW     N,w2fall8,F
+     538                    
+     539 00005c90                   WL      -1,seq_stayinair
+     540 00005cc0                   WL      -1,seq_injury
+     541                    
+     542 00005cf0                   WL      -1,seq_stuffzx
+     543 00005d20                   WLL     -1,seq_snd,land_snd
+     544 00005d70                   WLW     23,w2fall9,F                    ;29
+     545 00005db0                   WLL     -1,seq_snd,boo_snd
+     546                    
+     547 00005e00                   WL      -1,seq_noballoff
+     548                    
+     549 00005e30                   WLW     N2,w2fall10,F
+     550 00005e70                   WLW     N2,w2fall11,F
+     551 00005eb0                   WLW     N2,w2fall12,F
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:06 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball plyr sequence code                                        PAGE   11
+
+     552 00005ef0                   WLW     N2,w2fall13,F
+     553 00005f30                   WLW     N2,w2fall14,F
+     554 00005f70                   WLW     N2,w2fall15,F
+     555 00005fb0                   WLW     N2,w2fall16,F
+     556 00005ff0                   W0
+     557 00006000           ibxh3
+     558 00006000                   WLL     -1,seq_snd,oof_snd
+     559 00006050                   WLL     -1,seq_snd,fall2_snd
+     560 000060a0                   WLW     N,w3fall1,F
+     561 000060e0                   WLW     N,w3fall2,F
+     562 00006120                   WLW     N,w3fall3,F
+     563 00006160                   WLW     N,w4fall1,F
+     564 000061a0                   WLW     N,w4fall2,F
+     565 000061e0                   WLW     N,w4fall3,F
+     566 00006220                   WLW     N,w4fall4,F
+     567 00006260                   WLW     N,w4fall5,F
+     568 000062a0                   WLW     N,w4fall6,F
+     569 000062e0                   WLW     N,w4fall7,F
+     570 00006320                   WLW     N,w4fall8,F
+     571 00006360                   WLW     N,w4fall9,F
+     572 000063a0                   WLW     N,w4fall10,F
+     573                    
+     574 000063e0                   WL      -1,seq_stayinair
+     575 00006410                   WL      -1,seq_injury
+     576                    
+     577 00006440                   WLL     -1,seq_snd,land_snd
+     578 00006490                   WLW     20,w4fall11,F                   ;28
+     579 000064d0                   WLL     -1,seq_snd,boo_snd
+     580 00006520                   WL      -1,seq_noballoff
+     581 00006550                   WLW     N2,w4fall12,F
+     582 00006590                   WLW     N2,w4fall13,F
+     583 000065d0                   WLW     N2,w4fall14,F
+     584 00006610                   WLW     N2,w4fall15,F
+     585 00006650                   WLW     N2,w4fall16,F
+     586 00006690                   WLW     N2,w4fall17,F
+     587 000066d0                   WLW     N2,w4fall18,F
+     588 00006710                   W0
+     589 00006720           ibxh4
+     590 00006720                   WLL     -1,seq_snd,ungh_snd
+     591 00006770                   WLW     N,w4fall1,F
+     592 000067b0                   WLL     -1,seq_snd,fall2_snd
+     593 00006800                   WLW     N,w4fall2,F
+     594 00006840                   WLW     N,w4fall3,F
+     595 00006880                   WLW     N,w4fall4,F
+     596 000068c0                   WLW     N,w4fall5,F
+     597 00006900                   WLW     N,w4fall6,F
+     598 00006940                   WLW     N,w4fall7,F
+     599 00006980                   WLW     N,w4fall8,F
+     600 000069c0                   WLW     N,w4fall9,F
+     601 00006a00                   WLW     N,w4fall10,F
+     602                    
+     603 00006a40                   WL      -1,seq_stayinair
+     604 00006a70                   WL      -1,seq_injury
+     605                    
+     606 00006aa0                   WLL     -1,seq_snd,land_snd
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:06 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball plyr sequence code                                        PAGE   12
+
+     607 00006af0                   WLW     25,w4fall11,F                   ;30
+     608 00006b30                   WLL     -1,seq_snd,boo_snd
+     609 00006b80                   WL      -1,seq_noballoff
+     610 00006bb0                   WLW     N2,w4fall12,F
+     611 00006bf0                   WLW     N2,w4fall13,F
+     612 00006c30                   WLW     N2,w4fall14,F
+     613 00006c70                   WLW     N2,w4fall15,F
+     614 00006cb0                   WLW     N2,w4fall16,F
+     615 00006cf0                   WLW     N2,w4fall17,F
+     616 00006d30                   WLW     N2,w4fall18,F
+     617 00006d70                   W0
+     618                    
+     619 00006d80           flyback2_t
+     620 00006d80     702c          .word   NOMV_M|NOJOY_M|NOBALL_M|NOJUMP_M|NOCOLLP_M|SAMEDIR_M
+     621 00006d90 00000000!         .long   seq_stand
+     622 00006db0 00006fe0'         .long   nohy2,nohy2,nohy3,nohy4,nohy4,nohy4,nohy3,nohy2
+     623 00006eb0           flybackwb2_t
+     624 00006eb0     780c          .word   NOMV_M|NOJOY_M|NOJUMP_M|NOSTEAL_M|NOCOLLP_M|SAMEDIR_M
+     625 00006ec0 00000000!         .long   seq_stand
+     626 00006ee0 00006fe0'         .long   nohy2,nohy2,nohy3,nohy4,nohy4,nohy4,nohy3,nohy2
+     627                            .asg    5,N
+     628                    
+     629                    
+     630 00006fe0           nohy2
+     631 00006fe0                   WLW     N,w2fall1,F
+     632 00007020                   WLL     -1,seq_snd,boo_snd
+     633 00007070                   WLW     N,w2fall2,F
+     634 000070b0                   WLW     N,w2fall3,F
+     635 000070f0                   WLW     N,w2fall4,F
+     636 00007130                   WLW     N,w2fall3,F
+     637 00007170                   WLW     N,w2fall2,F
+     638 000071b0                   WLW     N,w2fall1,F
+     639 000071f0                   W0
+     640 00007200           nohy3
+     641 00007200                   WLW     N,w3fall1,F
+     642 00007240                   WLL     -1,seq_snd,oof_snd
+     643 00007290                   WLW     N,w3fall2,F
+     644 000072d0                   WLW     N,w3fall3,F
+     645 00007310                   WLL     -1,seq_snd,boo_snd
+     646 00007360                   WLW     N,w3fall4,F
+     647 000073a0                   WLW     N,w3fall5,F
+     648 000073e0                   WLW     N,w3fall6,F
+     649 00007420                   WLW     N,w3fall7,F
+     650 00007460                   WLW     N,w3fall8,F
+     651 000074a0                   W0
+     652 000074b0           nohy4
+     653 000074b0                   WLW     N+1,w4fall1,F
+     654 000074f0                   WLL     -1,seq_snd,ungh_snd
+     655 00007540                   WLW     N+1,w4fall2,F
+     656 00007580                   WLW     N+1,w4fall3,F
+     657 000075c0                   WLL     -1,seq_snd,boo_snd
+     658 00007610                   WLW     N+1,w4fall4,F
+     659 00007650                   WLW     N+1,w4fall3,F
+     660 00007690                   WLW     N,w4fall2,F
+     661 000076d0                   WLW     N,w4fall1,F
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:06 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball plyr sequence code                                        PAGE   13
+
+     662 00007710                   W0
+     663 00007720           fflyback2_t
+     664 00007720     702c          .word   NOMV_M|NOJOY_M|NOBALL_M|NOJUMP_M|NOCOLLP_M|SAMEDIR_M
+     665 00007730 00000000!         .long   seq_stand
+     666 00007750 00007980'         .long   kflh2,kflh2,kflh3,kflh4,kflh4,kflh4,kflh3,kflh2
+     667 00007850           fflybackwb2_t
+     668 00007850     780c          .word   NOMV_M|NOJOY_M|NOJUMP_M|NOSTEAL_M|NOCOLLP_M|SAMEDIR_M
+     669 00007860 00000000!         .long   seq_stand
+     670 00007880 00007980'         .long   kflh2,kflh2,kflh3,kflh4,kflh4,kflh4,kflh3,kflh2
+     671                            .asg    5,N
+     672                    
+     673 00007980           kflh2
+     674 00007980                   WL      -1,seq_strtfire
+     675 000079b0                   WLW     N,F2FALL01,F
+     676 000079f0                   WLL     -1,seq_snd,oof_snd
+     677 00007a40                   WLW     N,F2FALL02,F
+     678 00007a80                   WLW     N,F2FALL03,F
+     679 00007ac0                   WLW     N,F2FALL04,F
+     680 00007b00                   WLW     N,F2FALL03,F
+     681 00007b40                   WLW     N,F2FALL02,F
+     682 00007b80                   WLW     N,F2FALL01,F
+     683 00007bc0                   WL      -1,seq_stopfire
+     684 00007bf0                   W0
+     685 00007c00           kflh3
+     686 00007c00           kflh4
+     687 00007c00                   WL      -1,seq_strtfire
+     688 00007c30                   WLW     N+1,F4FALL01,F
+     689 00007c70                   WLL     -1,seq_snd,ungh_snd
+     690 00007cc0                   WLW     N+1,F4FALL02,F
+     691 00007d00                   WLW     N+1,F4FALL03,F
+     692 00007d40                   WLL     -1,seq_snd,boo_snd
+     693 00007d90                   WLW     N+1,F4FALL04,F
+     694 00007dd0                   WLW     N+1,F4FALL03,F
+     695 00007e10                   WLW     N,F4FALL02,F
+     696 00007e50                   WLW     N,F4FALL01,F
+     697 00007e90                   WL      -1,seq_stopfire
+     698 00007ec0                   W0
+     699                    
+     700 00007ed0           pickup_t
+     701 00007ed0     280c          .word   NOMV_M|NOSTEAL_M|NOJUMP_M|NOJOY_M
+     702 00007ee0 00000000!         .long   seq_stand
+     703 00007f00 00008000'         .long   edhc1,edhc2,edhc3,edhc4,edhc5,edhc4,edhc3,edhc2
+     704                            .asg    3,N
+     705 00008000           edhc1
+     706 00008000                   WLW     N,w1pikup1,F|M_YF
+     707 00008040                   WLW     N,w1pikup2,F|M_YF
+     708 00008080                   WLW     N,w1pikup3,F
+     709 000080c0                   WLW     N,w1pikup2,F
+     710 00008100                   WLW     N,w1pikup1,F
+     711 00008140                   W0
+     712 00008150           edhc2
+     713 00008150                   WLW     N,w2pikup1,F|M_YF
+     714 00008190                   WLW     N,w2pikup2,F|M_YF
+     715 000081d0                   WLW     N,w2pikup3,F
+     716 00008210                   WLW     N,w2pikup2,F
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:06 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball plyr sequence code                                        PAGE   14
+
+     717 00008250                   WLW     N,w2pikup1,F
+     718 00008290                   W0
+     719 000082a0           edhc3
+     720 000082a0                   WLW     N,w3pikup1,F|M_YF
+     721 000082e0                   WLW     N,w3pikup2,F|M_YF
+     722 00008320                   WLW     N,w3pikup3,F
+     723 00008360                   WLW     N,w3pikup2,F
+     724 000083a0                   WLW     N,w3pikup1,F
+     725 000083e0                   W0
+     726 000083f0           edhc4
+     727 000083f0                   WLW     N,w4pikup1,F|M_YF
+     728 00008430                   WLW     N,w4pikup2,F|M_YF
+     729 00008470                   WLW     N,w4pikup3,F
+     730 000084b0                   WLW     N,w4pikup2,F
+     731 000084f0                   WLW     N,w4pikup1,F
+     732 00008530                   W0
+     733 00008540           edhc5
+     734 00008540                   WLW     N,w5pikup1,F|M_YF
+     735 00008580                   WLW     N,w5pikup2,F|M_YF
+     736 000085c0                   WLW     N,w5pikup3,F
+     737 00008600                   WLW     N,w5pikup2,F
+     738 00008640                   WLW     N,w5pikup1,F
+     739 00008680                   W0
+     740 00008690           elbo_t
+     741 00008690     280c          .word   NOMV_M|NOSTEAL_M|NOJUMP_M|NOJOY_M
+     742 000086a0 00000000!         .long   seq_stand
+     743 000086c0 000087c0'         .long   qaym2,qaym2,qaym2,qaym4,qaym4,qaym4,qaym2,qaym2
+     744                            .asg    3,N
+     745 000087c0           qaym2
+     746 000087c0                   WLW     N,w2elbo3,F
+     747 00008800                   WLL     -1,seq_snd,push1_snd
+     748 00008850                   WL      -1,seq_elbo
+     749 00008880                   WLW     N,w2elbo2,F
+     750 000088c0                   WLW     N,w2elbo1,F
+     751 00008900                   WLW     N,w2elbo2,F
+     752 00008940                   WLW     N,w2elbo3,F
+     753 00008980                   WLW     N,w2elbo4,F
+     754 000089c0                   WLL     -1,seq_snd,push2_snd
+     755 00008a10                   WLW     N,w2elbo5,F
+     756 00008a50                   WLW     N,w2elbo4,F
+     757 00008a90                   WLW     N,w2elbo3,F
+     758 00008ad0                   W0
+     759 00008ae0           qaym4
+     760 00008ae0                   WLW     N,w4elbo4,F
+     761 00008b20                   WLL     -1,seq_snd,push3_snd
+     762 00008b70                   WL      -1,seq_elbo
+     763 00008ba0                   WLW     N,w4elbo3,F
+     764 00008be0                   WLW     N,w4elbo2,F
+     765 00008c20                   WLW     N,w4elbo1,F
+     766 00008c60                   WLW     N,w4elbo2,F
+     767 00008ca0                   WLW     N,w4elbo3,F
+     768 00008ce0                   WLW     N,w4elbo4,F
+     769 00008d20                   WLW     N,w4elbo5,F
+     770 00008d60                   WLL     -1,seq_snd,push1_snd
+     771 00008db0                   WLW     N,w4elbo6,F
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:45:06 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+basketball plyr sequence code                                        PAGE   15
+
+     772 00008df0                   WLW     N,w4elbo7,F
+     773 00008e30                   WLW     N,w4elbo6,F
+     774 00008e70                   WLW     N,w4elbo5,F
+     775 00008eb0                   WLW     N,w4elbo4,F
+     776 00008ef0                   W0
+     777                    
+     778                    
+     779 00008f00           elbo2_t
+     780 00008f00     280c          .word   NOMV_M|NOJOY_M|NOSTEAL_M|NOJUMP_M
+     781 00008f10 00000000!         .long   seq_stand
+     782 00008f30 00009030'         .long   vmhe2,vmhe2,vmhe2,vmhe4,vmhe4,vmhe4,vmhe2,vmhe2
+     783                            .asg    3,N
+     784 00009030           vmhe2
+     785 00009030                   WLW     N,w2elbo3,F
+     786 00009070                   WLL     -1,seq_snd,push1_snd
+     787 000090c0                   WL      -1,seq_elbo
+     788 000090f0                   WLW     N,w2elbo2,F
+     789 00009130                   WLW     N,w2elbo1,F
+     790 00009170                   WLW     N,w2elbo2,F
+     791 000091b0                   WLW     N,w2elbo3,F
+     792 000091f0                   WLW     N,w2elbo4,F
+     793 00009230                   WLL     -1,seq_snd,push1_snd
+     794 00009280                   WLW     10,w2elbo5,F
+     795 000092c0                   WLW     N,w2elbo4,F
+     796 00009300                   WLW     N,w2elbo3,F
+     797 00009340                   W0
+     798 00009350           vmhe4
+     799 00009350                   WLW     N,w4elbo4,F
+     800 00009390                   WLL     -1,seq_snd,push3_snd
+     801 000093e0                   WL      -1,seq_elbo
+     802 00009410                   WLW     N,w4elbo3,F
+     803 00009450                   WLW     N,w4elbo2,F
+     804 00009490                   WLW     N,w4elbo1,F
+     805 000094d0                   WLW     N,w4elbo2,F
+     806 00009510                   WLW     N,w4elbo3,F
+     807 00009550                   WLW     N,w4elbo4,F
+     808 00009590                   WLW     N,w4elbo5,F
+     809 000095d0                   WLL     -1,seq_snd,push1_snd
+     810 00009620                   WLW     N,w4elbo6,F
+     811 00009660                   WLW     10,w4elbo7,F
+     812 000096a0                   WLW     N,w4elbo6,F
+     813 000096e0                   WLW     N,w4elbo5,F
+     814 00009720                   WLW     N,w4elbo4,F
+     815 00009760                   W0
+     816                    
+     817                            .end
+
+ No Errors,  No Warnings

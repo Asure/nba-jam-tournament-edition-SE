@@ -1,0 +1,2593 @@
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+                                                                     PAGE    1
+
+       1                            .file   "util.asm"
+       3                            .width  132
+       4                            .option b,d,l,t
+       5                            .mnolist
+       6                    
+       7                            .include        "mproc.equ"
+       8                            .include        "disp.equ"
+       9                            .include        "gsp.equ"
+      10                            .include        "sys.equ"
+      11                            .include        "game.equ"
+      12                            .include        "audit.equ"
+      13                            .include        "shawn.hdr"             ;Macros
+      14                    
+      15                    
+      16                    
+      17                            .def    SCRCLR
+      18                            .def    OBJOFF,OBJON
+      19                            .def    STRLNRM,STRCNRM,STRCNRMO,STRLNRMO,STRCNRMO_1,CYCLE_TABLE
+      20                            .def    BLNKAREA
+      21                            .def    FRANIM,FRANIMQ
+      22                            .def    STRNGLEN
+      23                            .def    STRRNRM,FILLAREA
+      24                    
+      25                    
+      26                            .ref    pal_init,pal_getf,pal_find,pal_set,PALRAM,WFLG
+      27                    
+      28                    
+      29                            .ref    plyrobj_t,plyrproc_t
+      30                            .ref    P1CTRL,P1DATA
+      31                            .ref    SOUNDSUP,WSPEED
+      32                            .ref    gndstat
+      33                            .ref    COLRTEMP,GAMSTATE
+      34                    
+      35                            .ref    display_init
+      36                            .ref    dirqtimer
+      37                            .ref    SYSCOPY
+      38                            .ref    dpageflip,IRQSKYE
+      39                    
+      40                            .ref    BAKBITS
+      41                            .ref    GET_ADJ
+      42                    
+      43                            .ref    tvpanelon
+      44                    
+      45                    
+      46                            .def    STRNGRAM,HEXTOASC,GETANIX,WRLD
+      47                            .def    COLCYC,CYCLE_TABLE,FLASHME
+      48                    
+      49                    
+      50                    
+      51 00000000                   BSSX    RAND            ,32             ;Last random #
+      52 00000020                   .bss    STRNGRAM        ,20*16
+      53 00000160                   .bss    WRLD            ,16
+      54 00000000                   BSSX    LOWZ            ,16
+      55                    
+      56                    
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE    2
+
+      57 00000000                   .text
+      58                    
+      59                    
+      60                    
+      61 00000000            SUBR   KILBGND
+      62                    
+      63 00000000     098f          MMTM    SP,A0,A2,A3,A4,A5
+         00000010     bc00  
+      64 00000020     09e2          MOVI    BAKLST,A2,L     ;ACTIVE BACKGROUND OBJECTS LIST
+         00000030 00000000! 
+      65 00000050     8640          MOVE    *A2,A0,L
+      66 00000060     ca0d          JREQ    KILOBX          ;BR=NO MORE OBJECTS ON LIST
+      67 00000070           FREEB
+      68 00000070     4c43          MOVE    A2,A3           ;SAVE PREVIOUS
+      69 00000080     8642          MOVE    *A2,A2,L        ;GET NEXT BLOCK
+      70 00000090     ca0a          JREQ    KILOBX          ;BR=ALL DONE
+      71 000000a0     8a43          MOVE    *A2,*A3,L       ;LINK AROUND IN ACTIVE LIST     
+      72 000000b0     07a5          MOVE    @OFREE,A5,L     ;LINK INTO FREE LIST AT START
+         000000c0 00000000! 
+      73 000000e0     82a2          MOVE    A5,*A2,L
+      74 000000f0     0782          MOVE    A2,@OFREE,L     ;UPDATE FREE LIST POINTER
+         00000100 00000000! 
+      75 00000120     4c62          MOVE    A3,A2
+      76 00000130     c0f3          JRUC    FREEB           ;KILL ALL OBJECTS ON BACKGROUND LIST
+      77 00000140           KILOBX
+      78 00000140     0d3f          CALLR   ZERO_BITS
+         00000150     0006  
+      79 00000160     0780          MOVE    A0,@BAKLST,L
+         00000170 00000000! 
+      80 00000190     09af          MMFM    SP,A0,A2,A3,A4,A5
+         000001a0     003d  
+      81 000001b0     0960          RETS
+      82                    
+      83                    
+      84 000001c0            SUBR   ZERO_BITS
+      85                    
+      86 000001c0     5600          CLR     A0
+      87 000001d0     09c2          MOVI    10000/16,A2     ;SIZE OF BAKBITS IN WORDS
+         000001e0     0271  
+      88 000001f0     09e1          MOVI    BAKBITS,A1
+         00000200 00000000! 
+      89 00000220           KILUP
+      90 00000220     9001          MOVE    A0,*A1+,W
+      91 00000230     3c42          DSJS    A2,KILUP
+      92 00000240     0960          RETS
+      93                    
+      94                    
+      95                    
+      96                    
+      97 00000250            SUBR   WIPEOUT
+      98                    
+      99 00000250     0d3f          callr   security_chk            ;Rets: A0=0 if OK!
+         00000260     0767  
+     100                    
+     101 00000270     09e1          movi    plyrproc_t,a1           ;These must be cleared!
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE    3
+
+         00000280 00000000! 
+     102 000002a0     09e2          movi    plyrobj_t,a2
+         000002b0 00000000! 
+     103 000002d0     09e3          movi    P1CTRL,a3
+         000002e0 00000000! 
+     104 00000300     1887          movk    4,a7
+     105 00000310     9201  srmbl1  move    a0,*a1+,L
+     106 00000320     9202          move    a0,*a2+,L
+     107 00000330     9003          move    a0,*a3+
+     108 00000340     3c87          dsj     a7,srmbl1
+     109                    
+     110 00000350     0580          move    a0,@gndstat
+         00000360 00000000! 
+     111 00000380     0580          move    a0,@dtype
+         00000390 00000000! 
+     112 000003b0     0580          move    a0,@tvpanelon
+         000003c0 00000000! 
+     113                    
+     114 000003e0     0580          move    a0,@WFLG
+         000003f0 00000000! 
+     115 00000410     1a41          movk    OWSPD,a1
+     116 00000420     0581          move    a1,@WSPEED
+         00000430 00000000! 
+     117                    
+     118 00000450     4c01          move    a0,a1
+     119 00000460     0d5f          calla   KILALL                  ;Kill all processes
+         00000470 00000000! 
+     120                    
+     121 00000490     0d3f          callr   ZERO_BITS
+         000004a0     ffd1  
+     122 000004b0     0d3f          callr   dpageflip_off
+         000004c0     0643  
+     123 000004d0     5600          clr     a0
+     124 000004e0     0580          move    a0,@SOUNDSUP            ;Allow sounds
+         000004f0 00000000! 
+     125 00000510     0580          move    a0,@IRQSKYE
+         00000520 00000000! 
+     126                    
+     127 00000540     0d3f          callr   dirq_wait
+         00000550     0619  
+     128                    
+     129 00000560     0d5f          calla   display_init
+         00000570 00000000! 
+     130                    
+     131 00000590     01e0          pushst
+     132 000005a0     0360          dint
+     133 000005b0     0d5f          calla   pal_init
+         000005c0 00000000! 
+     134                    
+     135 000005e0     05a0          move    @SYSCOPY,a0             ;>Init sysctrl
+         000005f0 00000000! 
+     136 00000610     2f00          srl     8,a0
+     137 00000620     2500          sll     8,a0
+     138 00000630     09c1          movi    SYSCINIT&0ffH,a1                ;Don't touch 7seg LED
+         00000640     00f8  
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE    4
+
+     139 00000650     5420          or      a1,a0
+     140 00000660     0580          move    a0,@SYSCOPY
+         00000670 00000000! 
+     141 00000690     0580          move    a0,@SYSCTRL
+         000006a0 01f00000  
+     142                    
+     143 000006c0     01c0          popst
+     144                    
+     145 000006d0     0d3f          callr   dirq_wait               ;Now wait for vblank to zap color map
+         000006e0     0600  
+     146                    
+     147                    
+     148 000006f0     0960          rets
+     149                    
+     150                    
+     151                    
+     152 00000180                   .bss    sysstate_t      ,16*50          ;Mem for state save
+     153 000004a0                   .bss    svproc_p        ,32             ;*Saved proc list
+     154 000004c0                   .bss    pal_t           ,32*NMFPAL      ;Mem for pal save
+     155                    
+     156                    SSS     .macro  a
+     157                            move    @:a:,*a1+
+     158                            .endm
+     159                    SSSL    .macro  a
+     160                            move    @:a:,*a1+,L
+     161                            .endm
+     162                    
+     163 00000700            SUBR   system_savegame
+     164                    
+     165 00000700     09e1          movi    sysstate_t,a1
+         00000710 00000180- 
+     166                    
+     167 00000730                   SSSL    OBJLST
+     168 00000760                   SSSL    BAKLST
+     169 00000790                   SSSL    WORLDTLX
+     170 000007c0                   SSSL    WORLDTLY
+     171                    
+     172 000007f0                   SSS     IRQSKYE
+     173 00000820                   SSSL    COLRTEMP
+     174 00000850                   SSS     dtype
+     175 00000880                   SSS     dpageflip
+     176 000008b0                   SSS     gndstat
+     177                    
+     178 000008e0                   SSS     GAMSTATE
+     179                    
+     180 00000910     09e2          movi    plyrproc_t,a2
+         00000920 00000000! 
+     181 00000940     09e3          movi    plyrobj_t,a3
+         00000950 00000000! 
+     182 00000970     09e4          movi    P1CTRL,a4
+         00000980 00000000! 
+     183 000009a0     1890          movk    4,b0
+     184 000009b0     9a41  ljoolp  move    *a2+,*a1+,L
+     185 000009c0     9a61          move    *a3+,*a1+,L
+     186 000009d0     9881          move    *a4+,*a1+
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE    5
+
+     187 000009e0     3c90          dsj     b0,ljoolp
+     188                    
+     189                    
+     190 000009f0     09e2          movi    ACTIVE,a2
+         00000a00 00000000! 
+     191 00000a20     09e4          movi    svproc_p,a4
+         00000a30 000004a0- 
+     192 00000a50     c009          jruc    ljooprnxt
+     193                    
+     194 00000a60     49a2  ljooprlp        cmp     a13,a2
+     195 00000a70     ca07          jreq    ljooprnxt                       ;Me?
+     196                    
+     197 00000a80     b44e          move    *a2(PROCID),a14
+         00000a90     0020  
+     198 00000aa0     ce04          jrn     ljooprnxt                       ;Indestructible?
+     199                    
+     200 00000ab0     8a43          move    *a2,*a3,L               ;Unlink
+     201 00000ac0     8244          move    a2,*a4,L                ;Add it to save list
+     202 00000ad0     4c44          move    a2,a4
+     203 00000ae0     4c62          move    a3,a2
+     204 00000af0           ljooprnxt
+     205 00000af0     4c43          move    a2,a3
+     206 00000b00     8642          move    *a2,a2,L
+     207 00000b10     cbf4          jrnz    ljooprlp
+     208                    
+     209 00000b20     5600          clr     a0
+     210 00000b30     8203          move    a0,*a3,L
+     211 00000b40     8204          move    a0,*a4,L
+     212                    
+     213 00000b50     0780          move    a0,@OBJLST,L            ;Null lists
+         00000b60 00000000! 
+     214 00000b80     0780          move    a0,@BAKLST,L
+         00000b90 00000000! 
+     215 00000bb0     0580          move    a0,@gndstat
+         00000bc0 00000000! 
+     216                    
+     217 00000be0     0d3f          callr   ZERO_BITS
+         00000bf0     ff5c  
+     218                    
+     219                    
+     220 00000c00     09e0          movi    PALRAM,a0               ;>Save pal ptrs
+         00000c10 00000000! 
+     221 00000c30     09e1          movi    pal_t,a1
+         00000c40 000004c0- 
+     222 00000c60     09d0          movi    NMFPAL,b0
+         00000c70     0030  
+     223 00000c80     9a01  ljooplp move    *a0+,*a1+,L
+     224 00000c90     3c50          dsj     b0,ljooplp
+     225                    
+     226 00000ca0     0d5f          calla   pal_init
+         00000cb0 00000000! 
+     227                    
+     228 00000cd0     0960          rets
+     229                    
+     230                    
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE    6
+
+     231                    
+     232                    SRS     .macro  a
+     233                            move    *a1+,a0
+     234                            move    a0,@:a:
+     235                            .endm
+     236                    SRSL    .macro  a
+     237                            move    *a1+,a0,L
+     238                            move    a0,@:a:,L
+     239                            .endm
+     240                    
+     241 00000ce0            SUBR   system_restoregame
+     242                    
+     243 00000ce0     5600          clr     a0
+     244 00000cf0     0580          move    a0,@DISPLAYON
+         00000d00 00000000! 
+     245                    
+     246 00000d20     5621          clr     a1
+     247 00000d30     0d5f          calla   KILALL                  ;Kill all processes
+         00000d40 00000000! 
+     248 00000d60     0d5f          calla   KILBGND                 ;Kill old background
+         00000d70 00000000' 
+     249 00000d90     09c1          movi    -1,a1
+         00000da0     ffff  
+     250 00000db0     0d5f          calla   obj_delc                ;Kill all objs
+         00000dc0 00000000! 
+     251                    
+     252 00000de0     0d5f          calla   pal_init
+         00000df0 00000000! 
+     253                    
+     254 00000e10     09e3          movi    pal_t,a3                ;>Restore pal ptrs
+         00000e20 000004c0- 
+     255 00000e40     09e4          movi    PALRAM,a4
+         00000e50 00000000! 
+     256 00000e70     56a5          clr     a5
+     257 00000e80     09c7          movi    NMFPAL,a7
+         00000e90     0030  
+     258 00000ea0           dhalplp
+     259 00000ea0     9660          move    *a3+,a0,L               ;Get * pal
+     260 00000eb0     9204          move    a0,*a4+,L
+     261 00000ec0     ca06          jrz     dhalnxtp
+     262 00000ed0     4ca1          move    a5,a1
+     263 00000ee0     2501          sll     8,a1                    ;Pal offset
+     264 00000ef0     9402          move    *a0+,a2                 ;Get # colors in pal
+     265 00000f00     0d5f          calla   pal_set                 ;Setup pal transfer
+         00000f10 00000000! 
+     266 00000f30     1025  dhalnxtp        addk    1,a5
+     267 00000f40     0b47          cmpi    NMFPAL/2,a7
+         00000f50     ffe7  
+     268 00000f60     cb0a          jrne    dhalskipslp
+     269 00000f70                   PUSHP   a3,a4,a5,a7
+     270 00000f90                   PULL    a8                      ;Get our rets addr so we can sleep
+     271 00000fa0                   SLEEPK  1                       ;Split the transfer
+     272 00000fe0                   PUSH    a8
+     273 00000ff0                   PULLP   a3,a4,a5,a7
+     274 00001010           dhalskipslp
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE    7
+
+     275 00001010     3f07          dsj     a7,dhalplp
+     276                    
+     277                    
+     278 00001020     09e1          movi    sysstate_t,a1
+         00001030 00000180- 
+     279                    
+     280 00001050                   SRSL    OBJLST
+     281 00001090                   SRSL    BAKLST
+     282 000010d0                   SRSL    WORLDTLX
+     283 00001110                   SRSL    WORLDTLY
+     284                    
+     285 00001150                   SRS     IRQSKYE
+     286 00001190                   SRSL    COLRTEMP
+     287 000011d0                   SRS     dtype
+     288 00001210                   SRS     dpageflip
+     289 00001250                   SRS     gndstat
+     290                    
+     291 00001290                   SRS     GAMSTATE
+     292                    
+     293 000012d0     09e2          movi    plyrproc_t,a2
+         000012e0 00000000! 
+     294 00001300     09e3          movi    plyrobj_t,a3
+         00001310 00000000! 
+     295 00001330     09e4          movi    P1CTRL,a4
+         00001340 00000000! 
+     296 00001360     1890          movk    4,b0
+     297 00001370     9a22  dhallp  move    *a1+,*a2+,L
+     298 00001380     9a23          move    *a1+,*a3+,L
+     299 00001390     9824          move    *a1+,*a4+
+     300 000013a0     3c90          dsj     b0,dhallp
+     301                    
+     302                    
+     303 000013b0     09e2          movi    ACTIVE,a2               ;0FHind end of list
+         000013c0 00000000! 
+     304 000013e0           dhalprlp
+     305 000013e0     4c43          move    a2,a3
+     306 000013f0     8642          move    *a2,a2,L
+     307 00001400     cbfd          jrnz    dhalprlp
+     308                    
+     309 00001410     d603          move    @svproc_p,*a3+,L        ;Link
+         00001420 000004a0- 
+     310                    
+     311                    
+     312 00001440     1820          movk    1,a0
+     313 00001450     0580          move    a0,@DISPLAYON
+         00001460 00000000! 
+     314                    
+     315 00001480     0960          rets
+     316                    
+     317                    
+     318                    
+     319                    
+     320                    
+     321                    
+     322                    
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE    8
+
+     323                    
+     324                    
+     325 00001490                   BSSX    animscnt        ,16     ;# anim scripts running
+     326                    
+     327 00001490                   STRUCTPD
+     328 00001490                   APTR    animslobj_p             ;*Last obj created
+     329 00001490                   LONG    animsv                  ;Temp value
+     330 00001490                   WORD    animsbx                 ;Base X
+     331 00001490                   WORD    animsby                 ;Base Y
+     332 00001490                   WORD    animsfnum               ;# FRANIMs running
+     333 00001490                   APTR    animslp_p               ;*Loop point table pos
+     334 00001490                   APTR    animslp_t               ;(*Loop point, Loop cnt)*5
+     335                    
+     336                    
+     337 00001490            SUBR   anim_script             ;A8=*Script
+     338                    
+     339 00001490     5729          clr     a9
+     340                    
+     341 000014a0            SUBRP  anim_script2            ;A8=*Script, A9=Base Y:X
+     342                    
+     343 000014a0     b32d          move    a9,*a13(animsbx),L      ;Save XY
+         000014b0     0140  
+     344                    
+     345 000014c0     b5ab          move    *a13(PROCID),a11
+         000014d0     0020  
+     346 000014e0     0beb          subi    ANIMPID,a11
+         000014f0     bfff  
+     347 00001500     2f0b          srl     8,a11
+     348 00001510     250b          sll     8,a11                   ;A11=ID offset (0-0300H)
+     349                    
+     350 00001520     5621          clr     a1
+     351 00001530     b02d          move    a1,*a13(animsfnum)
+         00001540     0160  
+     352 00001550     4da1          move    a13,a1
+     353 00001560     0b01          addi    animslp_t,a1
+         00001570     0190  
+     354 00001580     b22d          move    a1,*a13(animslp_p),L
+         00001590     0170  
+     355                    
+     356 000015a0     9501  anslp   move    *a8+,a1                 ;Get command
+     357                    
+     358 000015b0     0b21          addi    anims_t,a1
+         000015c0 00001620' 
+     359 000015e0     8621          move    *a1,a1,L
+     360 000015f0     0161          jump    a1
+     361                    
+     362 00001600 00003fd0'         .long   asEND
+     363 00001620 00001bc0' anims_t .long   asNEW,asDEL,asDELM,asFRA
+     364 000016a0 00003120'         .long   asANI,asHIDE,asSHOW,asPAL
+     365 00001720 00002230'         .long   asXY,asXYRNG,asYA,asXYV
+     366 000017a0 00002a10'         .long   asXYVA,asXYV0,asZ,asBXY
+     367 00001820 00002050'         .long   asSLP,asSLP1,asSLPR
+     368 00001880 000021a0'         .long   asWAIT,asTXT
+     369 000018c0 00003eb0'         .long   asTXTR,asTXTK,asLAB,asLABR
+     370 00001940 00002e50'         .long   asDSJ,asDSJS1,asJMP,asJMPR,asJMPEQ
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE    9
+
+     371 000019e0 000037f0'         .long   asJMPNE,asRUN,asRUNI,asCRE
+     372 00001a60 000035c0'         .long   asKIL,asASM,asSND,asSNDD
+     373 00001ae0 00003a40'         .long   asADDW
+     374 00001b00 00003ab0'         .long   asADDWO,asADDLO,asADLVO,asSVRL
+     375 00001b80 00003d20'         .long   asSVRLT,asSVL
+     376                    
+     377                    
+     378 00001bc0           asNEW                                   ;>New objects
+     379 00001bc0     9709          move    *a8+,a9,L               ;Get data
+     380 00001bd0                   PUSH    a8
+     381 00001be0     9722  ans100  move    *a9+,a2,L               ;*Image
+     382 00001bf0     9720          move    *a9+,a0,L               ;Get XY
+     383 00001c00     b7a3          move    *a13(animsbx),a3,L
+         00001c10     0140  
+     384 00001c20     e060          addxy   a3,a0                   ;Add base
+     385 00001c30     5621          clr     a1
+     386 00001c40     ee01          movy    a0,a1
+     387 00001c50     2600          sll     16,a0
+     388 00001c60     9523          move    *a9+,a3                 ;Z
+     389 00001c70     9524          move    *a9+,a4                 ;Flags
+     390 00001c80     0b04          addi    M_NOCOLL,a4
+         00001c90     0800  
+     391 00001ca0     9525          move    *a9+,a5                 ;ID
+     392 00001cb0     0b05          addi    CLSANIM,a5
+         00001cc0     3800  
+     393 00001cd0     4165          add     a11,a5                  ;+offset
+     394 00001ce0     56c6          clr     a6
+     395 00001cf0     56e7          clr     a7
+     396 00001d00     0d5f          calla   BEGINOBJ
+         00001d10 00000000! 
+     397 00001d30     8520          move    *a9,a0
+     398 00001d40     0b40          cmpi    -1000,a0
+         00001d50     03e7  
+     399 00001d60     cbe7          jrne    ans100                  ;End?
+     400 00001d70     b30d          move    a8,*a13(animslobj_p),L  ;Save * to last one
+         00001d80     0100  
+     401 00001d90                   PULL    a8
+     402 00001da0     c000          jruc    anslp
+         00001db0     ff7e  
+     403                    
+     404 00001dc0           asFRA                                   ;0FHRANIM
+     405 00001dc0     4d66          move    a11,a6                  ;Save a11
+     406 00001dd0     9709          move    *a8+,a9,L               ;Get data
+     407 00001de0     b5a1          move    *a13(PROCID),a1         ;Inherit same ID+1
+         00001df0     0020  
+     408 00001e00     1021          addk    1,a1
+     409 00001e10     950a          move    *a8+,a10                ;OID
+     410 00001e20     ce15          jrn     ans250                  ;No ID?
+     411 00001e30     0b0a          addi    CLSANIM,a10
+         00001e40     3800  
+     412 00001e50     416a          add     a11,a10                 ;+offset
+     413 00001e60     950b          move    *a8+,a11                ;dhalloops
+     414 00001e70     ce05          jrn     ans220
+     415 00001e80     b5a2          move    *a13(animsfnum),a2      ;+1 FRANIM cnt
+         00001e90     0160  
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE   10
+
+     416 00001ea0     1022          addk    1,a2
+     417 00001eb0     b04d          move    a2,*a13(animsfnum)
+         00001ec0     0160  
+     418 00001ed0     09e7  ans220  movi    anims_franim,a7
+         00001ee0 00004070' 
+     419 00001f00     0d5f          calla   GETPRC
+         00001f10 00000000! 
+     420 00001f30     b3a0          move    a13,*a0(anfc_p),L
+         00001f40     0100  
+     421 00001f50     4ccb          move    a6,a11
+     422 00001f60     c000          jruc    anslp
+         00001f70     ff62  
+     423                    
+     424 00001f80     1208  ans250  addk    16,a8                   ;Skip dhalloops
+     425 00001f90     4d0a          move    a8,a10
+     426 00001fa0     b7a8          move    *a13(animslobj_p),a8,L  ;Get * to last one
+         00001fb0     0100  
+     427 00001fc0     09e7          movi    FRQDELDIE,a7
+         00001fd0 00000000! 
+     428 00001ff0     0d5f          calla   GETPRC
+         00002000 00000000! 
+     429 00002020     4d48          move    a10,a8
+     430 00002030     c000          jruc    anslp
+         00002040     ff55  
+     431                    
+     432                    
+     433 00002050           asSLP                                   ;>SLEEP
+     434 00002050     9500          move    *a8+,a0                 ;Get time
+     435 00002060     0d5f          calla   PRCSLP
+         00002070 00000000! 
+     436 00002090     c000          jruc    anslp
+         000020a0     ff4f  
+     437                    
+     438 000020b0           asSLP1                                  ;>SLEEP 1
+     439 000020b0     1820          movk    1,a0
+     440 000020c0     0d5f          calla   PRCSLP
+         000020d0 00000000! 
+     441 000020f0     c000          jruc    anslp
+         00002100     ff49  
+     442                    
+     443 00002110           asSLPR                                  ;>Sleep random
+     444 00002110     9500          move    *a8+,a0                 ;Get time
+     445 00002120     9501          move    *a8+,a1
+     446 00002130     0d3f          callr   RNDRNG
+         00002140     0413  
+     447 00002150     0d5f          calla   PRCSLP
+         00002160 00000000! 
+     448 00002180     c000          jruc    anslp
+         00002190     ff40  
+     449                    
+     450 000021a0           asWAIT                                  ;>Wait on FRANIMs
+     451 000021a0                   SLEEPK  2
+     452 000021e0     b5a1          move    *a13(animsfnum),a1
+         000021f0     0160  
+     453 00002200     cbf9          jrnz    asWAIT
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE   11
+
+     454 00002210     c000          jruc    anslp
+         00002220     ff37  
+     455                    
+     456 00002230           asXY                                    ;>New XY rel to current pos
+     457 00002230     9501          move    *a8+,a1                 ;Get ID
+     458 00002240     9502          move    *a8+,a2
+     459 00002250     9504          move    *a8+,a4
+     460 00002260     9505          move    *a8+,a5
+     461 00002270           asxyhs                                  ;Entry for HIDE/SHOW
+     462 00002270     0b01  asxyr   addi    CLSANIM,a1
+         00002280     3800  
+     463 00002290     4161          add     a11,a1                  ;+offset
+     464 000022a0     07a0          move    @OBJLST,a0,L
+         000022b0 00000000! 
+     465 000022d0     0d3f  ans720  callr   obj_find
+         000022e0     0223  
+     466 000022f0     ca00          jrz     anslp
+         00002300     ff29  
+     467 00002310     b406          move    *a0(OXPOS),a6           ;New X
+         00002320     0090  
+     468 00002330     4086          add     a4,a6
+     469 00002340     b0c0          move    a6,*a0(OXPOS)
+         00002350     0090  
+     470 00002360     b406          move    *a0(OYPOS),a6           ;New Y
+         00002370     00b0  
+     471 00002380     40a6          add     a5,a6
+     472 00002390     b0c0          move    a6,*a0(OYPOS)
+         000023a0     00b0  
+     473 000023b0     8600          move    *a0,a0,L
+     474 000023c0     cbf0          jrnz    ans720
+     475 000023d0     c000          jruc    anslp
+         000023e0     ff1b  
+     476                    
+     477 000023f0           asXYRNG                                 ;>New XY rel to current pos in rndrng
+     478 000023f0     9500          move    *a8+,a0
+     479 00002400     9501          move    *a8+,a1
+     480 00002410     0d3f          callr   RNDRNG
+         00002420     03e5  
+     481 00002430     4c04          move    a0,a4
+     482 00002440     9500          move    *a8+,a0
+     483 00002450     9501          move    *a8+,a1
+     484 00002460     0d3f          callr   RNDRNG
+         00002470     03e0  
+     485 00002480     4c05          move    a0,a5
+     486 00002490     9501          move    *a8+,a1
+     487 000024a0     ce02          jrn     asxyr5                  ;No ID?
+     488 000024b0     9502          move    *a8+,a2
+     489 000024c0     c0da          jruc    asxyr
+     490                    
+     491 000024d0     1208  asxyr5  addk    16,a8                   ;Skip mask
+     492 000024e0     b7a0          move    *a13(animslobj_p),a0,L  ;Get * to last one
+         000024f0     0100  
+     493 00002500     b406          move    *a0(OXPOS),a6           ;New X
+         00002510     0090  
+     494 00002520     4086          add     a4,a6
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE   12
+
+     495 00002530     b0c0          move    a6,*a0(OXPOS)
+         00002540     0090  
+     496 00002550     b406          move    *a0(OYPOS),a6           ;New Y
+         00002560     00b0  
+     497 00002570     40a6          add     a5,a6
+     498 00002580     b0c0          move    a6,*a0(OYPOS)
+         00002590     00b0  
+     499 000025a0     c000          jruc    anslp
+         000025b0     fefe  
+     500                    
+     501 000025c0           asYA                                    ;>Set Y ani pt world relative
+     502 000025c0     9501          move    *a8+,a1
+     503 000025d0     9502          move    *a8+,a2                 ;Mask
+     504 000025e0     9505          move    *a8+,a5                 ;
+     505 000025f0     2605          sll     16,a5
+     506 00002600     07a0          move    @WORLDTLY,a0,L
+         00002610 00000000! 
+     507 00002630     4005          add     a0,a5
+     508 00002640     0b01          addi    CLSANIM,a1
+         00002650     3800  
+     509 00002660     4161          add     a11,a1                  ;+offset
+     510 00002670     07a0          move    @OBJLST,a0,L
+         00002680 00000000! 
+     511 000026a0     0d3f  asya10  callr   obj_find
+         000026b0     01e6  
+     512 000026c0     ca16          jrz     asya90
+     513                    
+     514 000026d0                   PUSH    a1,a2
+     515 000026f0     b601          move    *a0(OIMG),a1,L
+         00002700     0170  
+     516 00002710     b602          move    *a0(OSIZE),a2,L
+         00002720     0130  
+     517 00002730     b404          move    *a0(OCTRL),a4
+         00002740     00f0  
+     518 00002750     0d5f          calla   GANIOF
+         00002760 00000000! 
+     519 00002780     b603          move    *a0(OXVAL),a3,L
+         00002790     0080  
+     520 000027a0     40c3          add     a6,a3                   ;Old X
+     521 000027b0     4ca2          move    a5,a2                   ;New Y
+     522 000027c0     0d5f          calla   GANISAG
+         000027d0 00000000! 
+     523 000027f0                   PULL    a1,a2
+     524                    
+     525 00002810     8600          move    *a0,a0,L
+     526 00002820     cbe7          jrnz    asya10
+     527 00002830     c000  asya90  jruc    anslp
+         00002840     fed5  
+     528                    
+     529 00002850           asXYV                                   ;>Set XYVel
+     530 00002850     9704          move    *a8+,a4,L
+     531 00002860     9705          move    *a8+,a5,L
+     532 00002870     9501          move    *a8+,a1
+     533 00002880     9502          move    *a8+,a2
+     534 00002890     0b01          addi    CLSANIM,a1
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE   13
+
+         000028a0     3800  
+     535 000028b0     4161          add     a11,a1                  ;+offset
+     536 000028c0     07a0          move    @OBJLST,a0,L
+         000028d0 00000000! 
+     537 000028f0     0d3f  ans920  callr   obj_find
+         00002900     01c1  
+     538 00002910     ca00          jrz     anslp
+         00002920     fec7  
+     539 00002930     b606          move    *a0(OXVEL),a6,L
+         00002940     0020  
+     540 00002950     4086          add     a4,a6
+     541 00002960     b2c0          move    a6,*a0(OXVEL),L
+         00002970     0020  
+     542 00002980     b606          move    *a0(OYVEL),a6,L
+         00002990     0040  
+     543 000029a0     40a6          add     a5,a6
+     544 000029b0     b2c0          move    a6,*a0(OYVEL),L
+         000029c0     0040  
+     545 000029d0     8600          move    *a0,a0,L
+     546 000029e0     cbf0          jrnz    ans920
+     547 000029f0     c000          jruc    anslp
+         00002a00     feb9  
+     548                    
+     549 00002a10           asXYVA                                  ;>Set XYVel absolute
+     550 00002a10     9704          move    *a8+,a4,L
+     551 00002a20     9705          move    *a8+,a5,L
+     552 00002a30     9501          move    *a8+,a1
+     553 00002a40     9502          move    *a8+,a2
+     554 00002a50     0b01          addi    CLSANIM,a1
+         00002a60     3800  
+     555 00002a70     4161          add     a11,a1                  ;+offset
+     556 00002a80     07a0          move    @OBJLST,a0,L
+         00002a90 00000000! 
+     557 00002ab0     0d3f  ans1020 callr   obj_find
+         00002ac0     01a5  
+     558 00002ad0     ca00          jrz     anslp
+         00002ae0     feab  
+     559 00002af0     b280          move    a4,*a0(OXVEL),L
+         00002b00     0020  
+     560 00002b10     b2a0          move    a5,*a0(OYVEL),L
+         00002b20     0040  
+     561 00002b30     8600          move    *a0,a0,L
+     562 00002b40     cbf6          jrnz    ans1020
+     563 00002b50     c000          jruc    anslp
+         00002b60     fea3  
+     564                    
+     565 00002b70           asXYV0                                  ;>XYVel = 0
+     566 00002b70     b7a0          move    *a13(animslobj_p),a0,L  ;Get * to last one
+         00002b80     0100  
+     567 00002b90     5621          clr     a1
+     568 00002ba0     b220          move    a1,*a0(OXVEL),L
+         00002bb0     0020  
+     569 00002bc0     b220          move    a1,*a0(OYVEL),L
+         00002bd0     0040  
+     570 00002be0     c000          jruc    anslp
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE   14
+
+         00002bf0     fe9a  
+     571                    
+     572 00002c00           asZ                                     ;>Set Z pos
+     573 00002c00     9501          move    *a8+,a1
+     574 00002c10     9502          move    *a8+,a2
+     575 00002c20     9504          move    *a8+,a4
+     576 00002c30     0b01          addi    CLSANIM,a1
+         00002c40     3800  
+     577 00002c50     4161          add     a11,a1                  ;+offset
+     578 00002c60     07a0          move    @OBJLST,a0,L
+         00002c70 00000000! 
+     579 00002c90     0d3f  ans1120 callr   obj_find
+         00002ca0     0187  
+     580 00002cb0     ca00          jrz     anslp
+         00002cc0     fe8d  
+     581 00002cd0     b080          move    a4,*a0(OZPOS)
+         00002ce0     00d0  
+     582 00002cf0     8600          move    *a0,a0,L
+     583 00002d00     cbf8          jrnz    ans1120
+     584 00002d10     c000          jruc    anslp
+         00002d20     fe87  
+     585                    
+     586 00002d30           asLAB                                   ;>Set label
+     587 00002d30     9500          move    *a8+,a0
+     588 00002d40     b7a2  anslab  move    *a13(animslp_p),a2,L
+         00002d50     0170  
+     589 00002d60     9302          move    a8,*a2+,L               ;Save *
+     590 00002d70     9002          move    a0,*a2+
+     591 00002d80     b04d          move    a2,*a13(animslp_p)
+         00002d90     0170  
+     592 00002da0     c000          jruc    anslp
+         00002db0     fe7e  
+     593                    
+     594 00002dc0           asLABR                                  ;>Set label randomly
+     595 00002dc0     9500          move    *a8+,a0
+     596 00002dd0     9501          move    *a8+,a1
+     597 00002de0     0d3f          callr   RNDRNG
+         00002df0     0348  
+     598 00002e00     c0f3          jruc    anslab
+     599                    
+     600 00002e10           asDSJS1                                 ;>Sleep 1, dec and loop to label
+     601 00002e10                   SLEEPK  1
+     602                    
+     603 00002e50           asDSJ                                   ;0DecHrement and loop to label
+     604 00002e50     b7a1          move    *a13(animslp_p),a1,L
+         00002e60     0170  
+     605 00002e70     a422          move    -*a1,a2
+     606 00002e80     1422          subk    1,a2
+     607 00002e90     8041          move    a2,*a1
+     608 00002ea0     ca03          jrz     ans1330
+     609 00002eb0     a628          move    -*a1,a8,L               ;Get *Loop
+     610 00002ec0     c000          jruc    anslp
+         00002ed0     fe6c  
+     611 00002ee0     1401  ans1330 subk    32,a1                   ;Del loop entry
+     612 00002ef0     b22d          move    a1,*a13(animslp_p),L
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE   15
+
+         00002f00     0170  
+     613 00002f10     c000          jruc    anslp
+         00002f20     fe67  
+     614                    
+     615 00002f30           asPAL                                   ;>Set palette
+     616 00002f30     b7a0          move    *a13(animsv),a0,L       ;Get *Pal
+         00002f40     0120  
+     617 00002f50     0d5f          calla   pal_getf
+         00002f60 00000000! 
+     618 00002f80     4c04          move    a0,a4
+     619 00002f90     9501          move    *a8+,a1
+     620 00002fa0     ce11          jrn     ans1450
+     621 00002fb0     0b01          addi    CLSANIM,a1
+         00002fc0     3800  
+     622 00002fd0     4161          add     a11,a1                  ;+offset
+     623 00002fe0     07a0          move    @OBJLST,a0,L
+         00002ff0 00000000! 
+     624 00003010     5642          clr     a2                      ;No mask
+     625 00003020     0d3f  ans1420 callr   obj_find
+         00003030     014e  
+     626 00003040     ca00          jrz     anslp
+         00003050     fe54  
+     627 00003060     b080          move    a4,*a0(OPAL)
+         00003070     0150  
+     628 00003080     8600          move    *a0,a0,L
+     629 00003090     cbf8          jrnz    ans1420                 ;More?
+     630 000030a0     c000          jruc    anslp
+         000030b0     fe4e  
+     631                    
+     632 000030c0     b7a0  ans1450 move    *a13(animslobj_p),a0,L  ;Get * to last obj
+         000030d0     0100  
+     633 000030e0     b080          move    a4,*a0(OPAL)
+         000030f0     0150  
+     634 00003100     c000          jruc    anslp
+         00003110     fe48  
+     635                    
+     636 00003120           asANI                                   ;0DHo ANI on OID
+     637 00003120     9705          move    *a8+,a5,L
+     638 00003130     9501          move    *a8+,a1                 ;OID
+     639 00003140     0b01          addi    CLSANIM,a1
+         00003150     3800  
+     640 00003160     4161          add     a11,a1                  ;+offset
+     641 00003170     07a0          move    @OBJLST,a0,L
+         00003180 00000000! 
+     642 000031a0     5642          clr     a2                      ;No mask
+     643 000031b0     0d3f  ans1620 callr   obj_find
+         000031c0     0135  
+     644 000031d0     ca00          jrz     anslp
+         000031e0     fe3b  
+     645 000031f0     4d09          move    a8,a9
+     646 00003200     4c23          move    a1,a3
+     647 00003210     4ca1          move    a5,a1                   ;*Img
+     648 00003220     4c08          move    a0,a8                   ;*Obj
+     649 00003230     b504          move    *a8(OCTRL),a4           ;Same flags
+         00003240     00f0  
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE   16
+
+     650 00003250     0d5f          calla   ANI
+         00003260 00000000! 
+     651 00003280     4c61          move    a3,a1
+     652 00003290     4d00          move    a8,a0
+     653 000032a0     4d28          move    a9,a8
+     654 000032b0     8600          move    *a0,a0,L
+     655 000032c0     cbee          jrnz    ans1620                 ;More?
+     656 000032d0     c000          jruc    anslp
+         000032e0     fe2b  
+     657                    
+     658 000032f0           asDEL                                   ;0DeHlete obj
+     659 000032f0     9500          move    *a8+,a0
+     660 00003300     5621          clr     a1
+     661 00003310     0b00  asdel5  addi    CLSANIM,a0
+         00003320     3800  
+     662 00003330     4160          add     a11,a0                  ;+offset
+     663 00003340     0d5f          calla   obj_delc
+         00003350 00000000! 
+     664 00003370     c000          jruc    anslp
+         00003380     fe21  
+     665                    
+     666 00003390           asDELM                                  ;0DeHlete obj with mask
+     667 00003390     9500          move    *a8+,a0
+     668 000033a0     9501          move    *a8+,a1
+     669 000033b0     c0f5          jruc    asdel5
+     670                    
+     671 000033c0           asRUN                                   ;>Run a new anim script
+     672 000033c0     9700          move    *a8+,a0,L
+     673 000033d0     b5a1          move    *a13(PROCID),a1         ;Inherit same ID
+         000033e0     0020  
+     674 000033f0     4d0a  asrun5  move    a8,a10
+     675 00003400     4c08          move    a0,a8                   ;*Script
+     676 00003410     b7a9          move    *a13(animsbx),a9,L      ;Get base XY
+         00003420     0140  
+     677 00003430     09e7          movi    anim_script2,a7
+         00003440 000014a0' 
+     678 00003460     0d5f          calla   GETPRC
+         00003470 00000000! 
+     679 00003490     4d48          move    a10,a8
+     680 000034a0     c000          jruc    anslp
+         000034b0     fe0e  
+     681                    
+     682 000034c0           asRUNI                                  ;>Run a new anim script with ID
+     683 000034c0     9700          move    *a8+,a0,L
+     684 000034d0     9501          move    *a8+,a1
+     685 000034e0     0b01          addi    ANIMPID,a1
+         000034f0     4000  
+     686 00003500     4161          add     a11,a1                  ;+offset
+     687 00003510     c0ed          jruc    asrun5
+     688                    
+     689 00003520           asCRE                                   ;0CHreate a process
+     690 00003520     9707          move    *a8+,a7,L
+     691 00003530     9709          move    *a8+,a9,L               ;Pass A9 to process
+     692 00003540     09c1          movi    ANIMPID+0ffH,a1
+         00003550     40ff  
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE   17
+
+     693 00003560     4161          add     a11,a1                  ;+offset
+     694 00003570     0d5f          calla   GETPRC
+         00003580 00000000! 
+     695 000035a0     c000          jruc    anslp
+         000035b0     fdfe  
+     696                    
+     697 000035c0           asKIL                                   ;>Kill processes with mask
+     698 000035c0     9500          move    *a8+,a0
+     699 000035d0     0b00          addi    ANIMPID,a0
+         000035e0     4000  
+     700 000035f0     4160          add     a11,a0                  ;+offset
+     701 00003600     9501          move    *a8+,a1
+     702 00003610     0d5f          calla   KILALLN
+         00003620 00000000! 
+     703 00003640     c000          jruc    anslp
+         00003650     fdf4  
+     704                    
+     705 00003660           asJMP                                   ;>Jump to new location
+     706 00003660     9708          move    *a8+,a8,L
+     707 00003670     c000          jruc    anslp
+         00003680     fdf1  
+     708                    
+     709 00003690           asJMPR                                  ;>Jump to new location if RND<#
+     710 00003690     9704          move    *a8+,a4,L
+     711 000036a0     09c0          movi    999,a0                  ;.1 % resolution
+         000036b0     03e7  
+     712 000036c0     0d3f          callr   RNDRNG0
+         000036d0     02cd  
+     713 000036e0     9501          move    *a8+,a1
+     714 000036f0     4820          cmp     a1,a0
+     715 00003700     c900          jrhs    anslp
+         00003710     fde8  
+     716 00003720     4c88          move    a4,a8                   ;Do jmp
+     717 00003730     c000          jruc    anslp
+         00003740     fde5  
+     718                    
+     719 00003750           asJMPEQ                                 ;>Jump to new location if = to mem
+     720 00003750     9700          move    *a8+,a0,L
+     721 00003760     8400          move    *a0,a0                  ;Get value
+     722 00003770     9702          move    *a8+,a2,L
+     723 00003780     9501          move    *a8+,a1
+     724 00003790     4820          cmp     a1,a0
+     725 000037a0     cb00          jrne    anslp                   ;Not same?
+         000037b0     fdde  
+     726 000037c0     4c48          move    a2,a8                   ;Do jmp
+     727 000037d0     c000          jruc    anslp
+         000037e0     fddb  
+     728                    
+     729 000037f0           asJMPNE                                 ;>Jump to new location if != to mem
+     730 000037f0     9700          move    *a8+,a0,L
+     731 00003800     8400          move    *a0,a0                  ;Get value
+     732 00003810     9702          move    *a8+,a2,L
+     733 00003820     9501          move    *a8+,a1
+     734 00003830     4820          cmp     a1,a0
+     735 00003840     ca00          jreq    anslp                   ;Same?
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE   18
+
+         00003850     fdd4  
+     736 00003860     4c48          move    a2,a8                   ;Do jmp
+     737 00003870     c000          jruc    anslp
+         00003880     fdd1  
+     738                    
+     739 00003890           asSNDD                                  ;0DHo a snd call in demo
+     740 00003890     1a00          movk    ADJMUSIC,a0             ;Get demo music ON/OFF
+     741 000038a0     0d5f          calla   GET_ADJ
+         000038b0 00000000! 
+     742 000038d0     ca03          jrz     asSND                   ;Do sounds?
+     743 000038e0     1008          addk    32,a8
+     744 000038f0     c000          jruc    anslp
+         00003900     fdc9  
+     745 00003910           asSND                                   ;0DHo a snd call
+     746 00003910     9700          move    *a8+,a0,L
+     747 00003920     0d5f          calla   snd_play1
+         00003930 00000000! 
+     748 00003950     c000          jruc    anslp
+         00003960     fdc3  
+     749                    
+     750 00003970           asASM                                   ;>Inline code
+     751 00003970     0128          exgpc   a8
+     752 00003980     c000          jruc    anslp
+         00003990     fdc0  
+     753                    
+     754 000039a0           asHIDE                                  ;>Hide an OID (X+5000)
+     755 000039a0     09c4          movi    5000,a4
+         000039b0     1388  
+     756 000039c0     9501  ashide2 move    *a8+,a1
+     757 000039d0     5642          clr     a2
+     758 000039e0     56a5          clr     a5
+     759 000039f0     c000          jruc    asxyhs
+         00003a00     fe86  
+     760                    
+     761 00003a10           asSHOW                                  ;>Show an OID (X-5000)
+     762 00003a10     09c4          movi    -5000,a4
+         00003a20     ec78  
+     763 00003a30     c0f8          jruc    ashide2
+     764                    
+     765 00003a40           asADDW                                  ;0AddH WORD to mem
+     766 00003a40     9700          move    *a8+,a0,L
+     767 00003a50     9501          move    *a8+,a1
+     768 00003a60     8402          move    *a0,a2
+     769 00003a70     4022          add     a1,a2
+     770 00003a80     8040          move    a2,*a0
+     771 00003a90     c000          jruc    anslp
+         00003aa0     fdaf  
+     772                    
+     773 00003ab0           asADDWO                                 ;0AddH WORD to last obj+offset
+     774 00003ab0     9500          move    *a8+,a0
+     775 00003ac0     b7a1          move    *a13(animslobj_p),a1,L  ;Get * to last one
+         00003ad0     0100  
+     776 00003ae0     9502          move    *a8+,a2                 ;Offset
+     777 00003af0     4041          add     a2,a1
+     778 00003b00     8422          move    *a1,a2
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE   19
+
+     779 00003b10     4002          add     a0,a2
+     780 00003b20     8041          move    a2,*a1
+     781 00003b30     c000          jruc    anslp
+         00003b40     fda5  
+     782                    
+     783 00003b50           asADDLO                                 ;0AddH LONG # to last obj+offset
+     784 00003b50     9700          move    *a8+,a0,L
+     785 00003b60     b7a1          move    *a13(animslobj_p),a1,L  ;Get * to last one
+         00003b70     0100  
+     786 00003b80     9502          move    *a8+,a2                 ;Offset
+     787 00003b90     4041          add     a2,a1
+     788 00003ba0     8622          move    *a1,a2,L
+     789 00003bb0     4002          add     a0,a2
+     790 00003bc0     8241          move    a2,*a1,L
+     791 00003bd0     c000          jruc    anslp
+         00003be0     fd9b  
+     792                    
+     793 00003bf0           asADLVO                                 ;0AddH LONG value to last obj+offset
+     794 00003bf0     9500          move    *a8+,a0
+     795 00003c00     b7a1          move    *a13(animslobj_p),a1,L  ;Get * to last one
+         00003c10     0100  
+     796 00003c20     4001          add     a0,a1                   ;+Offset
+     797 00003c30     b7a0          move    *a13(animsv),a0,L       ;Get value
+         00003c40     0120  
+     798 00003c50     8622          move    *a1,a2,L
+     799 00003c60     4002          add     a0,a2
+     800 00003c70     8241          move    a2,*a1,L
+     801 00003c80     c000          jruc    anslp
+         00003c90     fd90  
+     802                    
+     803 00003ca0           asSVRL                                  ;>Set value to rnd long
+     804 00003ca0     9700          move    *a8+,a0,L
+     805 00003cb0     9701          move    *a8+,a1,L
+     806 00003cc0     0d3f          callr   RNDRNG
+         00003cd0     025a  
+     807 00003ce0     b20d          move    a0,*a13(animsv),L
+         00003cf0     0120  
+     808 00003d00     c000          jruc    anslp
+         00003d10     fd88  
+     809                    
+     810 00003d20           asSVRLT                                 ;>Set value to rnd long from a table
+     811 00003d20     9704          move    *a8+,a4,L
+     812 00003d30     9480          move    *a4+,a0                 ;dhalTable entries
+     813 00003d40     1420          subk    1,a0
+     814 00003d50     0d3f          callr   RNDRNG0
+         00003d60     0264  
+     815 00003d70     24a0          sll     5,a0                    ;*32
+     816 00003d80     4004          add     a0,a4
+     817 00003d90     8680          move    *a4,a0,L
+     818 00003da0     b20d          move    a0,*a13(animsv),L
+         00003db0     0120  
+     819 00003dc0     c000          jruc    anslp
+         00003dd0     fd7c  
+     820                    
+     821 00003de0           asSVL                                   ;>Set value to long
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE   20
+
+     822 00003de0     9700          move    *a8+,a0,L
+     823 00003df0     b20d          move    a0,*a13(animsv),L
+         00003e00     0120  
+     824 00003e10     c000          jruc    anslp
+         00003e20     fd77  
+     825                    
+     826 00003e30           asBXY                                   ;0AddH # to BaseXY
+     827 00003e30     9700          move    *a8+,a0,L
+     828 00003e40     b7a1          move    *a13(animsbx),a1,L
+         00003e50     0140  
+     829 00003e60     e001          addxy   a0,a1
+     830 00003e70     b22d          move    a1,*a13(animsbx),L
+         00003e80     0140  
+     831 00003e90     c000          jruc    anslp
+         00003ea0     fd6f  
+     832                    
+     833 00003eb0           asTXTR                                  ;>Print rnd text from table
+     834 00003eb0     9704          move    *a8+,a4,L
+     835 00003ec0     9480          move    *a4+,a0                 ;dhalTable entries
+     836 00003ed0     1420          subk    1,a0
+     837 00003ee0     0d3f          callr   RNDRNG0
+         00003ef0     024b  
+     838 00003f00     24a0          sll     5,a0                    ;*32
+     839 00003f10     4004          add     a0,a4
+     840 00003f20     8680          move    *a4,a0,L
+     841 00003f30     c001          jruc    astxt5
+     842                    
+     843 00003f40           asTXT                                   ;>Print text
+     844 00003f40     9700          move    *a8+,a0,L
+     845 00003f50           astxt5
+     846 00003f50     c000          jruc    anslp
+         00003f60     fd63  
+     847                    
+     848                    
+     849 00003f70           asTXTK                                  ;>Kill text
+     850 00003f70                   PUSHP   a8
+     851 00003f80     0d3f          callr   ERASE_TXT
+         00003f90     010f  
+     852 00003fa0                   PULLP   a8
+     853 00003fb0     c000          jruc    anslp
+         00003fc0     fd5d  
+     854                    
+     855                    
+     856 00003fd0           asEND   SLEEPK  1                       ;>Wait on FRANIMs before exit
+     857 00004010     b5a1          move    *a13(animsfnum),a1
+         00004020     0160  
+     858 00004030     cbf9          jrnz    asEND
+     859 00004040                   DIE
+     860                    
+     861                    
+     862                    
+     863                    
+     864 00004070                   STRUCTPD
+     865 00004070                   APTR    anfc_p          ;*AnimScrpt process that made me, set by AS
+     866 00004070                   APTR    anfl            ;*Franim list
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE   21
+
+     867                    
+     868                    
+     869 00004070            SUBRP  anims_franim            ;A9=*FRAN list, A10=OID, A11=# Loops
+     870                    
+     871 00004070     07a8          move    @OBJLST,a8,L            ;0FHind object
+         00004080 00000000! 
+     872 000040a0     b500  anf100  move    *a8(OID),a0
+         000040b0     0190  
+     873 000040c0     4940          cmp     a10,a0
+     874 000040d0     ca03          jreq    anf300
+     875 000040e0     8708          move    *a8,a8,L
+     876 000040f0     cbfa          jrnz    anf100
+     877 00004100     c00e          jruc    anf700                  ;No match!
+     878                    
+     879 00004110     b32d  anf300  move    a9,*a13(anfl),L
+         00004120     0120  
+     880 00004130           anf340  JSRP    FRANIMQ
+     881 000041a0     b7a9          move    *a13(anfl),a9,L         ;Go to 1st
+         000041b0     0120  
+     882 000041c0     4d6b          move    a11,a11
+     883 000041d0     cef5          jrn     anf340                  ;-=Infinite
+     884 000041e0     3d8b          dsj     a11,anf340
+     885                    
+     886 000041f0     4d6b  anf700  move    a11,a11
+     887 00004200     ce07          jrn     anf800
+     888 00004210     b7a0          move    *a13(anfc_p),a0,L       ;Get *Creator
+         00004220     0100  
+     889 00004230     b402          move    *a0(animsfnum),a2       ;dhalFrans-1
+         00004240     0160  
+     890 00004250     1422          subk    1,a2
+     891 00004260     b040          move    a2,*a0(animsfnum)
+         00004270     0160  
+     892 00004280           anf800  DIE
+     893                    
+     894                    
+     895                    
+     896                    
+     897 000042b0            SUBR   anim_wait
+     898                    
+     899 000042b0           anw10   SLEEPK  3
+     900 000042f0     05a1          move    @animscnt,a1
+         00004300 00000ac0- 
+     901 00004320     c7f8          jrgt    anw10
+     902 00004330                   RETP
+     903                    
+     904                    
+     905 00004360            SUBR   anim_kilslp
+     906                    
+     907 00004360                   SLEEP   50
+     908 000043b0     0d3f          callr   anim_killall
+         000043c0     0003  
+     909 000043d0                   DIE
+     910                    
+     911                    
+     912                    
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE   22
+
+     913 00004400            SUBR   anim_killall
+     914                    
+     915 00004400     5600          clr     a0
+     916 00004410     0580          move    a0,@animscnt
+         00004420 00000ac0- 
+     917                    
+     918 00004440     09c0          movi    ANIMPID,a0      ;>Kill processes
+         00004450     4000  
+     919 00004460     09c1          movi    03ffH,a1
+         00004470     03ff  
+     920 00004480     0d5f          calla   KILALLN
+         00004490 00000000! 
+     921                    
+     922 000044b0     09c0          movi    CLSANIM,a0      ;0DeHlete objs
+         000044c0     3800  
+     923 000044d0     09c1          movi    03ffH,a1
+         000044e0     03ff  
+     924 000044f0     c080          jauc    obj_delc
+         00004500 00000000! 
+     925                    
+     926                    
+     927                    
+     928                    
+     929 00004520            SUBRP  obj_find
+     930                    
+     931 00004520     5241          andn    a2,a1
+     932 00004530     b403  of20    move    *a0(OID),a3
+         00004540     0190  
+     933 00004550     5243          andn    a2,a3           ;Remove bits
+     934 00004560     4823          cmp     a1,a3
+     935 00004570     ca02          jreq    of50
+     936 00004580     8600          move    *a0,a0,L
+     937 00004590     cbf9          jrnz    of20
+     938 000045a0     4c00  of50    move    a0,a0           ;A0=*Obj or 0
+     939 000045b0     0960          rets                    ;Pass CC
+     940                    
+     941                    
+     942                    
+     943                    
+     944                    
+     945                    
+     946                    
+     947 000045c0            SUBR   autoerase_set
+     948                    
+     949 000045c0     01e0          pushst
+     950 000045d0     0360          dint
+     951 000045e0     0d3f          callr   dma_wait                ;Wait on dma
+         000045f0     0218  
+     952                    
+     953 00004600     5600          clr     a0
+     954 00004610     0580          move    a0,@DMACMAP
+         00004620 01a80080  
+     955 00004640     09c0          movi    ERASECOL,a0             ;Color pair
+         00004650     0000  
+     956 00004660     09e1          movi    510*512*8,a1            ;Store to last 2 lines of bitmap
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE   23
+
+         00004670 001fe000  
+     957 00004690     09d0          movi    512*8*2/16,b0
+         000046a0     0200  
+     958 000046b0     9001  vspalp  move    a0,*a1+
+     959 000046c0     3c50          dsj     b0,vspalp
+     960                    
+     961 000046d0     01c0          popst
+     962                    
+     963 000046e0     0960          rets
+     964                    
+     965                    
+     966                    
+     967 000046f0           FLASHME
+     968 000046f0     b50a          move    *a8(OCONST),a10
+         00004700     0160  
+     969 00004710     cb18          jrnz    aklcx                   ;Flashing?
+     970 00004720     2e09          srl     16,a9
+     971 00004730     b128          move    a9,*a8(OCONST)          ;Set color
+         00004740     0160  
+     972 00004750     b500          move    *a8(OCTRL),a0
+         00004760     00f0  
+     973 00004770     1901          movk    8,a1
+     974 00004780     5420          or      a1,a0                   ;Set constant
+     975 00004790     b008          move    a0,*a8(OCTRL)
+         000047a0     00f0  
+     976 000047b0                   SLEEPK  2
+     977 000047f0     5600          clr     a0
+     978 00004800     b008          move    a0,*a8(OCONST)          ;Clr color
+         00004810     0160  
+     979 00004820     b500          move    *a8(OCTRL),a0
+         00004830     00f0  
+     980 00004840     0b80          andi    0fff5H,a0               ;Clr constant & nonzero
+         00004850 ffff000a  
+     981 00004870     1040          addk    2,a0                    ;Set nonzero
+     982 00004880     b008          move    a0,*a8(OCTRL)
+         00004890     00f0  
+     983 000048a0           aklcx   DIE
+     984                    
+     985                    
+     986                    
+     987 000048d0           COLCYC  
+     988 000048d0                   SLEEPK  4
+     989 00004910     4d00          MOVE    A8,A0
+     990 00004920     0d5f          calla   pal_find
+         00004930 00000000! 
+     991 00004950     caf7          JRZ     COLCYC          ;WAIT TILL IT SHOWS UP FOLKS...
+     992                    
+     993 00004960     5621          CLR     A1              ;GET THE COLORS INTO RAM
+     994 00004970     ed41          MOVX    A10,A1          ;GET END COLOR
+     995 00004980     2e0a          SRL     16,A10          ;ADJUST START COLOR
+     996 00004990     4541          SUB     A10,A1          ;GET COUNT
+     997 000049a0     b02d          MOVE    A1,*A13(PDATA)  ;SAVE COUNT
+         000049b0     0100  
+     998 000049c0     4c24          MOVE    A1,A4
+     999 000049d0     2481          SLL     4,A1            ;COUNT IN WORDS
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE   24
+
+    1000 000049e0     4d45          MOVE    A10,A5
+    1001 000049f0     2485          SLL     4,A5            ;OFFSET INTO PALETTE
+    1002 00004a00     4105          ADD     A8,A5
+    1003 00004a10     1205          ADDK    16,A5           ;SKIP PALETTE WORD COUNT
+    1004 00004a20     4d23          MOVE    A9,A3
+    1005 00004a30     4d26          MOVE    A9,A6
+    1006 00004a40     4026          ADD     A1,A6
+    1007 00004a50     4cc8          MOVE    A6,A8
+    1008                    
+    1009 00004a60     94a7  COLCYC1 MOVE    *A5+,A7         ;TRANSFER IT TWICE
+    1010 00004a70     90e3          MOVE    A7,*A3+
+    1011 00004a80     90e6          MOVE    A7,*A6+
+    1012 00004a90     3c84          DSJS    A4,COLCYC1
+    1013                    
+    1014 00004aa0     2f00          SRL     8,A0
+    1015 00004ab0     2500          SLL     8,A0
+    1016 00004ac0     400a          ADD     A0,A10                  ;COLRAM DESTINATION
+    1017                    
+    1018 00004ad0           COLCYCB
+    1019 00004ad0     b30d          MOVE    A8,*A13(PDATA+020H),L   ;SAVE RAM ADDRESS
+         00004ae0     0120  
+    1020 00004af0           COLCYCBL
+    1021 00004af0     4d00          MOVE    A8,A0                   ;GET SOURCE ADDRESS
+    1022 00004b00     4d41          MOVE    A10,A1                  ;GET DESTINATION CONSTANT
+    1023 00004b10     b5a2          MOVE    *A13(PDATA),A2,W        ;GET COUNT
+         00004b20     0100  
+    1024 00004b30     0d5f          calla   pal_set
+         00004b40 00000000! 
+    1025 00004b60     1608          SUBK    16,A8
+    1026 00004b70     4909          CMP     A8,A9
+    1027 00004b80     c802          JRLO    CCYCBSLP
+    1028 00004b90     b7a8          MOVE    *A13(PDATA+020H),A8,L   ;GET SOURCE TABLE START
+         00004ba0     0120  
+    1029 00004bb0           CCYCBSLP
+    1030 00004bb0     4d60          MOVE    A11,A0          ;GET SLEEP TIME
+    1031 00004bc0     0d5f          CALLA   PRCSLP
+         00004bd0 00000000! 
+    1032 00004bf0     c0ef          JRUC    COLCYCBL
+    1033                    
+    1034                    
+    1035                    
+    1036 00004c00           CYC0    SLEEP   60
+    1037                    
+    1038 00004c50           CYCLE_TABLE
+    1039 00004c50     4d20          MOVE    A9,A0                   ;PAL NAME TO CYCLE
+    1040 00004c60     0d5f          calla   pal_find
+         00004c70 00000000! 
+    1041 00004c90     caf6          jrz     CYC0
+    1042 00004ca0     2f00          SRL     8,A0
+    1043 00004cb0     2500          SLL     8,A0
+    1044 00004cc0     ef01          MOVY    A8,A1
+    1045 00004cd0     2e01          SRL     16,A1                   ;A1=COLOR # TO START WITH
+    1046 00004ce0     b10d          MOVE    A8,*A13(PDATA)          ;PDATA WILL HAVE # TO CYCLE (CNT)
+         00004cf0     0100  
+    1047 00004d00     8542          MOVE    *A10,A2,W
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE   25
+
+    1048 00004d10     b04d          MOVE    A2,*A13(PDATA+16)       ;VALUE IN TABLE TO STOP AT
+         00004d20     0110  
+    1049 00004d30     4c08          MOVE    A0,A8                   ;A8=[PAL #,0]
+    1050 00004d40     4028          ADD     A1,A8                   ;A8=[PAL #,COLOR TO START AT]
+    1051 00004d50     4d49          MOVE    A10,A9                  ;A10=ROM TABLE TO CYCLE WITH
+    1052 00004d60     4d01  kdjmloop        move    a8,a1
+    1053 00004d70     4d20          MOVE    A9,A0                   ;A0=TABLE POSITION
+    1054 00004d80     b5a2          MOVE    *A13(PDATA),A2          ;A2=COLOR COUNT
+         00004d90     0100  
+    1055 00004da0     0d5f          calla   pal_set                 ;do the transfer
+         00004db0 00000000! 
+    1056 00004dd0     4d60          MOVE    A11,A0
+    1057 00004de0     0d5f          CALLA   PRCSLP
+         00004df0 00000000! 
+    1058 00004e10     1209          ADDK    010H,A9
+    1059 00004e20     8520          MOVE    *A9,A0
+    1060 00004e30     ce04          JRN     RESTUFF
+    1061 00004e40     b5a1          MOVE    *A13(PDATA+16),A1       ;PDATA+16=ENTRY WE STOP AT
+         00004e50     0110  
+    1062 00004e60     4801          CMP     A0,A1
+    1063 00004e70     cbee          jrne    kdjmloop
+    1064 00004e80     4d49  RESTUFF MOVE    A10,A9                  ;REACHED END OF TABLE, RESTUFF
+    1065 00004e90     c0ec          jruc    kdjmloop
+    1066                    
+    1067                    
+    1068                    
+    1069 00004ea0           HEXTOASC
+    1070 00004ea0                   PUSH    a1,a2,a9
+    1071 00004ec0     5621          clr     a1
+    1072 00004ed0     a02f          move    a1,-*sp                 ;Push the null terminator
+    1073 00004ee0     1941          movk    10,a1                   ;Divisor for decimal
+    1074 00004ef0     4d09          move    a8,a9
+    1075 00004f00     1862  hexta1  movk    3,a2                    ;Comma count
+    1076 00004f10     5708  hexta2  clr     a8
+    1077 00004f20     5a28          divu    a1,a8
+    1078 00004f30     0b09          addi    '0',a9                  ;Make the remainder ascii
+         00004f40     0030  
+    1079 00004f50     a12f          move    a9,-*sp                 ;Save here
+    1080 00004f60     4d09          move    a8,a9
+    1081 00004f70     ca05          jrz     hexta3                  ;Done?
+    1082 00004f80     3d02          dsj     a2,hexta2
+    1083 00004f90     09c2          movi    ',',a2
+         00004fa0     002c  
+    1084 00004fb0     a04f          move    a2,-*sp                 ;Stuff a comma
+    1085 00004fc0     c0f3          jruc    hexta1
+    1086                    
+    1087 00004fd0     09e1  hexta3  movi    STRNGRAM,a1             ;Store here for blow out
+         00004fe0 00000020- 
+    1088 00005000     4c28          move    a1,a8
+    1089 00005010     95e9  hexta4  move    *sp+,a9
+    1090 00005020     8d21          movb    a9,*a1
+    1091 00005030     1101          addk    8,a1
+    1092 00005040     4d29          move    a9,a9
+    1093 00005050     cbfb          jrnz    hexta4
+    1094                    
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE   26
+
+    1095 00005060                   PULL    a1,a2,a9
+    1096 00005080     0960          rets
+    1097                    
+    1098                    
+    1099                    
+    1100 00005090            SUBR   ERASE_TXT
+    1101                    
+    1102 00005090     09c0          movi    CLSNEUT|TYPTEXT|SUBTXT,a0
+         000050a0     0701  
+    1103 000050b0     c080          jauc    obj_del1c
+         000050c0 00000000! 
+    1104                    
+    1105                    
+    1106                    
+    1107 000050e0           STRLNRM
+    1108 000050e0     098c          mmtm    a12,a1,a2,a3,a4,a6,a14
+         000050f0     7a02  
+    1109 00005100     09e4          movi    DMACNZ|M_NOCOLL,a4
+         00005110 00008808  
+    1110 00005130     57ce          clr     a14
+    1111 00005140     c03e          jruc    stringr1
+    1112                    
+    1113 00005150           STRCNRM
+    1114 00005150     098c          mmtm    a12,a1,a2,a3,a4,a6,a14
+         00005160     7a02  
+    1115 00005170     09e4          movi    DMACNZ|M_NOCOLL,a4
+         00005180 00008808  
+    1116 000051a0     182e          movk    1,a14
+    1117 000051b0     c037          jruc    stringr1
+    1118 000051c0            SUBR   STRCNRM_1
+    1119 000051c0     098c          mmtm    a12,a1,a2,a3,a4,a6,a14
+         000051d0     7a02  
+    1120 000051e0     09e4          movi    DMAWNZ|M_NOCOLL,a4
+         000051f0 00008802  
+    1121 00005210     182e          movk    1,a14
+    1122 00005220     4cc5          move    a6,a5
+    1123 00005230     c031          jruc    stringr1_1
+    1124                    
+    1125 00005240           STRRNRM
+    1126 00005240     098c          mmtm    a12,a1,a2,a3,a4,a6,a14
+         00005250     7a02  
+    1127 00005260     09e4          movi    DMACNZ|M_NOCOLL,a4
+         00005270 00008808  
+    1128 00005290     184e          movk    2,a14
+    1129 000052a0     c028          jruc    stringr1
+    1130                    
+    1131                    
+    1132                    
+    1133 000052b0           STRLNRMO
+    1134 000052b0     098c          mmtm    a12,a1,a2,a3,a4,a6,a14
+         000052c0     7a02  
+    1135 000052d0     09e4          movi    DMACNZ|M_NOCOLL,a4
+         000052e0 00008808  
+    1136 00005300     09ee          movi    010000H,a14
+         00005310 00010000  
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE   27
+
+    1137 00005330     c01f          jruc    stringr1
+    1138                    
+    1139 00005340           STRCNRMO
+    1140 00005340     098c          mmtm    a12,a1,a2,a3,a4,a6,a14
+         00005350     7a02  
+    1141 00005360     09e4          movi    DMACNZ|M_NOCOLL,a4
+         00005370 00008808  
+    1142 00005390     09ee          movi    010001H,a14
+         000053a0 00010001  
+    1143 000053c0     c016          jruc    stringr1
+    1144                    
+    1145 000053d0           STRCNRMO_1
+    1146 000053d0     098c          mmtm    a12,a1,a2,a3,a4,a6,a14
+         000053e0     7a02  
+    1147 000053f0     09e4          movi    DMAWNZ|M_NOCOLL,a4
+         00005400 00008802  
+    1148 00005420     09ee          movi    010001H,a14
+         00005430 00010001  
+    1149 00005450     4cc5          move    a6,a5
+    1150 00005460     c00e          jruc    stringr1_1
+    1151                    
+    1152 00005470            SUBR   STRLNRMO_1
+    1153 00005470     098c          mmtm    a12,a1,a2,a3,a4,a6,a14
+         00005480     7a02  
+    1154 00005490     09e4          movi    DMAWNZ|M_NOCOLL,a4
+         000054a0 00008802  
+    1155 000054c0     09ee          movi    010000H,a14
+         000054d0 00010000  
+    1156 000054f0     4cc5          move    a6,a5
+    1157 00005500     c004          jruc    stringr1_1
+    1158                    
+    1159 00005510           STRINGER
+    1160 00005510     098c          mmtm    a12,a1,a2,a3,a4,a6,a14
+         00005520     7a02  
+    1161 00005530           stringr1
+    1162 00005530     4cc5          move    a6,a5
+    1163 00005540     2605          sll     16,a5                   ;Setup constant color in fixed palette
+    1164 00005550           stringr1_1
+    1165                    
+    1166 00005550     56e7          clr     a7
+    1167 00005560     edc7          movx    a14,a7
+    1168 00005570     1427          subk    1,a7
+    1169 00005580     ce0b          jrn     strr10                  ;Normal left justify
+    1170 00005590     ca03          jrz     strrc
+    1171                    
+    1172 000055a0     0d3f          callr   STRNGLEN                ;Right justify
+         000055b0     0080  
+    1173 000055c0     c003          jruc    strra
+    1174                    
+    1175 000055d0     0d3f  strrc   callr   STRNGLEN                ;Center justify
+         000055e0     007d  
+    1176 000055f0     2fe7          srl     1,a7                    ;STRNGLEN/2
+    1177                    
+    1178 00005600     e2e9  strra   subxy   a7,a9                   ;Adjust string starting position
+    1179 00005610     c002          jruc    strr10                  ;Start loop
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE   28
+
+    1180                    
+    1181                    
+    1182 00005620     10a9  strr1   addk    5,a9                    ;Add a space
+    1183 00005630     e149  strr5   addxy   a10,a9                  ;Add spacing
+    1184                    
+    1185 00005640     8f01  strr10  movb    *a8,a1                  ;Get a character
+    1186 00005650     c66c          jrle    strrx                   ;Done?
+    1187 00005660     1108          addk    8,a8                    ;Next byte
+    1188                    
+    1189 00005670     1401          subk    32,a1
+    1190 00005680     c6f9          jrle    strr1                   ;Space?
+    1191                    
+    1192                                                            ;Save sleep time
+    1193 00005690           strr20  PUSH    a0
+    1194                    
+    1195 000056a0     1421          subk    1,a1                    ;0CaHlc table offset
+    1196 000056b0     24a1          sll     5,a1                    ;*32
+    1197 000056c0     4161          add     a11,a1
+    1198 000056d0     8621          move    *a1,a1,L                ;Get * image header
+    1199 000056e0     b423          move    *a1(ICTRL),a3
+         000056f0     0060  
+    1200                    
+    1201 00005700                   PUSH    a1,a14
+    1202                            
+    1203 00005720     1dee          btst    16,a14
+    1204 00005730     ca38          jrz     strrdma                 ;Only do DMA?
+    1205                    
+    1206 00005740     4c22          move    a1,a2
+    1207                    
+    1208 00005750     0d5f          calla   GETOBJ                  ;Create the character as an object
+         00005760 00000000! 
+    1209 00005780     ca4b          jrz     strrdun                 ;No object?
+    1210                    
+    1211 00005790     b240          move    a2,*a0(OIMG),L
+         000057a0     0170  
+    1212 000057b0     ba40          move    *a2(ISAG),*a0(OSAG),L
+         000057c0     0040  
+         000057d0     0110  
+    1213 000057e0     b080          move    a4,*a0(OFLAGS)          ;FIX!!!!!
+         000057f0     00e0  
+    1214 00005800     b2a0          move    a5,*a0(OPAL),L          ;&CONST
+         00005810     0150  
+    1215                    
+    1216                    
+    1217 00005820     4c81          move    a4,a1
+    1218 00005830     0b81          andi    0803fH,a1               ;Kill mode bits
+         00005840 ffff7fc0  
+    1219 00005860     5423          or      a1,a3
+    1220 00005870     b260          move    a3,*a0(OCTRL),L         ;&OFSET
+         00005880     00f0  
+    1221                    
+    1222 00005890     09ce          movi    CLSNEUT|TYPTEXT|SUBTXT,a14
+         000058a0     0701  
+    1223 000058b0     b1c0          move    a14,*a0(OID)
+         000058c0     0190  
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE   29
+
+    1224                    
+    1225 000058d0     05ae          move    @LOWZ,a14
+         000058e0 00000170- 
+    1226 00005900     0b0e          addi    20000,a14
+         00005910     4e20  
+    1227 00005920     b1c0          move    a14,*a0(OZPOS)
+         00005930     00d0  
+    1228                    
+    1229 00005940     5642          clr     a2
+    1230 00005950     b240          move    a2,*a0(OXVEL),L
+         00005960     0020  
+    1231 00005970     b240          move    a2,*a0(OYVEL),L
+         00005980     0040  
+    1232 00005990     b240          move    a2,*a0(OZVEL),L
+         000059a0     0060  
+    1233 000059b0     ef22          movy    a9,a2                   ;Y
+    1234 000059c0     4d23          move    a9,a3
+    1235 000059d0     2603          sll     16,a3                   ;X
+    1236 000059e0     0d5f          calla   GANISAG
+         000059f0 00000000! 
+    1237                    
+    1238 00005a10     05a2          move    @WRLD,a2
+         00005a20 00000160- 
+    1239 00005a40     cb03          jrnz    strr100
+    1240 00005a50     0d5f          calla   obj_addworldxy          ;Put us in the world
+         00005a60 00000000! 
+    1241                    
+    1242 00005a80     0d5f  strr100 calla   INSOBJ
+         00005a90 00000000! 
+    1243 00005ab0     c018          jruc    strrdun
+    1244                    
+    1245                    
+    1246 00005ac0           strrdma PUSH    a3                      ;>Simple DMA
+    1247 00005ad0     8622          move    *a1,a2,L                ;ISIZE
+    1248 00005ae0     b623          move    *a1(ISAG),a3,L          ;Get top left sag
+         00005af0     0040  
+    1249 00005b00     0d5f          calla   GANIOF
+         00005b10 00000000! 
+    1250 00005b30     4ca1          move    a5,a1                   ;Constant:Palette
+    1251 00005b40                   PULL    a5
+    1252 00005b50                   PUSH    a4
+    1253 00005b60     0b84          andi    0803fH,a4
+         00005b70 ffff7fc0  
+    1254 00005b90     5485          or      a4,a5                   ;Offset:Control
+    1255 00005ba0     4c64          move    a3,a4                   ;SAG
+    1256                    
+    1257 00005bb0     4d23          move    a9,a3                   ;A3=Y:X
+    1258 00005bc0     2e06          srl     16,a6
+    1259 00005bd0     ecc7          movx    a6,a7
+    1260 00005be0     e2e3          subxy   a7,a3                   ;Sub anioffset
+    1261                    
+    1262 00005bf0     0d5f          calla   QDMAN
+         00005c00 00000000! 
+    1263 00005c20                   PULL    a4
+    1264 00005c30     4c25          move    a1,a5
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE   30
+
+    1265                    
+    1266 00005c40           strrdun PULL    a1,a14
+    1267                    
+    1268 00005c60     8421          move    *a1,a1                  ;Get ISIZEX
+    1269 00005c70     e029          addxy   a1,a9                   ;Add X size
+    1270 00005c80     97e0          move    *sp+,a0,L
+    1271 00005c90     ca99          jrz     strr5                   ;No sleep?
+    1272                    
+    1273 00005ca0     098c          mmtm    a12,a0,a4,a5,a14
+         00005cb0     8c02  
+    1274 00005cc0     0d5f          calla   PRCSLP
+         00005cd0 00000000! 
+    1275 00005cf0     09ac          mmfm    a12,a0,a4,a5,a14
+         00005d00     4031  
+    1276 00005d10     c091          jruc    strr5
+    1277                    
+    1278 00005d20     5621  strrx   clr     a1
+    1279 00005d30     0581          move    a1,@LOWZ
+         00005d40 00000170- 
+    1280 00005d60     1108          addk    8,a8                    ;Next byte
+    1281 00005d70     09ac          mmfm    a12,a1,a2,a3,a4,a6,a14
+         00005d80     405e  
+    1282 00005d90                   RETP
+    1283                    
+    1284                    
+    1285 00005dc0           STRNGLEN
+    1286 00005dc0                   PUSH    a8,a14
+    1287 00005de0     56e7          clr     a7              ;A7=Length
+    1288 00005df0     c00c          jruc    stl60
+    1289                    
+    1290 00005e00     1108  stl10   addk    8,a8            ;Point to next
+    1291 00005e10     140e          subk    32,a14
+    1292 00005e20     c702          jrgt    stl20           ;Good char?
+    1293 00005e30     10a7          addk    5,a7            ;Hard code a space
+    1294 00005e40     c006          jruc    stl40
+    1295                    
+    1296 00005e50     142e  stl20   subk    1,a14
+    1297 00005e60     24ae          sll     5,a14           ;*32
+    1298 00005e70     416e          add     a11,a14         ;A14=*Correct character header
+    1299 00005e80     87ce          move    *a14,a14,L
+    1300 00005e90     85ce          move    *a14,a14        ;Get ISIZEX
+    1301                    
+    1302 00005ea0     e1c7          addxy   a14,a7          ;Add char length
+    1303 00005eb0     e147  stl40   addxy   a10,a7          ;Add space length
+    1304 00005ec0     8f0e  stl60   movb    *a8,a14
+    1305 00005ed0     c7f2          jrgt    stl10           ;Next character?
+    1306                    
+    1307 00005ee0                   PULL    a8,a14
+    1308 00005f00     0527          zext    a7
+    1309 00005f10     0960          rets
+    1310                    
+    1311                    
+    1312                    
+    1313 00005f20           OBJOFF
+    1314 00005f20                   PUSH    A4
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE   31
+
+    1315 00005f30     b404          MOVE    *A0(OCTRL),A4
+         00005f40     00f0  
+    1316 00005f50     2f84          SRL     4,A4
+    1317 00005f60     2484          SLL     4,A4
+    1318 00005f70     b080          MOVE    A4,*A0(OCTRL)
+         00005f80     00f0  
+    1319 00005f90     97e4          move    *sp+,a4,L
+    1320 00005fa0     0960          RETS
+    1321                    
+    1322 00005fb0           OBJON
+    1323 00005fb0                   PUSH    A4
+    1324 00005fc0     b404          MOVE    *A0(OCTRL),A4
+         00005fd0     00f0  
+    1325 00005fe0     2f84          SRL     4,A4
+    1326 00005ff0     2484          SLL     4,A4
+    1327 00006000     1044          ADDK    2,A4
+    1328 00006010     b080          MOVE    A4,*A0(OCTRL)
+         00006020     00f0  
+    1329 00006030     97e4          move    *sp+,a4,L
+    1330 00006040     0960          RETS
+    1331                    
+    1332                            
+    1333                    
+    1334                    
+    1335                    
+    1336                    
+    1337 00006050            SUBR   GETCPNT
+    1338                    
+    1339 00006050     b701          move    *a8(OYVAL),a1,L
+         00006060     00a0  
+    1340 00006070     b500          move    *a8(OXPOS),a0
+         00006080     0090  
+    1341 00006090     ec01          movx    a0,a1
+    1342 000060a0     b700          move    *a8(OSIZE),a0,L
+         000060b0     0130  
+    1343 000060c0     2fe0          srl     1,a0                    ;/2
+    1344 000060d0     0b80          andi    07fff7fffH,a0           ;Clr bit 15
+         000060e0 80008000  
+    1345 00006100     e020          addxy   a1,a0
+    1346 00006110     0960          rets
+    1347                    
+    1348                    
+    1349                    
+    1350 00006120           GETANIX
+    1351 00006120     098f          MMTM    SP,A1,A2
+         00006130     6000  
+    1352 00006140     b701          MOVE    *A8(OIMG),A1,L
+         00006150     0170  
+    1353 00006160     b422          MOVE    *A1(IANIOFF),A2
+         00006170     0020  
+    1354 00006180     b500          MOVE    *A8(OCTRL),A0
+         00006190     00f0  
+    1355 000061a0     1f60          BTST    B_FLIPH,A0
+    1356 000061b0     ca04          JRZ     GETAX1
+    1357 000061c0     8420          MOVE    *A1,A0          ;ISIZEX
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE   32
+
+    1358 000061d0     4440          SUB     A2,A0
+    1359 000061e0     1420          DEC     A0
+    1360 000061f0     4c02          MOVE    A0,A2
+    1361 00006200     b500  GETAX1  MOVE    *A8(OXPOS),A0
+         00006210     0090  
+    1362 00006220     4040          ADD     A2,A0
+    1363 00006230     09af          MMFM    SP,A1,A2
+         00006240     0006  
+    1364 00006250     0960          RETS
+    1365                    
+    1366                    
+    1367                    
+    1368                    
+    1369 00006260            SUBR   RNDRNGS
+    1370                    
+    1371 00006260     4c01          move    a0,a1
+    1372 00006270     03a0          neg     a0
+    1373                    
+    1374                    
+    1375                    
+    1376 00006280            SUBR   RNDRNG
+    1377                    
+    1378 00006280     4401          sub     a0,a1           ;Normalize the range
+    1379 00006290     1021          addk    1,a1
+    1380 000062a0     4e00          move    a0,b0
+    1381                    
+    1382 000062b0     07a0          move    @RAND,a0,L
+         000062c0 00000000- 
+    1383 000062e0     6800          rl      a0,a0
+    1384 000062f0     05ae          move    @HCOUNT,a14
+         00006300 c00001c0  
+    1385 00006320     69c0          rl      a14,a0
+    1386 00006330     41e0          add     sp,a0
+    1387 00006340     0780          move    a0,@RAND,L
+         00006350 00000000- 
+    1388                    
+    1389 00006370     5e20          mpyu    a1,a0
+    1390 00006380     4e11          move    b0,a1
+    1391 00006390     4020          add     a1,a0
+    1392 000063a0     0960          rets
+    1393                    
+    1394                    
+    1395                    
+    1396 000063b0            SUBR   RNDRNG0
+    1397                    
+    1398 000063b0     07a1          move    @RAND,a1,L
+         000063c0 00000000- 
+    1399 000063e0     6821          rl      a1,a1
+    1400 000063f0     05ae          move    @HCOUNT,a14
+         00006400 c00001c0  
+    1401 00006420     69c1          rl      a14,a1
+    1402 00006430     41e1          add     sp,a1
+    1403 00006440     0781          move    a1,@RAND,L
+         00006450 00000000- 
+    1404                    
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE   33
+
+    1405 00006470     1020          addk    1,a0
+    1406 00006480     5e20          mpyu    a1,a0           ;Condition codes not valid!
+    1407                    
+    1408 00006490     0960          rets
+    1409                    
+    1410                    
+    1411                    
+    1412 000064a0            SUBR   RNDPER
+    1413                    
+    1414 000064a0     07a1          move    @RAND,a1,L
+         000064b0 00000000- 
+    1415 000064d0     6821          rl      a1,a1
+    1416 000064e0     05ae          move    @HCOUNT,a14
+         000064f0 c00001c0  
+    1417 00006510     69c1          rl      a14,a1
+    1418 00006520     41e1          add     sp,a1
+    1419 00006530     0781          move    a1,@RAND,L
+         00006540 00000000- 
+    1420                    
+    1421 00006560     4c0e          move    a0,a14
+    1422 00006570     09c0          movi    1000,a0
+         00006580     03e8  
+    1423 00006590     5e20          mpyu    a1,a0           ;0-999
+    1424 000065a0     480e          cmp     a0,a14
+    1425 000065b0     0960          rets
+    1426                    
+    1427                    
+    1428 000065c0           FILLAREA
+    1429 000065c0                   PUSH    a0,a1,a2,a4,a5,a14
+    1430 000065e0     c003          jruc    areacon
+    1431 000065f0           BLNKAREA
+    1432 000065f0                   PUSH    a0,a1,a2,a4,a5,a14
+    1433 00006610     5621          clr     a1                      ;constant 0:palette 0
+    1434 00006620           areacon
+    1435 00006620     4c82          move    a4,a2
+    1436 00006630     09e4          movi    IROM,a4                 ;Somewhere in image rom
+         00006640 02000000  
+    1437 00006660     09e5          movi    DMACAL,a5
+         00006670 0000800c  
+    1438 00006690     0d5f          calla   QDMAN
+         000066a0 00000000! 
+    1439 000066c0                   PULL    a0,a1,a2,a4,a5,a14
+    1440 000066e0     0960          rets
+    1441                    
+    1442                    
+    1443                    
+    1444 000066f0            SUBR   dirq_wait
+    1445                    
+    1446 000066f0     05a0          move    @dirqtimer,a0
+         00006700 00000000! 
+    1447 00006720     05a1  dirqwlp move    @dirqtimer,a1
+         00006730 00000000! 
+    1448 00006750     4801          cmp     a0,a1
+    1449 00006760     cafb          jreq    dirqwlp
+    1450 00006770     0960          rets
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE   34
+
+    1451                    
+    1452                    
+    1453                    
+    1454 00006780            SUBRP  dma_wait
+    1455                    
+    1456 00006780     05b0  dwlp    move    @DMACTRL,b0
+         00006790 01a80010  
+    1457 000067b0     cefc          jrn     dwlp            ;Busy?
+    1458 000067c0     0960          rets
+    1459                    
+    1460                    
+    1461                    
+    1462 000067d0            SUBR   dmaq_wait
+    1463                    
+    1464 000067d0     05a1          move    @DISPLAYON,a1
+         000067e0 00000000! 
+    1465 00006800     5600          clr     a0
+    1466 00006810     0580          move    a0,@DISPLAYON           ;Display off
+         00006820 00000000! 
+    1467                    
+    1468 00006840     05b0          move    @DMACTRL,b0
+         00006850 01a80010  
+    1469 00006870     cf02          jrnn    dqw20
+    1470 00006880     4dbd  dqw10   move    b13,b13
+    1471 00006890     c5fe          jrge    dqw10
+    1472 000068a0     0d3f  dqw20   callr   dma_wait
+         000068b0     ffec  
+    1473 000068c0     0581          move    a1,@DISPLAYON
+         000068d0 00000000! 
+    1474                    
+    1475 000068f0     0960          rets
+    1476                    
+    1477                    
+    1478                    
+    1479 00006900            SUBR   dpageflip_off
+    1480                    
+    1481 00006900     5600          clr     a0
+    1482 00006910     0580          move    a0,@dpageflip
+         00006920 00000000! 
+    1483 00006940     03e0          not     a0
+    1484 00006950     0580          move    a0,@dpage
+         00006960 00000000! 
+    1485 00006980     09c0          movi    -4,a0                   ;Page0
+         00006990     fffc  
+    1486 000069a0     0580          move    a0,@DPYSTRT
+         000069b0 c0000090  
+    1487                    
+    1488 000069d0     0960          rets
+    1489                    
+    1490                    
+    1491 000069e0            SUBRP  display_blank
+    1492                    
+    1493 000069e0     0360          dint
+    1494 000069f0     05a0  axzwlp  move    @VCOUNT,a0
+         00006a00 c00001d0  
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE   35
+
+    1495 00006a20     0b40          cmpi    EOSINT,a0
+         00006a30     feed  
+    1496 00006a40     c4fa          jrlt    axzwlp
+    1497 00006a50     05a0          move    @HSBLNK,a0      ;Blank screen
+         00006a60 c0000020  
+    1498 00006a80     0580          move    a0,@HEBLNK
+         00006a90 c0000010  
+    1499 00006ab0     0d60          eint
+    1500                    
+    1501 00006ac0     0960          rets
+    1502                    
+    1503                    
+    1504 00006ad0            SUBRP  display_unblank
+    1505                    
+    1506 00006ad0     0360          dint
+    1507 00006ae0     05a0  azbmlp  move    @VCOUNT,a0
+         00006af0 c00001d0  
+    1508 00006b10     0b40          cmpi    EOSINT,a0
+         00006b20     feed  
+    1509 00006b30     c4fa          jrlt    azbmlp
+    1510 00006b40     09c0          movi    HEBLNKINIT,a0
+         00006b50     0032  
+    1511 00006b60     0580          move    a0,@HEBLNK
+         00006b70 c0000010  
+    1512 00006b90     0d60          eint
+    1513                    
+    1514 00006ba0     0960          rets
+    1515                    
+    1516                    
+    1517 00006bb0           CRINIT
+    1518 00006bb0     098f          MMTM    SP,A0,A1,A2,A6
+         00006bc0     e200  
+    1519 00006bd0     09e1          MOVI    COLRAM,A1
+         00006be0 01800000  
+    1520 00006c00     5600          CLR     A0
+    1521 00006c10     09e6          MOVI    10000H,A6,L
+         00006c20 00010000  
+    1522 00006c40           CRINIT1
+    1523 00006c40     9201          MOVE    A0,*A1+,L       ;STUFF TWO WORDS AT A TIME
+    1524 00006c50     3c46          DSJS    A6,CRINIT1
+    1525                    
+    1526 00006c60     09af          MMFM    SP,A0,A1,A2,A6
+         00006c70     0047  
+    1527 00006c80     0960          RETS
+    1528                    
+    1529 00006c90           CRLOAD
+    1530 00006c90     098f          MMTM    SP,A0,A1,A2
+         00006ca0     e000  
+    1531 00006cb0           CRLOAD1
+    1532 00006cb0     9420          MOVE    *A1+,A0,W       ;GRAB FIRST COLOR FROM THIS TABLE
+    1533 00006cc0     ce05          JRN     CRLOAD4         ;BR = NULL PALETTE
+    1534 00006cd0           CRLOAD3
+    1535 00006cd0     8002          MOVE    A0,*A2,W        ;STUFF COLOR
+    1536 00006ce0     9420          MOVE    *A1+,A0,W       ;GRAB NEXT COLOR FROM THIS TABLE
+    1537 00006cf0     ce02          JRN     CRLOAD4         ;BR = NEXT PALETTE
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE   36
+
+    1538 00006d00     1202          ADDK    16,A2           ;INC THIS WAY SO WE DON'T OVERRUN PALETTES
+    1539 00006d10     c0fb          JRUC    CRLOAD3
+    1540                    
+    1541 00006d20           CRLOAD4
+    1542 00006d20     0b02          ADDI    1000H,A2        ;NEXT PALETTE
+         00006d30     1000  
+    1543 00006d40     2e82          SRL     12,A2
+    1544 00006d50     2582          SLL     12,A2           ;MASK OFF LOW BULLSHIT
+    1545 00006d60     3d86          DSJ     A6,CRLOAD1
+    1546                    
+    1547 00006d70     09af          MMFM    SP,A0,A1,A2
+         00006d80     0007  
+    1548 00006d90     0960          RETS
+    1549                    
+    1550                    
+    1551                    
+    1552 00006da0     5600  SCRCLR  CLR     A0
+    1553                    
+    1554 00006db0     098f          MMTM    SP,A1,A2
+         00006dc0     6000  
+    1555 00006dd0     5621          CLR     A1
+    1556 00006de0     0581          MOVE    A1,@CMAPSEL                     ;SELECT COLOR MAP 0
+         00006df0 01a80080  
+    1557 00006e10     09c1          MOVI    SCREEN,A1
+         00006e20     0000  
+    1558 00006e30     09e2          MOVI    (SCRNE-SCREEN)/32,A2
+         00006e40 00010000  
+    1559 00006e60     9201  SCRLP   MOVE    A0,*A1+,L
+    1560 00006e70     3c42          DSJS    A2,SCRLP
+    1561                    
+    1562 00006e80     09af          MMFM    SP,A1,A2
+         00006e90     0006  
+    1563 00006ea0     0960          RETS
+    1564                    
+    1565                    
+    1566                    
+    1567                    
+    1568 00006eb0            SUBR   CLR_SCRN
+    1569                    
+    1570 00006eb0     098f          mmtm    sp,a1,a2,a3
+         00006ec0     7000  
+    1571 00006ed0     05a3          move    @DISPLAYON,a3
+         00006ee0 00000000! 
+    1572 00006f00     0d3f          callr   dmaq_wait                       ;wait on dma
+         00006f10     ff8b  
+    1573 00006f20     5600          clr     a0
+    1574 00006f30     0580          move    a0,@CMAPSEL                     ;Select color map 0
+         00006f40 01a80080  
+    1575 00006f60     09e1          movi    SCREEN,a1,L
+         00006f70 00000000  
+    1576 00006f90     09e2          movi    ((SCRNE-2000H)-SCREEN)/32,a2,L
+         00006fa0 0000ff00  
+    1577 00006fc0     9201  clrlp   move    a0,*a1+,L
+    1578 00006fd0     3c42          dsjs    a2,clrlp
+    1579 00006fe0     0583          move    a3,@DISPLAYON
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE   37
+
+         00006ff0 00000000! 
+    1580 00007010     09af          mmfm    sp,a1,a2,a3
+         00007020     000e  
+    1581 00007030     0960          rets
+    1582                    
+    1583                    
+    1584                    
+    1585                    
+    1586 00007040           FRANIM
+    1587 00007040                   PUSHP   a3,a4
+    1588                    
+    1589 00007060     0b69          cmpi    ROM,a9                  ;Check for bogus script pointer
+         00007070 007fffff  
+    1590 00007090     c839          jrlo    franerr
+    1591                    
+    1592 000070a0     4c23          move    a1,a3                   ;A3=Mode
+    1593                    
+    1594 000070b0     9721  franl   move    *a9+,a1,L
+    1595 000070c0     ca30          jrz     frannd                  ;End?
+    1596                    
+    1597 000070d0     b504          move    *a8(OCTRL),a4           ;Current flags
+         000070e0     00f0  
+    1598 000070f0     9520          move    *a9+,a0                 ;Sleep time
+    1599 00007100     0b40          cmpi    0100H,a0
+         00007110     feff  
+    1600 00007120     c818          jrlo    fran2                   ;Just sleep?
+    1601                            
+    1602 00007130                   PUSH    a1,a2,a7
+    1603                    
+    1604 00007150     1e20          btst    BFLIPBIT,a0
+    1605 00007160     ca05          jrz     frannobi                ;No flip?
+    1606 00007170     9522          move    *a9+,a2                 ;Get the new flip flags
+    1607 00007180     0b84          andni   (M_FLIPV|M_FLIPH),a4    ;Clear the current flip status
+         00007190 00000030  
+    1608 000071b0     5444          or      a2,a4                   ;Set flag bits
+    1609                    
+    1610 000071c0           frannobi
+    1611 000071c0     1e40          btst    BNEWPAL,a0
+    1612 000071d0     ca09          jrz     frannopa                ;No pal?
+    1613                    
+    1614 000071e0     4c07          move    a0,a7
+    1615 000071f0     9720          move    *a9+,a0,L               ;Get *pal
+    1616 00007200     0d5f          calla   pal_getf
+         00007210 00000000! 
+    1617 00007230     ca02          jrz     fran10                  ;No palette available?
+    1618 00007240     b008          move    a0,*a8(OPAL)            ;Store new palette
+         00007250     0150  
+    1619 00007260           fran10
+    1620 00007260     4ce0          move    a7,a0
+    1621 00007270           frannopa
+    1622 00007270                   PULL    a1,a2,a7
+    1623 00007290     2700          sll     32-8,a0                 ;Kill special bits
+    1624 000072a0     2d00          srl     32-8,a0
+    1625                    
+    1626 000072b0           fran2
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE   38
+
+    1627 000072b0     0d5f          calla   ANI                     ;Setup new animation
+         000072c0 00000000! 
+    1628                    
+    1629 000072e0     0b43          cmpi    4,a3
+         000072f0     fffb  
+    1630 00007300     ca06          jreq    fran3                   ;One frame, no sleep?
+    1631                    
+    1632 00007310     a06c          move    a3,-*a12
+    1633 00007320     0d5f          calla   PRCSLP                  ;Sleep
+         00007330 00000000! 
+    1634 00007350     9583          move    *a12+,a3
+    1635 00007360     cbd4          jrnz    franl                   ;Loop til end of list?
+    1636                    
+    1637 00007370           fran3
+    1638 00007370                   PULLP   a3,a4
+    1639 00007390     0320          clrc                            ;Clear end flag
+    1640 000073a0                   RETP
+    1641                    
+    1642 000073d0           frannd
+    1643 000073d0                   PULLP   a3,a4
+    1644 000073f0     0de0          setc                            ;Return with end flag set
+    1645 00007400                   RETP
+    1646                    
+    1647                    
+    1648 00007430           franerr
+    1649                            .if     DEBUG
+    1650                            LOCKUP
+    1651                            eint
+    1652                            .else
+    1653 00007430                   CALLERR 8,0                     ;Bad franim list
+    1654                            .endif
+    1655 000074e0     c0ee          jruc    frannd
+    1656                    
+    1657                    
+    1658                    
+    1659                    
+    1660 000074f0           FRANIMQ
+    1661                    
+    1662 000074f0     0b69          cmpi    ROM,a9
+         00007500 007fffff  
+    1663 00007520     c936          jrhs    frq80                   ;Franim list OK?
+    1664                    
+    1665                            .if     DEBUG
+    1666                            LOCKUP
+    1667                            eint
+    1668                            .else
+    1669 00007530                   CALLERR 8,0                     ;Bad franim list
+    1670                            .endif
+    1671 000075e0     c02c          jruc    lagnx
+    1672                    
+    1673                    
+    1674 000075f0     b504  lagnlp  move    *a8(OCTRL),a4           ;Current flags
+         00007600     00f0  
+    1675 00007610     9520          move    *a9+,a0                 ;Sleep time
+    1676 00007620     0b40          cmpi    0100H,a0
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE   39
+
+         00007630     feff  
+    1677 00007640     c81e          jrlo    frq70                   ;No special bits?
+    1678                            
+    1679 00007650     1e20          btst    BFLIPBIT,a0             ;New flip?
+    1680 00007660     ca05          jrz     frq40
+    1681 00007670     9522          move    *a9+,a2                 ;Get the new flip flags
+    1682 00007680     0b84          andni   (M_FLIPV|M_FLIPH),a4    ;Clear the current flip status
+         00007690 00000030  
+    1683 000076b0     5444          or      a2,a4                   ;Set desired bits
+    1684                    
+    1685 000076c0     1e40  frq40   btst    BNEWPAL,a0              ;New palette ?
+    1686 000076d0     ca0b          jrz     frq60
+    1687                    
+    1688 000076e0     4c02          move    a0,a2
+    1689 000076f0     4c23          move    a1,a3
+    1690 00007700     9720          move    *a9+,a0,L               ;Get the palette address
+    1691 00007710     0d5f          calla   pal_getf                ;Get a color map assignment
+         00007720 00000000! 
+    1692 00007740     ca02          jrz     frq50                   ;No palette available?
+    1693 00007750     b008          move    a0,*a8(OPAL)            ;Set new palette
+         00007760     0150  
+    1694 00007770     4c40  frq50   move    a2,a0
+    1695 00007780     4c61          move    a3,a1
+    1696                    
+    1697 00007790     1e80  frq60   btst    BDELTAY,a0
+    1698 000077a0     ca06          jrz     frq65
+    1699 000077b0     9522          move    *a9+,a2                 ;Get DY
+    1700 000077c0     b503          move    *a8(OYPOS),a3
+         000077d0     00b0  
+    1701 000077e0     4043          add     a2,a3
+    1702 000077f0     b068          move    a3,*a8(OYPOS)
+         00007800     00b0  
+    1703                    
+    1704 00007810     2700  frq65   sll     32-8,a0                 ;Kill special bits
+    1705 00007820     2d00          srl     32-8,a0
+    1706                    
+    1707 00007830     0d5f  frq70   calla   ANI
+         00007840 00000000! 
+    1708 00007860     0d5f          calla   PRCSLP                  ;Sleep
+         00007870 00000000! 
+    1709                    
+    1710 00007890     9721  frq80   move    *a9+,a1,L               ;Get frame
+    1711 000078a0     cbd4          jrnz    lagnlp
+    1712                    
+    1713 000078b0           lagnx   RETP
+    1714                    
+    1715                    
+    1716                    
+    1717                    
+    1718              69d2  OFF     .equ    069d2H
+    1719          01b0f57e  SEC     .equ    01b15f50H-OFF
+    1720          ff506982  FAKEO   .equ    -0b00050H+OFF
+    1721                    
+    1722              0001  SECDB   .equ    1 ;0
+    1723                    
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE   40
+
+    1724 000078e0            SUBR   security_chk
+    1725                    
+    1726                            .if     SECDB
+    1727 000078e0     5600          clr     a0
+    1728 000078f0     0960          rets
+    1729                    
+    1730 00007900     09e5          movi    SCRATCH,a5
+         00007910 01000000  
+    1731 00007930     5600          clr     a0
+    1732 00007940     5663          clr     a3
+    1733 00007950     4c6e  jwidtlp move    a3,a14
+    1734 00007960     0d3f          callr   jwidsc
+         00007970     0006  
+    1735 00007980     9225          move    a1,*a5+,L
+    1736 00007990     1023          addk    1,a3
+    1737 000079a0     0b43          cmpi    128,a3
+         000079b0     ff7f  
+    1738 000079c0     c4f8          jrlt    jwidtlp
+    1739                    
+    1740                            .else
+    1741                            PUSH    a2,a3,a4
+    1742                            clr     a0
+    1743                            movi    128-1,a3
+    1744                    jwidlp  move    a3,a14
+    1745                            callr   jwidsc
+    1746                            or      a2,a0
+    1747                            subk    1,a3
+    1748                            jrge    jwidlp
+    1749                            PULL    a2,a3,a4
+    1750                    
+    1751                            .endif
+    1752 000079d0     0960          rets
+    1753                    
+    1754 000079e0           jwidsc
+    1755 000079e0     4c61          move    a3,a1
+    1756 000079f0     2f41          srl     6,a1            ;Use bit 7 for security range (0 or 1)
+    1757 00007a00     2661          sll     19,a1
+    1758 00007a10     0b21          addi    SEC+FAKEO,a1
+         00007a20 01015f00  
+    1759 00007a40     254e          sll     16-6,a14
+    1760 00007a50     41c1          add     a14,a1          ;Add a bogus offset
+    1761 00007a60     0d01          subi    FAKEO,a1
+         00007a70 00af967d  
+    1762 00007a90     b1c1          move    a14,*a1(OFF)    ;Write 1 of 64 to sec
+         00007aa0     69d2  
+    1763 00007ab0     45c1          sub     a14,a1          ;Sub offset so we read a different address
+    1764 00007ac0     b422          move    *a1(OFF),a2     ;Read 1st sec value
+         00007ad0     69d2  
+    1765 00007ae0     2622          sll     32-15,a2
+    1766 00007af0     2cc2          srl     32-6,a2
+    1767 00007b00     2522          sll     9,a2            ;Move to bits 10-15
+    1768 00007b10     57c2          xor     a14,a2
+    1769 00007b20     2622          sll     32-15,a2        ;Remove top bits
+    1770 00007b30     cb1f          jrnz    jwidx           ;Bad value?
+    1771                    
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE   41
+
+    1772 00007b40     41c1          add     a14,a1
+    1773 00007b50     2f6e          srl     5,a14
+    1774 00007b60     41c1          add     a14,a1
+    1775 00007b70     01e0          pushst
+    1776 00007b80     0546          setf    6,0,0
+    1777 00007b90     b422          move    *a1(OFF+9),a2   ;Read 2nd sec value
+         00007ba0     69db  
+    1778 00007bb0     4e41          move    a2,b1
+    1779 00007bc0     2711          sll     24,b1
+    1780 00007bd0     0144          getpc   a4
+    1781 00007be0     0b04          addi    jwidsec_t-$,a4,W
+         00007bf0     0160  
+    1782 00007c00     408e          add     a4,a14
+    1783 00007c10     b422          move    *a1(OFF+049H),a2        ;Read 3rd sec value
+         00007c20     6a1b  
+    1784 00007c30     4e40          move    a2,b0
+    1785 00007c40     2610          sll     16,b0
+    1786 00007c50     5411          or      b0,b1
+    1787 00007c60     b422          move    *a1(OFF+089H),a2        ;Read 4th sec value
+         00007c70     6a5b  
+    1788 00007c80     4e40          move    a2,b0
+    1789 00007c90     2510          sll     8,b0
+    1790 00007ca0     5411          or      b0,b1
+    1791 00007cb0     b422          move    *a1(OFF+0c9H),a2        ;Read 5th sec value
+         00007cc0     6a9b  
+    1792 00007cd0     4e40          move    a2,b0
+    1793 00007ce0     5411          or      b0,b1
+    1794 00007cf0     01c0          popst
+    1795 00007d00     97c2          move    *a14+,a2,L
+    1796 00007d10     4e31          move    b1,a1
+    1797                    
+    1798 00007d20     5622          xor     a1,a2           ;A2=0 if OK
+    1799                    
+    1800 00007d30     0960  jwidx   rets
+    1801                    
+    1802 00007d40           jwidsec_t
+    1803 00007d40 00000000          .long   000000000H
+    1804 00007d60 04081020          .long   004081020H
+    1805 00007d80 08102000          .long   008102000H
+    1806 00007da0 0c183122          .long   00C183122H
+    1807 00007dc0 10200000          .long   010200000H
+    1808 00007de0 14281020          .long   014281020H
+    1809 00007e00 18312204          .long   018312204H
+    1810 00007e20 1c393326          .long   01C393326H
+    1811 00007e40 20000001          .long   020000001H
+    1812 00007e60 24081021          .long   024081021H
+    1813 00007e80 28102000          .long   028102000H
+    1814 00007ea0 2c183122          .long   02C183122H
+    1815 00007ec0 30200001          .long   030200001H
+    1816 00007ee0 34281021          .long   034281021H
+    1817 00007f00 38312204          .long   038312204H
+    1818 00007f20 3c393326          .long   03C393326H
+    1819 00007f40 00000102          .long   000000102H
+    1820 00007f60 04081122          .long   004081122H
+    1821 00007f80 08102102          .long   008102102H
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE   42
+
+    1822 00007fa0 0c183122          .long   00C183122H
+    1823 00007fc0 10200000          .long   010200000H
+    1824 00007fe0 14281020          .long   014281020H
+    1825 00008000 18312204          .long   018312204H
+    1826 00008020 1c393326          .long   01C393326H
+    1827 00008040 20000103          .long   020000103H
+    1828 00008060 24081123          .long   024081123H
+    1829 00008080 28102102          .long   028102102H
+    1830 000080a0 2c183122          .long   02C183122H
+    1831 000080c0 30200001          .long   030200001H
+    1832 000080e0 34281021          .long   034281021H
+    1833 00008100 38312204          .long   038312204H
+    1834 00008120 3c393326          .long   03C393326H
+    1835 00008140 00010204          .long   000010204H
+    1836 00008160 04091224          .long   004091224H
+    1837 00008180 08112204          .long   008112204H
+    1838 000081a0 0c193326          .long   00C193326H
+    1839 000081c0 10210204          .long   010210204H
+    1840 000081e0 14291224          .long   014291224H
+    1841 00008200 18312204          .long   018312204H
+    1842 00008220 1c393326          .long   01C393326H
+    1843 00008240 20000001          .long   020000001H
+    1844 00008260 24081021          .long   024081021H
+    1845 00008280 28102000          .long   028102000H
+    1846 000082a0 2c183122          .long   02C183122H
+    1847 000082c0 30200001          .long   030200001H
+    1848 000082e0 34281021          .long   034281021H
+    1849 00008300 38312204          .long   038312204H
+    1850 00008320 3c393326          .long   03C393326H
+    1851 00008340 00010306          .long   000010306H
+    1852 00008360 04091326          .long   004091326H
+    1853 00008380 08112306          .long   008112306H
+    1854 000083a0 0c193326          .long   00C193326H
+    1855 000083c0 10210204          .long   010210204H
+    1856 000083e0 14291224          .long   014291224H
+    1857 00008400 18312204          .long   018312204H
+    1858 00008420 1c393326          .long   01C393326H
+    1859 00008440 20000103          .long   020000103H
+    1860 00008460 24081123          .long   024081123H
+    1861 00008480 28102102          .long   028102102H
+    1862 000084a0 2c183122          .long   02C183122H
+    1863 000084c0 30200001          .long   030200001H
+    1864 000084e0 34281021          .long   034281021H
+    1865 00008500 38312204          .long   038312204H
+    1866 00008520 3c393326          .long   03C393326H
+    1867 00008540 00000000          .long   000000000H
+    1868 00008560 01201028          .long   001201028H
+    1869 00008580 02213018          .long   002213018H
+    1870 000085a0 03012030          .long   003012030H
+    1871 000085c0 04223138          .long   004223138H
+    1872 000085e0 05022110          .long   005022110H
+    1873 00008600 06030120          .long   006030120H
+    1874 00008620 07231108          .long   007231108H
+    1875 00008640 08042231          .long   008042231H
+    1876 00008660 09243219          .long   009243219H
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE   43
+
+    1877 00008680 0a251229          .long   00A251229H
+    1878 000086a0 0b050201          .long   00B050201H
+    1879 000086c0 0c261309          .long   00C261309H
+    1880 000086e0 0d060321          .long   00D060321H
+    1881 00008700 0e072311          .long   00E072311H
+    1882 00008720 0f273339          .long   00F273339H
+    1883 00008740 10080422          .long   010080422H
+    1884 00008760 1128140a          .long   01128140AH
+    1885 00008780 1229343a          .long   01229343AH
+    1886 000087a0 13092412          .long   013092412H
+    1887 000087c0 142a351a          .long   0142A351AH
+    1888 000087e0 150a2532          .long   0150A2532H
+    1889 00008800 160b0502          .long   0160B0502H
+    1890 00008820 172b152a          .long   0172B152AH
+    1891 00008840 180c2613          .long   0180C2613H
+    1892 00008860 192c363b          .long   0192C363BH
+    1893 00008880 1a2d160b          .long   01A2D160BH
+    1894 000088a0 1b0d0623          .long   01B0D0623H
+    1895 000088c0 1c2e172b          .long   01C2E172BH
+    1896 000088e0 1d0e0703          .long   01D0E0703H
+    1897 00008900 1e0f2733          .long   01E0F2733H
+    1898 00008920 1f2f371b          .long   01F2F371BH
+    1899 00008940 20100804          .long   020100804H
+    1900 00008960 2130182c          .long   02130182CH
+    1901 00008980 2231381c          .long   02231381CH
+    1902 000089a0 23112834          .long   023112834H
+    1903 000089c0 2432393c          .long   02432393CH
+    1904 000089e0 25122914          .long   025122914H
+    1905 00008a00 26130924          .long   026130924H
+    1906 00008a20 2733190c          .long   02733190CH
+    1907 00008a40 28142a35          .long   028142A35H
+    1908 00008a60 29343a1d          .long   029343A1DH
+    1909 00008a80 2a351a2d          .long   02A351A2DH
+    1910 00008aa0 2b150a05          .long   02B150A05H
+    1911 00008ac0 2c361b0d          .long   02C361B0DH
+    1912 00008ae0 2d160b25          .long   02D160B25H
+    1913 00008b00 2e172b15          .long   02E172B15H
+    1914 00008b20 2f373b3d          .long   02F373B3DH
+    1915 00008b40 30180c26          .long   030180C26H
+    1916 00008b60 31381c0e          .long   031381C0EH
+    1917 00008b80 32393c3e          .long   032393C3EH
+    1918 00008ba0 33192c16          .long   033192C16H
+    1919 00008bc0 343a3d1e          .long   0343A3D1EH
+    1920 00008be0 351a2d36          .long   0351A2D36H
+    1921 00008c00 361b0d06          .long   0361B0D06H
+    1922 00008c20 373b1d2e          .long   0373B1D2EH
+    1923 00008c40 381c2e17          .long   0381C2E17H
+    1924 00008c60 393c3e3f          .long   0393C3E3FH
+    1925 00008c80 3a3d1e0f          .long   03A3D1E0FH
+    1926 00008ca0 3b1d0e27          .long   03B1D0E27H
+    1927 00008cc0 3c3e1f2f          .long   03C3E1F2FH
+    1928 00008ce0 3d1e0f07          .long   03D1E0F07H
+    1929 00008d00 3e1f2f37          .long   03E1F2F37H
+    1930 00008d20 3f3f3f1f          .long   03F3F3F1FH
+    1931                    
+TMS340 COFF Macro Assembler Version 6.10     Tue Dec 19 01:44:59 2023
+ Copyright (c) 1985-1991  Texas Instruments Incorporated 
+
+utility subroutines                                                  PAGE   44
+
+    1932                            .def    secend
+    1933 00008d40           secend
+    1934                    
+    1935                    
+    1936                    
+    1937                            .end
+
+ No Errors,  No Warnings
