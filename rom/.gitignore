@@ -2,5 +2,6 @@
 *.OBJ
 *.LST
 *.OUT
-*.MAP
-M*.LCK
+*.BIN
+*.0
+*.1
