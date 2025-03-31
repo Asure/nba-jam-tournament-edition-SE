@@ -1,0 +1,58 @@
+How i added griffey (heads)
+===================
+What i probably did..
+
+
+Searched thru LOD files: find his heads in BB3.LOD
+
+kengrif.img
+---> KGRIF01,KGRIF02,KGRIF03,KGRIF04,KGRIF05
+
+Go up in the LOD file to see where the lod would output this data to.
+
+GLO> IMGTBL4.GLO
+ASM> plyrhd4.tbl
+
+Find the .asm/axx where these TBL/GLO were included. It's PLYRAT.ASM
+Find the used names etc.
+
+KG_H	;GRIFFEY
+	.long	KGRIF01
+	.long	KGRIF01,KGRIF02,KGRIF03,KGRIF04,KGRIF05
+	.long	KGRIF01,KGRIF02,KGRIF03,KGRIF04,KGRIF05
+	.long	KGRIF01,KGRIF02,KGRIF03,KGRIF04,KGRIF05
+	.long	KGRIF03
+
+You can use a named var if it is .included
+The .GLO file does:
+1. create a .ref if the var is not defined 
+2. create a .def if it is defined.
+
+If a var is .DEFined, it is exported by the OBJ and can later be found by the GSPLNK command when the .out is built.
+So the linker can link to it from other.asm files that .REFer it.
+
+Ok so if you run IMGT.BAT in the BB3 folder it outputs files into c:\tmp\jamse\bb3
+Check plyrhd4.tbl
+
+KGRIF01:
+	.word   28,34,13,31
+	.long   05feabe6H
+	.word   06000H
+	.long   KGRIF_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+
+Note the PAL here KGRIF_P is in IMGTBL4.GLO
+Actual PAL data is in c:\tmp\IMGPAL.ASM
+
+At this point all your data is in C:\tmp and nothing is yet in the actual game source folder.
+Don't just overwrite the existing stuff yet!!
+
+I seem to have added KGRIF_P data into IMGPAL3.ASM/AXX as it's .include in plyrat.axx
+
+	.include	"imgpalp.asm"
+	.include	"imgpal3.asm"
+	.include	"imgtbl4.glo"
+	.include	"plyrhd4.tbl"
+
+I think i manually took plyrhd4.tbl from NBA JAM TE source or something where this file was included and fixed it up.
+This way i could just use NBA Jam TE gfx roms, and load the griffey stuff on top.. not very clean i know.
