@@ -1,0 +1,58 @@
+Mapping IRW files to mame GFXROM area
+=====================================
+
+- You can find the first used mem pointer in the first TBL file from the LOD.
+- Here's a handy table to avoid you some work:
+
+FILE		Start:          End:		First TBL:	Content:
+BB2		0x0000000	0x03BF10F	LEDS.TBL	Willie main anims, dunks from JAM. Fonts and more.
+BBMUG		0x03C1400	0x04CE7BD	MUGSHOT.TBL	Mugshots, heads, special guests
+BB		0x04CE7BD	0x0?		COURT.TBL	More heads, backgrounds, Willie (body)
+BB3		0x0718600	0x07FFFFF	FIRESEQ.TBL	Fatality, new dunks, new TE player heads.
+
+(A nice picture would be good to have to show some bars what goes where.)
+
+Loading irw/bin into Mame debug
+===============================
+
+MAME debug commands to load these from the mame folder:
+
+loadr bb2.bin,0,0,:gfxrom  (0-3bf10f)
+loadr bbmug.bin,3C1400,0,:gfxrom  - lod = 3e0a000 3C14000   = -1f6000
+loadr bb.bin,4CE7BD,0,:gfxrom  
+loadr bb3.bin,718600,0,:gfxrom  
+
+One-shot copypaste command:
+
+loadr bb2.bin,0,0,:gfxrom; loadr bbmug.bin,3C1400,0,:gfxrom ; loadr bb.bin,4CE7BD,0,:gfxrom ;loadr bb3.bin,718600,0,:gfxrom  
+
+Notes
+=====
+
+- Data must fit into the 0x0 - 0x7FFFFF area defined in the MAME source.
+- You can have some stuff above: mame uses ROM_REGION( 0xc00000, "video", 0 )
+- Real PCB can only manage 7FFFFF in total. (MK2 has more, special rom board/GAL chip to decode this.)
+- loadr debug command does not know size and/or boundaries so you can end up overwriting stuff if your bin is large.
+
+LOD notes:
+On a real board the cpu sees the GFX area starting at 0x2000000
+So if you're working on a LOD and want some data at specific locations, add 0x2000000
+The ***> command does this at the start of BB2.LOD: ***> 2000000 to ensure proper placing.
+They do it in all the other .LOD files as well.
+
+Archeology
+==========
+How they added Griffey to the original NBA JAM TE? 
+
+- They removed RAY_GAY mugshot from BBMUG
+- Added Griffeys mugshot and name label (TVSCORE)
+- They removed some heads from BB3.LOD, RAYGAY got cut and TOBIAS got his head angles limited to 5 instead of 16.
+- Added Griffey heads in BB3.LOD
+- They probably manually updated the TBL files with the content instead of a full rebuild it seems.
+
+We can rebuild both BBMUG and BB3 with the LOAD.EXE tools we have.
+There's issues with the other lod files, mainly because of old TROG.IMG font they kept using.
+Perhaps they ran into the same issue?
+
+Since they didn't touch BB / BB2 we can re-use those original TE roms on a real PCB and the 
+update was just 4x27C040 chips to mail to Griffey jr.

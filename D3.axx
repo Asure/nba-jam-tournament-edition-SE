@@ -78,6 +78,9 @@ XPTMSZ	.equ	(16*3*11*D3NUMO/4)&0fffff0H
 	BSSX	viewya		,16		;Y ^
 	BSSX	viewza		,16		;Z ^
 
+;	BSSX	_switch_addr,32
+;	.ref	_switch_addr
+
 	.bss	d3collstop	,16		;!0=Stop scan on current obj
 	.bss	pcoll_t		,32*(D3NUMO+1)	;List of objs of class player
 	.bss	ncoll_t		,32*(D3NUMO+1)	;List of objs of class neutral
@@ -116,10 +119,10 @@ BOGRATE	.equ	4
 	move	a1,@d3free_p,L
 	movi	D3NUMO,b0		;# of object blocks
 
-#olp	move	a1,a14
+olp	move	a1,a14
 	addi	D3HDSZ,a1
 	move	a1,*a14,L		;link em up
-	dsj	b0,#olp
+	dsj	b0,olp
 
 	clr	a0
 	move	a0,*a14,L		;Null end
@@ -129,7 +132,7 @@ BOGRATE	.equ	4
 
 
 
-	movi	#init_t,a10		;>Get objects and init
+	movi	init_t,a10		;>Get objects and init
 	jruc	dt40
 
 dtlp	callr	_3d_getobj
@@ -142,25 +145,25 @@ dtlp	callr	_3d_getobj
 	move	a8,a1
 	addk	D3X,a1
 	movk	3,a7
-#cxyz	move	*a10+,a3		;Copy starting XYZ
+cxyz	move	*a10+,a3		;Copy starting XYZ
 	sll	8,a3
 	move	a3,*a1+,L
-	dsj	a7,#cxyz
+	dsj	a7,cxyz
 
 	clr	a2
 	movk	3*2+3,a7
-#clrva	move	a2,*a1+			;Clr XYZ vel & angle
-	dsj	a7,#clrva
+clrva	move	a2,*a1+			;Clr XYZ vel & angle
+	dsj	a7,clrva
 
 dt40	move	*a10+,a6,L
 	jrnz	dtlp
 
 
 
-	movi	#gndinit_t,a10		;>Get ground objects and init
-	jruc	#gndi
+	movi	gndinit_t,a10		;>Get ground objects and init
+	jruc	gndi
 
-#gndlp	callr	_3d_getgndobj
+gndlp	callr	_3d_getgndobj
 	move	a6,*a8(D3PTS),L
 	move	*a10+,a1,L
 	move	a1,*a8(D3FACE),L
@@ -168,18 +171,18 @@ dt40	move	*a10+,a6,L
 	move	a8,a1
 	addk	D3X,a1
 	movk	3,a7
-#cxyz2	move	*a10+,a0,L		;Copy starting XYZ
+cxyz2	move	*a10+,a0,L		;Copy starting XYZ
 	sll	8,a0
 	move	a0,*a1+,L
-	dsj	a7,#cxyz2
+	dsj	a7,cxyz2
 
 	clr	a2
 	movk	3*2+3,a7
-#cva	move	a2,*a1+			;Clr XYZ vel & angle
-	dsj	a7,#cva
+cva	move	a2,*a1+			;Clr XYZ vel & angle
+	dsj	a7,cva
 
-#gndi	move	*a10+,a6,L
-	jrnz	#gndlp
+gndi	move	*a10+,a6,L
+	jrnz	gndlp
 
 
 
@@ -236,20 +239,19 @@ dt40	move	*a10+,a6,L
 	SLEEP	TSEC*7/BOGRATE
 
 
-	move	@SWITCH,a0
-	andi	05808H,a0		;P1/2 sticks rgt and P2 but 1&3 down
-	jrnz	#slp
-
-	CREATE0	copyright_prtmsg
-#slp
-	SLEEP	TSEC*70/BOGRATE
+;	move	@SWITCH,a0
+;	andi	05808H,a0		;P1/2 sticks rgt and P2 but 1&3 down
+;	jrnz	slp
+;	CREATE0	copyright_prtmsg
+slp
+	SLEEP	TSEC*140/BOGRATE
 
 
 	movi	GOLD,a0
 	calla	pal_getf
 	move	a0,a6
 
-	movi	#surv_s,a8
+	movi	surv_s,a8
 	clr	a0
 	movi	[80,200],a9
 	movk	1,a10
@@ -287,12 +289,12 @@ pldead
 	jauc	from_3d
 
 
-#surv_s	.byte	"ALL PLAYERS POWERUP!",0
+surv_s	.byte	"ALL PLAYERS POWERUP!",0
 	.even
 
 
 
-#init_t	;World init
+init_t	;World init
 	.long	rocket_pts,rocketline_t
 	.word	0,200,0
 
@@ -513,7 +515,7 @@ tankturline_t
 	.word	-1	;End
 
 
-#gndinit_t	;Ground init
+gndinit_t	;Ground init
 	.long	gnd_pts,gndline_t,0,0,0
 	.long	gnd_pts,gndline_t,0,0,-21000
 	.long	gnd_pts,gndline_t,-21000,0,0

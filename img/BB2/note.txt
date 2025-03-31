@@ -1,0 +1,2 @@
+This .lod file uses the TROG font IMG containers which are old/wierd.
+We can't rebuild it 1:1 at this point.

@@ -23,16 +23,17 @@
 
 baddec_snd	.word	0f990H,72,081b7H,0	;bad decision		<--change!
 
-win_snd		.word	0f3ffH,08H,080a5H,0	;Winner snd
-swat_snd	.word	0fd94H,15,08157H,0	;Swat ball (Steals & blocks)
-steal_snd	.word	0fbf7H,08H,08093H,0	;Steal
-sqk1_snd	.word	0f584H,04H,08114H,0	;Sneaker squeek
-sqk2_snd	.word	0f584H,04H,08115H,0
-sqk3_snd	.word	0f584H,04H,08116H,0
-sqk4_snd	.word	0f584H,04H,08117H,0
+win_snd		.word	0f3ffH,08H,00a5H,0	;Winner snd
+swat_snd	.word	0fd94H,15,0157H,0	;Swat ball (Steals & blocks)
+steal_snd	.word	0fbf7H,08H,0093H,0	;Steal
+sqk1_snd	.word	0f584H,04H,0114H,0	;Sneaker squeek
+sqk2_snd	.word	0f584H,04H,0115H,0
+sqk3_snd	.word	0f584H,04H,0116H,0
+sqk4_snd	.word	0f584H,04H,0117H,0
 airball_snd	.word	0f894H,038H,0814dH,0	;crowd screams "air ball"
-pass_snd	.word	0f3a7H,08H,0808cH,0	;short pass
-whstle_snd	.word	0f9f5H,030H,08148H,0	;Ref whistle at game start
+pass_snd	.word	0f3a7H,08H,008cH,0	;short pass
+whstle_snd	.word	0f9f5H,030H,0148H,0	;Ref whistle at game start
+
 tuneend_snd	.word	0f3ffH,08H,08003H,0	;End game time tune
 tuneend1_snd	.word	0f3ffH,08H,0800aH,0	;End quarter 1 tune
 tunehalf_snd	.word	0f3ffH,08H,08004H,0	;Half time tune
@@ -41,7 +42,7 @@ anncr1_snd	.word	0f9f6H,120,0818eH,0	;He shoots from downtown
 anncr2_snd	.word	0f9f6H,110,08190H,0	;He shoots from the outside
 anncr4_snd	.word	0f9f6H,80,08183H,0	;At the buzzer
 anncr5_snd	.word	0f9f6H,70,0818bH,0	;From long range
-fball_snd	.word	0fcb0H,40,08179H,0	;Fire ball launch
+fball_snd	.word	0fcb0H,40,0179H,0	;Fire ball launch
 overtime_snd	.word	0f9ffH,69,08180H,0	;overtime!
 rainbow_snd	.word	0f1a0H,99,081f0H,0	;Rainbow
 

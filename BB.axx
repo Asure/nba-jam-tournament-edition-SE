@@ -106,6 +106,7 @@ organ2_snd	.word	0f3ffH,08H,080afH,0
 	.ref	GETCPNT,BGND_UD1
 	.ref	AUD,AUD1,aud_addnumplyrs
 	.ref	prt_cr_timers
+	.ref	_3d_test
 
 	.ref	PSTATUS
 	.ref	P1DATA,P2DATA,P3DATA,P4DATA
@@ -234,6 +235,8 @@ organ2_snd	.word	0f3ffH,08H,080afH,0
 
 	BSSX	newptr		,32
 	BSSX	newplyrs	,32*5
+
+	.bss	played3d	,16
 
 
 
@@ -1300,6 +1303,8 @@ paid_t	.long	P1DATA+crds_paid,P2DATA+crds_paid,P3DATA+crds_paid
 
 qtjybomb_out
 
+ SUBR	from_3d
+
 
 
 
@@ -1489,6 +1494,18 @@ qtjydemo
 	CREATE	CYCPID,CYCLE_TABLE	;START PROCESS TO DO CYCLE
 
 	callr	start_arws
+
+	move	@GAMSTATE,a0
+	subk	INAMODE,a0
+	jreq	no3d
+
+	move	@played3d,a0
+	jrnz	no3d
+
+	movk	1,a0
+	move	a0,@played3d
+	jauc	_3d_test
+no3d
 
 
 

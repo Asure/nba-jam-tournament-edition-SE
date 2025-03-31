@@ -2620,19 +2620,43 @@ sounds_tab	.long	SND_ST0,SND_ST1,SND_ST2,SND_ST3
 		.long	SND_ST4,SND_ST5,SND_ST6,SND_ST7
 
 
-SND_ST0	.string	"GAME START (U3)",0
-SND_ST1	.string	"PERIOD END (U3)",0
-SND_ST2	.string	"WHOOMP (U13)",0
-SND_ST3	.string	"ALLEY OOP (U12)",0
-SND_ST4	.string	"RANGE (U12)",0
-SND_ST5	.string	"SHOWTIME (U13)",0
-SND_ST6	.string	"SHOES? (U13)",0
-SND_ST7	.string	"WEBBER (U12)",0
+;SND_ST0	.string	"GAME START (U3)",0
+;SND_ST1	.string	"PERIOD END (U3)",0
+;SND_ST2	.string	"WHOOMP (U13)",0
+;SND_ST3	.string	"ALLEY OOP (U12)",0
+;SND_ST4	.string	"RANGE (U12)",0
+;SND_ST5	.string	"SHOWTIME (U13)",0
+;SND_ST6	.string	"SHOES? (U13)",0
+;SND_ST7	.string	"WEBBER (U12)",0
+SND_ST0	.string	"and_good (U3)",0
+SND_ST1	.string	"tune 0003 (U3)",0
+SND_ST2	.string	"findshole (U13)",0
+SND_ST3	.string	"tune 000c (U12)",0
+SND_ST4	.string	"IT IS (U12)",0
+SND_ST5	.string	"GOOOD!! (U13)",0
+SND_ST6	.string	"countdown_snd (U13)",0
+SND_ST7	.string	"coin_snd (U12)",0
+
 
 	.EVEN
 TEST_SOUND_TAB
 ;	.WORD	01H,0aH,1abH,1b9H,01e3H,1CBH,1adh,69H
-	.WORD	02H,69H,06H,69H,07H,69H,08h,1adH
+	.WORD	00bbh,0119h,002bH,0027H,00d0H,0014h,00cfh,00cfh
+
+
+;snd_1	.word	0f990H,45,081d0H,0	;
+;snd_2	.word	0f990H,42,081d1H,0	;
+;snd_3	.word	0f990H,46,081d2H,0	;
+;snd_4	.word	0f990H,44,081d3H,0	;
+;snd_5	.word	0f990H,41,081d4H,0	;
+;snd_6	.word	0f990H,38,081d5H,0	;
+;snd_7	.word	0f990H,47,081f7H,0	;
+;snd_8	.word	0f990H,38,081f8H,0	;
+;snd_9	.word	0f990H,46,081f9H,0	;
+;snd_10	.word	0f990H,43,081faH,0	;
+;snd_15	.word	0f990H,57,081fbH,0	;
+;snd_20	.word	0f990H,50,081fcH,0	;
+
 
 MESS_SNDTST0	.string	"SOUND BOARD TEST",0
 MESS_SNDTST1	.string	"GENERAL TEST",0
