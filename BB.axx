@@ -106,7 +106,7 @@ organ2_snd	.word	0f3ffH,08H,080afH,0
 	.ref	GETCPNT,BGND_UD1
 	.ref	AUD,AUD1,aud_addnumplyrs
 	.ref	prt_cr_timers
-	.ref	_3d_test
+;	.ref	_3d_test
 
 	.ref	PSTATUS
 	.ref	P1DATA,P2DATA,P3DATA,P4DATA
@@ -1500,11 +1500,11 @@ qtjydemo
 	jreq	no3d
 
 	move	@played3d,a0
-	jrnz	no3d
+	jauc	no3d			;AMM Disable the tank game for now.
 
-	movk	1,a0
-	move	a0,@played3d
-	jauc	_3d_test
+;	movk	1,a0
+;	move	a0,@played3d
+;	jauc	_3d_test
 no3d
 
 
