@@ -1,3 +1,5 @@
 This LOD matches exact with the IRW in the 7z. No need to change anything.
 It builds as-is, tralalala.
 
+- Many of the mugshots.img have unused colors in the PAL and we could save a few more bytes in program rom.
+
