@@ -1,0 +1,54 @@
+Building code
+=====================================
+
+The current codebase should be set up to compile cleanly. If not check GIT for history and things i might have borked.
+
+If you don't want to mod the included dosbox conf files, it's best to set up in the same folder structure i use.
+
+Your code should go in C:\MYJAMSE on the virtual dosbox root drive.
+This is set up to use my D:\DOSBOX\TOOLS\C drive as root.
+You would have a folder called C:\DOSBOX\TOOLS\C\MYJAMSE with *.asm/*.axx and so on inside it.
+For debugging it is preferred to also have a D:\MAME with a normal D:\MAME\ROMS\NBAJAMTE.ZIP rom in it.
+
+If you do use a different dosbox C: root folder you will need to edit \dosbox-x\dosbox-x.conf included in the repo.
+Section [autoexec]: 
+
+mount c d:\dosbox\tools\c	;change this to your dosbox virtual C root.
+..
+cd myjamse			;change this to your jam SE code folder.
+
+
+
+Dosbox
+======
+
+Code builds in an emulated dosbox environment. I use Dosbox-X installed into C:\dosbox-x
+The REBUILD.CMD command will launch that like this: 
+
+c:\dosbox-x\dosbox-x.exe -conf .\dosbox-x\dosbox-x.conf
+
+The included dosbox-x.conf has an [autoexec] section at the bottom of the conf file that cleans old files, then 
+builds and links the code.
+
+--- dos commands in [autoexec] section ---
+gspa imgtbl.asm
+gspa bgndtbl.asm
+gmake -m
+pause
+cd rom
+call ff8.bat
+------------------------------------------
+
+The FF8.BAT file uses the old BIGSREC.exe tool to create 4 files.
+Once this is all done, execution of the REBUILD.CMD file resumes.
+Our merge-tunit.cmd will run as part of the rebuild.cmd command file, and create the UG12 and UJ11 files with the
+program code inside them. GFX roms are ready and included in the ROM folder.
+
+To test your results, you should put all the rom files inside a NBAJAMTE.ZIP donor file.
+just overwrite all the old files. If your donor has different names, make sure to delete them as MAME prefers to load
+the files based on CRC and will just use the original TE gfx.
+
+Feel free to edit both REBUILD.CMD and MERGE-TUNIT.CMD files to ensure the program code gets zipped into your MAME
+folder \ roms zip file. It's part of my debugging setup.
+
+Testing Griffey JR. can be done with GKG / FEB 4
