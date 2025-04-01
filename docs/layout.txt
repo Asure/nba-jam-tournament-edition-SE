@@ -61,14 +61,22 @@ update was just 4x27C040 chips to mail to Griffey jr.
 
 BBMUG content
 =============
-IMGTBL.GLO
-mugshot.tbl
-IMGTBL3.GLO
-plyrhd3.tbl
+IMGTBL.GLO	Not used?
+*IMGPAL.ASM	Renamed to IMGPALM.ASM in root.
+mugshot.tbl	Used as-is
+IMGTBL3.GLO	Used as-is
+plyrhd3.tbl	Used as-is
+
+This stuff is used(.includes) in SELECT.AXX and SELECT2.AXX
 
 BB3 content
 =============
-IMGTBL.GLO
-fireseq.tbl
-IMGTBL4.GLO 
-plyrhd4.tbl
+IMGTBL.GLO	Not used?
+*IMGPAL.ASM	Renamed to IMGPAL3.ASM in root.
+fireseq.tbl     Used as-is
+IMGTBL4.GLO 	Used as-is
+plyrhd4.tbl	Used as-is
+
+This stuff is used(.includes) in PLYRAT.axx
+
+(There is a minimal map of what is used where in the MAKEFILE. It's incomplete though.)
