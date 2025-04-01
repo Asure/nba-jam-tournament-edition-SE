@@ -54,5 +54,4 @@ I seem to have added KGRIF_P data into IMGPAL3.ASM/AXX as it's .include in plyra
 	.include	"imgtbl4.glo"
 	.include	"plyrhd4.tbl"
 
-I think i manually took plyrhd4.tbl from NBA JAM TE source or something where this file was included and fixed it up.
-This way i could just use NBA Jam TE gfx roms, and load the griffey stuff on top.. not very clean i know.
+Adding others
