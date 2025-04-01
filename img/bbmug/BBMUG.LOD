@@ -150,8 +150,9 @@ HDS12.IMG
 ---> CHEAN12,CHEAN13,CHEAN14,CHEAN15,CHEAN16
 ;XOF>
 ;ZOF>
-PON>
-TVSCORE.IMG
----> SUBZ
-kengrif.img
----> GRIFFEY
+;Edit: This stuff below should not be here, we have the GRIFFEY nameplate in BB3.LOD!
+;PON>
+;TVSCORE.IMG
+;---> SUBZ
+;kengrif.img
+;---> GRIFFEY

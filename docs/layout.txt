@@ -10,6 +10,8 @@ BBMUG		0x03C1400	0x04CE7BD	MUGSHOT.TBL	Mugshots, heads, special guests
 BB		0x04CE7BD	0x0?		COURT.TBL	More heads, backgrounds, Willie (body)
 BB3		0x0718600	0x07FFFFF	FIRESEQ.TBL	Fatality, new dunks, new TE player heads.
 
+!! For details on BBMUG & BB3 see end of doc. !!
+
 (A nice picture would be good to have to show some bars what goes where.)
 
 Loading irw/bin into Mame debug
@@ -56,3 +58,17 @@ Perhaps they ran into the same issue?
 
 Since they didn't touch BB / BB2 we can re-use those original TE roms on a real PCB and the 
 update was just 4x27C040 chips to mail to Griffey jr.
+
+BBMUG content
+=============
+IMGTBL.GLO
+mugshot.tbl
+IMGTBL3.GLO
+plyrhd3.tbl
+
+BB3 content
+=============
+IMGTBL.GLO
+fireseq.tbl
+IMGTBL4.GLO 
+plyrhd4.tbl

@@ -1,1 +1,2 @@
-del *.obj *.out *.lst
+attrib -r
+del *.obj *.out *.lst *.lck
