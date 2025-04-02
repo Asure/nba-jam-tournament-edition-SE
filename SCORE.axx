@@ -3946,7 +3946,7 @@ qnvtln4_setup
 	RJR_STR	sgmd8_ascii,3,0,350,196,SGMD8WHT,0
 
 qnvtln1
-	.string	"BIG HEAD qnvt1",0
+	.string	"BIG HEAD ON",0
 qnvtln1a
 	.string	"HUGE HEAD",0
 	.even
