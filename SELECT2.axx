@@ -1765,7 +1765,7 @@ fgatteam_inits
 
 	.word	'C'-'A','G'-'A',26	,12,04	;52 GRANNER
 
-	.word	'G'-'A','K'-'A','G'-'A'	,02,04	;53 GRIFFEY
+	.word	'K'-'A','I'-'A','D'-'A'	,11,21	;53 GRIFFEY
 
 	.word	'J'-'A','M'-'A','S'-'A'	,07,29	;54 SKILES
 	.word	'J'-'A','F'-'A','L'-'A'	,04,16	;55 LINHOFF
