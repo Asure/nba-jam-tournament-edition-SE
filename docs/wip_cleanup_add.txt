@@ -1,0 +1,50 @@
+Room needed.
+We cut some head angles and adjust the game to use the cut-down version.
+
+Target
+VIKAPE
+
+LOD: Edited, these remain:
+---> VIKAPE01,VIKAPE02,VIKAPE03,VIKAPE04,VIKAPE05,VIKAPE16
+
+Numbered VIKAPE* exists in IMGTBL4.GLO. Cut heads removed there.
+Numbered VIKAPE* exists in PLYRHD4.TBL.
+
+PLYRAT.AXX holds the head table. Edited to remove the cut heads.
+
+Viking Ape / KONGO / KING KONG is KNG 26 mar
+
+MAME test with non-updated rom data, Kongo is still doing fine with his heads.
+
+(Note that Griffey is now broken since his head data is at a wrong offset and we are still compiling with the 
+old PLYRHD4.TBL.)
+
+
+Now we can make a new BB3.BIN and see how much rom space it gives us.
+924842 bytes vs. 943778 
+
+Mame loading BB3 reports 0x7FA2A9 is end, so 7FA2AA-7FFFFF is free for use.
+
+Test: Add Jordan's heads and mug in there to check. (we end up at 7FB4E7)
+Test: Add Jordan's Mug (we end up 7FC4BD!)
+
+We need to check if Jordan's mug and heads work..
+We need to fix Griffey as well at this point.
+
+Test: We need to add the new 
+PLYRHD4.TBL (manual move the updated GRIFFEY: nameplate/scorep into.. IMGTBL.ASM)
+IMGTBL4.GLO (manual need to remove SCOREP and GRIFFEY globals from this one.)
+IMGPAL3.ASM (manual need to remove SCOREP and GRIFFEY pals from this one.)
+(FIRESEQ.TBL did not change.)
+
+into main codebase. Old renamed to .bak
+
+Game now compiles OK.
+Testing with new .bin, we need to check Griffey, as his heads and nameplate are in the end of the file.
+KID nov 21
+
+Everything is OK. 
+Moved Grif 03 head a bit to the left so it aligns better.
+Moved Grif 05 head more center.
+
+Added Jordan nameplate "JORDAN/ pal JORDANP" to .LOD (933666 ->933929 bytes)

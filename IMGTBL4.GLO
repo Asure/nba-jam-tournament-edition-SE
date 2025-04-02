@@ -413,16 +413,6 @@
 	.global	VIKAPE03
 	.global	VIKAPE04
 	.global	VIKAPE05
-	.global	VIKAPE06
-	.global	VIKAPE07
-	.global	VIKAPE08
-	.global	VIKAPE09
-	.global	VIKAPE10
-	.global	VIKAPE11
-	.global	VIKAPE12
-	.global	VIKAPE13
-	.global	VIKAPE14
-	.global	VIKAPE15
 	.global	VIKAPE16
 	.globl	VNCPON_P
 	.global	VNCPON01
@@ -465,7 +455,16 @@
 	.global	RACDAV04
 	.global	RACDAV05
 	.global	RACDAV16
+	.globl	JORDAN_P
+	.global	JORDAN1
+	.global	JORDAN2
+	.global	JORDAN3
+	.global	JORDAN4
+	.global	JORDAN5
 	.globl	KGRIF_P
+	.global	JORDAN16
+	.globl	JOR_MUGP
+	.global	JOR_MUG
 	.global	KGRIF01
 	.global	KGRIF02
 	.global	KGRIF03

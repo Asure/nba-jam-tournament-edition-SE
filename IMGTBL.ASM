@@ -530,7 +530,7 @@ SUBZ:
 	.long   scorep
 GRIFFEY:
 	.word   42,9,21,0
-	.long   05FF5a10H
+	.long   05fe1e13H
 	.word   06000H
 	.long   scorep
 PETRO:
