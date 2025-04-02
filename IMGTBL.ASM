@@ -6,7 +6,16 @@
 	.include imgtbl.glo
 	.DATA
 	.even
-
+GRIFFEY:
+	.word   42,9,21,0
+	.long   05fe169cH
+	.word   06000H
+	.long   scorep
+JORDAN:
+	.word   48,9,21,0
+	.long   05fe1f78H
+	.word   06280H
+	.long   scorep
 shadow1:
 	.word   59,9,29,4
 	.long   04ea3161H
@@ -526,11 +535,6 @@ REPT:
 SUBZ:
 	.word   53,9,26,0
 	.long   05048e38H
-	.word   06000H
-	.long   scorep
-GRIFFEY:
-	.word   42,9,21,0
-	.long   05fe1e13H
 	.word   06000H
 	.long   scorep
 PETRO:

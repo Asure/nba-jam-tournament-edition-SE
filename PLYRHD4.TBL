@@ -2412,158 +2412,158 @@ RACDAV16:
 	.long   RACDAV_P
 	.word   -1,-1,-1,0,0,0,0,0,0
 JORDAN1:
-	.word   24,30,9,26
+	.word   24,28,9,25
 	.long   05fc5e42H
 	.word   07000H
 	.long   JORDAN_P
 	.word   0,0,0,0,0,0,0,0,0
 JORDAN2:
-	.word   26,30,10,27
-	.long   05fc71f2H
+	.word   25,29,10,27
+	.long   05fc70a2H
 	.word   07000H
 	.long   JORDAN_P
 	.word   0,0,0,0,0,0,0,0,0
 JORDAN3:
-	.word   30,33,11,28
-	.long   05fc8746H
+	.word   28,31,10,27
+	.long   05fc8475H
 	.word   07000H
 	.long   JORDAN_P
 	.word   0,0,0,0,0,0,0,0,0
 JORDAN4:
 	.word   25,33,12,30
-	.long   05fca258H
+	.long   05fc9c31H
 	.word   07000H
 	.long   JORDAN_P
 	.word   0,0,0,0,0,0,0,0,0
 JORDAN5:
-	.word   24,33,12,30
-	.long   05fcb8e7H
+	.word   24,31,12,29
+	.long   05fcb2c0H
 	.word   07000H
 	.long   JORDAN_P
 	.word   0,0,0,0,0,0,0,0,0
 JORDAN16:
 	.word   35,41,32,34
-	.long   05fcce8fH
+	.long   05fcc718H
 	.word   06000H
 	.long   KGRIF_P
 	.word   -1,-1,-1,0,0,0,0,0,0
 JOR_MUG:
 	.word   67,61,0,59
-	.long   05fcf031H
+	.long   05fce8baH
 	.word   00H
 	.long   JOR_MUGP
 	.word   0,-2,0,0,0,0,0,0,0
 KGRIF01:
 	.word   28,34,13,31
-	.long   05fd6fe9H
+	.long   05fd6872H
 	.word   06000H
 	.long   KGRIF_P
 	.word   -1,-1,-1,0,0,0,0,0,0
 KGRIF02:
 	.word   33,34,18,31
-	.long   05fd8639H
+	.long   05fd7ec2H
 	.word   06000H
 	.long   KGRIF_P
 	.word   -1,-1,-1,0,0,0,0,0,0
 KGRIF03:
 	.word   40,36,22,31
-	.long   05fda085H
+	.long   05fd990eH
 	.word   06000H
 	.long   KGRIF_P
 	.word   0,0,-1,0,0,0,0,0,0
 KGRIF04:
 	.word   37,37,18,32
-	.long   05fdc245H
+	.long   05fdbaceH
 	.word   06000H
 	.long   KGRIF_P
 	.word   -1,-1,-1,0,0,0,0,0,0
 KGRIF05:
-	.word   26,38,11,33
-	.long   05fde25bH
+	.word   26,38,12,33
+	.long   05fddae4H
 	.word   06000H
 	.long   KGRIF_P
 	.word   0,0,-1,0,0,0,0,0,0
 ballite1:
 	.word   24,13,11,12
-	.long   05fdf983H
+	.long   05fdf20cH
 	.word   03000H
 	.long   ligtn_p
 	.word   -1,-1,-1,0,0,0,0,0,0
 ballite2:
 	.word   24,11,11,13
-	.long   05fdfd2bH
+	.long   05fdf5b4H
 	.word   03000H
 	.long   ligtn_p
 	.word   -1,-1,-1,0,0,0,0,0,0
 ballite3:
 	.word   23,13,11,16
-	.long   05fe0043H
+	.long   05fdf8ccH
 	.word   03000H
 	.long   ligtn_p
 	.word   -1,-1,-1,0,0,0,0,0,0
 ballite4:
 	.word   21,14,10,20
-	.long   05fe03c4H
+	.long   05fdfc4dH
 	.word   03000H
 	.long   ligtn_p
 	.word   -1,-1,-1,0,0,0,0,0,0
 ballite5:
 	.word   21,11,11,20
-	.long   05fe0736H
+	.long   05fdffbfH
 	.word   03000H
 	.long   ligtn_p
 	.word   -1,-1,-1,0,0,0,0,0,0
 ballite6:
 	.word   16,11,11,20
-	.long   05fe09ebH
+	.long   05fe0274H
 	.word   03000H
 	.long   ligtn_p
 	.word   -1,-1,-1,0,0,0,0,0,0
 ballite7:
 	.word   10,6,9,18
-	.long   05fe0bfbH
+	.long   05fe0484H
 	.word   03000H
 	.long   ligtn_p
 	.word   -1,-1,-1,0,0,0,0,0,0
 lighten1:
 	.word   7,13,1,10
-	.long   05fe0cafH
+	.long   05fe0538H
 	.word   03000H
 	.long   ligtn_p
 	.word   -1,-1,-1,0,0,0,0,0,0
 lighten2:
 	.word   13,16,-2,20
-	.long   05fe0dc0H
+	.long   05fe0649H
 	.word   03000H
 	.long   ligtn_p
 	.word   -1,-1,-1,0,0,0,0,0,0
 lighten3:
 	.word   10,29,-5,37
-	.long   05fe1030H
+	.long   05fe08b9H
 	.word   03000H
 	.long   ligtn_p
 	.word   -1,-1,-1,0,0,0,0,0,0
 lighten4:
 	.word   15,23,2,44
-	.long   05fe1396H
+	.long   05fe0c1fH
 	.word   03000H
 	.long   ligtn_p
 	.word   -1,-1,-1,0,0,0,0,0,0
 lighten5:
 	.word   10,22,4,56
-	.long   05fe17a1H
+	.long   05fe102aH
 	.word   03000H
 	.long   ligtn_p
 	.word   -1,-1,-1,0,0,0,0,0,0
 lighten6:
 	.word   11,20,4,65
-	.long   05fe1a35H
+	.long   05fe12beH
 	.word   03000H
 	.long   ligtn_p
 	.word   -1,-1,-1,0,0,0,0,0,0
 lighten7:
 	.word   10,11,-1,69
-	.long   05fe1cc9H
+	.long   05fe1552H
 	.word   03000H
 	.long   ligtn_p
 	.word   -1,-1,-1,0,0,0,0,0,0

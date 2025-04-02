@@ -192,6 +192,7 @@
 	.global	REPT
 	.global	SUBZ
 	.global	GRIFFEY
+	.global	JORDAN
 	.global	PETRO
 	.global	NEWCOMER
 	.global	OURSLER

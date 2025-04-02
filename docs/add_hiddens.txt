@@ -1,0 +1,84 @@
+Cheat sheet
+===========
+What to add where.
+
+Heads		PLYRHD4.TBL	IMGPAL3.ASM 	IMGTBL4.GLO
+Nameplate	IMGTBL.ASM	- none -	IMGTBL.GLO  	(uses global pal "scorep")
+Mug		MUGSHOT.TBL	IMGPALM.ASM	IMGTBLM.GLO	(griffey in the wrong place (IMGPALP_. oops.)
+
+Short list:
+===========
+Lots of manual labour. But it's like this:
+
+Add heads to plyrhd4.tbl
+Add head table to plyrat.axx
+Add player data to plyrat.axx spechds_t (ex. position 69)
+Add player name to speech.axx special_name_speech table @ pos 69
+Add player name to speech.axx special_pass_speech @ pos 69
+Add player to SELECT2.AXX fgatteam_inits @ pos 69
+Add player to SELECT2.AXX fgatteam_snds @ pos 69
+Add player to SELECT2.AXX player_attribs table. (this is just the gfx representation btw.) @ pos 69
+Add player mug to SELECT2.axx our_heads table. @ pos 69
+Add player nameplate SELECT2.axx to our_names table. @ pos 69
+
+Note! Tables must all match up or strange stuff will happen in the game when it reads random wrong data.
+(ex. wrong nameplate, wrong sound calls crashing sound board, wrong GFX crashing the DMA2 dsp.. etc.)	
+
+
+Heads
+=====
+
+kengrif.img
+---> KGRIF01,KGRIF02,KGRIF03,KGRIF04,KGRIF05
+
+GLO> IMGTBL4.GLO
+ASM> plyrhd4.tbl
+
+Find the .asm/axx where these TBL/GLO were included. It's PLYRAT.ASM
+Find the used names etc.
+
+KG_H	;GRIFFEY
+	.long	KGRIF01
+	.long	KGRIF01,KGRIF02,KGRIF03,KGRIF04,KGRIF05
+	.long	KGRIF01,KGRIF02,KGRIF03,KGRIF04,KGRIF05
+	.long	KGRIF01,KGRIF02,KGRIF03,KGRIF04,KGRIF05
+	.long	KGRIF03
+
+This data appears to be non-sequential, we would have seen Malone last here otherwise.
+TEST: Add MJ_H with JORDAN1 etc, this works.
+TEST: Temp replace Grif heads with Jordan 
+
+Q: Where is the actual player data?
+A: The special heads table in plyrat.axx
+
+
+;Size, speed, shot%, dunks, block defense, steals, drone skill
+;Flesh pal, Pri uniform pal, Alt uniform pal, Pri trim pal, Alt trim pal, head
+;Pass ability, power, clutch
+
+spechds_t
+	LWWWWWW	scale610_t,BV9,SHT9,DNK9,DEF7,SDEF7,DSKL3
+	.long	FL34_p, Un12_p,Un14_p, TR2_p,TR7_p,KG_H
+	.word	6,9,9	
+
+Q: Is this aligned with other stuff like i found in Hangtime?
+A: SPEECH.AXX?
+
+SPEECH.AXX holds some tables with 68 entries for the specials:
+
+special_name_speech 
+	.word	0f980H,37,080c5H,0	;68 MALONE
+special_pass_speech
+	.word	0f980H,40,080faH,0	;68 TO MALONE
+
+There is also the normal players in two tables here.
+
+name_speech
+pass_speech 
+
+One would assume adding some player in the middle, we need to shift these tables accordingly.
+
+Selectable
+==========
+SELECT2.AXX has fgatteam_inits and fgatteam_snds, there's a double MALONE, WHY? ALready an extra?
+mug is in our_heads table. mug pal should be IMGPALM.ASM and IMGTBLM.GLO

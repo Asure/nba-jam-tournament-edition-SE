@@ -141,6 +141,12 @@ CON>
 ZON>
 PPP> 1
 ; Extra nameplates
+; no need to store PAL
+; put in separate table, keeps PLYRHD4.TBL clean.
+; switch header output as well.
+IHDR SIZX:W,SIZY:W,ANIX:W,ANIY:W,SAG:L,CTRL:W,PAL:L
+ASM> NAMES.TBL
+GLO> NAMES.GLO
 kengrif.img
 ---> GRIFFEY
 jordan.img
