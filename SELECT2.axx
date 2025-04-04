@@ -303,7 +303,7 @@ ladder_imgs4
 ladder_imgs5
 	.long	SKL_ORL,x1,y1-0b3H*18-18
 	.long	HAR_ORL,x1a,y1-0b3H*18-18
-	.long	AND_ORL,x2a,y1-0b3H*18-18
+	.long	ONE_ORL,x2a,y1-0b3H*18-18
 	.long	T_MAGIC,x1b,y1a-0b3H*18-18
 
 	.long	ROB_SAN,x1,y1-0b3H*19-18
@@ -3425,12 +3425,12 @@ player_heads
 	.long	EWG_NEY,HPR_DAL
 
 
-	.long	HAR_ORL,AND_ORL
-	.long	AND_ORL,HAR_ORL
+	.long	HAR_ORL,ONE_ORL
+	.long	ONE_ORL,HAR_ORL
 	.long	HAR_ORL,SKL_ORL
 	.long	SKL_ORL,HAR_ORL
-	.long	AND_ORL,SKL_ORL
-	.long	SKL_ORL,AND_ORL
+	.long	ONE_ORL,SKL_ORL
+	.long	SKL_ORL,ONE_ORL
 
 
 	.long	0,0
@@ -3646,7 +3646,7 @@ player_heads
 	.long	ROB_SAN,BRK_PHX
 	.long	DRX_PRT,HAR_ORL
 	.long	EWG_NEY,AND_NEJ
-	.long	COL_NEJ,AND_ORL
+	.long	COL_NEJ,ONE_ORL
 	.long	STK_UTA,JOH_PHX
 
 	.long	GIL_SEA,RIC_SAC
@@ -3894,14 +3894,23 @@ player_attribs
  .word	05,05,02,05
  .word  05,04,03,06	;DEREK HARPER	   6-4    Skinny
 
-
-
+;ORLANDO
+;This table is only the visual bars during selection.
+;It should match plyrat.axx player format
+;combined with team table ex. ORL_T 3,9,9 
 
  .word	09,08,03,08
  .word  02,07,04,05	;ANFERNEE (Penny) HARDAWAY   6-7 Skinny
 
- .word	07,09,05,05
- .word  06,08,06,04	;NICK ANDERSON		 6-6   Fat (medium)
+;Size, speed, shot%, dunks, block defense, steals, drone skill
+;scale72f_t,BV6,SHT1,DNK10,DEF7,SDEF5,DSKL2	;Can shatter 
+;Pass ability, power, clutch -> in plyrat.axx ORL_T 3,9,3 
+
+;Speed, 3 ptrs, Dunks, Passing
+;Power, Steals, Block, Clutch
+
+ .word	06,01,10,03
+ .word  09,05,07,03	;SHAQ
 
  .word	07,09,00,07
  .word  01,08,01,06	;SCOTT SKILES		6-1    Skinny
@@ -4630,7 +4639,7 @@ guyhds
 	.long	GUG_WAS
 	.long	ELL_WAS		;26 WASHINGTON
 	.long	CHE_WAS		;26 WASHINGTON
-	.long	AND_ORL
+	.long	ONE_ORL
 	.long	SKL_ORL		;18 ORLANDO
 	.long	HAR_ORL		;18 ORLANDO
 	.long	RCE_MIA

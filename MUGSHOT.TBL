@@ -1,4 +1,9 @@
 	.DATA
+ONE_ORL:
+	.word   77,62,0,61
+	.long   05fa7310H
+	.word   00H
+	.long   ONE_ORLP
 RAD_MK2:
 	.word   66,63,0,63
 	.long   03e0a000H

@@ -46,6 +46,7 @@
 	.globl	WAR_DAVP
 	.globl	JAK_SIMP
 	.globl	KEN_MUGP
+	.globl	ONE_ORLP
 	.globl	TON_GOSP
 	.globl	JON_CARP
 	.globl	JAM_RIVP

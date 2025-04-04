@@ -1,0 +1,43 @@
+With everything in place gfx/table etc.
+
+Time to replace Anderson w/ Shaq for now.
+
+Plyrat.axx
+	ORL_T		Pass Power Clutch Dunk?
+	Hardaway 	8,2,5 3
+	Shaq		3,9,3 10
+	Skiles		7,1,6 0(lol)
+
+Select.axx 
+- table name_sort must be updated (replaced all NANDERSON w/ ONEAL)
+
+Select2.axx - Mugs
+;	.long	AND_ORL		;18 ORLANDO
+	.long	ONE_ORL		;18 ORLANDO
+	.long	SKL_ORL		;18 ORLANDO
+	.long	HAR_ORL		;18 ORLANDO
+
+SCORE2.axx 
+- Nameplates table "player_names" should be updated. (replaced all NANDERSON w/ ONEAL)
+(Not updating this causes a freeze when the cursor goes on top of the team! doh!)
+
+player_attribs!
+
+JAM:
+speed,shot,dunk,def
+ .word	06,01,10,07,	06,09,00,06	;ONEAL,SKILES		18 ORLANDO
+
+TE
+
+;Size, speed, shot%, dunks, block defense, steals, drone skill
+;Pass ability, power, clutch -> in plyrat.axx ORL_T 	Shaq		3,9,3 10
+
+	LWWWWWW	scale72f_t,BV6,SHT1,DNK10,DEF7,SDEF5,DSKL2	;Can shatter
+	.long	FL33_p, Un1_p,Un14_p, TR7_p,TR7_p,ONeal_h
+
+	LWWWWWW	scale61_t,BV6,SHT9,DNK0,DEF6,SDEF8,DSKL2
+	.long	FL47_p, Un1_p,Un14_p, TR7_p,TR7_p,Skiles_h
+
+
+
+	

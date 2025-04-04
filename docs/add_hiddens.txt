@@ -19,7 +19,7 @@ Add player to SELECT2.AXX fgatteam_inits @ pos 69
 Add player to SELECT2.AXX fgatteam_snds @ pos 69
 Add player to SELECT2.AXX player_attribs table. (this is just the gfx representation btw.) @ pos 69
 Add player mug to SELECT2.axx our_heads table. @ pos 69
-Add player nameplate SELECT2.axx to our_names table. @ pos 69
+Add player nameplate SCORE2.axx to our_names table. @ pos 69
 
 Note! Tables must all match up or strange stuff will happen in the game when it reads random wrong data.
 (ex. wrong nameplate, wrong sound calls crashing sound board, wrong GFX crashing the DMA2 dsp.. etc.)	

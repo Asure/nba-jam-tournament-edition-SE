@@ -385,16 +385,16 @@ ATL_t
 ;Pass ability, power, clutch
 
 ;ORL_t
-;	LWWWWWW	scale72f_t,BV7,SHT0,DNK10,DEF9,SDEF4,DSKL2	;Can shatter
-;	.long	FL33_p, Un1_p,Un14_p, TR7_p,TR7_p,ONeal_h
-;	.word	3,9,3	
 
 	LWWWWWW	scale67t_t,BV10,SHT8,DNK3,DEF4,SDEF7,DSKL2
 	.long	FL34_p, Un1_p,Un14_p, TR7_p,TR7_p,AHard_h
 	.word	8,2,5
-	LWWWWWW	scale66_t,BV7,SHT9,DNK5,DEF6,SDEF8,DSKL2
-	.long	FL33_p, Un1_p,Un14_p, TR7_p,TR7_p,NAnders_h
-	.word	5,6,4	
+	LWWWWWW	scale72f_t,BV7,SHT0,DNK10,DEF9,SDEF4,DSKL2	;O'Neal
+	.long	FL33_p, Un1_p,Un14_p, TR7_p,TR7_p,ONeal_h
+	.word	3,9,3	
+;	LWWWWWW	scale66_t,BV7,SHT9,DNK5,DEF6,SDEF8,DSKL2
+;	.long	FL33_p, Un1_p,Un14_p, TR7_p,TR7_p,NAnders_h
+;	.word	5,6,4	
 	LWWWWWW	scale61_t,BV7,SHT9,DNK0,DEF1,SDEF8,DSKL2
 	.long	FL47_p, Un1_p,Un14_p, TR7_p,TR7_p,Skiles_h
 	.word	7,1,6	

@@ -2232,12 +2232,12 @@ player_names
 	.long	EWING,HARPER_D
 
 
-	.long	AHARDAWAY,NANDERSON
-	.long	NANDERSON,AHARDAWAY
+	.long	AHARDAWAY,ONEAL
+	.long	ONEAL,AHARDAWAY
 	.long	AHARDAWAY,SKILES
 	.long	SKILES,AHARDAWAY
-	.long	NANDERSON,SKILES
-	.long	SKILES,NANDERSON
+	.long	ONEAL,SKILES
+	.long	SKILES,ONEAL
 
 	.long	0,0
 	.long	0,0
@@ -2448,7 +2448,7 @@ player_names
 	.long	DROBINSON,BARKLEY
 	.long	DREXLER,AHARDAWAY
 	.long	EWING,KANDERSON
-	.long	COLEMAN,NANDERSON
+	.long	COLEMAN,ONEAL
 	.long	STOCKTON,KJOHNSON
 
 	.long	GILL,RICH
@@ -2525,6 +2525,7 @@ our_names
 	.long	GRANN		;52		
 
 	.long	GRIFFEY		;53
+;	.long	ONEAL		;53 ;test nameplate
 
 	.long	JSKILES		;54
 	.long	LINHOFF		;55
