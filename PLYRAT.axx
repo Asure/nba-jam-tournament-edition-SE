@@ -381,7 +381,13 @@ ATL_t
 	.long	FL5_p,  Un5_p,Un14_p, TR5_p,TR5_p,DHarper_h
 	.word	5,5,6
 
+;Size, speed, shot%, dunks, block defense, steals, drone skill
+;Pass ability, power, clutch
 
+;ORL_t
+;	LWWWWWW	scale72f_t,BV7,SHT0,DNK10,DEF9,SDEF4,DSKL2	;Can shatter
+;	.long	FL33_p, Un1_p,Un14_p, TR7_p,TR7_p,ONeal_h
+;	.word	3,9,3	
 
 	LWWWWWW	scale67t_t,BV10,SHT8,DNK3,DEF4,SDEF7,DSKL2
 	.long	FL34_p, Un1_p,Un14_p, TR7_p,TR7_p,AHard_h
@@ -393,7 +399,10 @@ ATL_t
 	.long	FL47_p, Un1_p,Un14_p, TR7_p,TR7_p,Skiles_h
 	.word	7,1,6	
 
+;Size, speed, shot%, dunks, block defense, steals, drone skill
+;Pass ability, power, clutch
 
+;PHIL_t
 	LWWWWWW	scale67f_t,BV5,SHT6,DNK6,DEF8,SDEF3,DSKL_9
 	.long	FL18_p, Un4_p,Un14_p, TR7_p,TR4_p,Weath_h
 	.word	2,8,2	
@@ -789,8 +798,9 @@ spechds_t
 	.word	2,3,8	
 
 	LWWWWWW	scale610_t,BV9,SHT9,DNK9,DEF7,SDEF7,DSKL3
-	.long	FL38_p, Un12_p,Un14_p, TR2_p,TR7_p,KG_H
+;	.long	FL38_p, Un12_p,Un14_p, TR2_p,TR7_p,KG_H
 ;	.long	FL34_p, Un12_p,Un14_p, TR2_p,TR7_p,MJ_H
+	.long	FL38_p, Un12_p,Un14_p, TR2_p,TR7_p,ONeal_h
 	.word	6,9,9	
 
 	LWWWWWW	scale67t_t,BV8,SHT11,DNK10,DEF8,SDEF6,DSKL5
