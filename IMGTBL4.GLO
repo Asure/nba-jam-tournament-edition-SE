@@ -485,3 +485,22 @@
 	.global	lighten5
 	.global	lighten6
 	.global	lighten7
+	.globl	ONE_ORLP
+	.global	ONE_ORL
+	.globl	ONEAL_P
+	.global	ONEAL1
+	.global	ONEAL2
+	.global	ONEAL3
+	.global	ONEAL4
+	.global	ONEAL5
+	.global	ONEAL6
+	.global	ONEAL7
+	.global	ONEAL8
+	.global	ONEAL9
+	.global	ONEAL10
+	.global	ONEAL11
+	.global	ONEAL12
+	.global	ONEAL13
+	.global	ONEAL14
+	.global	ONEAL15
+	.global	ONEAL16

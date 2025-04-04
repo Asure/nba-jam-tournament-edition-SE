@@ -30,23 +30,33 @@ ourhds2.img
 ---> wil1,wil2,wil3,wil4,wil5
 ;tonysc1,tonysc2,tonysc3,tonysc4,tonysc5
 ; Jon Hey (Music)
----> JONH1,JONH2,JONH3,JONH4,JONH5,JONH6,JONH7,JONH8,JONH9,JONH10,JONH11
----> JONH12,JONH13,JONH14,JONH15,JONH16
+; Number of heads cut down for Shaq/Mug
+---> JONH1,JONH2,JONH3,JONH4,JONH5
+---> JONH16
+;---> JONH6,JONH7,JONH8,JONH9,JONH10,JONH11,JONH12,JONH13,JONH14,JONH15,JONH16
 PPP> 7
 ; Mark Turmell (Lead Programmer)
 ---> MT01,MT02,MT03,MT04,MT05,MT06,MT07
 ---> MT08,MT09,MT10,MT11,MT12,MT13,MT14,MT15,MT16
 PPP> 0
 ; Sal Divita
+; Number of heads cut down for Shaq/Mug
 ---> SAL1,SAL2,SAL3,SAL4,SAL5
----> SAL6,SAL7,SAL8,SAL9,SAL10,SAL11,SAL12,SAL13,SAL14,SAL15,SAL16,
+---> SAL16
+;---> SAL6,SAL7,SAL8,SAL9,SAL10,SAL11,SAL12,SAL13,SAL14,SAL15,SAL16,
+; Todd and Steve were already disabled in production for some reason.
+;
 ;,todd2,todd3,todd4,todd5,steve1,steve2,steve3,steve4,steve5,tonysc1
 ; Tony Goskie
----> TG01,TG02,TG03,TG04,TG05,TG06,TG07,TG08,TG09
----> TG10,TG11,TG12,TG13,TG14,TG15,TG16
+; Number of heads cut down for Shaq/Mug
+---> TG01,TG02,TG03,TG04,TG05
+---> TG16
+;---> TG06,TG07,TG08,TG09,TG10,TG11,TG12,TG13,TG14,TG15,TG16
 ;
 ---> JC1,JC10,JC11,JC12,JC13,JC14,JC15
----> JC16,JC2,JC3,JC4,JC5,JC6,JC7,JC8,JC9,SHAW1,SHAW2,SHAW3,SHAW4,SHAW5
+---> JC16,JC2,JC3,JC4,JC5,JC6,JC7,JC8,JC9
+;
+---> SHAW1,SHAW2,SHAW3,SHAW4,SHAW5
 ---> SHAW6,SHAW7,SHAW8,SHAW9,SHAW10,SHAW11,SHAW12,SHAW13,SHAW14,SHAW15
 ---> SHAW16
 PPP> 6
@@ -54,8 +64,7 @@ PPP> 6
 ---> jamie1,jamie2,jamie3,jamie4,jamie5,jamie6,jamie7,jamie8,jamie9
 ---> jamie10,jamie11,jamie12,jamie13,jamie14,jamie15,jamie16
 ; Petro
----> GEOR1,GEOR2
----> GEOR3,GEOR4,GEOR5,GEOR16
+---> GEOR1,GEOR2,GEOR3,GEOR4,GEOR5,GEOR16
 ;,GEOR6,GEOR7,GEOR8,GEOR9,GEOR10,GEOR11,GEOR12,GEOR13
 ;---> GEOR14,GEOR15
 PPP> 0
@@ -133,6 +142,15 @@ jordan.img
 ; Still needs nameplate
 kengrif.img
 ---> KGRIF01,KGRIF02,KGRIF03,KGRIF04,KGRIF05
+;Shaq heads from NBA Jam
+hds5.img
+ASM> plyrhd.tbl
+---> ONEAL1,ONEAL2,ONEAL3,ONEAL4,ONEAL5,ONEAL6,ONEAL7,ONEAL8
+---> ONEAL9,ONEAL10,ONEAL11,ONEAL12,ONEAL13,ONEAL14,ONEAL15,ONEAL16
+ASM> mugshots.tbl
+mugshots.img
+---> ONE_ORL
+ASM> plyrhd4.tbl
 raiden.img
 ---> ballite1,ballite2,ballite3,ballite4,ballite5,ballite6,ballite7,lighten1
 ---> lighten2,lighten3,lighten4,lighten5,lighten6,lighten7

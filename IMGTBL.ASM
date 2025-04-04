@@ -6,14 +6,17 @@
 	.include imgtbl.glo
 	.DATA
 	.even
+; AM
+; Griffey and Jordan at the top. ONeal is already in the base GFX rom.
+; (These change when we touch BB3 lod stuff and need to be updated each time.)
 GRIFFEY:
 	.word   42,9,21,0
-	.long   05fe169cH
+	.long   05fb2cd0H
 	.word   06000H
 	.long   scorep
 JORDAN:
 	.word   48,9,21,0
-	.long   05fe1f78H
+	.long   05fb35acH
 	.word   06280H
 	.long   scorep
 shadow1:
