@@ -1717,7 +1717,7 @@ lviastr_29
 lviastr_29a
 	.string	"B.J. Armstrong",0
 lviastr_29b
-	.string	"Toni Kukoc",0
+	.string	"Michael Jordan",0
 lviastr_30
 	.string	"Isiah Thomas",0
 lviastr_31a
@@ -1791,7 +1791,7 @@ lviastr_51
 lviastr_51a
 	.string	"Calbert Cheaney",0
 lviastr_52
-	.string	"Nick Anderson",0
+	.string	"Shaquille O'Neal",0
 lviastr_52a
 	.string	"Scott Skiles",0
 lviastr_53
