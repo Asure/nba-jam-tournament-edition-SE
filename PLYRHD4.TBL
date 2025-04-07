@@ -2383,97 +2383,97 @@ lighten7:
 	.word   -1,-1,-1,0,0,0,0,0,0
 ONEAL1:
 	.word   24,28,11,24
-	.long   05f8d8bcH
+	.long   05f8e3f2H
 	.word   06000H
 	.long   ONEAL_P
 	.word   -1,-1,-1,0,0,0,0,0,0
 ONEAL2:
 	.word   24,27,11,25
-	.long   05f8e87cH
+	.long   05f8f3b2H
 	.word   06000H
 	.long   ONEAL_P
 	.word   -1,-1,-1,0,0,0,0,0,0
 ONEAL3:
 	.word   26,31,8,27
-	.long   05f8f7acH
+	.long   05f902e2H
 	.word   06000H
 	.long   ONEAL_P
 	.word   -1,-1,-1,0,0,0,0,0,0
 ONEAL4:
 	.word   24,31,8,28
-	.long   05f90a90H
+	.long   05f915c6H
 	.word   06000H
 	.long   ONEAL_P
 	.word   -1,-1,-1,0,0,0,0,0,0
 ONEAL5:
 	.word   23,30,11,26
-	.long   05f91c00H
+	.long   05f92736H
 	.word   06000H
 	.long   ONEAL_P
 	.word   -1,-1,-1,0,0,0,0,0,0
 ONEAL6:
 	.word   28,28,17,24
-	.long   05f92c2cH
+	.long   05f93762H
 	.word   06000H
 	.long   ONEAL_P
 	.word   -1,-1,-1,0,0,0,0,0,0
 ONEAL7:
 	.word   27,28,8,25
-	.long   05f93e8cH
+	.long   05f949c2H
 	.word   06000H
 	.long   ONEAL_P
 	.word   -1,-1,-1,0,0,0,0,0,0
 ONEAL8:
 	.word   29,34,7,27
-	.long   05f95044H
+	.long   05f95b7aH
 	.word   06000H
 	.long   ONEAL_P
 	.word   -1,-1,-1,0,0,0,0,0,0
 ONEAL9:
 	.word   26,32,6,28
-	.long   05f96760H
+	.long   05f97296H
 	.word   06000H
 	.long   ONEAL_P
 	.word   -1,-1,-1,0,0,0,0,0,0
 ONEAL10:
 	.word   24,30,10,25
-	.long   05f97ae0H
+	.long   05f98616H
 	.word   06000H
 	.long   ONEAL_P
 	.word   -1,-1,-1,0,0,0,0,0,0
 ONEAL11:
 	.word   23,23,10,18
-	.long   05f98bc0H
+	.long   05f996f6H
 	.word   06000H
 	.long   ONEAL_P
 	.word   -1,-1,-1,0,0,0,0,0,0
 ONEAL12:
 	.word   29,28,16,24
-	.long   05f99826H
+	.long   05f9a35cH
 	.word   06000H
 	.long   ONEAL_P
 	.word   -1,-1,-1,0,0,0,0,0,0
 ONEAL13:
 	.word   32,28,17,23
-	.long   05f9ab2eH
+	.long   05f9b664H
 	.word   06000H
 	.long   ONEAL_P
 	.word   -1,-1,-1,0,0,0,0,0,0
 ONEAL14:
 	.word   25,29,13,25
-	.long   05f9c02eH
+	.long   05f9cb64H
 	.word   06000H
 	.long   ONEAL_P
 	.word   -1,-1,-1,0,0,0,0,0,0
 ONEAL15:
 	.word   23,30,12,26
-	.long   05f9d12cH
+	.long   05f9dc62H
 	.word   06000H
 	.long   ONEAL_P
 	.word   -1,-1,-1,0,0,0,0,0,0
 ONEAL16:
 	.word   32,24,30,19
-	.long   05f9e158H
+	.long   05f9ec8eH
 	.word   06000H
 	.long   ONEAL_P
 	.word   -1,-1,-1,0,0,0,0,0,0
