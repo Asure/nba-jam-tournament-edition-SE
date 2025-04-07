@@ -463,8 +463,8 @@
 	.global	JORDAN5
 	.globl	KGRIF_P
 	.global	JORDAN16
-	.globl	JOR_MUGP
-	.global	JOR_MUG
+	.globl	JOR_CHIP
+	.global	JOR_CHI
 	.global	KGRIF01
 	.global	KGRIF02
 	.global	KGRIF03

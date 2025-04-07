@@ -137,29 +137,30 @@ PPP> 0
 ---> RACDAV01,RACDAV02,RACDAV03,RACDAV04,RACDAV05,RACDAV16
 jordan.img
 ---> JORDAN1,JORDAN2,JORDAN3,JORDAN4,JORDAN5,JORDAN16
----> JOR_MUG
 ; We need to add his mug to tbl/glo/pal asm manually!
 ; Still needs nameplate
 kengrif.img
 ---> KGRIF01,KGRIF02,KGRIF03,KGRIF04,KGRIF05
 ;Shaq heads from NBA Jam
 hds5.img
-ASM> plyrhd.tbl
+ASM> plyrhd4.tbl
 ---> ONEAL1,ONEAL2,ONEAL3,ONEAL4,ONEAL5,ONEAL6,ONEAL7,ONEAL8
 ---> ONEAL9,ONEAL10,ONEAL11,ONEAL12,ONEAL13,ONEAL14,ONEAL15,ONEAL16
 ASM> mugshots.tbl
+;O'Neal and Jordan from original source material.
 mugshots.img
 ---> ONE_ORL
+---> JOR_CHI
 ASM> plyrhd4.tbl
 raiden.img
 ---> ballite1,ballite2,ballite3,ballite4,ballite5,ballite6,ballite7,lighten1
 ---> lighten2,lighten3,lighten4,lighten5,lighten6,lighten7
 XOF>
-CON>
+COF>
 ZON>
 PPP> 1
 ; Extra nameplates
-; no need to store PAL
+; no need to store PAL (all are scorep)
 ; put in separate table, keeps PLYRHD4.TBL clean.
 ; switch header output as well.
 IHDR SIZX:W,SIZY:W,ANIX:W,ANIY:W,SAG:L,CTRL:W,PAL:L
@@ -167,5 +168,6 @@ ASM> NAMES.TBL
 GLO> NAMES.GLO
 kengrif.img
 ---> GRIFFEY
+ZOF>
 jordan.img
 ---> JORDAN

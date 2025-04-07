@@ -3076,15 +3076,15 @@ player_heads
 
 	.long	PIP_CHI,ARM_CHI
 	.long	ARM_CHI,PIP_CHI
-	.long	PIP_CHI,KUK_CHI
-	.long	KUK_CHI,PIP_CHI
-	.long	ARM_CHI,KUK_CHI
-	.long	KUK_CHI,ARM_CHI		
+	.long	PIP_CHI,JOR_CHI
+	.long	JOR_CHI,PIP_CHI
+	.long	ARM_CHI,JOR_CHI
+	.long	JOR_CHI,ARM_CHI		
 
 	.long	ARM_CHI,GRT_CHI
 	.long	GRT_CHI,ARM_CHI
-	.long	KUK_CHI,GRT_CHI		
-	.long	GRT_CHI,KUK_CHI
+	.long	JOR_CHI,GRT_CHI		
+	.long	GRT_CHI,JOR_CHI
 	.long	PIP_CHI,GRT_CHI		
 	.long	GRT_CHI,PIP_CHI
 
@@ -3713,8 +3713,14 @@ player_attribs
  .word	08,09,00,05
  .word  00,04,00,09	;BJ ARMSTRONG	   6-2    Skinny
 
- .word	06,05,02,09
- .word  04,04,07,04	;TONI KUKOC	   6-11    Skinny
+;Speed, 3 ptrs, Dunks, Passing
+;Power, Steals, Block, Clutch
+
+ .word	08,06,09,08
+ .word  08,09,07,08	;MICHAEL JORDAN	   ?6-11    ?Skinny
+
+; .word	06,05,02,09
+; .word  04,04,07,04	;TONI KUKOC	   6-11    Skinny
 
  .word	06,01,05,02
  .word  09,02,09,04	;HORACE GRANT	   6-10    Skinny (Medium)
@@ -4601,7 +4607,8 @@ guyhds
 	.long	PIP_CHI
 	.long	GRT_CHI		;03 CHICAGO
 	.long	ARM_CHI		;03 CHICAGO
-	.long	KUK_CHI		;03 CHICAGO
+;	.long	KUK_CHI		;03 CHICAGO
+	.long	JOR_CHI
 	.long	THM_DET
 	.long	DUM_DET		;07 DETROIT
 	.long	HUN_DET		;07 DETROIT

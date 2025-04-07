@@ -2267,144 +2267,36 @@ JORDAN16:
 	.word   06000H
 	.long   KGRIF_P
 	.word   -1,-1,-1,0,0,0,0,0,0
-JOR_MUG:
-	.word   67,61,0,59
-	.long   05f84f22H
-	.word   00H
-	.long   JOR_MUGP
-	.word   0,-2,0,0,0,0,0,0,0
 KGRIF01:
 	.word   28,34,13,31
-	.long   05f8cedaH
+	.long   05f85a58H
 	.word   06000H
 	.long   KGRIF_P
 	.word   -1,-1,-1,0,0,0,0,0,0
 KGRIF02:
 	.word   33,34,18,31
-	.long   05f8e52aH
+	.long   05f870a8H
 	.word   06000H
 	.long   KGRIF_P
 	.word   -1,-1,-1,0,0,0,0,0,0
 KGRIF03:
 	.word   40,36,22,31
-	.long   05f8ff76H
+	.long   05f88af4H
 	.word   06000H
 	.long   KGRIF_P
 	.word   0,0,-1,0,0,0,0,0,0
 KGRIF04:
 	.word   37,37,18,32
-	.long   05f92136H
+	.long   05f8acb4H
 	.word   06000H
 	.long   KGRIF_P
 	.word   -1,-1,-1,0,0,0,0,0,0
 KGRIF05:
 	.word   26,38,12,33
-	.long   05f9414cH
+	.long   05f8cccaH
 	.word   06000H
 	.long   KGRIF_P
 	.word   0,0,-1,0,0,0,0,0,0
-ONEAL1:
-	.word   24,28,11,24
-	.long   05f95874H
-	.word   06000H
-	.long   ONEAL_P
-	.word   -1,-1,-1,0,0,0,0,0,0
-ONEAL2:
-	.word   24,27,11,25
-	.long   05f96834H
-	.word   06000H
-	.long   ONEAL_P
-	.word   -1,-1,-1,0,0,0,0,0,0
-ONEAL3:
-	.word   26,31,8,27
-	.long   05f97764H
-	.word   06000H
-	.long   ONEAL_P
-	.word   -1,-1,-1,0,0,0,0,0,0
-ONEAL4:
-	.word   24,31,8,28
-	.long   05f98a48H
-	.word   06000H
-	.long   ONEAL_P
-	.word   -1,-1,-1,0,0,0,0,0,0
-ONEAL5:
-	.word   23,30,11,26
-	.long   05f99bb8H
-	.word   06000H
-	.long   ONEAL_P
-	.word   -1,-1,-1,0,0,0,0,0,0
-ONEAL6:
-	.word   28,28,17,24
-	.long   05f9abe4H
-	.word   06000H
-	.long   ONEAL_P
-	.word   -1,-1,-1,0,0,0,0,0,0
-ONEAL7:
-	.word   27,28,8,25
-	.long   05f9be44H
-	.word   06000H
-	.long   ONEAL_P
-	.word   -1,-1,-1,0,0,0,0,0,0
-ONEAL8:
-	.word   29,34,7,27
-	.long   05f9cffcH
-	.word   06000H
-	.long   ONEAL_P
-	.word   -1,-1,-1,0,0,0,0,0,0
-ONEAL9:
-	.word   26,32,6,28
-	.long   05f9e718H
-	.word   06000H
-	.long   ONEAL_P
-	.word   -1,-1,-1,0,0,0,0,0,0
-ONEAL10:
-	.word   24,30,10,25
-	.long   05f9fa98H
-	.word   06000H
-	.long   ONEAL_P
-	.word   -1,-1,-1,0,0,0,0,0,0
-ONEAL11:
-	.word   23,23,10,18
-	.long   05fa0b78H
-	.word   06000H
-	.long   ONEAL_P
-	.word   -1,-1,-1,0,0,0,0,0,0
-ONEAL12:
-	.word   29,28,16,24
-	.long   05fa17deH
-	.word   06000H
-	.long   ONEAL_P
-	.word   -1,-1,-1,0,0,0,0,0,0
-ONEAL13:
-	.word   32,28,17,23
-	.long   05fa2ae6H
-	.word   06000H
-	.long   ONEAL_P
-	.word   -1,-1,-1,0,0,0,0,0,0
-ONEAL14:
-	.word   25,29,13,25
-	.long   05fa3fe6H
-	.word   06000H
-	.long   ONEAL_P
-	.word   -1,-1,-1,0,0,0,0,0,0
-ONEAL15:
-	.word   23,30,12,26
-	.long   05fa50e4H
-	.word   06000H
-	.long   ONEAL_P
-	.word   -1,-1,-1,0,0,0,0,0,0
-ONEAL16:
-	.word   32,24,30,19
-	.long   05fa6110H
-	.word   06000H
-	.long   ONEAL_P
-	.word   -1,-1,-1,0,0,0,0,0,0
-ONE_ORL:
-	.word   77,62,0,61
-	.long   05fa7310H
-	.word   00H
-	.long   ONE_ORLP
-	.word   -1,-1,-1,0,0,0,0,0,0
 ballite1:
 	.word   24,13,11,12
 	.long   05fb0840H
@@ -2489,5 +2381,102 @@ lighten7:
 	.word   03000H
 	.long   ligtn_p
 	.word   -1,-1,-1,0,0,0,0,0,0
+ONEAL1:
+	.word   24,28,11,24
+	.long   05f8d8bcH
+	.word   06000H
+	.long   ONEAL_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+ONEAL2:
+	.word   24,27,11,25
+	.long   05f8e87cH
+	.word   06000H
+	.long   ONEAL_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+ONEAL3:
+	.word   26,31,8,27
+	.long   05f8f7acH
+	.word   06000H
+	.long   ONEAL_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+ONEAL4:
+	.word   24,31,8,28
+	.long   05f90a90H
+	.word   06000H
+	.long   ONEAL_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+ONEAL5:
+	.word   23,30,11,26
+	.long   05f91c00H
+	.word   06000H
+	.long   ONEAL_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+ONEAL6:
+	.word   28,28,17,24
+	.long   05f92c2cH
+	.word   06000H
+	.long   ONEAL_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+ONEAL7:
+	.word   27,28,8,25
+	.long   05f93e8cH
+	.word   06000H
+	.long   ONEAL_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+ONEAL8:
+	.word   29,34,7,27
+	.long   05f95044H
+	.word   06000H
+	.long   ONEAL_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+ONEAL9:
+	.word   26,32,6,28
+	.long   05f96760H
+	.word   06000H
+	.long   ONEAL_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+ONEAL10:
+	.word   24,30,10,25
+	.long   05f97ae0H
+	.word   06000H
+	.long   ONEAL_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+ONEAL11:
+	.word   23,23,10,18
+	.long   05f98bc0H
+	.word   06000H
+	.long   ONEAL_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+ONEAL12:
+	.word   29,28,16,24
+	.long   05f99826H
+	.word   06000H
+	.long   ONEAL_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+ONEAL13:
+	.word   32,28,17,23
+	.long   05f9ab2eH
+	.word   06000H
+	.long   ONEAL_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+ONEAL14:
+	.word   25,29,13,25
+	.long   05f9c02eH
+	.word   06000H
+	.long   ONEAL_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+ONEAL15:
+	.word   23,30,12,26
+	.long   05f9d12cH
+	.word   06000H
+	.long   ONEAL_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+ONEAL16:
+	.word   32,24,30,19
+	.long   05f9e158H
+	.word   06000H
+	.long   ONEAL_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+
 	.TEXT
 
