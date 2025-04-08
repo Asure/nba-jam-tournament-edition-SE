@@ -2628,7 +2628,7 @@ sounds_tab	.long	SND_ST0,SND_ST1,SND_ST2,SND_ST3
 ;SND_ST5	.string	"SHOWTIME (U13)",0
 ;SND_ST6	.string	"SHOES? (U13)",0
 ;SND_ST7	.string	"WEBBER (U12)",0
-SND_ST0	.string	"and_good (U3)",0
+SND_ST0	.string	"Alley Oop",0
 SND_ST1	.string	"tune 0003 (U3)",0
 SND_ST2	.string	"findshole (U13)",0
 SND_ST3	.string	"tune 000c (U12)",0
@@ -2641,7 +2641,7 @@ SND_ST7	.string	"IUZ",0
 	.EVEN
 TEST_SOUND_TAB
 ;	.WORD	01H,0aH,1abH,1b9H,01e3H,1CBH,1adh,69H
-	.WORD	00bbh,0119h,002bH,0027H,00d0H,0014h,0052h,00d3h
+	.WORD	01b9h,01eh,017cH,0027H,00d0H,0014h,0052h,00d3h
 ;080d3
 
 

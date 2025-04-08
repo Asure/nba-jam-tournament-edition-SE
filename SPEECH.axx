@@ -294,7 +294,8 @@ pass_speech
  .word	0f980H,38,080edH,0	;TO OAKLEY	( NEW YORK )
  .word	0f980H,28,08051H,0	;TO HARPER_D
 
- .word	0f980H,50,0805fH,0	;TO NANDERSON
+; .word	0f980H,50,0805fH,0	;TO NANDERSON	
+ .word	0f980H,50,081b9H,0	;ONEAL		;ONEAL no 'to' speech
  .word	0f980H,37,080fbH,0	;TO AHARDAWAY
  .word	0f980H,40,080e4H,0	;TO SKILES	( ORLANDO )
 
@@ -467,7 +468,8 @@ name_speech
  .word	0f980H,38,080baH,0	;OAKLEY
  .word	0f980H,28,080d1H,0	;HARPER_D	( DALLAS )
 
- .word	0f980H,45,080e1H,0	;NANDERSON
+; .word	0f980H,45,080e1H,0	;NANDERSON
+ .word	0f980H,45,081b9H,0	;ONEAL		;ONEAL no 'to' speech
  .word	0f980H,37,080c8H,0	;AHARDAWAY
  .word	0f980H,40,080b1H,0	;SKILES
 
