@@ -3074,19 +3074,19 @@ player_heads
 	.long	0,0
 	.long	0,0
 
-	.long	PIP_CHI,ARM_CHI
-	.long	ARM_CHI,PIP_CHI
-	.long	PIP_CHI,JOR_CHI
 	.long	JOR_CHI,PIP_CHI
+	.long	PIP_CHI,JOR_CHI
+	.long	JOR_CHI,ARM_CHI
 	.long	ARM_CHI,JOR_CHI
-	.long	JOR_CHI,ARM_CHI		
+	.long	PIP_CHI,ARM_CHI
+	.long	ARM_CHI,PIP_CHI		
 
-	.long	ARM_CHI,GRT_CHI
-	.long	GRT_CHI,ARM_CHI
-	.long	JOR_CHI,GRT_CHI		
+	.long	JOR_CHI,GRT_CHI
 	.long	GRT_CHI,JOR_CHI
 	.long	PIP_CHI,GRT_CHI		
 	.long	GRT_CHI,PIP_CHI
+	.long	ARM_CHI,GRT_CHI		
+	.long	GRT_CHI,ARM_CHI
 
 	.long	0,0
 	.long	0,0
@@ -3424,14 +3424,12 @@ player_heads
 	.long	HPR_DAL,EWG_NEY
 	.long	EWG_NEY,HPR_DAL
 
-
-	.long	HAR_ORL,ONE_ORL
 	.long	ONE_ORL,HAR_ORL
-	.long	HAR_ORL,SKL_ORL
-	.long	SKL_ORL,HAR_ORL
+	.long	HAR_ORL,ONE_ORL
 	.long	ONE_ORL,SKL_ORL
 	.long	SKL_ORL,ONE_ORL
-
+	.long	HAR_ORL,SKL_ORL
+	.long	SKL_ORL,HAR_ORL
 
 	.long	0,0
 	.long	0,0
@@ -3705,19 +3703,17 @@ player_attribs
  .word	07,05,08,05
  .word  09,04,09,09	;ALONZO MOURNING  6-10 (6-11)   Skinny
 
+;Speed, 3 ptrs, Dunks, Passing
+;Power, Steals, Block, Clutch
 
+ .word	08,07,04,03
+ .word  04,08,07,06	;MICHAEL JORDAN	   6-6    Skinny (Medium)
 
  .word	08,06,10,07
  .word  03,09,05,05	;SCOTTIE PIPPEN	   6-7    Skinny
 
  .word	08,09,00,05
  .word  00,04,00,09	;BJ ARMSTRONG	   6-2    Skinny
-
-;Speed, 3 ptrs, Dunks, Passing
-;Power, Steals, Block, Clutch
-
- .word	08,06,09,08
- .word  08,09,07,08	;MICHAEL JORDAN	   ?6-11    ?Skinny
 
 ; .word	06,05,02,09
 ; .word  04,04,07,04	;TONI KUKOC	   6-11    Skinny
@@ -3905,9 +3901,6 @@ player_attribs
 ;It should match plyrat.axx player format
 ;combined with team table ex. ORL_T 3,9,9 
 
- .word	09,08,03,08
- .word  02,07,04,05	;ANFERNEE (Penny) HARDAWAY   6-7 Skinny
-
 ;Size, speed, shot%, dunks, block defense, steals, drone skill
 ;scale72f_t,BV6,SHT1,DNK10,DEF7,SDEF5,DSKL2	;Can shatter 
 ;Pass ability, power, clutch -> in plyrat.axx ORL_T 3,9,3 
@@ -3917,6 +3910,9 @@ player_attribs
 
  .word	06,01,10,03
  .word  09,05,07,03	;SHAQ
+ 
+ .word	09,08,03,08
+ .word  02,07,04,05	;ANFERNEE (Penny) HARDAWAY   6-7 Skinny
 
  .word	07,09,00,07
  .word  01,08,01,06	;SCOTT SKILES		6-1    Skinny
@@ -4604,11 +4600,11 @@ guyhds
 	.long	MUT_DEN
 	.long	ELL_DEN		;06 DENVER
 	.long	ROG_DEN		;06 DENVER
+	.long	JOR_CHI
 	.long	PIP_CHI
 	.long	GRT_CHI		;03 CHICAGO
 	.long	ARM_CHI		;03 CHICAGO
 ;	.long	KUK_CHI		;03 CHICAGO
-	.long	JOR_CHI
 	.long	THM_DET
 	.long	DUM_DET		;07 DETROIT
 	.long	HUN_DET		;07 DETROIT
