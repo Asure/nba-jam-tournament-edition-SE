@@ -1114,7 +1114,7 @@ vsyncrate = 75
 #                                                    Possible values: true, false, 1, 0, auto.
 #                                       realbig16: Allow the B (big) bit in real mode. If set, allow the DOS program to set the B bit,
 #                                                    then jump to realmode with B still set (aka Huge Unreal mode). Needed for Project Angel.
-core                                            = dynamic_x86
+core                                            = dynamic
 fpu                                             = true
 cpuid string                                    = 
 processor serial number                         = 
@@ -1133,10 +1133,9 @@ enable cmpxchg8b                                = true
 enable syscall                                  = true
 ignore undefined msr                            = false
 interruptible rep string op                     = -1
-dynamic core cache block size                   = 256
+dynamic core cache block size                   = 128
 cputype                                         = auto
-cycles                                          = 10247000
-#cycles                                          = max 400%
+cycles                                          = max 200%
 cycleup                                         = 4000
 cycledown                                       = 4000
 

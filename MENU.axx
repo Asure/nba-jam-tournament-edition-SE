@@ -2628,21 +2628,28 @@ sounds_tab	.long	SND_ST0,SND_ST1,SND_ST2,SND_ST3
 ;SND_ST5	.string	"SHOWTIME (U13)",0
 ;SND_ST6	.string	"SHOES? (U13)",0
 ;SND_ST7	.string	"WEBBER (U12)",0
-SND_ST0	.string	"Alley Oop",0
-SND_ST1	.string	"tune 0003 (U3)",0
-SND_ST2	.string	"findshole (U13)",0
+SND_ST0	.string	"120",0
+SND_ST1	.string	"121",0
+SND_ST2	.string	"122",0
 SND_ST3	.string	"tune 000c (U12)",0
 SND_ST4	.string	"IT IS (U12)",0
 SND_ST5	.string	"GOOOD!! (U13)",0
 SND_ST6	.string	"countdown_snd (U13)",0
-SND_ST7	.string	"IUZ",0
+SND_ST7	.string	"127",0
 
 
 	.EVEN
 TEST_SOUND_TAB
 ;	.WORD	01H,0aH,1abH,1b9H,01e3H,1CBH,1adh,69H
-	.WORD	01b9h,01eh,017cH,0027H,00d0H,0014h,0052h,00d3h
+;	.WORD	040h,041h,042H,043H,044H,045h,046h,047h
+	.WORD	048h,049h,04aH,04bH,04cH,04dh,04eh,04fh
+;need to score: Not 0x1F* 0x1D*  0x1E* 0x1C* 0x1A* 0x1B 0x19 0x18 0x17 0x16
+; 0x10 0x20 0x30
 ;080d3
+;Unused
+;1ebh - Just Seconds left
+;Check
+; 1c8 'HELLOO!" (we could cut it)
 
 
 ;snd_1	.word	0f990H,45,081d0H,0	;

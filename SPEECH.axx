@@ -66,6 +66,8 @@
 
 	.text
 
+;Unused calls?
+; 0x1ebh ; "Just seconds left!"
 
 STAB_START
 
