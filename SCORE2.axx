@@ -1877,19 +1877,19 @@ player_names
 	.long	0,0
 	.long	0,0
 
+	.long	JORDAN,PIPPEN
+	.long	PIPPEN,JORDAN
+	.long	JORDAN,ARMSTR
+	.long	ARMSTR,JORDAN
 	.long	PIPPEN,ARMSTR
 	.long	ARMSTR,PIPPEN
-	.long	PIPPEN,JORDAN
-	.long	JORDAN,PIPPEN
-	.long	ARMSTR,JORDAN
-	.long	JORDAN,ARMSTR
 
-	.long	ARMSTR,GRANT_HC		
-	.long	GRANT_HC,ARMSTR
 	.long	JORDAN,GRANT_HC		
 	.long	GRANT_HC,JORDAN
 	.long	PIPPEN,GRANT_HC		
 	.long	GRANT_HC,PIPPEN
+	.long	ARMSTR,GRANT_HC		
+	.long	GRANT_HC,ARMSTR
 
 	.long	0,0
 	.long	0,0
@@ -2231,13 +2231,12 @@ player_names
 	.long	HARPER_D,EWING
 	.long	EWING,HARPER_D
 
-
-	.long	AHARDAWAY,ONEAL
 	.long	ONEAL,AHARDAWAY
-	.long	AHARDAWAY,SKILES
-	.long	SKILES,AHARDAWAY
+	.long	AHARDAWAY,ONEAL
 	.long	ONEAL,SKILES
 	.long	SKILES,ONEAL
+	.long	AHARDAWAY,SKILES
+	.long	SKILES,AHARDAWAY
 
 	.long	0,0
 	.long	0,0
