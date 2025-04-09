@@ -1762,9 +1762,14 @@ close
 
 
 	.ref	instructions
+;AMM This is cmos controlled now.
+	movi	ADJIDIOT,a0		;Get value from CMOS
+	calla	GET_ADJ			;0-1
+	jrnz	no_inst			;Off? No instructions at game start.
+
 	JSRP	instructions
 
-	clr	a0
+no_inst	clr	a0
 	move	a0,@HALT
 	move	a0,@cntrs_delay
 
