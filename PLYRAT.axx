@@ -508,6 +508,8 @@ ATL_t
 	.long	FL16_p, Un4_p,Un14_p, TR7_p,TR7_p,Cheaney_h
 	.word	5,2,8
 
+; Team Jam / Allstars 
+; This is the clean edition from 4.0, no MK here.
 
 	LWWWWWW	scale610f_t,BV7,SHT4,DNK9,DEF8,SDEF3,DSKL4	;Can shatter
 	.long	FL21_p, Un7_p,Un14_p, TR2_p,TR10_p,KMalone_h
@@ -634,7 +636,8 @@ ATL_t
 
 
 
-
+; This is the guest star table, players from this table will be randomly chosen
+; to guest star if all teams are defeated.
 
 spechds_t
 	LWWWWWW	scale610_t,BV10,SHT10,DNK10,DEF8,SDEF6,DSKL5
