@@ -627,7 +627,7 @@ special_name_speech
 	.word	0f980H,50,081a5H,0	;51 REPT   
 		
 	.word	0f980H,1,081feH,0		;52 GRANNER
-	.word	0f980H,40,08199H,0	;53 GRIFFEY
+	.word	0f980H,40,081ebH,0	;53 GRIFFEY
 	.word	0f980H,40,080B1H,0	;54 SKILES
 	.word	0f980H,1,081feH,0		;55 LINHOFF
 
@@ -714,7 +714,7 @@ special_pass_speech
 
 	.word	0f980H,1,081feH,0		;52 GRANNER
 
-	.word	0f980H,40,0819AH,0	;53 TO GRIFFEY
+	.word	0f980H,40,081ebH,0	;53 TO GRIFFEY
 
 	.word	0f980H,40,080e4H,0	;54 SKILES
 	.word	0f980H,1,081feH,0		;55 LINHOFF
