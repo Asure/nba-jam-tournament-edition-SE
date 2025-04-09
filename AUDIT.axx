@@ -2162,7 +2162,7 @@ BL2
 	JRUC	BLINK_LOOP
 
 ROM_NAME
-	.byte	"SPECIAL EDITION REV 5.0 6/8/94",0
+	.byte	"SPECIAL EDITION REV 5.01 9/4/2025",0
 	.even
 
 FACTORY_TABLE
@@ -2198,6 +2198,10 @@ FACTORY_TABLE
 	.word	1	;ADJWINMODE	26	;(winner stays free)
 	.word	1	;ADJCOMPASS	27	;computer assistance (0=on)
 	.word	1	;ADJTOURNEY	28	;Tournament mode (0=on)
+	.word	1	;ADJROSTER	29	;Extended Roster (0=on) "Let's hide this feature.."
+	.word	1	;ADJIDIOT	30	;Show idiot boxes (0=on) "We called them bozo boxes.."
+	.word	1	;ADJCHAMP	31	;Select GC team (0=on) "Still a champ even if you're not.."
+; MAKE SURE THIS STUFF MATCHES UP with LINK.EQU and AUDIT.EQU!
 
 	.if 0
 	.word	0	;ADJ_UNUSED		0
