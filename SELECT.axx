@@ -1638,6 +1638,10 @@ lhmragain
 	DIE
 
 
+*****************************************************************************
+*
+* a0 = table offset to use for coordinates
+*
 
  SUBR	create_team_set
 
@@ -1700,6 +1704,10 @@ lhmrstxy3	.word	01c1H
 	.word	013H-4,0bdH-4,0d6H-4,0180H-4
 
 
+;RAD_MK2:
+;SCO_MK2:
+;REP_MK2:
+;SUB_MK2:
 
 
 
@@ -2315,6 +2323,10 @@ knddplayer_active
 
 
 
+*****************************************************************************
+*
+* a0 = table offset to use for coordinates
+*
 
 
  SUBR	create_logos
@@ -2513,6 +2525,10 @@ lbilvalid_team2
 	rets
 
 
+*****************************************************************************
+;returns a pointer into the menu table at
+;the current cursor position
+;a1 = * current entry
 
  SUBRP	get_table_address
 
@@ -3000,6 +3016,7 @@ lkelskippy
 
 	calla	lkeltoggle1
 
+;Check for team switch powerup on team #1
 
 	move	@team1_switch,a0
 	jrnz	lkelswitch
@@ -3011,6 +3028,7 @@ lkelskippy
 	jrc	lkelnoswitch
 
 
+;Possibly switch teams at the half!
 	move	@team1_control,a0	;player selecting team 1
 	calla	get_steal_but_cur
 	jrz	lkeltapz
@@ -3018,6 +3036,7 @@ lkelskippy
 	calla	get_stick_val_cur
 	cmpi	8,a0
 	jrnz	lkeltapz
+;Yes, trying to powerup team switch!
 	move	@switch_1,a0
 	inc	a0
 	move	a0,@switch_1
@@ -3057,8 +3076,11 @@ lkelnodbc
 
 lkelnoswitch
 
+;Check for roster powerup taps
 	calla	tournament_on
 	jrc	lkelnotap
+;	jruc	powerup ;test constant stream of plaques
+
 
 	move	@bigroster1,a0
 	jrnn	lkelnotap
@@ -3071,6 +3093,7 @@ lkelnoswitch
 	jruc	lkelnotap
 lkeltap
 
+;Check swirl on stick
 	move	@team1_control,a0	;player selecting team 1
 	calla	get_stick_val_cur
 
@@ -3107,17 +3130,21 @@ lkeltap
 lkelnotfat
 	cmpi	0fH,a1
 	jrnz	lkelnotap
+;Yes!  Powerup this particular roster
+powerup
 	move	@team1,a0
 	move	a0,@bigroster1
 
 	move	@team1_control,a4	;player selecting team 1
 
+;If no additional players are available, fatalitites enabled box appears
 
 	sll	4,a0
 	addi	fatal_tbl,a0
 	move	*a0,a0
 	jrz	lkelreg
 
+;Do bad decision speech call!
 	movi	baddec_snd,a0
 	calla	speech_playovrp
 
@@ -3269,8 +3296,15 @@ lkelcan
 	move	*a1,a1,L
 	cmpi	07ffffffh,a1
 	jrz	lkelbonus
-	
 
+;AMM Roster crap
+	push	a0			;gotta keep a0 safe!
+	movi	ADJROSTER,a0		;Get value from CMOS
+	calla	GET_ADJ			;0-1
+	jrnz	noroster		;Off? Ext roster must be disabled in CMOS
+	jrz	lkelbonus
+noroster	
+	pull 	a0			;restore a0!
 	move	@bigroster1,a1
 	jrn	lkelcont
 	move	@team1,a2
@@ -3278,8 +3312,10 @@ lkelcan
 	jrnz	lkelcont
 
 lkelbonus
+	pull	a0			;restore a0!
 	cmpi	19,a14
-	jrz	lkelcont
+;why the 19?
+	jrz	lkelcont		;disabling does nothing
 
 lkelok
 	inc	a14
@@ -3298,7 +3334,8 @@ lkelout
 	add	a14,a1
 	move	*a1,a1
 	jrnz	lkelno_toggle
-lkelcont	clr	a1
+lkelcont	
+	clr	a1
 	move	a1,*a0
 	
 lkelno_toggle
@@ -3471,10 +3508,10 @@ qacbskippy
 	jrc	qacbnoswitch
 
 
-	move	@team2_control,a0	;player selecting team 1
+	move	@team2_control,a0	;player selecting team 2
 	calla	get_steal_but_cur
 	jrz	qacbtapz
-	move	@team2_control,a0	;player selecting team 1
+	move	@team2_control,a0	;player selecting team 2
 	calla	get_stick_val_cur
 	cmpi	8,a0
 	jrnz	qacbtapz
@@ -3484,7 +3521,7 @@ qacbskippy
 	cmpi	120,a0
 	jrlt	qacbnoswitch
 	move	a0,@team2_switch
-	move	@team2_control,a4	;player selecting team 1
+	move	@team2_control,a4	;player selecting team 2
 	movi	swapred,a9
 	jruc	qacbyesf1a
 qacbtapz
@@ -3493,7 +3530,7 @@ qacbtapz
 	jruc	qacbnoswitch
 
 qacbswitch
-	move	@team2_control,a0	;player selecting team 1
+	move	@team2_control,a0	;player selecting team 2
 	calla	get_steal_but_cur
 	jrz	qacbnodbc
 	move	@dbnce2,a0
@@ -3521,7 +3558,7 @@ qacbnoswitch
 	move	@bigroster2,a0
 	jrnn	qacbnotap
 
-	move	@team2_control,a0	;player selecting team 1
+	move	@team2_control,a0	;player selecting team 2
 	calla	get_steal_but_cur
 	jrnz	qacbtap
 	clr	a0
@@ -3529,7 +3566,7 @@ qacbnoswitch
 	jruc	qacbnotap
 qacbtap
 
-	move	@team2_control,a0	;player selecting team 1
+	move	@team2_control,a0	;player selecting team 2
 	calla	get_stick_val_cur
 
 	move	@tm2swrl,a1
@@ -3559,7 +3596,7 @@ qacbtap
 	btst	1,a0
 	jrnz	qacbnotfat
 	movi	fatalred,a9
-	move	@team2_control,a4	;player selecting team 1
+	move	@team2_control,a4	;player selecting team 2
        	jruc	qacbyesf1
 
 qacbnotfat
@@ -3568,7 +3605,7 @@ qacbnotfat
 	move	@team2,a0
 	move	a0,@bigroster2
 
-	move	@team2_control,a4	;player selecting team 1
+	move	@team2_control,a4	;player selecting team 2
 
 
 	sll	4,a0
@@ -3614,7 +3651,7 @@ qacbnotap
 	jrnz	qacbmovit
 	dsj	a10,qacbrepeat_delay
 
-	move	@team2_control,a0	;player selecting team 1
+	move	@team2_control,a0	;player selecting team 2
 	calla	get_steal_but_cur
 	jrnz	qacbnomov
 	move	@team2_control,a0	;player selecting team 2
@@ -3722,17 +3759,24 @@ qacbcan
 	move	*a1,a1,L
 	move	*a1,a1,L
 	cmpi	07ffffffh,a1
-	jrz	qacbbonus2
-	
+	jrz	qacbbonus2		
 
+;Amm CMOS roster
+	push	a0			;gotta keep a0 safe!
+	movi	ADJROSTER,a0		;Get value from CMOS
+	calla	GET_ADJ			;0-1
+	jrnz	noroster2		;Off? Ext roster must be disabled in CMOS
+	jrz	qacbbonus2		;On? Do this.
 
-
+noroster2
+	pull 	a0			;restore a0!
 	move	@bigroster2,a1
 	jrn	qacbcont
 	move	@team2,a2
 	cmp	a1,a2
 	jrnz	qacbcont
 qacbbonus2
+	pull 	a0			;restore a0!
 	cmpi	19,a14
 	jrz	qacbcont
 
@@ -6072,8 +6116,8 @@ rajwnoscrambl2
 	calla	create_team_set
 	CREATE0	create_team_set_flsh
 	calla	update_team_set
-	CREATE0	team1_cursor
-	CREATE0	team2_cursor
+	CREATE0	team1_cursor		;this is a process that runs in a loop constantly till DIE
+	CREATE0	team2_cursor		;this is a process that runs in a loop constantly till DIE
 
 	SLEEPK	2
 
