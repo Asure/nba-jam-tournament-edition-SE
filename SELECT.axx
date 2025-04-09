@@ -887,6 +887,8 @@ ohmqwait_exit
 	move	*a0,a0,L
 	move	*a0,a0,L	
 	cmpi	07ffffffh,a0
+
+; this jrnz makes the bigroster plaque drop if commented.
 	jrnz	hcibnot_bigrost
 	
 	move	@team1_control,a4	;player selecting team 1
@@ -4430,6 +4432,12 @@ clsxlft
 	cmpi	07ffffffh,a0
 	jrz	clsxnot_blankd
 
+;Amm add CMOS Grand Champ option (needs cmos val enabled/menu)
+;	movi	ADJCHAMP,a0		;Get value from CMOS
+;	calla	GET_ADJ			;0-1
+;	jrz	clsxnot_blankd		;On? Skip the dec code below..
+;
+; this bit causes the selection to not reach the ? team.
 
 	move	*a13(PC_TABWIDTH),a1	;table width
 	sub	a1,a10			;can't move down
@@ -4468,8 +4476,10 @@ clsxlft1
 	move	*a0,a0,L	
 	cmpi	07ffffffh,a0
 	jrz	clsxnot_blankl
-
-
+;Amm add CMOS Grand Champ option
+;	movi	ADJCHAMP,a0		;Get value from CMOS
+;	calla	GET_ADJ			;0-1
+;	jrz	clsxnot_blankl		;On? Skip the dec a10..
 
 	dec	a10			;skip to left of blank position
 clsxnot_blankl
@@ -4522,7 +4532,10 @@ clsxlft2
 	cmpi	07ffffffh,a0
 	jrz	clsxnot_blankr
 
-
+;Amm add CMOS Grand Champ option
+;	movi	ADJCHAMP,a0		;Get value from CMOS
+;	calla	GET_ADJ			;0-1
+;	jrz	clsxnot_blankr		;On? Skip the inc a10..
 
 	inc	a10			;skip to right of blank position
 clsxnot_blankr

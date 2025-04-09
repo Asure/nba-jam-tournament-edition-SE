@@ -2641,15 +2641,29 @@ SND_ST7	.string	"127",0
 	.EVEN
 TEST_SOUND_TAB
 ;	.WORD	01H,0aH,1abH,1b9H,01e3H,1CBH,1adh,69H
-;	.WORD	040h,041h,042H,043H,044H,045h,046h,047h
-	.WORD	048h,049h,04aH,04bH,04cH,04dh,04eh,04fh
+;	.WORD	0120h,0121h,0122H,0123H,0214H,0215h,0216h,0217h
+	.WORD	01eh,01fh,021aH,021bH,021cH,021dh,021eh,021fh
 ;need to score: Not 0x1F* 0x1D*  0x1E* 0x1C* 0x1A* 0x1B 0x19 0x18 0x17 0x16
-; 0x10 0x20 0x30
+; not 0x10 0x20 0x30 0x40 0x50 0x60
+; 0x70 empty calls? 
+; 0x80 0x90 0xa0 YM2151 effects
+; 0xa0 fx
+; 0xb0 samples player
+; 0xc0 samples player
+; 0xd0 samples player
+; 0xe0 lotsa pass
+; 0xf0 more pass
+; 0x100 empty
+; 0x110 various speech/fx digital
 ;080d3
 ;Unused
 ;1ebh - Just Seconds left
 ;Check
 ; 1c8 'HELLOO!" (we could cut it)
+; 057h 'to swuf?' 0d9h also. (it's SMITH lol..)
+;	.WORD	065h,066h,06aH,06bH,06cH,06dh,06eh,06fh
+;	Simmons,Smiths,Willis, rest is empty?
+; 0113H - Rim rockin, used in JAM for sure
 
 
 ;snd_1	.word	0f990H,45,081d0H,0	;
