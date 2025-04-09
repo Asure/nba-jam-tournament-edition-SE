@@ -163,7 +163,11 @@ ADJHEADSZ	equ	25	;player head sizes (1-5)
 ADJWINMODE	equ	26	;4 player winner mode (1-3)
 ADJCOMPASS	equ	27	;computer assistance (0-1)
 ADJTOURNEY	equ	28	;Tournament mode (0-1)
-LAST_ADJUST	equ	28
+ADJROSTER	equ	29
+ADJIDIOT	equ	30
+ADJCHAMP	equ	31
+
+LAST_ADJUST	equ	31
 
 ******************************************************************************
 ;end

@@ -164,7 +164,8 @@ N_AUDITS	EQU	98
 *
 **************************************************************************
 ADJ_SIZE	EQU	C_LONG_SIZE
-N_ADJUSTS	EQU	29		;# OF ADJUSTS
+;N_ADJUSTS	EQU	29		;# OF ADJUSTS
+N_ADJUSTS	EQU	32		;# OF ADJUSTS
 
 	.IF     (LAST_ADJUST+1)>N_ADJUSTS
 	XXX     NOT ENOUGH RAM ALLOCATED FOR ADJUSTMENTS!
