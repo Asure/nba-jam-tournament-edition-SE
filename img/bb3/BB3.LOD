@@ -141,6 +141,9 @@ jordan.img
 ; Still needs nameplate
 kengrif.img
 ---> KGRIF01,KGRIF02,KGRIF03,KGRIF04,KGRIF05
+laimbeer.img
+---> LAM1,LAM2,LAM3,LAM4,LAM5,LAM6,LAM7,LAM8
+---> LAM9,LAM10,LAM11,LAM12,LAM13,LAM14,LAM15,LAM16
 ;Shaq heads from NBA Jam
 hds5.img
 ASM> plyrhd4.tbl
@@ -151,6 +154,7 @@ ASM> mugshots.tbl
 mugshots.img
 ---> ONE_ORL
 ---> JOR_CHI
+---> LAM_DET
 ASM> plyrhd4.tbl
 raiden.img
 ---> ballite1,ballite2,ballite3,ballite4,ballite5,ballite6,ballite7,lighten1
@@ -171,3 +175,5 @@ kengrif.img
 ZOF>
 jordan.img
 ---> JORDAN
+TVSCORE.IMG
+---> LAIMBEER

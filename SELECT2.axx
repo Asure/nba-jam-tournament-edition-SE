@@ -3165,19 +3165,19 @@ player_heads
 	.long	0,0
 	.long	0,0
 
+	.long	THM_DET,LAM_DET
+	.long	LAM_DET,THM_DET
 	.long	THM_DET,DUM_DET
 	.long	DUM_DET,THM_DET
+	.long	LAM_DET,DUM_DET
+	.long	DUM_DET,LAM_DET
+
 	.long	THM_DET,ELL_DET
 	.long	ELL_DET,THM_DET
+	.long	LAM_DET,ELL_DET
+	.long	ELL_DET,LAM_DET
 	.long	DUM_DET,ELL_DET
 	.long	ELL_DET,DUM_DET
-
-	.long	DUM_DET,HUN_DET
-	.long	HUN_DET,DUM_DET
-	.long	THM_DET,HUN_DET
-	.long	HUN_DET,THM_DET
-	.long	ELL_DET,HUN_DET
-	.long	HUN_DET,ELL_DET
 
 	.long	0,0
 	.long	0,0
@@ -3757,14 +3757,20 @@ player_attribs
  .word	08,08,00,08
  .word  01,07,00,09	;ISIAH THOMAS	   6-1	Skinny
 
+;Speed, 3 ptrs, Dunks, Passing
+;Power, Steals, Block, Clutch
+
+ .word	00,06,03,04
+ .word  09,01,05,06	;BILL LAIMBEER	   6-11	Skinny (medium)
+
  .word	08,07,00,05
  .word  03,04,02,08	;JOE DUMARS	   6-3	Skinny (medium)
 
  .word	07,06,06,05
  .word  04,05,06,05	;SEAN ELLIOT		6-8  Skinny
 
- .word	09,05,00,06
- .word  02,05,00,02	;LINDSEY HUNTER	   6-2  Skinny
+; .word	09,05,00,06
+; .word  02,05,00,02	;LINDSEY HUNTER	   6-2  Skinny
 
 
 
@@ -4606,8 +4612,9 @@ guyhds
 	.long	ARM_CHI		;03 CHICAGO
 ;	.long	KUK_CHI		;03 CHICAGO
 	.long	THM_DET
+	.long	LAM_DET	
 	.long	DUM_DET		;07 DETROIT
-	.long	HUN_DET		;07 DETROIT
+;	.long	HUN_DET		;07 DETROIT
 	.long	HOR_HOU		;09 HOUSTON
 	.long	MIL_IND
 	.long	SMI_IND		;10 INDIANA
