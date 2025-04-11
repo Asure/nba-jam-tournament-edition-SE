@@ -1223,9 +1223,9 @@ wi_h
 mj_h	;JORDAN
 	.long	JORDAN1
 	.long	JORDAN1,JORDAN2,JORDAN3,JORDAN4,JORDAN5
-	.long	JORDAN1,JORDAN2,JORDAN3,JORDAN4,JORDAN5
-	.long	JORDAN1,JORDAN2,JORDAN3,JORDAN4,JORDAN5
-	.long	JORDAN3
+	.long	JORDAN6,JORDAN7,JORDAN8,JORDAN9,JORDAN10
+	.long	JORDAN11,JORDAN12,JORDAN13,JORDAN14,JORDAN15
+	.long	JORDAN16
 ; AM
 ; This is a bit messy since he used to be in plyrat2.axx, we'll work around it later.
 ; Note this is corrected from Oneil to ONEAL and this is case sensitive!

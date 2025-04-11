@@ -11,19 +11,17 @@
 ; (These change when we touch BB3 lod stuff and need to be updated each time.)
 GRIFFEY:
 	.word   42,9,21,0
-	.long   05fb3806H
-	.long   05fcfc76H
+	.long   05fdcbe4H
 	.word   06000H
 	.long   scorep
 JORDAN:
-	.word   40,8,21,0
-	.long   05fb40e2H
-	.long   05fd0552H
+	.word   48,9,21,0
+	.long   05fdd4c0H
 	.word   06000H
 	.long   scorep
 LAIMBEER:
 	.word   53,9,26,0
-	.long   05fd0cd2H
+	.long   05fddee0H
 	.word   06000H
 	.long   scorep
 shadow1:

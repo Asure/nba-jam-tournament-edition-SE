@@ -136,7 +136,8 @@ PPP> 0
 ---> BILDAB03,BILDAB04,BILDAB05,BILDAB16
 ---> RACDAV01,RACDAV02,RACDAV03,RACDAV04,RACDAV05,RACDAV16
 jordan.img
----> JORDAN1,JORDAN2,JORDAN3,JORDAN4,JORDAN5,JORDAN16
+---> JORDAN1,JORDAN2,JORDAN3,JORDAN4,JORDAN5,JORDAN6,JORDAN7,JORDAN8,
+---> JORDAN9,JORDAN10,JORDAN11,JORDAN12,JORDAN13,JORDAN14,JORDAN15,JORDAN16
 ; We need to add his mug to tbl/glo/pal asm manually!
 ; Still needs nameplate
 kengrif.img
@@ -166,6 +167,7 @@ PPP> 1
 ; Extra nameplates
 ; no need to store PAL (all are scorep)
 ; put in separate table, keeps PLYRHD4.TBL clean.
+; remember, no SCOREP pal duplicates!
 ; switch header output as well.
 IHDR SIZX:W,SIZY:W,ANIX:W,ANIY:W,SAG:L,CTRL:W,PAL:L
 ASM> NAMES.TBL

@@ -1,21 +1,22 @@
 	.DATA
 ONE_ORL:
 	.word   77,62,0,61
-	.long   05f9fe8eH
-	.long   05fb1f96H
+	.long   05fbef04H
 	.word   00H
 	.long   ONE_ORLP
+	.word   -1,-1,-1,0,0,0,0,0,0
 JOR_CHI:
 	.word   67,61,0,60
-	.long   05fa93beH
-	.long   05fbb4c6H
+	.long   05fc8434H
 	.word   00H
 	.long   JOR_CHIP
+	.word   -1,-1,-1,0,0,0,0,0,0
 LAM_DET:
 	.word   83,63,0,62
-	.long   05fc347eH
+	.long   05fd03ecH
 	.word   00H
 	.long   LAM_DETP
+	.word   -1,-1,-1,0,0,0,0,0,0
 RAD_MK2:
 	.word   66,63,0,63
 	.long   03e0a000H
