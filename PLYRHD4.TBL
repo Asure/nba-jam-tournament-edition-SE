@@ -2297,6 +2297,198 @@ KGRIF05:
 	.word   06000H
 	.long   KGRIF_P
 	.word   0,0,-1,0,0,0,0,0,0
+LAM1:
+	.word   23,29,10,26
+	.long   05f8e3f2H
+	.word   06000H
+	.long   LAM_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+LAM2:
+	.word   27,29,12,23
+	.long   05f8f394H
+	.word   06000H
+	.long   LAM_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+LAM3:
+	.word   29,30,10,27
+	.long   05f905eeH
+	.word   06000H
+	.long   LAM_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+LAM4:
+	.word   25,30,8,27
+	.long   05f91a52H
+	.word   06000H
+	.long   LAM_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+LAM5:
+	.word   23,31,10,26
+	.long   05f92be6H
+	.word   06000H
+	.long   LAM_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+LAM6:
+	.word   26,28,15,22
+	.long   05f93c9cH
+	.word   06000H
+	.long   LAM_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+LAM7:
+	.word   25,29,6,23
+	.long   05f94dacH
+	.word   06000H
+	.long   LAM_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+LAM8:
+	.word   31,33,4,24
+	.long   05f95eaaH
+	.word   06000H
+	.long   LAM_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+LAM9:
+	.word   27,32,7,29
+	.long   05f976a4H
+	.word   06000H
+	.long   LAM_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+LAM10:
+	.word   23,30,10,25
+	.long   05f98ae4H
+	.word   06000H
+	.long   LAM_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+LAM11:
+	.word   22,21,11,16
+	.long   05f99b10H
+	.word   06000H
+	.long   LAM_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+LAM12:
+	.word   30,29,15,22
+	.long   05f9a5e4H
+	.word   06000H
+	.long   LAM_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+LAM13:
+	.word   32,30,16,23
+	.long   05f9ba48H
+	.word   06000H
+	.long   LAM_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+LAM14:
+	.word   24,30,12,24
+	.long   05f9d0c8H
+	.word   06000H
+	.long   LAM_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+LAM15:
+	.word   23,29,11,25
+	.long   05f9e1a8H
+	.word   06000H
+	.long   LAM_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+LAM16:
+	.word   30,28,26,20
+	.long   05f9f14aH
+	.word   06000H
+	.long   LAM_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+ONEAL1:
+	.word   24,28,11,24
+	.long   05fa04faH
+	.word   06000H
+	.long   ONEAL_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+ONEAL2:
+	.word   24,27,11,25
+	.long   05fa14baH
+	.word   06000H
+	.long   ONEAL_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+ONEAL3:
+	.word   26,31,8,27
+	.long   05fa23eaH
+	.word   06000H
+	.long   ONEAL_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+ONEAL4:
+	.word   24,31,8,28
+	.long   05fa36ceH
+	.word   06000H
+	.long   ONEAL_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+ONEAL5:
+	.word   23,30,11,26
+	.long   05fa483eH
+	.word   06000H
+	.long   ONEAL_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+ONEAL6:
+	.word   28,28,17,24
+	.long   05fa586aH
+	.word   06000H
+	.long   ONEAL_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+ONEAL7:
+	.word   27,28,8,25
+	.long   05fa6acaH
+	.word   06000H
+	.long   ONEAL_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+ONEAL8:
+	.word   29,34,7,27
+	.long   05fa7c82H
+	.word   06000H
+	.long   ONEAL_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+ONEAL9:
+	.word   26,32,6,28
+	.long   05fa939eH
+	.word   06000H
+	.long   ONEAL_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+ONEAL10:
+	.word   24,30,10,25
+	.long   05faa71eH
+	.word   06000H
+	.long   ONEAL_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+ONEAL11:
+	.word   23,23,10,18
+	.long   05fab7feH
+	.word   06000H
+	.long   ONEAL_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+ONEAL12:
+	.word   29,28,16,24
+	.long   05fac464H
+	.word   06000H
+	.long   ONEAL_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+ONEAL13:
+	.word   32,28,17,23
+	.long   05fad76cH
+	.word   06000H
+	.long   ONEAL_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+ONEAL14:
+	.word   25,29,13,25
+	.long   05faec6cH
+	.word   06000H
+	.long   ONEAL_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+ONEAL15:
+	.word   23,30,12,26
+	.long   05fafd6aH
+	.word   06000H
+	.long   ONEAL_P
+	.word   -1,-1,-1,0,0,0,0,0,0
+ONEAL16:
+	.word   32,24,30,19
+	.long   05fb0d96H
+	.word   06000H
+	.long   ONEAL_P
+	.word   -1,-1,-1,0,0,0,0,0,0
 ballite1:
 	.word   24,13,11,12
 	.long   05fb0840H
@@ -2380,102 +2572,6 @@ lighten7:
 	.long   05fb2b86H
 	.word   03000H
 	.long   ligtn_p
-	.word   -1,-1,-1,0,0,0,0,0,0
-ONEAL1:
-	.word   24,28,11,24
-	.long   05f8e3f2H
-	.word   06000H
-	.long   ONEAL_P
-	.word   -1,-1,-1,0,0,0,0,0,0
-ONEAL2:
-	.word   24,27,11,25
-	.long   05f8f3b2H
-	.word   06000H
-	.long   ONEAL_P
-	.word   -1,-1,-1,0,0,0,0,0,0
-ONEAL3:
-	.word   26,31,8,27
-	.long   05f902e2H
-	.word   06000H
-	.long   ONEAL_P
-	.word   -1,-1,-1,0,0,0,0,0,0
-ONEAL4:
-	.word   24,31,8,28
-	.long   05f915c6H
-	.word   06000H
-	.long   ONEAL_P
-	.word   -1,-1,-1,0,0,0,0,0,0
-ONEAL5:
-	.word   23,30,11,26
-	.long   05f92736H
-	.word   06000H
-	.long   ONEAL_P
-	.word   -1,-1,-1,0,0,0,0,0,0
-ONEAL6:
-	.word   28,28,17,24
-	.long   05f93762H
-	.word   06000H
-	.long   ONEAL_P
-	.word   -1,-1,-1,0,0,0,0,0,0
-ONEAL7:
-	.word   27,28,8,25
-	.long   05f949c2H
-	.word   06000H
-	.long   ONEAL_P
-	.word   -1,-1,-1,0,0,0,0,0,0
-ONEAL8:
-	.word   29,34,7,27
-	.long   05f95b7aH
-	.word   06000H
-	.long   ONEAL_P
-	.word   -1,-1,-1,0,0,0,0,0,0
-ONEAL9:
-	.word   26,32,6,28
-	.long   05f97296H
-	.word   06000H
-	.long   ONEAL_P
-	.word   -1,-1,-1,0,0,0,0,0,0
-ONEAL10:
-	.word   24,30,10,25
-	.long   05f98616H
-	.word   06000H
-	.long   ONEAL_P
-	.word   -1,-1,-1,0,0,0,0,0,0
-ONEAL11:
-	.word   23,23,10,18
-	.long   05f996f6H
-	.word   06000H
-	.long   ONEAL_P
-	.word   -1,-1,-1,0,0,0,0,0,0
-ONEAL12:
-	.word   29,28,16,24
-	.long   05f9a35cH
-	.word   06000H
-	.long   ONEAL_P
-	.word   -1,-1,-1,0,0,0,0,0,0
-ONEAL13:
-	.word   32,28,17,23
-	.long   05f9b664H
-	.word   06000H
-	.long   ONEAL_P
-	.word   -1,-1,-1,0,0,0,0,0,0
-ONEAL14:
-	.word   25,29,13,25
-	.long   05f9cb64H
-	.word   06000H
-	.long   ONEAL_P
-	.word   -1,-1,-1,0,0,0,0,0,0
-ONEAL15:
-	.word   23,30,12,26
-	.long   05f9dc62H
-	.word   06000H
-	.long   ONEAL_P
-	.word   -1,-1,-1,0,0,0,0,0,0
-ONEAL16:
-	.word   32,24,30,19
-	.long   05f9ec8eH
-	.word   06000H
-	.long   ONEAL_P
 	.word   -1,-1,-1,0,0,0,0,0,0
 
 	.TEXT

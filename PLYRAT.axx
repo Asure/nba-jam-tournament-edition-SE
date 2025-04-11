@@ -45,7 +45,8 @@
 	.ref	McDan_h,Brown_h,KAnderson_h
 	.ref	Willis_h,Gamble_h,Mourn_h,Armstrng_h,Nance_h,Jack_h
 ;	.ref	Willis_h,Gamble_h,Mourn_h,Armstrng_h,Kukoc_h,Nance_h,Jack_h
-	.ref	Dumars_h,Rodman_h,Hunter_h,Webber_h,Maxwell_h,Horry_h,Smits_h
+;	.ref	Dumars_h,Rodman_h,Hunter_h,Webber_h,Maxwell_h,Horry_h,Smits_h
+	.ref	Dumars_h,Rodman_h,Webber_h,Maxwell_h,Horry_h,Smits_h
 	.ref	Roberts_h,Peeler_h,Campbell_h,Miner_h,Baker_h,Day_h
 	.ref	Mason_h,Starks_h,AHard_h,NAnders_h,Weath_h,Brad_h,KJohn_h
 	.ref	Hurley_h,Rich_h,DEllis_h,Payton_h,Mckey_h,Benoit_h,Ellison_h
@@ -243,19 +244,24 @@ ATL_t
 	.long	FL12_p, Un8_p,Un14_p, TR8_p,TR7_p,Rogers_h
 	.word	4,7,1	
 
+;Size, speed, shot%, dunks, block defense, steals, drone skill
+;Pass ability, power, clutch
 
 	LWWWWWW	scale60_t,BV10,SHT8,DNK0,DEF0,SDEF7,DSKL1
 	.long	FL50_p, Un9_p,Un14_p, TR4_p,TR7_p,Thomas_h
 	.word	8,1,9
+	LWWWWWW	scale611f_t,BV,SHT6,DNK3,DEF5,SDEF1,DSKL1
+	.long	FL27_p, Un9_p,Un14_p, TR4_p,TR7_p,Laim_h
+	.word	4,9,6
 	LWWWWWW	scale63_t,BV8,SHT7,DNK0,DEF2,SDEF4,DSKL1
 	.long	FL36_p, Un9_p,Un14_p, TR4_p,TR7_p,Dumars_h
 	.word	5,3,8
 	LWWWWWW	scale69_t,BV7,SHT6,DNK6,DEF6,SDEF5,DSKL_3
 	.long	FL10_p, Un9_p,Un14_p, TR4_p,TR7_p,Elliot_h
 	.word	5,4,5
-	LWWWWWW	scale62t_t,BV10,SHT5,DNK0,DEF0,SDEF4,DSKL1
-	.long	FL42_p, Un9_p,Un14_p, TR4_p,TR7_p,Hunter_h
-	.word	6,2,2
+;	LWWWWWW	scale62t_t,BV10,SHT5,DNK0,DEF0,SDEF4,DSKL1
+;	.long	FL42_p, Un9_p,Un14_p, TR4_p,TR7_p,Hunter_h
+;	.word	6,2,2
 
 
 	LWWWWWW	scale62_t,BV9,SHT6,DNK0,DEF0,SDEF8,DSKL_4
@@ -1229,6 +1235,12 @@ ONeal_h	; Shaq's back on the roster!
 	.long	ONEAL1
 	.long	ONEAL2,ONEAL3,ONEAL4,ONEAL5,ONEAL6,ONEAL7,ONEAL8,ONEAL9,ONEAL10,ONEAL11
 	.long	ONEAL12,ONEAL13,ONEAL14,ONEAL15,ONEAL16
+
+Laim_h ; Bill Laimbeer is back too!
+	.long	LAM1
+	.long	LAM1
+	.long	LAM2,LAM3,LAM4,LAM5,LAM6,LAM7,LAM8,LAM9,LAM10,LAM11
+	.long	LAM12,LAM13,LAM14,LAM15,LAM16
 
 	.end
 
