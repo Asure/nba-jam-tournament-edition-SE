@@ -470,6 +470,25 @@
 	.global	KGRIF03
 	.global	KGRIF04
 	.global	KGRIF05
+	.globl	LAM_P
+	.global	LAM1
+	.global	LAM2
+	.global	LAM3
+	.global	LAM4
+	.global	LAM5
+	.global	LAM6
+	.global	LAM7
+	.global	LAM8
+	.global	LAM9
+	.global	LAM10
+	.global	LAM11
+	.global	LAM12
+	.global	LAM13
+	.global	LAM14
+	.global	LAM15
+	.global	LAM16
+	.globl	LAM_DETP
+	.global	LAM_DET
 	.globl	ligtn_p
 	.global	ballite1
 	.global	ballite2

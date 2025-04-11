@@ -1728,7 +1728,8 @@ lviastr_30
 lviastr_31a
 	.string	"Joe Dumars",0
 lviastr_31b
-	.string	"Lindsey Hunter",0
+;	.string	"Lindsey Hunter",0
+	.string	"Bill Laimbeer",0
 lviastr_31c
 	.string	"Robert Horry",0
 lviastr_32
@@ -1972,20 +1973,20 @@ player_names
 	.long	0,0
 	.long	0,0
 
+	.long	THOMAS,LAIMBEER
+	.long	LAIMBEER,THOMAS
 	.long	THOMAS,DUMARS
 	.long	DUMARS,THOMAS
-	.long	THOMAS,HORRY
-	.long	HORRY,THOMAS
-	.long	DUMARS,HORRY
-	.long	HORRY,DUMARS
+	.long	LAIMBEER,DUMARS
+	.long	DUMARS,LAIMBEER
 
 
-	.long	DUMARS,HUNTER
-	.long	HUNTER,DUMARS
-	.long	THOMAS,HUNTER
-	.long	HUNTER,THOMAS
-	.long	HORRY,HUNTER
-	.long	HUNTER,HORRY
+	.long	THOMAS,ELLIOT
+	.long	ELLIOT,THOMAS
+	.long	LAIMBEER,ELLIOT
+	.long	ELLIOT,LAIMBEER
+	.long	DUMARS,ELLIOT
+	.long	ELLIOT,DUMARS
 
 	.long	0,0
 	.long	0,0
@@ -2022,17 +2023,17 @@ player_names
 
 	.long	OLAJUWON,MAXWELL
 	.long	MAXWELL,OLAJUWON
-	.long	OLAJUWON,ELLIOT
-	.long	ELLIOT,OLAJUWON
-	.long	MAXWELL,ELLIOT
-	.long	ELLIOT,MAXWELL
+	.long	OLAJUWON,HORRY
+	.long	HORRY,OLAJUWON
+	.long	MAXWELL,HORRY
+	.long	HORRY,MAXWELL
 
 	.long	MAXWELL,SMITH		
 	.long	SMITH,MAXWELL
 	.long	OLAJUWON,SMITH		
 	.long	SMITH,OLAJUWON
-	.long	ELLIOT,SMITH		
-	.long	SMITH,ELLIOT
+	.long	HORRY,SMITH		
+	.long	SMITH,HORRY
 
 	.long	0,0
 	.long	0,0

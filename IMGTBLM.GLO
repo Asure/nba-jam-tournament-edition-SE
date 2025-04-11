@@ -48,6 +48,7 @@
 	.globl	KEN_MUGP
 	.globl	ONE_ORLP
 	.globl	JOR_CHIP
+	.globl	LAM_DETP
 	.globl	TON_GOSP
 	.globl	JON_CARP
 	.globl	JAM_RIVP
