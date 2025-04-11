@@ -2645,6 +2645,9 @@ zolcoff
 	rets
 
 
+*****************************************************************************
+;update cursor position & size for a player
+;base on the image it's over
 
 update_cursor
 
@@ -2720,6 +2723,8 @@ eayrheading_imgs
 eayrplaque_imgs
 
 
+*****************************************************************************
+;a5 = object ID
 
  SUBRP	create_name_objs
 
@@ -2762,6 +2767,8 @@ xyenok
 	calla	update_cursor
 	rets
 
+*****************************************************************************
+; saves the selected menu item into playerX_data
 
  SUBRP	save_selection
 
@@ -2773,6 +2780,7 @@ xyenok
 	move	a0,*a1				;save char selected
 	rets
 
+*****************************************************************************
 
  SUBRP	check_delete
 
@@ -2804,6 +2812,7 @@ fdmtno_delete
 
 
 
+*****************************************************************************
 
  SUBRP	inc_charpos
 
@@ -2812,6 +2821,7 @@ fdmtno_delete
 	move	a0,*a13(PC_CHARPOS)
 	rets
 
+*****************************************************************************
 
  SUBRP	button_actions
 
@@ -2880,6 +2890,8 @@ tnbeday
 	calla	create_heading
 	rets
 
+*****************************************************************************
+* hide all name images off bottom of screen
 
  SUBRP	hide_name_objs
 
@@ -3079,7 +3091,7 @@ lkelnoswitch
 ;Check for roster powerup taps
 	calla	tournament_on
 	jrc	lkelnotap
-;	jruc	powerup ;test constant stream of plaques
+
 
 
 	move	@bigroster1,a0
@@ -3289,6 +3301,8 @@ lkelcan
 	jrlo	lkelok
 
 
+;MJT
+;Bigroster if defeated all the teams
 	move	@team1_control,a1
 	sll	5,a1
 	addi	defeated,a1
@@ -3296,14 +3310,14 @@ lkelcan
 	move	*a1,a1,L
 	cmpi	07ffffffh,a1
 	jrz	lkelbonus
+;	jruc	lkelbonus 		;force big roster (tested, works.)
 
 ;AMM Roster crap
 	push	a0			;gotta keep a0 safe!
 	movi	ADJROSTER,a0		;Get value from CMOS
-	calla	GET_ADJ			;0-1
-	jrnz	noroster		;Off? Ext roster must be disabled in CMOS
-	jrz	lkelbonus
-noroster	
+	calla	GET_ADJ			;0-1 (0=ON 1=OFF)
+	jrz	lkelbonus		;On? Enable extended roster.
+noroster				;Off? We continue here.
 	pull 	a0			;restore a0!
 	move	@bigroster1,a1
 	jrn	lkelcont
@@ -3312,9 +3326,10 @@ noroster
 	jrnz	lkelcont
 
 lkelbonus
-	pull	a0			;restore a0!
+;Player has powered up his roster, and is sitting on the powered up team.
+	pull 	a0			;restore a0! (oops)
 	cmpi	19,a14
-;why the 19?
+;why the 19? - POWERUP Goal Tending 24 taps any button.
 	jrz	lkelcont		;disabling does nothing
 
 lkelok
@@ -3393,6 +3408,7 @@ qacbwait_for_players
 	andi	01100b,a0
 	jrz	qacbwait_for_players
 
+;player 3 and/or 4 active
 
 	move	@exit_status,a0
 	ori	1<<1,a0
@@ -3496,6 +3512,7 @@ qacbskippy
 	move	a0,*a13(PC_FLASHCOUNT)
 
 	calla	qacbtoggle2
+;Check for team switch powerup on team #2
 
 	move	@team2_switch,a0
 	jrnz	qacbswitch
@@ -3508,6 +3525,7 @@ qacbskippy
 	jrc	qacbnoswitch
 
 
+;Possibly switch teams at the half!
 	move	@team2_control,a0	;player selecting team 2
 	calla	get_steal_but_cur
 	jrz	qacbtapz
@@ -3515,6 +3533,7 @@ qacbskippy
 	calla	get_stick_val_cur
 	cmpi	8,a0
 	jrnz	qacbtapz
+;Yes, trying to powerup team switch!
 	move	@switch_2,a0
 	inc	a0
 	move	a0,@switch_2
@@ -3552,6 +3571,7 @@ qacbnodbc
 
 qacbnoswitch
 
+;Check for roster powerup taps
 	calla	tournament_on
 	jrc	qacbnotap
 
@@ -3566,6 +3586,7 @@ qacbnoswitch
 	jruc	qacbnotap
 qacbtap
 
+;Check swirl on stick
 	move	@team2_control,a0	;player selecting team 2
 	calla	get_stick_val_cur
 
@@ -3602,17 +3623,20 @@ qacbtap
 qacbnotfat
 	cmpi	0fH,a1
 	jrnz	qacbnotap
+;Yes!  Powerup this particular roster
 	move	@team2,a0
 	move	a0,@bigroster2
 
 	move	@team2_control,a4	;player selecting team 2
 
+;If no additional players are available, fatalitites enabled box appears
 
 	sll	4,a0
 	addi	fatal_tbl,a0
 	move	*a0,a0
 	jrz	qacbreg			;Br=yes fatality
 
+;Do bad decision speech call!
 	movi	baddec_snd,a0
 	calla	speech_playovrp
 
@@ -3753,6 +3777,8 @@ qacbcan
 
 
 
+;MJT
+;Bigroster if defeated all the teams
 	move	@team2_control,a1
 	sll	5,a1
 	addi	defeated,a1
@@ -3760,15 +3786,14 @@ qacbcan
 	move	*a1,a1,L
 	cmpi	07ffffffh,a1
 	jrz	qacbbonus2		
+;	jruc	qacbbonus2		;force big roster (tested, works.)
 
-;Amm CMOS roster
+;AMM Roster crap
 	push	a0			;gotta keep a0 safe!
 	movi	ADJROSTER,a0		;Get value from CMOS
-	calla	GET_ADJ			;0-1
-	jrnz	noroster2		;Off? Ext roster must be disabled in CMOS
-	jrz	qacbbonus2		;On? Do this.
-
-noroster2
+	calla	GET_ADJ			;0-1 (0=ON 1=OFF)
+	jrz	qacbbonus2		;On? Enable extended roster.
+;noroster2				;Off? We continue here.
 	pull 	a0			;restore a0!
 	move	@bigroster2,a1
 	jrn	qacbcont
@@ -3776,8 +3801,10 @@ noroster2
 	cmp	a1,a2
 	jrnz	qacbcont
 qacbbonus2
-	pull 	a0			;restore a0!
+;Player has powered up his roster, and is sitting on the powered up team.
+	pull	a0			;restore a0
 	cmpi	19,a14
+;why the 19? - POWERUP Goal Tending 24 taps any button.
 	jrz	qacbcont
 
 qacbok
@@ -3797,7 +3824,8 @@ qacbout
 	add	a14,a1
 	move	*a1,a1
 	jrnz	qacbno_toggle
-qacbcont	clr	a1
+qacbcont
+	clr	a1
 	move	a1,*a0
 
 qacbno_toggle
