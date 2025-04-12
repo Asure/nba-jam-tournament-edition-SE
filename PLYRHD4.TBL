@@ -2232,35 +2232,40 @@ RACDAV16:
 	.long   RACDAV_P
 	.word   -1,-1,-1,0,0,0,0,0,0
 JORDAN1:
-	.word   24,28,9,25
+;	.word   24,28,9,25
+	.word   24,28,11,25
 	.long   05f7c4aaH
 	.word   07000H
 	.long   JORDAN_P
 	.word   0,0,0,0,0,0,0,0,0
 JORDAN2:
-	.word   25,29,10,26
+;	.word   25,29,10,26
+	.word   25,29,11,26
 	.long   05f7d70aH
 	.word   07000H
 	.long   JORDAN_P
 	.word   0,0,0,0,0,0,0,0,0
 JORDAN3:
-	.word   28,31,9,27
+;	.word   28,31,9,27
+	.word   28,31,10,28
 	.long   05f7eaddH
 	.word   07000H
 	.long   JORDAN_P
-	.word   0,0,0,0,0,0,0,0,0
+	.word   0,1,0,0,0,0,0,0,0
 JORDAN4:
-	.word   25,31,12,29
+;	.word   25,31,12,29
+	.word   25,31,11,30
 	.long   05f80299H
 	.word   07000H
 	.long   JORDAN_P
 	.word   0,0,0,0,0,0,0,0,0
 JORDAN5:
-	.word   24,31,12,29
+;	.word   24,31,12,29
+	.word   24,31,12,28
 	.long   05f817caH
 	.word   07000H
 	.long   JORDAN_P
-	.word   0,0,0,0,0,0,0,0,0
+	.word   0,1,0,0,0,0,0,0,0
 JORDAN6:
 	.word   29,31,19,23
 	.long   05f82c22H

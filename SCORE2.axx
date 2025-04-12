@@ -1931,11 +1931,11 @@ player_names
 
 	.long	JACK,MASH
 	.long	MASH,JACK
-	.long	0,0
-	.long	0,0
-	.long	0,0
-	.long	0,0
-
+	.long	JACK,HARPER_D
+	.long	HARPER_D,JACK
+	.long	MASH,HARPER_D
+	.long	HARPER_D,MASH
+	
 	.long	0,0
 	.long	0,0
 	.long	0,0
@@ -2228,14 +2228,23 @@ player_names
 	.long	STARKS,OAKLEY
 	.long	OAKLEY,STARKS
 
-	.long	HARPER_D,OAKLEY
-	.long	OAKLEY,HARPER_D
-	.long	HARPER_D,MASON
-	.long	MASON,HARPER_D
-	.long	HARPER_D,STARKS
-	.long	STARKS,HARPER_D
-	.long	HARPER_D,EWING
-	.long	EWING,HARPER_D
+;	.long	HARPER_D,OAKLEY
+;	.long	OAKLEY,HARPER_D
+;	.long	HARPER_D,MASON
+;	.long	MASON,HARPER_D
+;	.long	HARPER_D,STARKS
+;	.long	STARKS,HARPER_D
+;	.long	HARPER_D,EWING
+;	.long	EWING,HARPER_D
+
+	.long	0,0
+	.long	0,0
+	.long	0,0
+	.long	0,0
+	.long	0,0
+	.long	0,0
+	.long	0,0
+	.long	0,0
 
 	.long	ONEAL,AHARDAWAY
 	.long	AHARDAWAY,ONEAL
@@ -2250,8 +2259,6 @@ player_names
 	.long	0,0
 	.long	0,0
 	.long	0,0
-
-
 	.long	0,0
 	.long	0,0
 	.long	0,0
@@ -2261,22 +2268,20 @@ player_names
 	.long	0,0
 	.long	0,0
 
-
+;Moved Hornacek from Utah
 	.long	WEATH,BRAD
-	.long	BRAD,WEATH		
+	.long	BRAD,WEATH
+    .long	WEATH,HORNACEK
+	.long	HORNACEK,WEATH
+    .long	BRAD,HORNACEK
+    .long	HORNACEK,BRAD
 
 	.long	0,0
 	.long	0,0
 	.long	0,0
 	.long	0,0
-
 	.long	0,0
 	.long	0,0
-	.long	0,0
-	.long	0,0
-	.long	0,0
-	.long	0,0
-
 	.long	0,0
 	.long	0,0
 	.long	0,0
@@ -2410,13 +2415,19 @@ player_names
 	.long	STOCKTON,BENOIT
 	.long	BENOIT,STOCKTON
 
-	.long	HORNACEK,BENOIT
-	.long	BENOIT,HORNACEK
-	.long	HORNACEK,STOCKTON
-	.long	STOCKTON,HORNACEK
-	.long	HORNACEK,MALONE_K
-	.long	MALONE_K,HORNACEK
+;	.long	HORNACEK,BENOIT
+;	.long	BENOIT,HORNACEK
+;	.long	HORNACEK,STOCKTON
+;	.long	STOCKTON,HORNACEK
+;	.long	HORNACEK,MALONE_K
+;	.long	MALONE_K,HORNACEK
 
+	.long	0,0
+	.long	0,0
+	.long	0,0
+	.long	0,0
+	.long	0,0
+	.long	0,0
 	.long	0,0
 	.long	0,0
 	.long	0,0
@@ -2448,7 +2459,7 @@ player_names
 	.long	0,0
 	.long	0,0
 
-
+; Team Jam / Allstars
 	.long	MALONE_K,KEMP
 	.long	DROBINSON,BARKLEY
 	.long	DREXLER,AHARDAWAY

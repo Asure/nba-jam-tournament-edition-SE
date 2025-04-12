@@ -200,7 +200,7 @@ ATL_t
 ;Pass ability, power, clutch
 
 	LWWWWWW	scale611t_t,BV8,SHT6,DNK10,DEF7,SDEF7,DSKL5	;Jordan, Can Shatter
-	.long	FL2_p, Un4_p,Un14_p, TR2_p,TR4_p,mj_h
+	.long	FL25_p, Un4_p,Un14_p, TR2_p,TR4_p,mj_h
 	.word	8,8,7						;These are tweaked down a bit, otherwise he's too OP!
 
 	LWWWWWW	scale68_t,BV8,SHT6,DNK10,DEF5,SDEF9,DSKL5	;Can shatter
@@ -231,8 +231,10 @@ ATL_t
 	.word	9,5,6	
 	LWWWWWW	scale68t_t,BV8,SHT8,DNK7,DEF6,SDEF3,DSKL_11
 	.long	FL13_p, Un5_p,Un14_p, TR6_p,TR6_p,Mash_h
-	.word	4,8,6	
-
+	.word	4,8,6
+	LWWWWWW	scale64_t,BV5,SHT5,DNK2,DEF3,SDEF4,DSKL_11
+	.long	FL5_p,  Un5_p,Un14_p, TR6_p,TR6_p,DHarper_h
+	.word	5,5,6
 
 	LWWWWWW	scale72_t,BV5,SHT1,DNK8,DEF9,SDEF2,DSKL_7	;Can shatter
 	.long	FL32_p, Un8_p,Un14_p, TR8_p,TR7_p,Mutumbo_h
@@ -389,9 +391,9 @@ ATL_t
 	LWWWWWW	scale610f_t,BV3,SHT1,DNK5,DEF8,SDEF1,DSKL2
 	.long	FL34_p, Un5_p,Un14_p, TR5_p,TR5_p,Oakley_h
 	.word	4,9,1
-	LWWWWWW	scale64_t,BV5,SHT5,DNK2,DEF3,SDEF4,DSKL_11
-	.long	FL5_p,  Un5_p,Un14_p, TR5_p,TR5_p,DHarper_h
-	.word	5,5,6
+;	LWWWWWW	scale64_t,BV5,SHT5,DNK2,DEF3,SDEF4,DSKL_11
+;	.long	FL5_p,  Un5_p,Un14_p, TR5_p,TR5_p,DHarper_h
+;	.word	5,5,6
 
 ;Size, speed, shot%, dunks, block defense, steals, drone skill
 ;Flesh,uniforms,trouser,heads
@@ -421,7 +423,9 @@ ATL_t
 	LWWWWWW	scale76et_t,BV7,SHT3,DNK9,DEF9,SDEF7,DSKL_9
 	.long	FL27_p, Un4_p,Un14_p, TR7_p,TR4_p,Brad_h
 	.word	6,5,1	
-
+	LWWWWWW	scale65_t,BV6,SHT8,DNK0,DEF4,SDEF4,DSKL_9
+	.long	FL19_p, Un4_p,Un14_p, TR7_p,TR4_p,Hornacek_h
+	.word	7,3,6	
 
 	LWWWWWW	scale610f_t,BV7,SHT7,DNK9,DEF7,SDEF7,DSKL3
 	.long	FL2_p, Un3_p,Un14_p, TR2b_p,TR2b_p,Barkley_h
@@ -499,9 +503,9 @@ ATL_t
 	LWWWWWW	scale68_t,BV5,SHT4,DNK4,DEF6,SDEF4,DSKL4
 	.long	FL21_p, Un7_p,Un14_p, TR2_p,TR10_p,Benoit_h
 	.word	3,4,3	
-	LWWWWWW	scale65_t,BV6,SHT8,DNK0,DEF4,SDEF4,DSKL_9
-	.long	FL19_p, Un7_p,Un14_p, TR2_p,TR10_p,Hornacek_h
-	.word	7,3,6	
+;	LWWWWWW	scale65_t,BV6,SHT8,DNK0,DEF4,SDEF4,DSKL_9
+;	.long	FL19_p, Un7_p,Un14_p, TR2_p,TR10_p,Hornacek_h
+;	.word	7,3,6	
 
 
 	LWWWWWW	scale610_t,BV7,SHT7,DNK7,DEF5,SDEF4,DSKL_5
