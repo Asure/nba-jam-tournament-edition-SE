@@ -3657,28 +3657,59 @@ player_heads
 	.long	0,0
 
 ; Team Jam / Allstars
-	.long	MLN_UTA,KMP_SEA
-	.long	ROB_SAN,BRK_PHX
-	.long	DRX_PRT,HAR_ORL
-	.long	EWG_NEY,AND_NEJ
-	.long	COL_NEJ,ONE_ORL
-	.long	STK_UTA,JOH_PHX
 
-	.long	GIL_SEA,RIC_SAC
-	.long	BRA_PHL,WEB_SAC
-	.long	DUM_DET,STA_NEY
-	.long	MUT_DEN,WLK_ATL
-	.long	HRP_CLP,RID_MIN
-	.long	MIL_IND,JON_CHA
+	.long	JOR_CHI,ONE_ORL
+	.long	ONE_ORL,JOR_CHI
+	
+	.long	ROB_SAN,STK_UTA
+	.long	STK_UTA,ROB_SAN
+	
+	.long	BRK_PHX,MLN_UTA
+	.long	MLN_UTA,BRK_PHX
+	
+	.long	OLA_HOU,THM_DET
+	.long	THM_DET,OLA_HOU
+	
+	.long	KMP_SEA,MIL_IND
+	.long	MIL_IND,KMP_SEA
+	
+	.long	DRX_PRT,EWG_NEY
+	.long	EWG_NEY,DRX_PRT
+	
+	.long	JON_CHA,DUM_DET
+	.long	DUM_DET,JON_CHA
+	
+	.long	COL_NEJ,MUL_GLD
+	.long	MUL_GLD,COL_NEJ
+	
+	.long	MUT_DEN,MOU_CHA
+	.long	MOU_CHA,MUT_DEN
+	
+	.long	WLK_ATL,ROD_SAN
+	.long	ROD_SAN,WLK_ATL
 
-	.long	OLA_HOU,BAK_MLW
-	.long	ARM_CHI,MAX_HOU
-	.long	MOU_CHA,RCE_MIA
-	.long	HRD_GLD,JAC_DAL
-	.long	PIP_CHI,MIN_MIA
-	.long	THM_DET,WEB_GLD
-	.long	MAS_DAL,WOR_LAK
-	.long	MUL_GLD,MAN_CLP
+;	.long	MLN_UTA,KMP_SEA
+;	.long	ROB_SAN,BRK_PHX
+;	.long	DRX_PRT,HAR_ORL
+;	.long	EWG_NEY,AND_NEJ
+;	.long	COL_NEJ,ONE_ORL
+;	.long	STK_UTA,JOH_PHX
+;
+;	.long	GIL_SEA,RIC_SAC
+;	.long	BRA_PHL,WEB_SAC
+;	.long	DUM_DET,STA_NEY
+;	.long	MUT_DEN,WLK_ATL
+;	.long	HRP_CLP,RID_MIN
+;	.long	MIL_IND,JON_CHA
+;
+;	.long	OLA_HOU,BAK_MLW
+;	.long	ARM_CHI,MAX_HOU
+;	.long	MOU_CHA,RCE_MIA
+;	.long	HRD_GLD,JAC_DAL
+;	.long	PIP_CHI,MIN_MIA
+;	.long	THM_DET,WEB_GLD
+;	.long	MAS_DAL,WOR_LAK
+;	.long	MUL_GLD,MAN_CLP
 
 
 
