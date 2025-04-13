@@ -2333,16 +2333,20 @@ JORDAN16:
 	.long   JORDAN_P
 	.word   0,0,0,0,0,0,0,0,0
 KGRIF01:
-	.word   28,34,13,31
+;	.word   28,34,13,31
+	.word   28,34,14,29
 	.long   05f929c6H
 	.word   06000H
 	.long   KGRIF_P
-	.word   -1,-1,-1,0,0,0,0,0,0
+;	.word   -1,-1,-1,0,0,0,0,0,0
+	.word   2,1,-1,0,0,0,0,0,0
 KGRIF02:
-	.word   33,34,18,31
+;	.word   33,34,18,31
+	.word   33,34,18,29
 	.long   05f94016H
 	.word   06000H
 	.long   KGRIF_P
+;	.word   -1,-1,-1,0,0,0,0,0,0
 	.word   -1,-1,-1,0,0,0,0,0,0
 KGRIF03:
 	.word   40,36,22,31
@@ -2351,13 +2355,16 @@ KGRIF03:
 	.long   KGRIF_P
 	.word   0,0,-1,0,0,0,0,0,0
 KGRIF04:
-	.word   37,37,18,32
+;	.word   37,37,18,32
+	.word   37,37,19,32
 	.long   05f97c22H
 	.word   06000H
 	.long   KGRIF_P
-	.word   -1,-1,-1,0,0,0,0,0,0
+;	.word   -1,-1,-1,0,0,0,0,0,0
+	.word   8,1,-1,0,0,0,0,0,0
 KGRIF05:
-	.word   26,38,12,33
+;	.word   26,38,12,33
+	.word   26,38,12,34
 	.long   05f99c38H
 	.word   06000H
 	.long   KGRIF_P

@@ -816,8 +816,12 @@ spechds_t
 	.long	FL47_p, Un7_p,Un14_p, TR2_p,TR2_p,CG_H
 	.word	2,3,8	
 
-	LWWWWWW	scale610_t,BV9,SHT9,DNK9,DEF7,SDEF7,DSKL3
-	.long	FL38_p, Un12_p,Un14_p, TR2_p,TR7_p,KG_H
+;Size, speed, shot%, dunks, block defense, steals, drone skill
+;Flesh,uniforms,trouser,heads
+;Pass ability, power, clutch
+
+	LWWWWWW	scale64_t,BV9,SHT6,DNK9,DEF6,SDEF7,DSKL3
+	.long	FL34_p, Un12_p,Un14_p, TR2_p,TR7_p,KG_H
 	.word	6,9,9	
 
 	LWWWWWW	scale67t_t,BV8,SHT11,DNK10,DEF8,SDEF6,DSKL5
