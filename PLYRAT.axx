@@ -179,14 +179,14 @@ ATL_t
 ;Pass ability, power, clutch
 
     LWWWWWW	scale67_t,BV7,SHT8,DNK4,DEF3,SDEF5,DSKL0
-    .long	FL25_p, Un13_p,Un1_p, TR2_p,TR1_p,Lewis_h
+    .long	FL25_p, Un13_p,Un14_p, TR2_p,TR6_p,Lewis_h
 	.word	7,3,7
-	LWWWWWW	scale61_t,BV8,SHT7,DNK8,DEF2,SDEF6,DSKL0
-	.long	FL25_p, Un13_p,Un14_p, TR2_p,TR6_p,Brown_h
-	.word	6,1,5	
 	LWWWWWW	scale67_t,BV5,SHT5,DNK5,DEF9,SDEF3,DSKL0
 	.long	FL25_p, Un13_p,Un14_p, TR2_p,TR6_p,McDan_h
-	.word	1,8,8	
+	.word	1,8,8
+	LWWWWWW	scale61_t,BV8,SHT7,DNK8,DEF2,SDEF6,DSKL0
+	.long	FL25_p, Un13_p,Un14_p, TR2_p,TR6_p,Brown_h
+	.word	6,1,5		
 ;	LWWWWWW	scale65t_t,BV3,SHT7,DNK2,DEF4,SDEF4,DSKL0
 ;	.long	FL18_p, Un13_p,Un14_p, TR2_p,TR6_p,Gamble_h
 ;	.word	5,5,4
@@ -379,7 +379,7 @@ ATL_t
 	.long	FL4_p, Un14_p,Un5_p, TR4_p,TR4_p,Coleman_h
 	.word	2,9,8
 	LWWWWWW	scale66t_t,BV4,SHT7,DNK1,DEF5,SDEF7,DSKL0
-    .long	FL37_p, Un14_p,Un14_p, TR4_p,TR1_p,Petrovic_h
+    .long	FL37_p, Un14_p,Un5_p, TR4_p,TR4_p,Petrovic_h
 	.word	8,6,7
 	LWWWWWW	scale61t_t,BV9,SHT7,DNK0,DEF1,SDEF7,DSKL0
 	.long	FL36_p, Un14_p,Un5_p, TR4_p,TR4_p,KAnderson_h

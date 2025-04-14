@@ -30,10 +30,11 @@ PETROVIC:
 	.word   06000H
 	.long   scorep
 LEWIS:
-	.word   60,9,15,0
+	.word   60,9,16,0
 	.long   05ff327cH
 	.word   06000H
 	.long   scorep
+	.TEXT
 shadow1:
 	.word   59,9,29,4
 	.long   04ea3161H
