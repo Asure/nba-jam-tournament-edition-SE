@@ -56,7 +56,7 @@
 
 
 
-	.def	EB_H,JTO_H	;RA_H
+	.def	EB_H,JTO_H,RA_H
 	.def	spechds_t
 	.def	ATL_t
 

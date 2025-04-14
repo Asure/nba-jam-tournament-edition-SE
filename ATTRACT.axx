@@ -187,6 +187,10 @@ cqyxnxt	move	*a0,a0,L
 	.ref	result_screen
 	.ref	kp_team1,kp_scores,kp_team2
 
+*****************************
+* Main attract loop / sub
+*****************************
+
  SUBRP	amode
 
 cqyxlp
@@ -208,6 +212,7 @@ cqyxlp
 	JSRP	result_screen
 	JSRP	drw_chicks
 cqyxnog
+	JSRP	show_copyright2
 	JSRP	new_page
 	JSRP	show_title
 	JSRP	creditscreen
@@ -715,7 +720,121 @@ hztnln6	.string	"OWNED BY NBA PROPERTIES, INC.",0
 hztnln7	.string	"ALL RIGHTS RESERVED",0
 	.EVEN
 
+*** AMM
+ SUBRP	show_copyright2
 
+	calla	display_blank
+	calla	WIPEOUT
+
+	clr	a0
+	move	a0,@dtype		;2D
+
+	movk	1,a0			;page flipping on
+	move	a0,@dpageflip
+
+	movi	SCRNEND,a0		;[256,405]
+	move	a0,@SCRNLR,L
+
+	clr	a0
+	move	a0,@WORLDTLX,L
+	move	a0,@WORLDTLY,L
+	move	a0,@IRQSKYE
+
+	SLEEPK	2
+
+	clr	a10
+	movk	8,a11
+	CREATE0	fade_up
+
+	movk	1,a0
+	move	a0,@DISPLAYON
+;test fountain stars?
+	calla	display_2dsclstarmodeon
+
+	movk	10,a0
+	move	a0,@WORLDTLX+16
+	movi	1000,a0
+	move	a0,@WORLDTLY+16
+
+	movi	se_credz_t,a8
+	JSRP	prt_dt2
+
+;end test
+
+	SLEEPK	2
+	calla	display_unblank
+
+	SLEEP	1*TSEC+30
+
+	movi	6*TSEC,a10
+iztnlp	SLEEPK	1
+	calla	get_all_buttons_cur2
+	jrz	iztnnob
+      	clr	a0
+	move	a0,@SOUNDSUP		;turn all sounds on
+	SOUND1	bounce_snd
+	movk	1,a0
+	move	a0,@SOUNDSUP		;turn all sounds off
+	jruc	iztnxb
+iztnnob	
+	dsj	a10,iztnlp
+iztnxb
+	clr	a10
+	movk	8,a11
+	CREATE0	fade_down
+
+	SLEEP	40
+	RETP
+
+	
+iztnln11	.string	"COPYRIGHT 1993, 1994",0
+iztnln12	.string	"MIDWAY IS A TRADEMARK OF MIDWAY MANUFACTURING CO.",0
+iztnln13	.string	"THE NBA AND NBA TEAM TRADEMARKS USED HEREIN ARE",0
+iztnln14	.string	"USED UNDER LICENSE FROM NBA PROPERTIES, INC.",0
+iztnln15	.string	"NBA JAM SESSION IS TRADEMARKED AND",0
+iztnln16	.string	"OWNED BY NBA PROPERTIES, INC.",0
+iztnln17	.string	"ALL RIGHTS RESERVED",0
+	.EVEN
+se_credz_t
+	WL	-1,SGMD8WHT
+	.word	-2,200-42,25
+	.byte	"NBA JAM SE",0
+	.long	0
+	WL	-1,SGMD8GLD ;SGMD8VIO
+	.word	-2,20,60
+	.byte	"THIS IS FREE SOFTWARE BLA BLA BLA",0
+	.long	0
+	.byte	"SOMETHING ABOUT US BEING HUGE FANS AND",0
+	.long	0
+	.byte	"ALWAYS WANTING TO DO THIS ",0
+	.long	0
+	.byte	"A DREAM IN THE MAKING",0
+	.long	0
+	.byte	"WE HOPE YOU ENJOY IT AS MUCH AS WE DID MODDING IT",0
+	.long	0
+	WL	-1,SGMD8VIO ; Font col
+	.byte	"BLA BLA BLA LEWIS PODLASZEWSKI",0
+	.long	0
+	WL	-1,SGMD8BLU ; Font col
+	.byte	"ANDREW PODLASZEWSKI BLA BLA BLA LORUM IPSUM ET ALL",0
+	.long	0
+	.byte	"ROOM HERE",0
+	.long	0
+	.byte	"MORE ROOM",0
+	.long	0
+	WL	-1,SGMD8GLD ; Font col
+	.byte	"PLEASE DONT SUE US",0
+	.long	0
+	WL	-1,SGMD8RED ; Font col
+	.byte	"THANK YOU",0
+	.long	0
+	.byte	"KTHXBYE",0
+	.long	0
+	.word 	0 ;to end
+	.even
+
+
+***
 
 	.ref	STRLNRMO_1
 

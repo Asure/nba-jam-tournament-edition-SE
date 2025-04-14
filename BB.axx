@@ -35,7 +35,8 @@ organ2_snd	.word	0f3ffH,08H,080afH,0
 
 
 	.ref	plyr_tourn
-	.ref	EB_H,JTO_H			;RA_H
+
+	.ref	EB_H,JTO_H,RA_H
 	.ref	original_names
 	.ref	fire_flags
 	.ref	pal_set
@@ -1613,6 +1614,8 @@ delay_sparks
 	move	*a0(PAT_HEADT_p),a0,L
 	cmpi	EB_H,a0
 	jrz	qtjydoit1
+	cmpi	RA_H,a0		;test raiden sparks
+	jrz	qtjydoit1	
 	cmpi	JTO_H,a0
 	jrnz	qtjyck2
 
@@ -1630,6 +1633,8 @@ qtjyck2
 	move	@plyrproc_t+32,a0,L
 	move	*a0(plyr_attrib_p),a0,L
 	move	*a0(PAT_HEADT_p),a0,L
+	cmpi	EB_H,a0
+	jrz	qtjydoit2
 	cmpi	EB_H,a0
 	jrz	qtjydoit2
 	cmpi	JTO_H,a0
