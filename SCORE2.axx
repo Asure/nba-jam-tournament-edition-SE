@@ -1774,8 +1774,10 @@ lviastr_44
 	.string	"Xavier McDaniel",0
 lviastr_45
 	.string	"Dee Brown",0
-lviastr_45a
-	.string	"Kevin Gamble",0
+;lviastr_45a
+;	.string	"Reggie Lewis",0
+;lviastr_45a
+;	.string	"Kevin Gamble",0
 lviastr_46
 	.string	"Patrick Ewing",0
 lviastr_47
@@ -1790,6 +1792,8 @@ lviastr_49
 	.string	"Kenny Anderson",0
 lviastr_49a
 	.string	"Benoit Benjamin",0
+;lviastr_49a
+;	.string	"Drazen Petrovic",0
 lviastr_50
 	.string	"Tom Gugliotta",0
 lviastr_51
@@ -1839,12 +1843,12 @@ player_names
 	.long	0,0
 	.long	0,0
 
+	.long	LEWIS,MCDAN
+	.long	MCDAN,LEWIS
+	.long	LEWIS,BROWN
+	.long	BROWN,LEWIS
 	.long	MCDAN,BROWN
 	.long	BROWN,MCDAN
-	.long	MCDAN,GAMBLE
-	.long	GAMBLE,MCDAN
-	.long	BROWN,GAMBLE
-	.long	GAMBLE,BROWN
 
 	.long	0,0
 	.long	0,0
@@ -1931,11 +1935,11 @@ player_names
 
 	.long	JACK,MASH
 	.long	MASH,JACK
-	.long	0,0
-	.long	0,0
-	.long	0,0
-	.long	0,0
-
+	.long	JACK,HARPER_D
+	.long	HARPER_D,JACK
+	.long	MASH,HARPER_D
+	.long	HARPER_D,MASH
+	
 	.long	0,0
 	.long	0,0
 	.long	0,0
@@ -2189,19 +2193,19 @@ player_names
 	.long	0,0
 
 
+	.long	COLEMAN,PETROVIC
+	.long	PETROVIC,COLEMAN
 	.long	COLEMAN,KANDERSON
 	.long	KANDERSON,COLEMAN
+	.long	PETROVIC,KANDERSON
+	.long	KANDERSON,PETROVIC
+
 	.long	COLEMAN,CMORRIS
 	.long	CMORRIS,COLEMAN
+	.long	PETROVIC,CMORRIS
+	.long	CMORRIS,PETROVIC
 	.long	KANDERSON,CMORRIS
 	.long	CMORRIS,KANDERSON
-
-	.long	KANDERSON,BENJAMIN
-	.long	BENJAMIN,KANDERSON
-	.long	CMORRIS,BENJAMIN
-	.long	BENJAMIN,CMORRIS
-	.long	COLEMAN,BENJAMIN
-	.long	BENJAMIN,COLEMAN
 
 	.long	0,0
 	.long	0,0
@@ -2228,14 +2232,23 @@ player_names
 	.long	STARKS,OAKLEY
 	.long	OAKLEY,STARKS
 
-	.long	HARPER_D,OAKLEY
-	.long	OAKLEY,HARPER_D
-	.long	HARPER_D,MASON
-	.long	MASON,HARPER_D
-	.long	HARPER_D,STARKS
-	.long	STARKS,HARPER_D
-	.long	HARPER_D,EWING
-	.long	EWING,HARPER_D
+;	.long	HARPER_D,OAKLEY
+;	.long	OAKLEY,HARPER_D
+;	.long	HARPER_D,MASON
+;	.long	MASON,HARPER_D
+;	.long	HARPER_D,STARKS
+;	.long	STARKS,HARPER_D
+;	.long	HARPER_D,EWING
+;	.long	EWING,HARPER_D
+
+	.long	0,0
+	.long	0,0
+	.long	0,0
+	.long	0,0
+	.long	0,0
+	.long	0,0
+	.long	0,0
+	.long	0,0
 
 	.long	ONEAL,AHARDAWAY
 	.long	AHARDAWAY,ONEAL
@@ -2250,8 +2263,6 @@ player_names
 	.long	0,0
 	.long	0,0
 	.long	0,0
-
-
 	.long	0,0
 	.long	0,0
 	.long	0,0
@@ -2261,22 +2272,20 @@ player_names
 	.long	0,0
 	.long	0,0
 
-
+;Moved Hornacek from Utah
 	.long	WEATH,BRAD
-	.long	BRAD,WEATH		
+	.long	BRAD,WEATH
+    .long	WEATH,HORNACEK
+	.long	HORNACEK,WEATH
+    .long	BRAD,HORNACEK
+    .long	HORNACEK,BRAD
 
 	.long	0,0
 	.long	0,0
 	.long	0,0
 	.long	0,0
-
 	.long	0,0
 	.long	0,0
-	.long	0,0
-	.long	0,0
-	.long	0,0
-	.long	0,0
-
 	.long	0,0
 	.long	0,0
 	.long	0,0
@@ -2410,13 +2419,19 @@ player_names
 	.long	STOCKTON,BENOIT
 	.long	BENOIT,STOCKTON
 
-	.long	HORNACEK,BENOIT
-	.long	BENOIT,HORNACEK
-	.long	HORNACEK,STOCKTON
-	.long	STOCKTON,HORNACEK
-	.long	HORNACEK,MALONE_K
-	.long	MALONE_K,HORNACEK
+;	.long	HORNACEK,BENOIT
+;	.long	BENOIT,HORNACEK
+;	.long	HORNACEK,STOCKTON
+;	.long	STOCKTON,HORNACEK
+;	.long	HORNACEK,MALONE_K
+;	.long	MALONE_K,HORNACEK
 
+	.long	0,0
+	.long	0,0
+	.long	0,0
+	.long	0,0
+	.long	0,0
+	.long	0,0
 	.long	0,0
 	.long	0,0
 	.long	0,0
@@ -2448,30 +2463,53 @@ player_names
 	.long	0,0
 	.long	0,0
 
+; Team Jam / Allstars
 
-	.long	MALONE_K,KEMP
-	.long	DROBINSON,BARKLEY
-	.long	DREXLER,AHARDAWAY
-	.long	EWING,KANDERSON
-	.long	COLEMAN,ONEAL
-	.long	STOCKTON,KJOHNSON
+	.long	JORDAN,ONEAL
+	.long	ONEAL,JORDAN
+	.long	DROBINSON,STOCKTON
+	.long	STOCKTON,DROBINSON
+	.long	BARKLEY,MALONE_K
+	.long	MALONE_K,BARKLEY
+	.long	OLAJUWON,THOMAS
+	.long	THOMAS,OLAJUWON
+	.long	KEMP,MILLER
+	.long	MILLER,KEMP
+	
+	.long	DREXLER,EWING
+	.long	EWING,DREXLER
+	.long	JOHNSN_L,DUMARS
+	.long	DUMARS,JOHNSN_L
+	.long	COLEMAN,MULLIN
+	.long	MULLIN,COLEMAN
+	.long	MUTUMBO,MOURN
+	.long	MOURN,MUTUMBO
+	.long	WILKINS,RODMAN
+	.long	RODMAN,WILKINS
+	.long	WILKINS,RODMAN
 
-	.long	GILL,RICH
-	.long	BRAD,WEBB
-	.long	DUMARS,STARKS
-	.long	MUTUMBO,WILKINS
-	.long	HARPER_R,RIDER
-	.long	MILLER,JOHNSN_L
-
-	.long	OLAJUWON,BAKER
-	.long	ARMSTR,MAXWELL
-	.long	MOURN,RICE
-	.long	THARDAWAY,JACK
-	.long	PIPPEN,MINER
-	.long	THOMAS,WEBBER
-	.long	MASH,WORTHY
-	.long	MULLIN,MANNING
-
+;	.long	MALONE_K,KEMP
+;	.long	DROBINSON,BARKLEY
+;	.long	DREXLER,AHARDAWAY
+;	.long	EWING,KANDERSON
+;	.long	COLEMAN,ONEAL
+;	.long	STOCKTON,KJOHNSON
+;
+;	.long	GILL,RICH
+;	.long	BRAD,WEBB
+;	.long	DUMARS,STARKS
+;	.long	MUTUMBO,WILKINS
+;	.long	HARPER_R,RIDER
+;	.long	MILLER,JOHNSN_L
+;
+;	.long	OLAJUWON,BAKER
+;	.long	ARMSTR,MAXWELL
+;	.long	MOURN,RICE
+;	.long	THARDAWAY,JACK
+;	.long	PIPPEN,MINER
+;	.long	THOMAS,WEBBER
+;	.long	MASH,WORTHY
+;	.long	MULLIN,MANNING
 
 
 	.def	our_names

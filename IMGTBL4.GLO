@@ -10,16 +10,6 @@
 	.global	JONH3
 	.global	JONH4
 	.global	JONH5
-	.global	JONH6
-	.global	JONH7
-	.global	JONH8
-	.global	JONH9
-	.global	JONH10
-	.global	JONH11
-	.global	JONH12
-	.global	JONH13
-	.global	JONH14
-	.global	JONH15
 	.global	JONH16
 	.globl	MT_P
 	.global	MT01
@@ -44,16 +34,6 @@
 	.global	SAL3
 	.global	SAL4
 	.global	SAL5
-	.global	SAL6
-	.global	SAL7
-	.global	SAL8
-	.global	SAL9
-	.global	SAL10
-	.global	SAL11
-	.global	SAL12
-	.global	SAL13
-	.global	SAL14
-	.global	SAL15
 	.global	SAL16
 	.globl	TG_p
 	.global	TG01
@@ -61,50 +41,20 @@
 	.global	TG03
 	.global	TG04
 	.global	TG05
-	.global	TG06
-	.global	TG07
-	.global	TG08
-	.global	TG09
-	.global	TG10
-	.global	TG11
-	.global	TG12
-	.global	TG13
-	.global	TG14
-	.global	TG15
 	.global	TG16
 	.globl	JC_p
 	.global	JC1
-	.global	JC10
-	.global	JC11
-	.global	JC12
-	.global	JC13
-	.global	JC14
-	.global	JC15
-	.global	JC16
 	.global	JC2
 	.global	JC3
 	.global	JC4
 	.global	JC5
-	.global	JC6
-	.global	JC7
-	.global	JC8
-	.global	JC9
+	.global	JC16
 	.globl	SHAW_P
 	.global	SHAW1
 	.global	SHAW2
 	.global	SHAW3
 	.global	SHAW4
 	.global	SHAW5
-	.global	SHAW6
-	.global	SHAW7
-	.global	SHAW8
-	.global	SHAW9
-	.global	SHAW10
-	.global	SHAW11
-	.global	SHAW12
-	.global	SHAW13
-	.global	SHAW14
-	.global	SHAW15
 	.global	SHAW16
 	.globl	jamie_P
 	.global	jamie1
@@ -473,9 +423,6 @@
 	.global	JORDAN15
 	.global	JORDAN16
 	.globl	KGRIF_P
-	.global	JORDAN16
-	.globl	JOR_CHIP
-	.global	JOR_CHI
 	.global	KGRIF01
 	.global	KGRIF02
 	.global	KGRIF03
@@ -498,25 +445,6 @@
 	.global	LAM14
 	.global	LAM15
 	.global	LAM16
-	.globl	LAM_DETP
-	.global	LAM_DET
-	.globl	ligtn_p
-	.global	ballite1
-	.global	ballite2
-	.global	ballite3
-	.global	ballite4
-	.global	ballite5
-	.global	ballite6
-	.global	ballite7
-	.global	lighten1
-	.global	lighten2
-	.global	lighten3
-	.global	lighten4
-	.global	lighten5
-	.global	lighten6
-	.global	lighten7
-	.globl	ONE_ORLP
-	.global	ONE_ORL
 	.globl	ONEAL_P
 	.global	ONEAL1
 	.global	ONEAL2
@@ -534,3 +462,62 @@
 	.global	ONEAL14
 	.global	ONEAL15
 	.global	ONEAL16
+	.globl	PETROVICP
+	.global	Petro1
+	.global	Petro2
+	.global	Petro3
+	.global	Petro4
+	.global	Petro5
+	.global	Petro6
+	.global	Petro7
+	.global	Petro8
+	.global	Petro9
+	.global	Petro10
+	.global	Petro11
+	.global	Petro12
+	.global	Petro13
+	.global	Petro14
+	.global	Petro15
+	.global	Petro16
+	.globl	LEWIS_p
+	.global	lewis1
+	.global	lewis2
+	.global	lewis3
+	.global	lewis4
+	.global	lewis5
+	.global	lewis6
+	.global	lewis7
+	.global	lewis8
+	.global	lewis9
+	.global	lewis10
+	.global	lewis11
+	.global	lewis12
+	.global	lewis13
+	.global	lewis14
+	.global	lewis15
+	.global	lewis16
+	.globl	ONE_ORLP
+	.global	ONE_ORL
+	.globl	JOR_CHIP
+	.global	JOR_CHI
+	.globl	LAM_DETP
+	.global	LAM_DET
+	.globl	PET_NEJP
+	.global	PET_NEJ
+	.globl	LEW_BOSP
+	.global	LEW_BOS
+	.globl	ligtn_p
+	.global	ballite1
+	.global	ballite2
+	.global	ballite3
+	.global	ballite4
+	.global	ballite5
+	.global	ballite6
+	.global	ballite7
+	.global	lighten1
+	.global	lighten2
+	.global	lighten3
+	.global	lighten4
+	.global	lighten5
+	.global	lighten6
+	.global	lighten7

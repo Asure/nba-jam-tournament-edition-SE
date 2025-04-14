@@ -195,15 +195,15 @@ NAMENT_PAGE	equ	1*256
 	.def	ladder_imgs5,ladder_imgs6
 
 ladder_imgs0
-	.long	HPR_DAL,x1+400,y1
-	.long	JAC_DAL,x1,y1
+;	.long	HPR_DAL,x1+400,y1
+	.long	HPR_DAL,x1,y1
+	.long	JAC_DAL,x1a,y1
 	.long	MAS_DAL,x2a,y1
 	.long	T_MAVS,x1b,y1a
 
 	.long	THM_DET,x1,y1-0b3H
-	.long	DUM_DET,x1a,y1-0b3H
-
-	.long	ELL_DET,x2a,y1-0b3H
+	.long	LAM_DET,x1a,y1-0b3H
+	.long	DUM_DET,x2a,y1-0b3H
 	.long	T_PISS,x1b,y1a-0b3H
 
 	.long	0
@@ -242,14 +242,16 @@ ladder_imgs2
 	.long	ROB_CLP,x2a,y1-0b3H*7-6
 	.long	T_CLIPS,x1b,y1a-0b3H*7-6
 
-	.long	MCD_BOS,x1,y1-0b3H*8-8
-	.long	BRO_BOS,x1a,y1-0b3H*8-8
-	.long	GAM_BOS,x2a,y1-0b3H*8-8
+	.long	LEW_BOS,x1,y1-0b3H*8-8
+	.long	MCD_BOS,x1a,y1-0b3H*8-8
+	.long	BRO_BOS,x2a,y1-0b3H*8-8
+;	.long	GAM_BOS,x2a,y1-0b3H*8-8
 	.long	T_CELTS,x1b,y1a-0b3H*8-8
 
 	.long	WEA_PHL,x1,y1-0b3H*9-8
-	.long	BRA_PHL,x2a,y1-0b3H*9-8
-	.long	HRN_PHL,x2a+400,y1-0b3H*9-8
+	.long	BRA_PHL,x1a,y1-0b3H*9-8
+	.long	HRN_PHL,x2a,y1-0b3H*9-8
+;	.long	HRN_PHL,x2a+400,y1-0b3H*9-8
 	.long	T_76RS,x1b,y1a-0b3H*9-8
 
 	.long	0
@@ -261,8 +263,10 @@ ladder_imgs3
 	.long	T_PACER,x1b,y1a-0b3H*10-10
 
 	.long	COL_NEJ,x1,y1-0b3H*11-10
-	.long	AND_NEJ,x1a,y1-0b3H*11-10
-	.long	MOR_NEJ,x2a,y1-0b3H*11-10
+	.long	PET_NEJ,x1a,y1-0b3H*11-10
+	.long	AND_NEJ,x2a,y1-0b3H*11-10
+;	.long	AND_NEJ,x1a,y1-0b3H*11-10
+;	.long	MOR_NEJ,x2a,y1-0b3H*11-10
 	.long	T_NETS,x1b,y1a-0b3H*11-10
 
 	.long	PRC_CLE,x1,y1-0b3H*12-12
@@ -301,9 +305,9 @@ ladder_imgs4
 	.long	0
 
 ladder_imgs5
-	.long	SKL_ORL,x1,y1-0b3H*18-18
+	.long	ONE_ORL,x1,y1-0b3H*18-18
 	.long	HAR_ORL,x1a,y1-0b3H*18-18
-	.long	ONE_ORL,x2a,y1-0b3H*18-18
+	.long	SKL_ORL,x2a,y1-0b3H*18-18
 	.long	T_MAGIC,x1b,y1a-0b3H*18-18
 
 	.long	ROB_SAN,x1,y1-0b3H*19-18
@@ -1843,7 +1847,8 @@ fgatteam_snds
 	.word	0f9a9H,47,081a5H,0	;	      51 REPT		
 	.word	0f9a9H,47,081c8H,0	;Hello!       52 GRANNER
 
-	.word	0f9a9H,47,0812bH,0	;fantastic    53 GRIFFEY
+;	.word	0f9a9H,47,0812bH,0	;fantastic    53 GRIFFEY
+	.word	0f980H,40,081ebH,0	;Griffey      53 GRIFFEY
 
 	.word	0f9a9H,47,081d6H,0	;nail         54 SKILES
 	.word	0f9a9H,47,081c8H,0	;Hello!       55 LINHOFF
@@ -3030,12 +3035,12 @@ player_heads
 	.long	0,0
 	.long	0,0
 
+	.long	LEW_BOS,MCD_BOS
+	.long	MCD_BOS,LEW_BOS
+	.long	LEW_BOS,BRO_BOS
+	.long	BRO_BOS,LEW_BOS
 	.long	MCD_BOS,BRO_BOS
 	.long	BRO_BOS,MCD_BOS
-	.long	MCD_BOS,GAM_BOS
-	.long	GAM_BOS,MCD_BOS
-	.long	BRO_BOS,GAM_BOS
-	.long	GAM_BOS,BRO_BOS
 
 	.long	0,0
 	.long	0,0
@@ -3122,11 +3127,11 @@ player_heads
     
 	.long	JAC_DAL,MAS_DAL
 	.long	MAS_DAL,JAC_DAL
-	.long	0,0
-	.long	0,0
-	.long	0,0
-	.long	0,0
-
+	.long	JAC_DAL,HPR_DAL
+	.long	HPR_DAL,JAC_DAL
+	.long	MAS_DAL,HPR_DAL
+	.long	HPR_DAL,MAS_DAL
+	
 	
 	.long	0,0
 	.long	0,0
@@ -3376,20 +3381,19 @@ player_heads
 	.long	0,0
 	.long	0,0
 
-
+	.long	COL_NEJ,PET_NEJ
+	.long	PET_NEJ,COL_NEJ
 	.long	COL_NEJ,AND_NEJ
 	.long	AND_NEJ,COL_NEJ
+	.long	PET_NEJ,AND_NEJ
+	.long	AND_NEJ,PET_NEJ
+
 	.long	COL_NEJ,MOR_NEJ
 	.long	MOR_NEJ,COL_NEJ
+	.long	PET_NEJ,MOR_NEJ
+	.long	MOR_NEJ,PET_NEJ
 	.long	AND_NEJ,MOR_NEJ
 	.long	MOR_NEJ,AND_NEJ
-
-	.long	AND_NEJ,BEN_NEJ
-	.long	BEN_NEJ,AND_NEJ
-	.long	MOR_NEJ,BEN_NEJ
-	.long	BEN_NEJ,MOR_NEJ
-	.long	COL_NEJ,BEN_NEJ
-	.long	BEN_NEJ,COL_NEJ
 
 	.long	0,0
 	.long	0,0
@@ -3415,14 +3419,23 @@ player_heads
 	.long	STA_NEY,OAK_NEY
 	.long	OAK_NEY,STA_NEY
 
-	.long	HPR_DAL,OAK_NEY
-	.long	OAK_NEY,HPR_DAL
-	.long	HPR_DAL,MAS_NEY
-	.long	MAS_NEY,HPR_DAL
-	.long	HPR_DAL,STA_NEY
-	.long	STA_NEY,HPR_DAL
-	.long	HPR_DAL,EWG_NEY
-	.long	EWG_NEY,HPR_DAL
+;	.long	HPR_DAL,OAK_NEY
+;	.long	OAK_NEY,HPR_DAL
+;	.long	HPR_DAL,MAS_NEY
+;	.long	MAS_NEY,HPR_DAL
+;	.long	HPR_DAL,STA_NEY
+;	.long	STA_NEY,HPR_DAL
+;	.long	HPR_DAL,EWG_NEY
+;	.long	EWG_NEY,HPR_DAL
+
+	.long	0,0
+	.long	0,0
+	.long	0,0
+	.long	0,0
+	.long	0,0
+	.long	0,0
+	.long	0,0
+	.long	0,0
 
 	.long	ONE_ORL,HAR_ORL
 	.long	HAR_ORL,ONE_ORL
@@ -3447,14 +3460,12 @@ player_heads
 	.long	0,0
 	.long	0,0
 
-
 	.long	WEA_PHL,BRA_PHL
 	.long	BRA_PHL,WEA_PHL
-
-	.long	0,0
-	.long	0,0
-	.long	0,0
-	.long	0,0
+	.long	WEA_PHL,HRN_PHL
+	.long	HRN_PHL,WEA_PHL		
+	.long	BRA_PHL,HRN_PHL
+	.long	HRN_PHL,BRA_PHL		
 
 	.long	0,0
 	.long	0,0
@@ -3602,12 +3613,19 @@ player_heads
 	.long	STK_UTA,BEN_UTA
 	.long	BEN_UTA,STK_UTA
 
-	.long	HRN_PHL,BEN_UTA
-	.long	BEN_UTA,HRN_PHL
-	.long	HRN_PHL,STK_UTA
-	.long	STK_UTA,HRN_PHL
-	.long	HRN_PHL,MLN_UTA
-	.long	MLN_UTA,HRN_PHL
+;	.long	HRN_PHL,BEN_UTA
+;	.long	BEN_UTA,HRN_PHL
+;	.long	HRN_PHL,STK_UTA
+;	.long	STK_UTA,HRN_PHL
+;	.long	HRN_PHL,MLN_UTA
+;	.long	MLN_UTA,HRN_PHL
+
+	.long	0,0
+	.long	0,0
+	.long	0,0
+	.long	0,0
+	.long	0,0
+	.long	0,0
 
 	.long	0,0
 	.long	0,0
@@ -3640,28 +3658,60 @@ player_heads
 	.long	0,0
 	.long	0,0
 
-	.long	MLN_UTA,KMP_SEA
-	.long	ROB_SAN,BRK_PHX
-	.long	DRX_PRT,HAR_ORL
-	.long	EWG_NEY,AND_NEJ
-	.long	COL_NEJ,ONE_ORL
-	.long	STK_UTA,JOH_PHX
+; Team Jam / Allstars
 
-	.long	GIL_SEA,RIC_SAC
-	.long	BRA_PHL,WEB_SAC
-	.long	DUM_DET,STA_NEY
-	.long	MUT_DEN,WLK_ATL
-	.long	HRP_CLP,RID_MIN
-	.long	MIL_IND,JON_CHA
+	.long	JOR_CHI,ONE_ORL
+	.long	ONE_ORL,JOR_CHI
+	
+	.long	ROB_SAN,STK_UTA
+	.long	STK_UTA,ROB_SAN
+	
+	.long	BRK_PHX,MLN_UTA
+	.long	MLN_UTA,BRK_PHX
+	
+	.long	OLA_HOU,THM_DET
+	.long	THM_DET,OLA_HOU
+	
+	.long	KMP_SEA,MIL_IND
+	.long	MIL_IND,KMP_SEA
+	
+	.long	DRX_PRT,EWG_NEY
+	.long	EWG_NEY,DRX_PRT
+	
+	.long	JON_CHA,DUM_DET
+	.long	DUM_DET,JON_CHA
+	
+	.long	COL_NEJ,MUL_GLD
+	.long	MUL_GLD,COL_NEJ
+	
+	.long	MUT_DEN,MOU_CHA
+	.long	MOU_CHA,MUT_DEN
+	
+	.long	WLK_ATL,ROD_SAN
+	.long	ROD_SAN,WLK_ATL
 
-	.long	OLA_HOU,BAK_MLW
-	.long	ARM_CHI,MAX_HOU
-	.long	MOU_CHA,RCE_MIA
-	.long	HRD_GLD,JAC_DAL
-	.long	PIP_CHI,MIN_MIA
-	.long	THM_DET,WEB_GLD
-	.long	MAS_DAL,WOR_LAK
-	.long	MUL_GLD,MAN_CLP
+;	.long	MLN_UTA,KMP_SEA
+;	.long	ROB_SAN,BRK_PHX
+;	.long	DRX_PRT,HAR_ORL
+;	.long	EWG_NEY,AND_NEJ
+;	.long	COL_NEJ,ONE_ORL
+;	.long	STK_UTA,JOH_PHX
+;
+;	.long	GIL_SEA,RIC_SAC
+;	.long	BRA_PHL,WEB_SAC
+;	.long	DUM_DET,STA_NEY
+;	.long	MUT_DEN,WLK_ATL
+;	.long	HRP_CLP,RID_MIN
+;	.long	MIL_IND,JON_CHA
+;
+;	.long	OLA_HOU,BAK_MLW
+;	.long	ARM_CHI,MAX_HOU
+;	.long	MOU_CHA,RCE_MIA
+;	.long	HRD_GLD,JAC_DAL
+;	.long	PIP_CHI,MIN_MIA
+;	.long	THM_DET,WEB_GLD
+;	.long	MAS_DAL,WOR_LAK
+;	.long	MUL_GLD,MAN_CLP
 
 
 
@@ -3681,16 +3731,20 @@ player_attribs
  .word	06,04,06,04
  .word  09,00,09,01	;KEVIN WILLIS	       Fat (medium)
 
+;Speed, 3 ptrs, Dunks, Passing
+;Power, Steals, Block, Clutch
 
+ .word	07,08,04,07
+ .word  03,05,03,07	;REGGIE LEWIS	  6-7     Skinny
+	 
+ .word	05,05,05,01
+ .word  08,03,09,08	;XAVIER McDANIEL  6-7     Skinny
 
  .word	08,07,08,06
  .word  01,06,02,05	;DEE BROWN	  6-1     Skinny
 
- .word	05,05,05,01
- .word  08,03,09,08	;XAVIER McDANIEL  6-7     Skinny
-
- .word	03,07,02,05
- .word  05,06,04,04	;KEVIN GAMBLE	  6-5     Skinny
+;.word	03,07,02,05
+;.word  05,06,04,04	;KEVIN GAMBLE	  6-5     Skinny
 
 
 
@@ -3706,8 +3760,8 @@ player_attribs
 ;Speed, 3 ptrs, Dunks, Passing
 ;Power, Steals, Block, Clutch
 
- .word	08,07,04,03
- .word  04,08,07,06	;MICHAEL JORDAN	   6-6    Skinny (Medium)
+ .word	08,06,09,08
+ .word  08,07,07,07	;MICHAEL JORDAN   6-6    Skinny (Medium)
 
  .word	08,06,10,07
  .word  03,09,05,05	;SCOTTIE PIPPEN	   6-7    Skinny
@@ -3740,7 +3794,9 @@ player_attribs
 
  .word	08,08,07,04
  .word  08,03,06,06	;JAMAL MASHBURN	   6-8    Skinny (Medium)
-
+ 
+ .word	05,05,02,05
+ .word  05,04,03,06	;DEREK HARPER	   6-4    Skinny
 
 
  .word	05,01,08,01
@@ -3876,14 +3932,23 @@ player_attribs
  .word	07,07,08,02
  .word  09,02,08,08	;DERRICK COLEMAN      6-10   Fat
 
+;Size, speed, shot%, dunks, block defense, steals, drone skill
+;Pass ability, power, clutch
+
+;Speed, 3 ptrs, Dunks, Passing
+;Power, Steals, Block, Clutch
+
+ .word	04,07,01,08
+ .word  06,07,05,07	;DRAZEN PETROVIC	  6-6 Skinny
+
  .word	09,07,00,09
  .word  02,07,01,05	;KENNY ANDERSON	      6-1   Skinny
 
  .word	02,04,04,04
  .word  09,02,08,02	;CHRIS MORRIS	      6-8   Fat
 
- .word	02,04,04,03
- .word  09,02,06,02	;BENOIT BENJAMIN      7-0   Fat
+;.word	02,04,04,03
+;.word  09,02,06,02	;BENOIT BENJAMIN      7-0   Fat
 
 
 
@@ -3899,8 +3964,8 @@ player_attribs
  .word	03,01,05,04
  .word  09,01,08,01	;CHARLES OAKLEY	       6-9    Fat
 
- .word	05,05,02,05
- .word  05,04,03,06	;DEREK HARPER	   6-4    Skinny
+;.word	05,05,02,05
+;.word  05,04,03,06	;DEREK HARPER	   6-4    Skinny
 
 ;ORLANDO
 ;This table is only the visual bars during selection.
@@ -3932,9 +3997,9 @@ player_attribs
 
  .word	07,03,09,06
  .word  05,07,09,01	;SHAWN BRADLEY	7-6 	Skinny
-
-
-
+ 
+ .word	06,08,00,07
+ .word  03,04,04,06	;JEFF HORNACEK	 6-4	Fat (medium)
 
  .word	07,07,09,06					
  .word  09,07,07,09	;CHARLES BARKLEY      6-6  (6-4) Fat
@@ -4012,8 +4077,8 @@ player_attribs
  .word	05,04,03,03
  .word  04,04,06,03	;DAVID BENOIT		6-8 Skinny
 
- .word	06,08,00,07
- .word  03,04,04,06	;JEFF HORNACEK	 6-4	Fat (medium)
+;.word	06,08,00,07
+;.word  03,04,04,06	;JEFF HORNACEK	 6-4	Fat (medium)
 
 
 
@@ -4597,9 +4662,10 @@ guyhds
 	.long	MLN_UTA
 	.long	BEN_UTA
 	.long	STK_UTA		;25 UTAH
-	.long	HRN_PHL		;19 PHILADELPHIA
+;	.long	HRN_PHL		;19 PHILADELPHIA
 	.long	MAS_DAL		;05 DALLAS
 	.long	JAC_DAL
+	.long	HPR_DAL		;05 DALLAS
 	.long	LTN_MIN
 	.long	RID_MIN
 	.long	PRS_MIN		;15 MINNESOTTA
@@ -4632,20 +4698,23 @@ guyhds
 	.long	JON_CHA
 	.long	MOU_CHA
 	.long	HWK_CHA
+	.long	HRN_PHL		;19 PHILADELPHIA
 	.long	BRA_PHL		;19 PHILADELPHIA
 	.long	WEA_PHL		;19 PHILADELPHIA
+	.long	LEW_BOS		;01 BOSTON
 	.long	MCD_BOS
 	.long	BRO_BOS		;01 BOSTON
-	.long	GAM_BOS		;01 BOSTON
+;	.long	GAM_BOS		;01 BOSTON
 	.long	EWG_NEY
 	.long	OAK_NEY		;17 NEW YORK
 	.long	MAS_NEY		;17 NEW YORK
 	.long	STA_NEY		;17 NEW YORK
-	.long	HPR_DAL		;05 DALLAS
+;	.long	HPR_DAL		;05 DALLAS
 	.long	COL_NEJ
+	.long	PET_NEJ
 	.long	AND_NEJ		;16 NEW JERSEY
 	.long	MOR_NEJ		;16 NEW JERSEY
-	.long	BEN_NEJ		;16 NEW JERSEY
+;	.long	BEN_NEJ		;16 NEW JERSEY
 	.long	GUG_WAS
 	.long	ELL_WAS		;26 WASHINGTON
 	.long	CHE_WAS		;26 WASHINGTON

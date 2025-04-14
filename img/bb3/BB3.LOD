@@ -53,11 +53,11 @@ PPP> 0
 ---> TG16
 ;---> TG06,TG07,TG08,TG09,TG10,TG11,TG12,TG13,TG14,TG15,TG16
 ;
----> JC1,JC10,JC11,JC12,JC13,JC14,JC15
----> JC16,JC2,JC3,JC4,JC5,JC6,JC7,JC8,JC9
+---> JC1,JC2,JC3,JC4,JC5,JC16
+;---> JC16,JC2,JC3,JC4,JC5,JC6,JC7,JC8,JC9
 ;
 ---> SHAW1,SHAW2,SHAW3,SHAW4,SHAW5
----> SHAW6,SHAW7,SHAW8,SHAW9,SHAW10,SHAW11,SHAW12,SHAW13,SHAW14,SHAW15
+;---> SHAW6,SHAW7,SHAW8,SHAW9,SHAW10,SHAW11,SHAW12,SHAW13,SHAW14,SHAW15
 ---> SHAW16
 PPP> 6
 ; Jamie Rivett
@@ -150,12 +150,22 @@ hds5.img
 ASM> plyrhd4.tbl
 ---> ONEAL1,ONEAL2,ONEAL3,ONEAL4,ONEAL5,ONEAL6,ONEAL7,ONEAL8
 ---> ONEAL9,ONEAL10,ONEAL11,ONEAL12,ONEAL13,ONEAL14,ONEAL15,ONEAL16
+hds4.img
+ASM> plyrhd4.tbl
+---> Petro1,Petro2,Petro3,Petro4,Petro5,Petro6,Petro7,Petro8
+---> Petro9,Petro10,Petro11,Petro12,Petro13,Petro14,Petro15,Petro16
+hds1.img
+ASM> plyrhd4.tbl
+---> lewis1,lewis2,lewis3,lewis4,lewis5,lewis6,lewis7,lewis8
+---> lewis9,lewis10,lewis11,lewis12,lewis13,lewis14,lewis15,lewis16
 ASM> mugshots.tbl
 ;O'Neal and Jordan from original source material.
 mugshots.img
 ---> ONE_ORL
 ---> JOR_CHI
 ---> LAM_DET
+---> PET_NEJ
+---> LEW_BOS
 ASM> plyrhd4.tbl
 raiden.img
 ---> ballite1,ballite2,ballite3,ballite4,ballite5,ballite6,ballite7,lighten1
@@ -179,3 +189,5 @@ jordan.img
 ---> JORDAN
 TVSCORE.IMG
 ---> LAIMBEER
+---> PETROVIC
+---> LEWIS
