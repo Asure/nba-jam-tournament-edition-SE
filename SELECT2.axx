@@ -242,9 +242,10 @@ ladder_imgs2
 	.long	ROB_CLP,x2a,y1-0b3H*7-6
 	.long	T_CLIPS,x1b,y1a-0b3H*7-6
 
-	.long	MCD_BOS,x1,y1-0b3H*8-8
-	.long	BRO_BOS,x1a,y1-0b3H*8-8
-	.long	GAM_BOS,x2a,y1-0b3H*8-8
+	.long	LEW_BOS,x1,y1-0b3H*8-8
+	.long	MCD_BOS,x1a,y1-0b3H*8-8
+	.long	BRO_BOS,x2a,y1-0b3H*8-8
+;	.long	GAM_BOS,x2a,y1-0b3H*8-8
 	.long	T_CELTS,x1b,y1a-0b3H*8-8
 
 	.long	WEA_PHL,x1,y1-0b3H*9-8
@@ -3034,12 +3035,12 @@ player_heads
 	.long	0,0
 	.long	0,0
 
+	.long	LEW_BOS,MCD_BOS
+	.long	MCD_BOS,LEW_BOS
+	.long	LEW_BOS,BRO_BOS
+	.long	BRO_BOS,LEW_BOS
 	.long	MCD_BOS,BRO_BOS
 	.long	BRO_BOS,MCD_BOS
-	.long	MCD_BOS,GAM_BOS
-	.long	GAM_BOS,MCD_BOS
-	.long	BRO_BOS,GAM_BOS
-	.long	GAM_BOS,BRO_BOS
 
 	.long	0,0
 	.long	0,0
@@ -3730,16 +3731,20 @@ player_attribs
  .word	06,04,06,04
  .word  09,00,09,01	;KEVIN WILLIS	       Fat (medium)
 
+;Speed, 3 ptrs, Dunks, Passing
+;Power, Steals, Block, Clutch
 
+ .word	07,08,04,07
+ .word  03,05,03,07	;REGGIE LEWIS	  6-7     Skinny
+	 
+ .word	05,05,05,01
+ .word  08,03,09,08	;XAVIER McDANIEL  6-7     Skinny
 
  .word	08,07,08,06
  .word  01,06,02,05	;DEE BROWN	  6-1     Skinny
 
- .word	05,05,05,01
- .word  08,03,09,08	;XAVIER McDANIEL  6-7     Skinny
-
- .word	03,07,02,05
- .word  05,06,04,04	;KEVIN GAMBLE	  6-5     Skinny
+;.word	03,07,02,05
+;.word  05,06,04,04	;KEVIN GAMBLE	  6-5     Skinny
 
 
 
@@ -3755,8 +3760,8 @@ player_attribs
 ;Speed, 3 ptrs, Dunks, Passing
 ;Power, Steals, Block, Clutch
 
- .word	08,07,04,03
- .word  04,08,07,06	;MICHAEL JORDAN	   6-6    Skinny (Medium)
+ .word	08,06,09,08
+ .word  08,07,07,07	;MICHAEL JORDAN   6-6    Skinny (Medium)
 
  .word	08,06,10,07
  .word  03,09,05,05	;SCOTTIE PIPPEN	   6-7    Skinny
@@ -3934,7 +3939,7 @@ player_attribs
 ;Power, Steals, Block, Clutch
 
  .word	04,07,01,08
- .word  06,05,07,07	;DRAZEN PETROVIC	  6-6 Skinny
+ .word  06,07,05,07	;DRAZEN PETROVIC	  6-6 Skinny
 
  .word	09,07,00,09
  .word  02,07,01,05	;KENNY ANDERSON	      6-1   Skinny
@@ -4696,9 +4701,10 @@ guyhds
 	.long	HRN_PHL		;19 PHILADELPHIA
 	.long	BRA_PHL		;19 PHILADELPHIA
 	.long	WEA_PHL		;19 PHILADELPHIA
+	.long	LEW_BOS		;01 BOSTON
 	.long	MCD_BOS
 	.long	BRO_BOS		;01 BOSTON
-	.long	GAM_BOS		;01 BOSTON
+;	.long	GAM_BOS		;01 BOSTON
 	.long	EWG_NEY
 	.long	OAK_NEY		;17 NEW YORK
 	.long	MAS_NEY		;17 NEW YORK

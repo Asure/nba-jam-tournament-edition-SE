@@ -1774,8 +1774,10 @@ lviastr_44
 	.string	"Xavier McDaniel",0
 lviastr_45
 	.string	"Dee Brown",0
-lviastr_45a
-	.string	"Kevin Gamble",0
+;lviastr_45a
+;	.string	"Reggie Lewis",0
+;lviastr_45a
+;	.string	"Kevin Gamble",0
 lviastr_46
 	.string	"Patrick Ewing",0
 lviastr_47
@@ -1841,12 +1843,12 @@ player_names
 	.long	0,0
 	.long	0,0
 
+	.long	LEWIS,MCDAN
+	.long	MCDAN,LEWIS
+	.long	LEWIS,BROWN
+	.long	BROWN,LEWIS
 	.long	MCDAN,BROWN
 	.long	BROWN,MCDAN
-	.long	MCDAN,GAMBLE
-	.long	GAMBLE,MCDAN
-	.long	BROWN,GAMBLE
-	.long	GAMBLE,BROWN
 
 	.long	0,0
 	.long	0,0

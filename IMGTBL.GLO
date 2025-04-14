@@ -269,6 +269,7 @@
 	.global	ONEAL
 	.global	LAIMBEER
 	.global	PETROVIC
+	.global LEWIS
 	.global	PERSON
 	.global	PIPPEN
 	.global	PORTER

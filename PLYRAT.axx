@@ -44,7 +44,7 @@
 	.ref	Hornacek_h,Majerle_h,Manning_h
 
 	.ref	McDan_h,Brown_h,KAnderson_h
-	.ref	Willis_h,Gamble_h,Mourn_h,Armstrng_h,Nance_h,Jack_h
+	.ref	Willis_h,Mourn_h,Armstrng_h,Nance_h,Jack_h
 ;	.ref	Willis_h,Gamble_h,Mourn_h,Armstrng_h,Kukoc_h,Nance_h,Jack_h
 ;	.ref	Dumars_h,Rodman_h,Hunter_h,Webber_h,Maxwell_h,Horry_h,Smits_h
 	.ref	Dumars_h,Rodman_h,Webber_h,Maxwell_h,Horry_h,Smits_h
@@ -174,16 +174,22 @@ ATL_t
 	.long	FL1_p, Un4_p,Un14_p, TR1_p,TR4_p,Willis_h
 	.word	4,9,1
 
+;Size, speed, shot%, dunks, block defense, steals, drone skill
+;Flesh,uniforms,trouser,heads
+;Pass ability, power, clutch
 
+    LWWWWWW	scale67_t,BV7,SHT8,DNK4,DEF3,SDEF5,DSKL0
+    .long	FL25_p, Un13_p,Un1_p, TR2_p,TR1_p,Lewis_h
+	.word	7,3,7
 	LWWWWWW	scale61_t,BV8,SHT7,DNK8,DEF2,SDEF6,DSKL0
 	.long	FL25_p, Un13_p,Un14_p, TR2_p,TR6_p,Brown_h
 	.word	6,1,5	
 	LWWWWWW	scale67_t,BV5,SHT5,DNK5,DEF9,SDEF3,DSKL0
 	.long	FL25_p, Un13_p,Un14_p, TR2_p,TR6_p,McDan_h
 	.word	1,8,8	
-	LWWWWWW	scale65t_t,BV3,SHT7,DNK2,DEF4,SDEF4,DSKL0
-	.long	FL18_p, Un13_p,Un14_p, TR2_p,TR6_p,Gamble_h
-	.word	5,5,4
+;	LWWWWWW	scale65t_t,BV3,SHT7,DNK2,DEF4,SDEF4,DSKL0
+;	.long	FL18_p, Un13_p,Un14_p, TR2_p,TR6_p,Gamble_h
+;	.word	5,5,4
 
 
 	LWWWWWW	scale610f_t,BV7,SHT7,DNK9,DEF5,SDEF3,DSKL0   	;Can shatter
@@ -372,7 +378,7 @@ ATL_t
 	LWWWWWW	scale610f_t,BV7,SHT7,DNK8,DEF8,SDEF2,DSKL0
 	.long	FL4_p, Un14_p,Un5_p, TR4_p,TR4_p,Coleman_h
 	.word	2,9,8
-	LWWWWWW	scale66t_t,BV4,SHT7,DNK1,DEF7,SDEF5,DSKL0
+	LWWWWWW	scale66t_t,BV4,SHT7,DNK1,DEF5,SDEF7,DSKL0
     .long	FL37_p, Un14_p,Un14_p, TR4_p,TR1_p,Petrovic_h
 	.word	8,6,7
 	LWWWWWW	scale61t_t,BV9,SHT7,DNK0,DEF1,SDEF7,DSKL0
@@ -1361,6 +1367,12 @@ Petrovic_h ; Drazen Petrovic - RIP =(
 	.long	Petro1
 	.long	Petro1,Petro2,Petro3,Petro4,Petro5,Petro6,Petro7
 	.long	Petro8,Petro9,Petro10,Petro11,Petro12,Petro13,Petro14,Petro15,Petro16
+Lewis_h	   ; Reggie Lewis - RIP =(
+	.long	lewis1
+	.long	lewis1,lewis2,lewis3,lewis4,lewis5
+	.long	lewis6,lewis7,lewis8,lewis9,lewis10
+	.long	lewis11,lewis12,lewis13,lewis14,lewis15
+	.long	lewis16
 	
 	.end
 
