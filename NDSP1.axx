@@ -21,6 +21,8 @@
 
 
 	.ref	HALT,pal_getf,FRANIMQ
+	.ref	_3d_build
+	.ref	d3vis_p
 	.ref	PCNT
 	.ref	crt_colors
 	.ref	dirq_wait
@@ -904,6 +906,9 @@ jotop1
 joto70
 	move	@_3dstat,a0
 	jrz	joto80			;Off?
+;AMM Add back missing 3d functions
+	calla	_3d_build
+	callr	_3d_draw
 joto80
 
 	move	@dtype,a1
@@ -1112,8 +1117,8 @@ ohrfdmaok	eint
 	jruc	ohrfnext
 
 
-
-	.if	0
+;re-enable commented 3D code..
+;	.if	0
 
 
 
@@ -1358,7 +1363,7 @@ xtyux	PULL	b3,b4,b5,b6,b7,b8,b9,b10,b13,b14
 	PULL	a4,a13,a14
 	rets
 
-	.endif
+;	.endif
 
 
 

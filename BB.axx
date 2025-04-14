@@ -1500,11 +1500,12 @@ qtjydemo
 	jreq	no3d
 
 	move	@played3d,a0
-	jauc	no3d			;AMM Disable the tank game for now.
-
-;	movk	1,a0
-;	move	a0,@played3d
-;	jauc	_3d_test
+;	jauc	no3d			;AMM Disable the tank game for now.
+;3d tank
+	.ref	_3d_test
+	movk	1,a0
+	move	a0,@played3d
+	jauc	_3d_test
 no3d
 
 
