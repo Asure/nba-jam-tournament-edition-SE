@@ -30,7 +30,7 @@ PETROVIC:
 	.word   06000H
 	.long   scorep
 LEWIS:
-	.word   33,9,16,0
+	.word   60,9,15,0
 	.long   05ff327cH
 	.word   06000H
 	.long   scorep
