@@ -262,8 +262,10 @@ ladder_imgs3
 	.long	T_PACER,x1b,y1a-0b3H*10-10
 
 	.long	COL_NEJ,x1,y1-0b3H*11-10
-	.long	AND_NEJ,x1a,y1-0b3H*11-10
-	.long	MOR_NEJ,x2a,y1-0b3H*11-10
+	.long	PET_NEJ,x1a,y1-0b3H*11-10
+	.long	AND_NEJ,x2a,y1-0b3H*11-10
+;	.long	AND_NEJ,x1a,y1-0b3H*11-10
+;	.long	MOR_NEJ,x2a,y1-0b3H*11-10
 	.long	T_NETS,x1b,y1a-0b3H*11-10
 
 	.long	PRC_CLE,x1,y1-0b3H*12-12
@@ -3378,20 +3380,19 @@ player_heads
 	.long	0,0
 	.long	0,0
 
-
+	.long	COL_NEJ,PET_NEJ
+	.long	PET_NEJ,COL_NEJ
 	.long	COL_NEJ,AND_NEJ
 	.long	AND_NEJ,COL_NEJ
+	.long	PET_NEJ,AND_NEJ
+	.long	AND_NEJ,PET_NEJ
+
 	.long	COL_NEJ,MOR_NEJ
 	.long	MOR_NEJ,COL_NEJ
+	.long	PET_NEJ,MOR_NEJ
+	.long	MOR_NEJ,PET_NEJ
 	.long	AND_NEJ,MOR_NEJ
 	.long	MOR_NEJ,AND_NEJ
-
-	.long	AND_NEJ,BEN_NEJ
-	.long	BEN_NEJ,AND_NEJ
-	.long	MOR_NEJ,BEN_NEJ
-	.long	BEN_NEJ,MOR_NEJ
-	.long	COL_NEJ,BEN_NEJ
-	.long	BEN_NEJ,COL_NEJ
 
 	.long	0,0
 	.long	0,0
@@ -3926,14 +3927,23 @@ player_attribs
  .word	07,07,08,02
  .word  09,02,08,08	;DERRICK COLEMAN      6-10   Fat
 
+;Size, speed, shot%, dunks, block defense, steals, drone skill
+;Pass ability, power, clutch
+
+;Speed, 3 ptrs, Dunks, Passing
+;Power, Steals, Block, Clutch
+
+ .word	04,07,01,08
+ .word  06,05,07,07	;DRAZEN PETROVIC	  6-6 Skinny
+
  .word	09,07,00,09
  .word  02,07,01,05	;KENNY ANDERSON	      6-1   Skinny
 
  .word	02,04,04,04
  .word  09,02,08,02	;CHRIS MORRIS	      6-8   Fat
 
- .word	02,04,04,03
- .word  09,02,06,02	;BENOIT BENJAMIN      7-0   Fat
+;.word	02,04,04,03
+;.word  09,02,06,02	;BENOIT BENJAMIN      7-0   Fat
 
 
 
@@ -4695,9 +4705,10 @@ guyhds
 	.long	STA_NEY		;17 NEW YORK
 ;	.long	HPR_DAL		;05 DALLAS
 	.long	COL_NEJ
+	.long	PET_NEJ
 	.long	AND_NEJ		;16 NEW JERSEY
 	.long	MOR_NEJ		;16 NEW JERSEY
-	.long	BEN_NEJ		;16 NEW JERSEY
+;	.long	BEN_NEJ		;16 NEW JERSEY
 	.long	GUG_WAS
 	.long	ELL_WAS		;26 WASHINGTON
 	.long	CHE_WAS		;26 WASHINGTON

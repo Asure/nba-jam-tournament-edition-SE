@@ -500,6 +500,25 @@
 	.global	LAM16
 	.globl	LAM_DETP
 	.global	LAM_DET
+	.globl	PETROVICP
+	.global	Petro1
+	.global	Petro2
+	.global	Petro3
+	.global	Petro4
+	.global	Petro5
+	.global	Petro6
+	.global	Petro7
+	.global	Petro8
+	.global	Petro9
+	.global	Petro10
+	.global	Petro11
+	.global	Petro12
+	.global	Petro13
+	.global	Petro14
+	.global	Petro15
+	.global	Petro16
+	.globl	PET_NEJP
+	.global	PET_NEJ
 	.globl	ligtn_p
 	.global	ballite1
 	.global	ballite2

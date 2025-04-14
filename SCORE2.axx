@@ -1790,6 +1790,8 @@ lviastr_49
 	.string	"Kenny Anderson",0
 lviastr_49a
 	.string	"Benoit Benjamin",0
+;lviastr_49a
+;	.string	"Drazen Petrovic",0
 lviastr_50
 	.string	"Tom Gugliotta",0
 lviastr_51
@@ -2189,19 +2191,19 @@ player_names
 	.long	0,0
 
 
+	.long	COLEMAN,PETROVIC
+	.long	PETROVIC,COLEMAN
 	.long	COLEMAN,KANDERSON
 	.long	KANDERSON,COLEMAN
+	.long	PETROVIC,KANDERSON
+	.long	KANDERSON,PETROVIC
+
 	.long	COLEMAN,CMORRIS
 	.long	CMORRIS,COLEMAN
+	.long	PETROVIC,CMORRIS
+	.long	CMORRIS,PETROVIC
 	.long	KANDERSON,CMORRIS
 	.long	CMORRIS,KANDERSON
-
-	.long	KANDERSON,BENJAMIN
-	.long	BENJAMIN,KANDERSON
-	.long	CMORRIS,BENJAMIN
-	.long	BENJAMIN,CMORRIS
-	.long	COLEMAN,BENJAMIN
-	.long	BENJAMIN,COLEMAN
 
 	.long	0,0
 	.long	0,0

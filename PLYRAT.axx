@@ -38,7 +38,8 @@
 	.ref	Skiles_h,Porter_h,Schrempf_h,Robinson_h,Tisdale_h
 	.ref	Webb_h,Smith_h,Thomas_h
 	.ref	Kemp_h,Pippen_h,Gill_h,Daughert_h,Mullin_h,Wilkins_h
-	.ref	Person_h,Augmon_h,Benjamin_h,Barkley_h,Coleman_h,Drexler_h
+;	.ref	Person_h,Augmon_h,Benjamin_h,Barkley_h,Coleman_h,Drexler_h
+	.ref	Person_h,Augmon_h,Barkley_h,Coleman_h,Drexler_h
 	.ref	Ellis_h,Elliot_h,Hardaway_h,DHarper_h,HCGrant_h,HVGrant_h
 	.ref	Hornacek_h,Majerle_h,Manning_h
 
@@ -364,19 +365,25 @@ ATL_t
 	.long	FL36_p, Un5_p,Un14_p, TR2_p,TR7_p,Rider_h
 	.word	5,6,5
 
+;Size, speed, shot%, dunks, block defense, steals, drone skill
+;Flesh,uniforms,trouser,heads
+;Pass ability, power, clutch
 
 	LWWWWWW	scale610f_t,BV7,SHT7,DNK8,DEF8,SDEF2,DSKL0
 	.long	FL4_p, Un14_p,Un5_p, TR4_p,TR4_p,Coleman_h
 	.word	2,9,8
+	LWWWWWW	scale66t_t,BV4,SHT7,DNK1,DEF7,SDEF5,DSKL0
+    .long	FL37_p, Un14_p,Un14_p, TR4_p,TR1_p,Petrovic_h
+	.word	8,6,7
 	LWWWWWW	scale61t_t,BV9,SHT7,DNK0,DEF1,SDEF7,DSKL0
 	.long	FL36_p, Un14_p,Un5_p, TR4_p,TR4_p,KAnderson_h
 	.word	9,2,5
 	LWWWWWW	scale68f_t,BV2,SHT4,DNK4,DEF8,SDEF2,DSKL0
 	.long	FL3_p, Un14_p,Un5_p, TR4_p,TR4_p,Morris_h
 	.word	4,9,2
-	LWWWWWW	scale72f_t,BV2,SHT4,DNK4,DEF6,SDEF2,DSKL0
-	.long	FL3_p, Un14_p,Un5_p, TR4_p,TR4_p,Benjamin_h
-	.word	3,9,2
+;	LWWWWWW	scale72f_t,BV2,SHT4,DNK4,DEF6,SDEF2,DSKL0
+;	.long	FL3_p, Un14_p,Un5_p, TR4_p,TR4_p,Benjamin_h
+;	.word	3,9,2
 
 
 	LWWWWWW	scale72f_t,BV7,SHT4,DNK9,DEF9,SDEF4,DSKL2	;Shatter
@@ -1270,8 +1277,8 @@ jr_h	;JAMIE RIVET
 jc_h
 	.long	JC1
 	.long	JC1,JC2,JC3,JC4,JC5
-	.long	JC6,JC7,JC8,JC9,JC10
-	.long	JC11,JC12,JC13,JC14,JC15
+;	.long	JC6,JC7,JC8,JC9,JC10
+;	.long	JC11,JC12,JC13,JC14,JC15
 	.long	JC16
 sd_h	;SAL DIVITA
 	.long	SAL1
@@ -1284,8 +1291,8 @@ sd_h	;SAL DIVITA
 sl_h
 	.long	SHAW1
 	.long	SHAW1,SHAW2,SHAW3,SHAW4,SHAW5
-	.long	SHAW6,SHAW7,SHAW8,SHAW9,SHAW10
-	.long	SHAW11,SHAW12,SHAW13,SHAW14,SHAW15
+;	.long	SHAW6,SHAW7,SHAW8,SHAW9,SHAW10
+;	.long	SHAW11,SHAW12,SHAW13,SHAW14,SHAW15
 	.long	SHAW16
 mt_h
 	.long	MT01
@@ -1350,5 +1357,10 @@ Laim_h ; Bill Laimbeer is back too!
 	.long	LAM2,LAM3,LAM4,LAM5,LAM6,LAM7,LAM8,LAM9,LAM10,LAM11
 	.long	LAM12,LAM13,LAM14,LAM15,LAM16
 
+Petrovic_h ; Drazen Petrovic - RIP =(
+	.long	Petro1
+	.long	Petro1,Petro2,Petro3,Petro4,Petro5,Petro6,Petro7
+	.long	Petro8,Petro9,Petro10,Petro11,Petro12,Petro13,Petro14,Petro15,Petro16
+	
 	.end
 
