@@ -829,6 +829,16 @@ ohmqwait_exit
 	move	a0,@force_selection
 	move	a0,@fatality
 
+;AMM CMOS Fatality option
+;We can do this safe here, no messing with A0 from other things.
+
+	movi	ADJFATAL,a0		;Get value from CMOS
+	calla	GET_ADJ			;0-1 (0=ON 1=OFF)
+	jrnz	nocmosfatal		;Off? skip the code below.
+	movk	1,a0
+	move	a0,@fatality
+
+nocmosfatal				;Off? We continue here.
 	clr	a10
 	CREATE0	challenger2
 	movk	1,a10
@@ -3036,7 +3046,7 @@ lkelskippy
 	jrz	lkelnoswitch
 
 
-	calla	tournament_on
+	calla	tournament_on		;this is in score.axx. It nukes pXtaps and stlpower values.
 	jrc	lkelnoswitch
 
 
