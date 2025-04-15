@@ -1526,7 +1526,7 @@ MESS_FATAL:
 	.even
 
 MESS_BABY
-	.string	"BABY SIZE PLAYER",0
+	.string	"BABY SIZE PLAYERS",0
 	.even
 
 M_GADJ	
