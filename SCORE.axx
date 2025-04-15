@@ -3244,6 +3244,7 @@ zwlylp	SLEEPK	1
 
 
  SUBR	flash_plyr_wht
+;First set everything to zero
 	clr	a0
 	move	a0,@p1taps
 	move	a0,@p2taps
@@ -3253,22 +3254,35 @@ zwlylp	SLEEPK	1
 	move	a0,@plyr_tourn
 	move	a0,@baby_flag
 	move	a0,@plyr_maxpower
-;set everything to zero
 
 ;AMM CMOS Baby Mode
 	movi	ADJBABY,a0		;Baby mode?
 	calla	GET_ADJ			;0-1 (0=on)
 	jrnz	babycont		;On? Br=yes
 	movk	1,a0
-	move	a0,@baby_flag
+	move	a0,@baby_flag           ;This is a global setting
+	clr 	a0
 babycont
 
-;Todo AMM CMOS Max Power
+;AMM CMOS Max Power
+	movi	ADJPOWER,a0		;Max Power mode shoving contest?
+	calla	GET_ADJ			;0-1 (0=on)
+	jrnz	mpowercont		;On? Br=yes
 	movk	0fh,a0			;This is 1111 binary (p1p2p3p4)
-	move	a0,@plyr_maxpower 	;This is per-player!		"max power"
+	move	a0,@plyr_maxpower 	;This is a per-player setting! "max power"
+	move	a0,@stlpower
+	clr	a0
+mpowercont
 
-;	move	a0,@stlpower		;This is per-player! (bits 0-3) "quick hands"???
-
+;AMM CMOS Shot percentage
+	movi	ADJSHOT,a0		;Show shot percentage?
+	calla	GET_ADJ			;0-1 (0=on)
+	jrnz	shotpercont		;On? Br=yes
+	movk	1,a0
+	move	a0,@show_shot 		;This is a global setting
+	move	a0,@stlpower
+	clr 	a0
+shotpercont
 
 	clr	a9
 	CREATE0	ck_circle_stik

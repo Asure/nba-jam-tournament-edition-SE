@@ -168,7 +168,9 @@ ADJIDIOT	equ	30
 ADJCHAMP	equ	31
 ADJFATAL	equ	32
 ADJBABY		equ	33
-LAST_ADJUST	equ	33
+ADJPOWER	equ	34
+ADJSHOT		equ	35
+LAST_ADJUST	equ	35
 
 ******************************************************************************
 ;end

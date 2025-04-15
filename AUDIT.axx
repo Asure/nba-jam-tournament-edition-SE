@@ -2203,6 +2203,8 @@ FACTORY_TABLE
 	.word	1	;ADJCHAMP	31	;Select GC team (0=on) "Still a champ even if you're not.."
 	.word	1	;ADJFATAL	32	;Enable Fatals (0=on) "Fire when you're on fire!"
 	.word	1	;ADJBABY	33	;Enably Baby Mode (0=on) "Small Jam"
+	.word	1	;ADJPOWER	34	;Max Power Mode "It's a blowout"
+	.word	1	;ADJSHOT	35	;Show shot %
 ; MAKE SURE THIS STUFF MATCHES UP with LINK.EQU and AUDIT.EQU!
 
 	.if 0
