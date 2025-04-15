@@ -820,7 +820,7 @@ se_credz_t
 	.byte	" ",0
 	.long	0
 	WL	-1,RUBYPAL
-	.byte	"TEAM JAM",0
+	.byte	"TEAM JAM :: ASURE AND RETRODRIVEN",0
 	.long	0
 	.word 	0 ;to indicate end of this block
 	.even
