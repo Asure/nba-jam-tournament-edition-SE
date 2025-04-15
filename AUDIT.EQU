@@ -167,7 +167,8 @@ ADJROSTER	equ	29
 ADJIDIOT	equ	30
 ADJCHAMP	equ	31
 ADJFATAL	equ	32
-LAST_ADJUST	equ	32
+ADJBABY		equ	33
+LAST_ADJUST	equ	33
 
 ******************************************************************************
 ;end

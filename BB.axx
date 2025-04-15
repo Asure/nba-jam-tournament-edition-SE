@@ -107,7 +107,7 @@ organ2_snd	.word	0f3ffH,08H,080afH,0
 	.ref	GETCPNT,BGND_UD1
 	.ref	AUD,AUD1,aud_addnumplyrs
 	.ref	prt_cr_timers
-;	.ref	_3d_test
+	.ref	_3d_test
 
 	.ref	PSTATUS
 	.ref	P1DATA,P2DATA,P3DATA,P4DATA
@@ -1304,10 +1304,12 @@ paid_t	.long	P1DATA+crds_paid,P2DATA+crds_paid,P3DATA+crds_paid
 
 qtjybomb_out
 
+;-------------------------------
+
+;	clr	a0
+;	move	a0,@played3d
+
  SUBR	from_3d
-
-
-
 
 	clr	a0
 	move	a0,@cntrs_delay
@@ -1496,16 +1498,20 @@ qtjydemo
 
 	callr	start_arws
 
+	move	@SWITCH,a0		;At 1600000 in ram (debug)
+	andi	07072H,a0		;AMM stick1+2 down+all butt. need check
+	andi	07072H,a0		;FF8D is 
+	jrnz	no3d
 	move	@GAMSTATE,a0
 	subk	INAMODE,a0
 	jreq	no3d
 
 	move	@played3d,a0
-	jauc	no3d			;AMM Disable the tank game for now.
+	jrnz	no3d			;AMM Disable the tank game for now.
 
-;	movk	1,a0
-;	move	a0,@played3d
-;	jauc	_3d_test
+	movk	1,a0
+	move	a0,@played3d
+	jauc	_3d_test
 no3d
 
 

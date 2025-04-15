@@ -3253,6 +3253,22 @@ zwlylp	SLEEPK	1
 	move	a0,@plyr_tourn
 	move	a0,@baby_flag
 	move	a0,@plyr_maxpower
+;set everything to zero
+
+;AMM CMOS Baby Mode
+	movi	ADJBABY,a0		;Baby mode?
+	calla	GET_ADJ			;0-1 (0=on)
+	jrnz	babycont		;On? Br=yes
+	movk	1,a0
+	move	a0,@baby_flag
+babycont
+
+;Todo AMM CMOS Max Power
+	movk	0fh,a0			;This is 1111 binary (p1p2p3p4)
+	move	a0,@plyr_maxpower 	;This is per-player!		"max power"
+
+;	move	a0,@stlpower		;This is per-player! (bits 0-3) "quick hands"???
+
 
 	clr	a9
 	CREATE0	ck_circle_stik
