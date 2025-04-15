@@ -785,52 +785,44 @@ iztnxb
 
 	SLEEP	40
 	RETP
-
 	
-iztnln11	.string	"COPYRIGHT 1993, 1994",0
-iztnln12	.string	"MIDWAY IS A TRADEMARK OF MIDWAY MANUFACTURING CO.",0
-iztnln13	.string	"THE NBA AND NBA TEAM TRADEMARKS USED HEREIN ARE",0
-iztnln14	.string	"USED UNDER LICENSE FROM NBA PROPERTIES, INC.",0
-iztnln15	.string	"NBA JAM SESSION IS TRADEMARKED AND",0
-iztnln16	.string	"OWNED BY NBA PROPERTIES, INC.",0
-iztnln17	.string	"ALL RIGHTS RESERVED",0
 	.EVEN
 se_credz_t
 	WL	-1,SGMD8WHT
 	.word	-2,200-42,25
-	.byte	"NBA JAM SE",0
-	.long	0
-	WL	-1,SGMD8GLD ;SGMD8VIO
-	.word	-2,20,60
-	.byte	"THIS IS FREE SOFTWARE BLA BLA BLA",0
-	.long	0
-	.byte	"SOMETHING ABOUT US BEING HUGE FANS AND",0
-	.long	0
-	.byte	"ALWAYS WANTING TO DO THIS ",0
-	.long	0
-	.byte	"A DREAM IN THE MAKING",0
-	.long	0
-	.byte	"WE HOPE YOU ENJOY IT AS MUCH AS WE DID MODDING IT",0
-	.long	0
-	WL	-1,SGMD8VIO ; Font col
-	.byte	"BLA BLA BLA LEWIS PODLASZEWSKI",0
+	.byte	"WARNING",0
 	.long	0
 	WL	-1,SGMD8BLU ; Font col
-	.byte	"ANDREW PODLASZEWSKI BLA BLA BLA LORUM IPSUM ET ALL",0
+	.word	-2,20,40
+	.byte	"THIS GAME IS FOR USE IN",0
 	.long	0
-	.byte	"ROOM HERE",0
+	WL	-1,SGMD8GLD ;SGMD8VIO
+	.byte	"ALL PRIVATE AND BASEMENT OR ATTIC ARCADES",0
 	.long	0
-	.byte	"MORE ROOM",0
+	WL	-1,SGMD8BLU ; Font col
+	.byte	"SALES EXPORT OR OPERATION OUTSIDE THESE AREAS",0
 	.long	0
-	WL	-1,SGMD8GLD ; Font col
-	.byte	"PLEASE DONT SUE US",0
+	.byte	"MAY BE CONSTRUED AND COPYRIGHT AND TRADEMARK",0
 	.long	0
-	WL	-1,SGMD8RED ; Font col
-	.byte	"THANK YOU",0
+	.byte	"INFRINGEMENT AND IS STRICTLY PROHIBITED",0
 	.long	0
-	.byte	"KTHXBYE",0
+	.byte	"VIOLATOR AND SUBJECT TO SEVERE PENALTIES AND WILL",0
 	.long	0
-	.word 	0 ;to end
+	.byte	"BE PROSECUTED TO THE FULL EXTENT OF THE NBA JAM",0
+	.long	0
+	WL	-1,SGMD8BLU ; Font col
+	.byte	" ",0
+	.long	0
+	.byte	"THIS IS FREE SOFTWARE AND A WORK OF FAN DEDICATION",0
+	.long	0
+	.byte	"PLEASE ENJOY PLAYING IT AS MUCH AS WE DID MAKING IT",0
+	.long	0
+	.byte	" ",0
+	.long	0
+	WL	-1,RUBYPAL
+	.byte	"TEAM JAM",0
+	.long	0
+	.word 	0 ;to indicate end of this block
 	.even
 
 
@@ -1122,7 +1114,7 @@ hntkthanx4_t
 	.long	0
 	.byte	"JAKE SIMPSON",0
 	.long	0
-	.byte	"TIM KIZEROW",0
+	.byte	"TIM KITZROW",0		;Yes this was spelled wrong in the source!
 	.long	0
 	.byte	"FELECIA TURMELL",0
 	.long	0
