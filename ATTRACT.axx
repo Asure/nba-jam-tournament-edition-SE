@@ -711,7 +711,8 @@ hztnxb
 	RETP
 
 	
-hztnln1	.string	"COPYRIGHT 1993, 1994",0
+;hztnln1	.string	"COPYRIGHT 1993, 1994",0
+hztnln1	.string	"COPYRIGHT 1993, 1994, 2025",0
 hztnln2	.string	"MIDWAY IS A TRADEMARK OF MIDWAY MANUFACTURING CO.",0
 hztnln3	.string	"THE NBA AND NBA TEAM TRADEMARKS USED HEREIN ARE",0
 hztnln4	.string	"USED UNDER LICENSE FROM NBA PROPERTIES, INC.",0
@@ -2997,7 +2998,8 @@ lwiqheading2_setup
 	RJR_STR	sgmd8_ascii,8,0,60,LN0+60,SGMD8GLD,0
 
 lwiqstr_heading
-	.string	"Tournament Edition Features:",0
+;	.string	"Tournament Edition Features:",0
+	.string	"Special Edition Features:",0
 	.asg	1,CR		    
 	.even
 
@@ -3010,54 +3012,60 @@ lwiqrandom_hints2
 	.long	lwiqstr_h5a,lwiqstr_h6a,lwiqstr_h7a
 
 	.even
-
+	
 lwiqstr_h0
-	.string	"Updated team rosters with at least 3 players",1
+	.string	"New Players Added! Jordan, Shaq, Griffey Jr.",1
 lwiqstr_h0a
-	.string "from each team.  25% of NBA now included!",0
+	.string "Laimbeer, Drazen Petrovic, and Reggie Lewis",0
 	.string	" ",0
 
 lwiqstr_h1
-	.string	"Player attributes for Power, Blocks, Steals,",1
+	.string	"Updated team rosters with at least 3 players",1
 lwiqstr_h1a
-	.string "Clutch & Passing.",0
+	.string "from each team.  25% of NBA now included!",0
 	.string	" ",0
 
 lwiqstr_h2
-	.string	"Halftime substitutions.  This allows players",1
+	.string	"Player attributes for Power, Blocks, Steals,",1
 lwiqstr_h2a
-	.string	"to solve matchup problems.",0
+	.string "Clutch & Passing.",0
 	.string	" ",0
 
 lwiqstr_h3
-	.string	"Allow players to choose the same team.  This",1
+	.string	"Halftime substitutions.  This allows players",1
 lwiqstr_h3a
-	.string	"should help determine the better player!",0
+	.string	"to solve matchup problems.",0
 	.string	" ",0
 
 lwiqstr_h4
-	.string	"Improved gameplay with faster movement, more",1
+	.string	"Allow players to choose the same team.  This",1
 lwiqstr_h4a
-	.string	"realistic situations, and more depth.",0
+	.string	"should help determine the better player!",0
 	.string	" ",0
 
 lwiqstr_h5
-	.string	"More dunks, more secret powerups, more special",1
+	.string	"Improved gameplay with faster movement, more",1
 lwiqstr_h5a
-	.string	"moves, more speech, more skill!",0
+	.string	"realistic situations, and more depth.",0
 	.string	" ",0
 
 lwiqstr_h6
-	.string	"Super star matchups & other surprises if you",1
+	.string	"More dunks, more secret powerups, more special",1
 lwiqstr_h6a
-	.string	"can defeat all 27 teams.",0
+	.string	"moves, more speech, more skill!",0
 	.string	" ",0
 
 lwiqstr_h7
-	.string	"Tournament mode turns off all powerups and",1
+	.string	"Super star matchups & other surprises if you",1
 lwiqstr_h7a
-	.string	"disallows any hidden features.",0
+	.string	"can defeat all 27 teams.",0
 	.string	" ",0
+
+;lwiqstr_h7
+;	.string	"Tournament mode turns off all powerups and",1
+;lwiqstr_h7a
+;	.string	"disallows any hidden features.",0
+;	.string	" ",0
 
 
 	.even
