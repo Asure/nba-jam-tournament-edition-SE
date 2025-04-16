@@ -2845,7 +2845,8 @@ qtcscongrats_str
 	.string	"",1
 	.string	"",1
 	.string	"You are the new NBA jam",1
-	.string	"tournament edition",1
+;	.string	"tournament edition",1
+	.string	"special edition",1
 	.string	"grand champion!",1
 	.string	"",1
 	.string	"",1
@@ -2866,7 +2867,8 @@ qtcscongrats_str
 	.string	"",1
 	.string	"thank you for playing",1
 	.string	"nba jam",1
-	.string	"tournament edition!",1
+;	.string	"tournament edition!",1
+	.string	"special edition!",1
 	.string	"",0
 
 
@@ -2986,7 +2988,8 @@ ndqmchicks_str
 	.string	" ",1
 	.string	"WE DON'T THINK SO.",1
 	.string	" ",1
-	.string	"THIS NEW EDITION WILL PROVE:",1
+;	.string	"THIS NEW EDITION WILL PROVE:",1
+	.string	"THIS SPECIAL EDITION WILL PROVE:",1
 	.string	" ",1
 	.string	"NOW YOU NEED SKILLS!",1
 	.string	" ",1
@@ -3004,7 +3007,8 @@ ndqmchicks_str
 	.string	" ",1
 	.string	" ",1
 	.string	"ARE YOU UP FOR THE NBA JAM",1
-	.string	"TOURNAMENT EDITION CHALLENGE?",1
+;	.string	"TOURNAMENT EDITION CHALLENGE?",1
+	.string	"SPECIAL EDITION CHALLENGE?",1
 	.string	" ",1
 	.string	"STEP UP AND SHOW SOME SKILL.",1
 	.string	" ",0
