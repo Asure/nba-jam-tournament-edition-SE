@@ -1498,20 +1498,29 @@ qtjydemo
 
 	callr	start_arws
 
-	move	@SWITCH,a0		;At 1600000 in ram (debug)
-	andi	07072H,a0		;AMM stick1+2 down+all butt. need check
-	andi	07072H,a0		;FF8D is 
-	jrnz	no3d
-	move	@GAMSTATE,a0
-	subk	INAMODE,a0
-	jreq	no3d
+;	move	@SWITCH,a0		;At 1600000 in ram (debug)
+;	andi	07072H,a0		;AMM stick1+2 down+all butt. need check
+;	andi	07072H,a0		;FF8D is 
 
-	move	@played3d,a0
-	jrnz	no3d			;AMM Disable the tank game for now.
+	.if	TUNIT
+	move	@SWITCH,a0
+	btst	4,a0
+	.else
+	move	@SWITCH+16,a0
+	btst	12,a0
+	.endif
+	jrnz	no3d			;No joy1 but1? (SHOT = p1b1)
 
-	movk	1,a0
-	move	a0,@played3d
-	jauc	_3d_test
+	move	@GAMSTATE,a0		;Get the game state.
+	subk	INAMODE,a0		;Are we in attract mode?
+	jreq	no3d			;jump to no3d if we are.
+
+	move	@played3d,a0		;Check if we already played the tank game.
+	jrnz	no3d			;if not zero jump to no3d.
+
+	movk	1,a0			;if we end up here and not jumping out before
+	move	a0,@played3d		;set this to 1
+	jauc	_3d_test		;play a round of 3d tank!
 no3d
 
 
