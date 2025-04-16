@@ -124,8 +124,6 @@ RAMLST	.equ	cycram
 
 	.bss	loop		,16	;
 
-
-
 	.text
 
 
@@ -213,6 +211,7 @@ cqyxlp
 	JSRP	drw_chicks
 cqyxnog
 	JSRP	show_copyright2
+	JSRP	debugmoviecrap
 	JSRP	new_page
 	JSRP	show_title
 	JSRP	creditscreen
@@ -720,6 +719,67 @@ hztnln5	.string	"NBA JAM SESSION IS TRADEMARKED AND",0
 hztnln6	.string	"OWNED BY NBA PROPERTIES, INC.",0
 hztnln7	.string	"ALL RIGHTS RESERVED",0
 	.EVEN
+
+ SUBR 	debugmoviecrap
+	
+;AMM here's a nice place for zip image test right?.
+	.DATA
+REVX	.set	0ffe00000h
+DCS	.set	0ffe3b730h
+TROPHY	.set	0fff90530h
+
+	.TEXT
+; SUBR	show_trophy
+
+	calla	display_blank
+	calla	WIPEOUT
+
+;	movk	1,a0
+;	move	a0,@dpageflip
+	calla	dpageflip_off
+
+	clr	a0
+	move	a0,@dtype		;2D
+
+	movi	SCRNEND,a0		;[256,405]
+	move	a0,@SCRNLR,L
+
+	clr	a0
+	move	a0,@WORLDTLX,L
+	move	a0,@WORLDTLY,L
+	move	a0,@IRQSKYE
+
+	SLEEPK	1
+
+	movk	1,a0
+	move	a0,@DISPLAYON
+	calla	display_unblank
+
+	movi	TROPHY,a8
+	clr	a9
+;	movi	SCRNST+SCRNXP,a10	;XY
+	clr	a10
+	.ref	movie_run
+	JSRP	movie_run
+
+	movi	6*TSEC,a10
+salp	SLEEPK	1
+	calla	get_all_buttons_cur2
+	jrz	nob
+
+      	clr	a0
+	move	a0,@SOUNDSUP		;turn all sounds on
+	SOUND1	bounce_snd
+	movk	1,a0
+	move	a0,@SOUNDSUP		;turn all sounds off
+	jruc	xb
+nob	
+	dsj	a10,salp
+xb
+	calla	WIPEOUT
+
+	RETP
+
 
 *** AMM
  SUBRP	show_copyright2

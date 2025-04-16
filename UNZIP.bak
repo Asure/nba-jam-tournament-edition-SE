@@ -251,18 +251,18 @@ isfjrd	move	*a8+,a6		;X size of frames
 	move	a1,b3
 	move	a6,b9
 
-;	cmpi	100,a6		;X
-;	jrne	isfjerror
-;	cmpi	68,b3		;Y
-;	jrne	isfjerror
-;	cmpi	5,a4		;isfjfrms
-;	jrlt	isfjerror
-;	cmpi	35,a4
-;	jrgt	isfjerror
-;	cmpi	200,a7		;isfjcolors
-;	jrlt	isfjerror
-;	cmpi	255,a7
-;	jrhi	isfjerror
+	cmpi	100,a6		;X
+	jrne	isfjerror
+	cmpi	68,b3		;Y
+	jrne	isfjerror
+	cmpi	5,a4		;isfjfrms
+	jrlt	isfjerror
+	cmpi	35,a4
+	jrgt	isfjerror
+	cmpi	200,a7		;isfjcolors
+	jrlt	isfjerror
+	cmpi	255,a7
+	jrhi	isfjerror
 
 	clr	a0
 	rets

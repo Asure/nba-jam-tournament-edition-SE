@@ -1,0 +1,5 @@
+	.DATA
+REVX	.set	0ffe00000h
+DCS	.set	0ffe3b730h
+	.TEXT
+

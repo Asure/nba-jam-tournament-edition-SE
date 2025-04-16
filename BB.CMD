@@ -47,6 +47,7 @@ TEST.OBJ
 DIAG.OBJ
 MENU.OBJ
 HSTD.OBJ
+UNZIP.OBJ
 MEMORY        			/* set up memory for sdb board */
 {
  SCRATCH	: org = 0x01000000,	len = 0x100000
