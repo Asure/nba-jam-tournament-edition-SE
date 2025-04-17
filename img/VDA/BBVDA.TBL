@@ -1,0 +1,4 @@
+	.DATA
+CHEERS	.set	0fff6ba30h
+	.TEXT
+

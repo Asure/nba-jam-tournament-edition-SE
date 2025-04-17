@@ -1,0 +1,30 @@
+Zipping the cheerleader image.
+Right now, that's a BDD/BDB background object, and it's stored inside the GFXrom.
+
+We can find the blocks in BGNDTBL.ASM:
+
+icHDRS:
+        .word   108,58  ;x size, y size
+        .long   056991bbH       ;address
+..
+        .word   36,27
+        .long   0585c9f3H
+        .word   00H
+..
+	.long	05862363H (this is from selBACK aka select background)
+
+So in best case we have 0x1C91A8 gfxrom used for pixel data (and some PAL data in prog rom area)
+The PAL data is in BGNDPAL.TBL and is quite big as well. I'll get back to that later.
+
+I did a quick LOD test to only create the IRW with CHRVIC background data.
+This is a whopping 232216 bytes. For reference, a single head image is around 1200 bytes
+
+To save money on eproms, in hangtime they borrowed the VDA unzipper from the MK2 team. There are some examples of 
+VDA files into .BIN (which is the zipped format). The data compresses down around 50-75%
+
+The resulting .BIN file is stored in the program roms. Leaving more room in the GFX area.
+If we do this, it would create a hole of around 230K in gfxrom, that we can fill with more heads, mugs, whatever. And also, additional room will be gained if we removed the PAL data in BGNDPAL.ASM for the now (unused) pal's from that picture.
+
+Program rom currently has room, around B0000 -FFFF0 is empty. ~320KB
+
+I will try and stick a picture there and see if i can unzip & display it :)
