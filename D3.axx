@@ -30,7 +30,8 @@ plhit_snd	.word	0fcf5H,05,08138H,0	;Hit backboard
 
 
 
-D3NUMO	.equ	200
+;D3NUMO	.equ	200
+D3NUMO	.equ	100
 
 OBJPTR	.equ	0	;UHL
 OBJPTR	.equ	0	;UHW
