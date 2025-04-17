@@ -71,52 +71,6 @@ RamBuffer	.usect	"unzip",RAMBUFSIZ
 
 
 	.text
-
-
-
-
-
-
-* Stop for error (DEBUG)
-
-	.if	TUNITDB
-
- SUBRP	movie_error
-
-	PUSH	a0,a1
-	pushst
-	dint
-
-	move	@SYSCOPY,a0
-	ori	4,a0
-	move	a0,@SYSCOPY
-	move	a0,@SYSCTRL
-
-acawlp2	movi	20000,a1
-acawlp	move	a0,@ERASELOC
-	addk	1,a0
-	dsj	a1,acawlp
-
-	move	@SWITCH+16,a1
-	not	a1
-	andi	0624H,a1
-	jrz	acawlp2
-
-	move	@SYSCOPY,a0
-	xori	4,a0
-	move	a0,@SYSCOPY
-	move	a0,@SYSCTRL
-
-	popst
-	PULL	a0,a1
-	rets
-
-	.endif
-
-
-
-
-
 *******************************
 * Run movie footage (JSRP)
 * A8=* compressed picture data
@@ -207,29 +161,6 @@ vgmkdly	movi	200,a14			;Wait 400 cycles
 vgmkx	rets
 
 
-*******************************
-* Get a movie palette
-* A7=# of colors
-* A8=* to color data
-* 0A0H=Color map allocated (0000-cfcf)
-* Z set if no palette free
-* Trashes scratch
-
- SUBRP	movie_getpal
-
-	move	a8,a0
-	subk	16,a0		;Point to # colors
-	calla	pal_getf
-	jrz	kuykx
-
-	move	a7,a1
-	sll	4,a1		;*16
-	add	a1,a8
-
-	move	a0,b4
-	addk	1,a1		;Clr Z
-
-kuykx	rets
 
 
 
@@ -256,31 +187,43 @@ isfjrd	move	*a8+,a6		;X size of frames
 	move	a1,b3
 	move	a6,b9
 
-;	cmpi	100,a6		;X
-;	jrne	isfjerror
-;	cmpi	68,b3		;Y
-;	jrne	isfjerror
-;	cmpi	5,a4		;isfjfrms
-;	jrlt	isfjerror
-;	cmpi	35,a4
-;	jrgt	isfjerror
-;	cmpi	200,a7		;isfjcolors
-;	jrlt	isfjerror
-;	cmpi	255,a7
-;	jrhi	isfjerror
-
 	clr	a0
 	rets
 
-isfjerror
-	movk	101b,a8
-	move	a8,@DEBUGPORT
+;isfjerror
+;	movk	101b,a8
+;	move	a8,@DEBUGPORT
+;
+;	move	a14,a8
+;	dsj	a0,isfjrd
+;
+;	addk	1,a0
+;	rets
 
-	move	a14,a8
-	dsj	a0,isfjrd
+*******************************
+* Get a movie palette
+* A7=# of colors
+* A8=* to color data
+* 0A0H=Color map allocated (0000-cfcf)
+* Z set if no palette free
+* Trashes scratch
 
-	addk	1,a0
-	rets
+ SUBRP	movie_getpal
+
+	move	a8,a0
+	subk	16,a0		;Point to # colors
+	calla	pal_getf
+	jrz	kuykx
+
+	move	a7,a1
+	sll	4,a1		;*16
+	add	a1,a8
+
+	move	a0,b4
+	addk	1,a1		;Clr Z
+
+kuykx	rets
+
 
 
 ********************************

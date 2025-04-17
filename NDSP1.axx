@@ -18,11 +18,12 @@
 	.ref	SLDEBUG
 	.endif
 
-
+	.if	TEST3D
+	.ref	_3d_build
+	.ref	d3vis_p
+	.endif
 
 	.ref	HALT,pal_getf,FRANIMQ
-;	.ref	_3d_build
-;	.ref	d3vis_p
 	.ref	PCNT
 	.ref	crt_colors
 	.ref	dirq_wait
@@ -907,8 +908,10 @@ joto70
 	move	@_3dstat,a0
 	jrz	joto80			;Off?
 ;AMM Add back missing 3d functions
-;	calla	_3d_build
-;	callr	_3d_draw
+	.if	TEST3D
+	calla	_3d_build
+	callr	_3d_draw
+	.endif
 joto80
 
 	move	@dtype,a1
@@ -1143,8 +1146,9 @@ D3XPTS	.equ	0140H		;UHL *Xformed points array (Cnt, XYZ,XYZ..)
 	movi	01000100H,b5		;B5=1:1 scale
 	movi	IROM,b9			;B9=*IROM
 	movi	0800cH<<16,b10		;B10=OFFSET:CONTROL
-
-;	movi	d3vis_p,a12		;A12=*3D object
+	.if	TEST3D
+	movi	d3vis_p,a12		;A12=*3D object
+	.endif
 
 
 

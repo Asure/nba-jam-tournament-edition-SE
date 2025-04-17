@@ -1,6 +1,7 @@
 *THE T/Z-UNIT SYSTEM SPECIFIC EQUATES
 *.Last mod - 11/30/92 12:09
 
+TEST3D	.equ	1
 YUNIT	.equ	1
 TUNIT	.equ	1	;YUNIT also on
 TUNITDB	.equ	0	;TUNIT debugging
@@ -181,8 +182,10 @@ BDELTAY	 equ	11
 
 	.if TUNIT
 ;Turmell
-NUMPAL	.equ	48	;Max # pals		;40
-NMFPAL	.equ	48	;# foregnd pals		;40
+;NUMPAL	.equ	48	;Max # pals		;40
+;NMFPAL	.equ	48	;# foregnd pals		;40
+NUMPAL	.equ	44	;Max # pals		;40
+NMFPAL	.equ	44	;# foregnd pals		;40
 NMBPAL	.equ	0	;# backgnd pals
 	.else
 NUMPAL	.equ	16	;Max # pals

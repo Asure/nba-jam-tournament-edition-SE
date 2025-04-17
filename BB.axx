@@ -107,7 +107,6 @@ organ2_snd	.word	0f3ffH,08H,080afH,0
 	.ref	GETCPNT,BGND_UD1
 	.ref	AUD,AUD1,aud_addnumplyrs
 	.ref	prt_cr_timers
-;	.ref	_3d_test
 
 	.ref	PSTATUS
 	.ref	P1DATA,P2DATA,P3DATA,P4DATA
@@ -1520,7 +1519,10 @@ qtjydemo
 
 	movk	1,a0			;if we end up here and not jumping out before
 	move	a0,@played3d		;set this to 1
-;	jauc	_3d_test		;play a round of 3d tank!
+	.if	TEST3D
+	.ref	_3d_test
+	jauc	_3d_test		;play a round of 3d tank!
+	.endif
 no3d
 
 
