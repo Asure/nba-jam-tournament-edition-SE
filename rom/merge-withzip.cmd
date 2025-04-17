@@ -1,5 +1,5 @@
 @echo off
-del romz.bin
+del rom.bin
 rem the u12* files must be created in dosbox by the ff8.bat command.
 c:\bin\far\srec_cat -o ROMz1.bin -binary bbzf8.0 -binary -unsplit 2 0 bbzf8.1 -binary -unsplit 2 1
 c:\bin\far\srec_cat -o ROMz2.bin -binary bbzfc.0 -binary -unsplit 2 0 bbzfc.1 -binary -unsplit 2 1

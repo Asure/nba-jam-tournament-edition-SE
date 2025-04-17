@@ -1,14 +1,3 @@
-**************************************************************
-*
-* Software:		Warren Davis
-* Initiated:		9/3/91
-*
-* Modified:		Shawn Liptak, 8/13/92	-Basketball
-*
-* COPYRIGHT (C) 1992 WILLIAMS ELECTRONICS GAMES, INC.
-*
-*.Last mod - 3/24/93 11:23
-**************************************************************
 	.file	"unzip.asm"
 	.title	"pkzip unzipper"
 	.width	132
@@ -22,13 +11,12 @@
 	.include	"sys.equ"
 	.include	"imgtbl.glo"
 	.include	"shawn.hdr"		;Macros
-;	.include	"frame.tbl"
+	.include	"frame.tbl"
 
 
 
 	.ref	pal_getf
 
-;	.ref	pal_clean
 
 	.ref	SYSCOPY
 
@@ -39,8 +27,6 @@
 
 BPP		.set 	3
 RAMBUFSIZ	.set	(4*1024)*8		; << BPP
-;SCRN_ST		.set	(170*SCRN_PTCH)+(150*8)
-;PXLS_PR_TIK	.set	10000
 
 PAGE1ADR	.equ	PAGE1YO*512*8
 
@@ -52,10 +38,6 @@ DEBUGPORT	.equ	01d01010H
 	STRUCTPD
 	LONG	PTEMP1
 	LONG	PIXPERFRM
-;	WORD	FRAMENUM
-;	LONG	CLIPSND
-;	WORD	HOLDFADE	;Time to hold first frame
-;	WORD	DEBUGCNT	;For TUNIT debugging
 
 
 RamBuffer	.usect	"unzip",RAMBUFSIZ
@@ -72,7 +54,6 @@ RamBuffer	.usect	"unzip",RAMBUFSIZ
 
 
 
-* Stop for error (DEBUG)
 
 	.if	TUNITDB
 
@@ -112,12 +93,6 @@ acawlp	move	a0,@ERASELOC
 
 
 
-*******************************
-* Run movie footage (JSRP)
-* A8=* compressed picture data
-* A9=Mode (0=Normal, 1=x2)
-* A10=Screen * for top left of picture
-* Trashes scratch, A2-A11,B2-B10
 
  SUBR	movie_run
 
@@ -171,9 +146,6 @@ bjulerror
 	jruc	bjulx
 
 
-*******************************
-* Wait for DMA activity to stop
-* Trashes A14
 
  SUBRP	movie_waitdma
 
@@ -202,13 +174,6 @@ vgmkdly	movi	200,a14			;Wait 400 cycles
 vgmkx	rets
 
 
-*******************************
-* Get a movie palette
-* A7=# of colors
-* A8=* to color data
-* 0A0H=Color map allocated (0000-cfcf)
-* Z set if no palette free
-* Trashes scratch
 
  SUBRP	movie_getpal
 
@@ -228,16 +193,6 @@ kuykx	rets
 
 
 
-*******************************
-* Get movie info
-* A8=* to compressed data
-*Rets:
-* 0A0H=!0 if error (CC)
-* 0A4H=# frames
-* 0A6H/B9=X
-* 0A7H=# colors in palette
-* 0B3H=Y
-* Trashes scratch
 
 movie_parsehdr
 
@@ -251,18 +206,18 @@ isfjrd	move	*a8+,a6		;X size of frames
 	move	a1,b3
 	move	a6,b9
 
-;	cmpi	100,a6		;X
-;	jrne	isfjerror
-;	cmpi	68,b3		;Y
-;	jrne	isfjerror
-;	cmpi	5,a4		;isfjfrms
-;	jrlt	isfjerror
-;	cmpi	35,a4
-;	jrgt	isfjerror
-;	cmpi	200,a7		;isfjcolors
-;	jrlt	isfjerror
-;	cmpi	255,a7
-;	jrhi	isfjerror
+	cmpi	100,a6		;X
+	jrne	isfjerror
+	cmpi	68,b3		;Y
+	jrne	isfjerror
+	cmpi	5,a4		;isfjfrms
+	jrlt	isfjerror
+	cmpi	35,a4
+	jrgt	isfjerror
+	cmpi	200,a7		;isfjcolors
+	jrlt	isfjerror
+	cmpi	255,a7
+	jrhi	isfjerror
 
 	clr	a0
 	rets
@@ -278,49 +233,9 @@ isfjerror
 	rets
 
 
-********************************
-* GSP Decompression routine
-*
-*	ASSUMPTIONS:  1) There is no literal table
-*	              2) the size of the sliding window is 4K
-*
-*	Needs the following Data Tables:
-*		CompressedDataTable will contain the following once
-*		it is uncompressed:
-*			# frames            (1 byte)
-*			# colors in palette (1 byte)
-*			X size of frame     (1 byte)
-*			Y Size of frame     (1 byte)
-*			variable length palette data
-*			data for each frame
-*
-*	Needs the following RAM variables:
-*		LengthTree   256 long words
-*		DistanceTree 256 long words
-*		MinPtrTable  256 long words (used for sort)
-*		RamBuffer    circular buffer
-*	        Tree layout is as follows...
-*			low 16 bits = Code
-*			next 8 bits = Bit length
-*
-*	B reg usage...
-*		B0 = Ptr to Length tree
-*		B1 = Ptr to Distance tree
-*		B3 = start of line
-*		B4 = start palette duped to fill 16 bits
-*		B5 = used for outputting pal bits to DMAPAL
-*		B6 = temp storage in ReadTree and UncompressTree
-*		B7 = constant mask for pxl palette split
-*		B8 = DMAPAL
-*		B9 = Master X storage
 
 
 
-*******************************
-* Uncompress a tree
-* A7=* to tree table
-* A8=* to compressed data
-* 0A0H=!0 if error (CC)
 
 UncompressTree:
 
@@ -369,14 +284,10 @@ lfdwchklp	move	*a8+,a1
 	jrne	lfdwerror		;Chksums don't match?
 
 
-*	Sort Tree by increasing Bit Length.
-*		The translation index is placed in the upper byte
-*		of the long word.
 
 	movi	minptrtbl,a0	; for placing translation ptrs
 	move	a6,a9		; outer loop count (# entries in tree table)
 
-*	Outer loop, after each pass, we have found the next minimum
 
 utr2
 	move	a5,a7		; restore start of tree
@@ -384,9 +295,6 @@ utr2
 	move	a6,b6		; inner loop count
 	movi	07654h,a1	; constant
 
-*	Inner loop, go through all values in table and find min.
-*	When we find it, we set it to a high value so we don't detect
-*	it again.
 
 utr3
 	move	*a7,a2		; look at next bit length
@@ -398,7 +306,6 @@ nonewmin
 	addk	32,a7		; point to next entry
 	dsj	b6,utr3
 
-;	end of inner loop: min is in a14, ptr to min is in a7
 
 	move	a1,*a11		; set this minimum high.
 	move	a11,*a0+,L	; place translation ptr in MinPtrTbl.
@@ -451,7 +358,6 @@ lfdwerror
 
 
 
-********************************
 
 SetConstants:
 	movi	lengthtree,b0
@@ -465,14 +371,6 @@ SetConstX
 
 
 
-*******************************
-* Initialize and run unzip loop (JSRP)
-* A4=# of frames
-* A8=* compressed data table
-* A10=Screen * for top left of picture
-* B3=Y size
-* B4=strt pal
-* B9=X size
 
  SUBRP	movie_unzip
 
@@ -685,22 +583,6 @@ GoToSleep
 
 
 
-********************************
-* Uncompress a single frame
-* A0=Address mask for circular buffer
-* A8=* to compressed data
-* A9=* to buffer for uncompressed bytes
-* A11=How many to place before returning
-* B0=*Length tree
-* B1=*Distance tree
-*
-*Trashes:
-*	a1 = Distance
-*	a2 = ptr to leftover data if there is any
-*	a4 = Length
-*
-* ReadTree uses A2-A5,A7,A14,B6
-* Need to Preserve: 	B9-B10
 
 UncompressFrame:
 
@@ -768,7 +650,6 @@ decode_still:		 	; if bit = 0, decode from trees
 notmaxs
 	addk	2,a7		; add MML, LENGTH in a7
 
-;	We now have Length and Distance,  now determine where to copy from
 
 	move	a9,a2		; copy of current position in a2
 	sub	a1,a2  		; initial attempt
@@ -788,16 +669,6 @@ copys
 	jruc	us1
 
 
-*******************************
-* Read compression tree
-* A5=*Tree table
-* A8=*Compressed data
-* Field 1 = 16 bits
-* 0A7H=Data
-*
-* Trashes: A2-A5,A14,B6
-*
-* Must preserve: A0,A1,A6,A8-A11
 
 ReadTree:
 	movk	1,a2		; bits_read
@@ -832,13 +703,6 @@ rxalx
 
 
 
-*******************************
-* BlowLine is used during decompression of a Still Picture to blow out
-* a single line of data.  Since only a single line needs to be stored at
-* once, the RamBuffer can be as small as 4K.
-* A0=Address mask for circular buffer
-* Field 1 = 16 bits
-* Trashes A1-A2,A5
 
  SUBRP	blowline
 
@@ -878,12 +742,6 @@ mupcnuther
 
 
 
-*******************************
-* BlowLine is used during decompression of a Still Picture to blow out
-* a single line of data.  Since only a single line needs to be stored at
-* once, the RamBuffer can be as small as 4K.
-* A0=Address mask for circular buffer
-* Field 1 = 16 bits
 
  SUBRP	blowlinex2
 
