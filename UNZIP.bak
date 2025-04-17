@@ -35,19 +35,14 @@
 	.ref	last_score,scores,tvpanelon
 	.ref	get_all_buttons_cur
 
-	.asg	8,IMGBPP			;Zipped img bpp count
-	.asg	8,SCRBPP			;Screen bpp count
-
 
 
 BPP		.set 	3
-;RAMBUFSIZ	.set	(4*1024)*8		; << BPP
 RAMBUFSIZ	.set	(4*1024)*8		; << BPP
 ;SCRN_ST		.set	(170*SCRN_PTCH)+(150*8)
 ;PXLS_PR_TIK	.set	10000
 
-;PAGE1ADR	.equ	PAGE1YO*512*8
-PAGE1ADR	.set	0100000H		; = PAGE1YO*512*8
+PAGE1ADR	.equ	PAGE1YO*512*8
 
 CARYTEST	.equ	0		;1 for Cary's board testing
 ERRORTEST	.equ	0		;1 for random pixel test
@@ -256,18 +251,18 @@ isfjrd	move	*a8+,a6		;X size of frames
 	move	a1,b3
 	move	a6,b9
 
-;	cmpi	100,a6		;X
-;	jrne	isfjerror
-;	cmpi	68,b3		;Y
-;	jrne	isfjerror
-;	cmpi	5,a4		;isfjfrms
-;	jrlt	isfjerror
-;	cmpi	35,a4
-;	jrgt	isfjerror
-;	cmpi	200,a7		;isfjcolors
-;	jrlt	isfjerror
-;	cmpi	255,a7
-;	jrhi	isfjerror
+	cmpi	100,a6		;X
+	jrne	isfjerror
+	cmpi	68,b3		;Y
+	jrne	isfjerror
+	cmpi	5,a4		;isfjfrms
+	jrlt	isfjerror
+	cmpi	35,a4
+	jrgt	isfjerror
+	cmpi	200,a7		;isfjcolors
+	jrlt	isfjerror
+	cmpi	255,a7
+	jrhi	isfjerror
 
 	clr	a0
 	rets
@@ -520,8 +515,7 @@ bgwpdebugstrt
 	;Clear top 4K of buffer to take care of initial wraparound
 
 	movi	RamBuffer+RAMBUFSIZ,a1	;End of buffer
-;	movi	1024,a2			;4K
-	movi	RAMBUFSIZ/IMGBPP/4,a2
+	movi	1024,a2			;4K
 	clr	a3
 clrbuf
 	move	a3,*-a1,L
