@@ -1782,7 +1782,8 @@ fgatteam_inits
 
 	.word	'G'-'A','E'-'A','E'-'A'	,07,23	;60 GARY PAYTON
 
-	.word	'W'-'A','E'-'A','B'-'A'	,03,01	;61 WEBBER
+	;.word	'W'-'A','E'-'A','B'-'A'	,03,01	;61 WEBBER
+	.word	'A'-'A','I'-'A','R'-'A'	,02,17	;61 JORDAN
 	.word	'H'-'A','A'-'A','K'-'A'	,01,21	;62 OLAJUWON
 	.word	'D'-'A','C'-'A',26	,06,21	;63 COLEMAN
 	.word	'P'-'A','A'-'A','T'-'A'	,08,05	;64 EWING
@@ -1858,7 +1859,8 @@ fgatteam_snds
 	.word	0f9a9H,70,0819cH,0	;boom shaka   58 MOURNING
 	.word	0f9a9H,67,08172H,0	;It's blowout 59 PIPPEN  
 	.word	0f9a9H,46,081c2H,0	;Yes!	      60 GARY PAYTON
-	.word	0f9a1H,87,081abH,0	;whoomp       61 WEBBER
+;	.word	0f9a1H,87,081abH,0	;whoomp       61 WEBBER
+	.word	0f980H,35,0801eH,0	;Jordan       61 JORDAN
 	.word	0f9a9H,67,08172H,0	;It's blowout 62 OLAJUWON
 	.word	0f9a9H,67,08172H,0	;It's blowout 63 COLEMAN
 	.word	0f9a9H,63,081f6H,0	;He scores    64 EWING
@@ -4805,7 +4807,8 @@ our_heads
 	.long	MOU_CHA 	;58
 	.long	PIP_CHI   	;59
 	.long	PAY_SEA 	;60	PAYTON
-	.long	WEB_GLD  	;61
+;	.long	WEB_GLD  	;61
+	.long	JOR_CHI  	;61 JORDAN
 	.long	OLA_HOU  	;62
 	.long	COL_NEJ	  	;63
 	.long	EWG_NEY 	;64
