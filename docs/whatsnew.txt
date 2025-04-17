@@ -1,1 +1,11 @@
-- Added Shaq, replaces Anderson on Orlando.
+- Added Shaq, replaces Anderson on Orlando
+- Added Jordan, replaces Kukoc on Chicago
+- Added Laimbeer, replaces Hunter on Detroit
+- Added Petrovic, replaces Benjamin on New Jersey
+- Added Lewis, replaces Gamble on Boston
+- Moved Hornacek from Utah to Philadelphia
+- Moved D.Harper from New York to Dallas
+- Added Jordan as a spcial character, replaces Webber
+- Team Jam/All-Star lineup tweaked to have a better list of players
+- Griffey: KID --> NOV 21
+- Jordan: AIR --> FEB 21

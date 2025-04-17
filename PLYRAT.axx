@@ -963,10 +963,15 @@ spechds_t
 	.long	FL22_p, Un6_p,Un14_p, TR3_p,TR6_p,Payton_h
 	.word	9,9,9	
 
-	LWWWWWW	scale610f_t,BV7,SHT11,DNK8,DEF8,SDEF3,DSKL_4
-	.long	FL17_p, Un5_p,Un14_p, TR9_p,TR7_p,Webber_h
-	.word	5,8,0	
-	LWWWWWW	scale71_t,BV8,SHT11,DNK9,DEF9,SDEF3,DSKL1
+;	LWWWWWW	scale610f_t,BV7,SHT11,DNK8,DEF8,SDEF3,DSKL_4
+;	.long	FL17_p, Un5_p,Un14_p, TR9_p,TR7_p,Webber_h
+;	.word	5,8,0	
+;	LWWWWWW	scale71_t,BV8,SHT11,DNK9,DEF9,SDEF3,DSKL1
+
+	LWWWWWW	scale611t_t,BV8,SHT6,DNK10,DEF7,SDEF7,DSKL5	;Jordan, Can Shatter
+	.long	FL25_p, Un4_p,Un14_p, TR2_p,TR4_p,mj_h
+	.word	8,8,7						;These are tweaked down a bit, otherwise he's too OP!
+
 	.long	FL35_p, Un4_p,Un14_p, TR9_p,TR4_p,Olajuwon_h
 	.word	4,8,8
 	LWWWWWW	scale610f_t,BV7,SHT11,DNK8,DEF8,SDEF2,DSKL0
