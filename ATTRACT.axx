@@ -751,16 +751,19 @@ TROPHY	.set	0fff90530h
 
 	SLEEPK	1
 
-	movk	1,a0
-	move	a0,@DISPLAYON
-	calla	display_unblank
-
 	movi	TROPHY,a8
 	clr	a9
 ;	movi	SCRNST+SCRNXP,a10	;XY
 	clr	a10
 	.ref	movie_run
 	JSRP	movie_run
+
+	SLEEP	1*TSEC;+10		;need some time to decompress
+
+	movk	1,a0
+	move	a0,@DISPLAYON
+	calla	display_unblank
+
 
 	movi	6*TSEC,a10
 salp	SLEEPK	1
@@ -776,6 +779,11 @@ salp	SLEEPK	1
 nob	
 	dsj	a10,salp
 xb
+	movk	8,a11
+	CREATE0	fade_down
+
+	SLEEP	40
+
 	calla	WIPEOUT
 
 	RETP
