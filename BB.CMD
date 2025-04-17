@@ -19,7 +19,7 @@ BB.OBJ			/*FIRST GAME MODULE*/
 BB2.OBJ
 DRONE.OBJ
 DRONE2.OBJ
-D3.OBJ
+/* D3.OBJ		*/
 PLYR.OBJ
 PLYR2.OBJ
 PLYR3.OBJ
@@ -68,6 +68,7 @@ SECTIONS       /* linker sections directive */
 	      } > ROM2	
 	GROUP:
 	      {
+		unzip: {}
 		FIXED: {}
 		OFIXED: {}
 		NFIXED: {}
