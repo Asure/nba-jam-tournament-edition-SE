@@ -1,3 +1,4 @@
+rem expects files like frame1 g1 g2 g3 g4 etc.
 erase %1.*
 vda2frm %1
 pkzipo %1 %1.frm

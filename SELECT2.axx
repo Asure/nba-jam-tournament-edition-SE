@@ -2882,6 +2882,7 @@ qtcsplayer_str
 
 
  SUBR	drw_chicks
+;AMM this needs to be updated to get the zip version in here.
 
 	calla	display_blank
 	calla	WIPEOUT

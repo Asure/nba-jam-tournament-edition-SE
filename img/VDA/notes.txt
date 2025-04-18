@@ -1,0 +1,52 @@
+To generate a BIN file you need TGA or VDA in 256 col/8bit. Pictview can generate those.
+Fullscreen images can be up to 400x255 pixels.
+
+The VDATOBIN tool is set up to take numeric files and generate 'frames' which were used in NBA JAM and Terminator 2.
+In later games like MK2 this would be used for character bio screens and a Revolution-X advertisement.
+Hangtime used it for the Trophy screen.
+
+File example: You would have DUNK1.VDA/DUNK2.VDA/DUNK3.TGA or simply SCREEN1.TGA.
+
+You would call "VDATOBIN DUNK" to get a .BIN file with 3 images, or "VDA2BIN SCREEN" and so on.
+
+The .BIN file can then be included by crafting a .LOD file, so that load2.exe can create an IRW from it.
+This .LOD file looks like this:
+
+-------------------------------------------------------------
+;Memory ceiling for LOAD2 is $fffff000 (512 bytes below top)
+;***> fff6ba30
+***> ffd20000
+ASM> BBVDA.TBL
+FRM> TROPHY
+-------------------------------------------------------------
+
+Contrary to the FRM> directive, this will load the .BIN file instead of the .FRM!
+
+Using load2 you will get a .IRW file than can be included in the LRN file which builds the program rom.
+
+The .IRW contains a header with details where in ROM this data gets mapped.
+This is done without regard for any data already there, so you could end up overwriting data!
+Look in the mame memory viewer for the rom region to see if your data can be placed there!
+
+The .LRN file should look something like this:
+
+-------------------------------------------------------------
+*****
+FF800000
+
+2
+
+bbvda.IRW
+..\bb.OUT
+
+
+256
+
+BBZ
+
+A
+-------------------------------------------------------------
+
+You can then use this data in the game by calling 'movie_run' which is in UNZIP.ASM/AXX
+
+(Examples in code can be found with find.exe /I "movie_run" *.axx |more in CMD command boxes.)
