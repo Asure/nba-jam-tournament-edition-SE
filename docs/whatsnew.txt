@@ -8,4 +8,4 @@
 - Added Jordan as a spcial character, replaces Webber
 - Team Jam/All-Star lineup tweaked to have a better list of players
 - Griffey: KID --> NOV 21
-- Jordan: AIR --> FEB 21
+- Jordan: AIR --> FEB 17
