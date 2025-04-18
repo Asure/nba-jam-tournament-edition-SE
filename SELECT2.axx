@@ -2879,7 +2879,77 @@ qtcsplayer_str
 
 	.even
 
+ SUBR 	drw_chicks2
+	
+;AMM here's a nice place for zip image test right?.
+	.DATA
+REVX	.set	0ffe00000h
+DCS	.set	0ffe3b730h
+TROPHY	.set	0fff90530h
+;CHEERS	.set	0fff6ba30h
+CHEERS	.set	0ffd20000h
 
+	.TEXT
+
+	calla	display_blank
+	calla	WIPEOUT
+
+;	movk	1,a0
+;	move	a0,@dpageflip
+	.ref	dpageflip_off
+	calla	dpageflip_off
+
+	clr	a0
+	move	a0,@dtype		;2D
+
+	movi	SCRNEND,a0		;[256,405]
+	move	a0,@SCRNLR,L
+
+	clr	a0
+	move	a0,@WORLDTLX,L
+	move	a0,@WORLDTLY,L
+	move	a0,@IRQSKYE
+
+	SLEEPK	1
+
+	movi	CHEERS,a8
+	clr	a9
+;	movi	SCRNST+SCRNXP,a10	;XY
+	clr	a10
+	.ref	movie_run
+	JSRP	movie_run
+
+	SLEEP	1*TSEC;+10		;need some time to decompress
+
+	jauc	chicktxt
+
+	movk	1,a0
+	move	a0,@DISPLAYON
+	calla	display_unblank
+
+
+	movi	6*TSEC,a10
+salp	SLEEPK	1
+	calla	get_all_buttons_cur2
+	jrz	nob
+
+      	clr	a0
+	move	a0,@SOUNDSUP		;turn all sounds on
+	SOUND1	bounce_snd
+	movk	1,a0
+	move	a0,@SOUNDSUP		;turn all sounds off
+	jruc	xb
+nob	
+	dsj	a10,salp
+xb
+	movk	8,a11
+	CREATE0	fade_down
+
+	SLEEP	40
+
+	calla	WIPEOUT
+
+	RETP
 
  SUBR	drw_chicks
 ;AMM this needs to be updated to get the zip version in here.
@@ -2907,7 +2977,7 @@ qtcsplayer_str
 	movi	ndqmchick_mod,a0
 	move	a0,@BAKMODS,L
 	calla	BGND_UD1
-	
+chicktxt	
 	movi	[10,7],a8		;START AT COLOR 10, CYCLE 7 COLORS
 	movi	BLUE,a9			;PAL NAME
 	movi	COLTAB2,a10		;TABLE TO CYCLE WITH
