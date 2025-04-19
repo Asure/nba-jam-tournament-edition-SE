@@ -1,7 +1,7 @@
 *THE T/Z-UNIT SYSTEM SPECIFIC EQUATES
 *.Last mod - 11/30/92 12:09
 
-TEST3D	.equ	0
+TEST3D	.equ	1
 YUNIT	.equ	1
 TUNIT	.equ	1	;YUNIT also on
 TUNITDB	.equ	0	;TUNIT debugging

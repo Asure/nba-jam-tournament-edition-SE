@@ -2879,46 +2879,28 @@ qtcsplayer_str
 
 	.even
 
+ SUBR 	drw_chicks2
+	
 ;AMM here's a nice place for zip image test right?.
 	.DATA
+REVX	.set	0ffe00000h
+DCS	.set	0ffe3b730h
+TROPHY	.set	0fff90530h
+;CHEERS	.set	0fff6ba30h
 CHEERS	.set	0ffd20000h
-	.TEXT
-	.even
 
- SUBR 	drw_chicks2
+	.TEXT
 
 	calla	display_blank
 	calla	WIPEOUT
 
 ;	movk	1,a0
-	clr	a0
-	move	a0,@DISPLAYON
-	SLEEPK	1
-
-	movi	[10,7],a8		;START AT COLOR 10, CYCLE 7 COLORS
-	movi	BLUE,a9			;PAL NAME
-	movi	COLTAB2,a10		;TABLE TO CYCLE WITH
-	movk	2,a11			;RATE OF CYCLE IN TICKS
-	CREATE	CYCPID,CYCLE_TABLE	;START PROCESS TO DO CYCLE
-
-
+;	move	a0,@dpageflip
+	.ref	dpageflip_off
+	calla	dpageflip_off
 
 	clr	a0
-	move	a0,@DISPLAYON
-	movk	1,a0			;page flipping on
-	move	a0,@dpageflip
-	SLEEPK	1
-;	clr	a0
-;	move	a0,@dpageflip
-	calla	display_unblank
-
-***
-;	clr	a0
-;	move	a0,@dtype		;2D
-;	move	a0,@HALT
-
-;	movk	1,a0			;page flipping on
-;	move	a0,@dpageflip
+	move	a0,@dtype		;2D
 
 	movi	SCRNEND,a0		;[256,405]
 	move	a0,@SCRNLR,L
@@ -2928,82 +2910,49 @@ CHEERS	.set	0ffd20000h
 	move	a0,@WORLDTLY,L
 	move	a0,@IRQSKYE
 
-	SLEEPK	2
-
-;	movi	ndqmchick_mod,a0
-;	move	a0,@BAKMODS,L
-	calla	BGND_UD1
-
-	movi	[10,7],a8		;START AT COLOR 10, CYCLE 7 COLORS
-	movi	BLUE,a9			;PAL NAME
-	movi	COLTAB2,a10		;TABLE TO CYCLE WITH
-	movk	2,a11			;RATE OF CYCLE IN TICKS
-	CREATE	CYCPID,CYCLE_TABLE	;START PROCESS TO DO CYCLE
-
-	movi	720h+150+180,a10
-	movi	ndqmchicks_setup,a2
-	calla	setup_message
-	movi	YSPACE,a0
-	move	a0,@mess_line_spacing
-	movi	CLSDEAD|123,a0
-	move	a0,@mess_objid
-	movi	ndqmchicks_str,a4
-	calla	print_string_C2
-
-	movi	-0c000h,a3		;scroll text up screen
-	movi	OBJLST,a14
-ndqmlp1
-	move	*a14,a14,L
-	jrz	ndqmx1
-	move	*a14(OID),a2
-	cmpi	CLSDEAD|123,a2
-	jrne	ndqmlp1
-	move	a3,*a14(OYVEL),L
-	jruc	ndqmlp1
-ndqmx1
+	SLEEPK	1
 
 	movi	CHEERS,a8
-	movi	[0,0],a9
+	clr	a9
+;	movi	SCRNST+SCRNXP,a10	;XY
+	clr	a10
 	.ref	movie_run
 	JSRP	movie_run
 
+	SLEEP	1*TSEC;+10		;need some time to decompress
+
+	jauc	chicktxt
+
 	movk	1,a0
 	move	a0,@DISPLAYON
-
-
-
-	SLEEPK	2
 	calla	display_unblank
-
-	SLEEP	2*TSEC
-
-***
-
 
 
 	movi	6*TSEC,a10
-dzvlp	SLEEPK	1
+salp	SLEEPK	1
 	calla	get_all_buttons_cur2
-	jrz	dzvnob
+	jrz	nob
 
       	clr	a0
 	move	a0,@SOUNDSUP		;turn all sounds on
 	SOUND1	bounce_snd
 	movk	1,a0
 	move	a0,@SOUNDSUP		;turn all sounds off
-	jruc	dzvxb
-dzvnob	
-	dsj	a10,dzvlp
-dzvxb
+	jruc	xb
+nob	
+	dsj	a10,salp
+xb
+	movk	8,a11
+	CREATE0	fade_down
 
+	SLEEP	40
 
 	calla	WIPEOUT
 
 	RETP
-*****************************************************************************
 
  SUBR	drw_chicks
-;AMM this is the original one
+;AMM this needs to be updated to get the zip version in here.
 
 	calla	display_blank
 	calla	WIPEOUT
@@ -3028,12 +2977,16 @@ dzvxb
 	movi	ndqmchick_mod,a0
 	move	a0,@BAKMODS,L
 	calla	BGND_UD1
-
+chicktxt	
 	movi	[10,7],a8		;START AT COLOR 10, CYCLE 7 COLORS
 	movi	BLUE,a9			;PAL NAME
 	movi	COLTAB2,a10		;TABLE TO CYCLE WITH
 	movk	2,a11			;RATE OF CYCLE IN TICKS
 	CREATE	CYCPID,CYCLE_TABLE	;START PROCESS TO DO CYCLE
+
+
+
+
 
 	movi	720h+150+180,a10
 	movi	ndqmchicks_setup,a2
