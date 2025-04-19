@@ -41,6 +41,11 @@
 
 	.def	print_player_stats
 	.def	print_teams_defeated
+;AMM
+	.def	print_string2b,mess_cursx2
+	.def	kern_chars
+	.def	mess_justify
+
 	.global	message_palette
 	.global	mess_space_width
 	.global	print_string,print_string2,print_string_C,print_string_C2
@@ -1115,6 +1120,23 @@ wpeyno_space
 
 wpeydone
 	rets
+
+ SUBR	kern_chars
+
+	movb	*a4,a0
+	jrz	kernok
+	move	@mess_cursx2,a1
+	add	a0,a1
+	move	a1,@mess_cursx2
+
+	move	@mess_line_spacing,a0
+	move	@mess_cursy,a1
+	sub	a0,a1
+	move	a1,@mess_cursy
+kernok
+	addk	8,a4
+	rets
+
 
 
  SUBRP	setup_message
