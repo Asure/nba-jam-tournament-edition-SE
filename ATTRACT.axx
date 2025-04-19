@@ -17,6 +17,10 @@
 	.include	"shawn.hdr"
 	.include	"link.equ"
 
+	.if VDA
+	.include	"bbvda.tbl"
+	.endif
+
 
 	.ref	musicoff_snd,ALLOFF,QSNDRST
 
@@ -40,6 +44,8 @@ tuneend1_snd	.word	0f3ffH,08H,0800aH,0	;End quarter 1 tune
 	.ref	get_all_buttons_cur2
 	.ref	fade_up
 	.ref	fade_down
+
+	.ref	movie_run
 
 	.ref	special_heads
 	.ref	our_heads,our_names
@@ -210,8 +216,8 @@ cqyxlp
 	JSRP	result_screen
 	JSRP	drw_chicks
 cqyxnog
+	JSRP	drw_chicks2
 	JSRP	show_copyright2
-	JSRP	debugmoviecrap
 	JSRP	new_page
 	JSRP	show_title
 	JSRP	creditscreen
@@ -271,8 +277,32 @@ show_title
 	move	a0,@WORLDTLY+16
 
 	SLEEPK	2
+	.if VDA
+	movk	1,a0
+	move	a0,@DISPLAYON
+	move	a0,@dpageflip
+
+	calla	display_unblank
+
+	SLEEPK	1
+
+	clr	a0
+	move	a0,@dpageflip
+
+	movi	TITLE,a8
+	movi	[0,0],a9
+	JSRP	movie_run
+
+	movk	1,a0
+	move	a0,@dpageflip
+	SLEEPK	1
+	clr	a0
+	move	a0,@dpageflip
+
+	.else
 	movi	ttl_t,a0
 	move	a0,@BAKMODS,L
+
 	calla	BGND_UD1
 	JSRP	scrn_scaleininit
 	SLEEPK	2
@@ -282,8 +312,6 @@ show_title
 	movi	[1,8],a10		;1st,last color
 	movk	2,a11			;Rate
 	CREATE	CYCPID,COLCYC
-
-
 
 	movi	P_STATIC,a8
 	movi	cycram2,a9
@@ -323,35 +351,6 @@ show_title
 
 
 	JSRP	scrn_scalein
-
-
-	.if 0
-
-	clr	a0
-	clr	a1
-	movi	SUBLOGO,a2
-	movi	500,a3			;Z
-	movi	DMAWNZ|M_NOCOLL|M_SCRNREL,a4
-	movi	CLSDEAD,a5
-	clr	a6
-	clr	a7
-	calla	BEGINOBJ2
-
-	movi	[0400H,0400H],a10
-gzjzuplp
-	callr	ttl_setscl
-	SLEEPK	1
-	subi	[020H,020H],a10
-	cmpi	[0a0H,0a0H],a10
-	jrgt	gzjzuplp
-
-gzjzdnlp
-	callr	ttl_setscl
-	SLEEPK	1
-	addi	[010H,010H],a10
-	cmpi	[0110H,0110H],a10
-	jrlt	gzjzdnlp
-     	
 	.endif
 
 	movi	6*TSEC,a10
@@ -370,6 +369,14 @@ gzjznob
 gzjzxb
 
 	JSRP	scrn_scaleout
+
+	.if	VDA
+	clr	a10
+	movk	8,a11
+	CREATE0	fade_down
+	SLEEP	50
+	.endif
+
 
 	calla	WIPEOUT
 
@@ -720,26 +727,26 @@ hztnln6	.string	"OWNED BY NBA PROPERTIES, INC.",0
 hztnln7	.string	"ALL RIGHTS RESERVED",0
 	.EVEN
 
- SUBR 	debugmoviecrap
-	
-;AMM here's a nice place for zip image test right?.
-	.DATA
-REVX	.set	0ffe00000h
-DCS	.set	0ffe3b730h
-TROPHY	.set	0fff90530h
+ SUBR 	drw_chicks2
+;AMM todo fix me .if and so on. (original is in select2.axx)
+;	.asg	200,X
+;	.asg	210,Y
 
-	.TEXT
-; SUBR	show_trophy
+	.asg	294,X		;center point for scroller.
+	.asg	20,YSPACE	;Y Spacing between lines for scroller.
+;	.asg	10+250,Y	;Size of Y buf.
+	.asg	300,Y		;Start of Y buf.
 
+	.even
 	calla	display_blank
 	calla	WIPEOUT
 
-;	movk	1,a0
-;	move	a0,@dpageflip
-	calla	dpageflip_off
-
 	clr	a0
 	move	a0,@dtype		;2D
+	move	a0,@HALT
+
+	movi	0,a0			;page flipping bits
+	move	a0,@dpageflip
 
 	movi	SCRNEND,a0		;[256,405]
 	move	a0,@SCRNLR,L
@@ -749,44 +756,117 @@ TROPHY	.set	0fff90530h
 	move	a0,@WORLDTLY,L
 	move	a0,@IRQSKYE
 
-	SLEEPK	1
+	SLEEPK	2
 
-	movi	TROPHY,a8
-	clr	a9
-;	movi	SCRNST+SCRNXP,a10	;XY
-	clr	a10
-	.ref	movie_run
+	movi	CABPIC,a8
+	movi	[0,0],a9
 	JSRP	movie_run
 
-	SLEEP	1*TSEC;+10		;need some time to decompress
+	
+;	movi	[10,7],a8		;START AT COLOR 10, CYCLE 7 COLORS
+;	movi	BLUE,a9			;PAL NAME
+;	movi	COLTAB2,a10		;TABLE TO CYCLE WITH
+;	movk	2,a11			;RATE OF CYCLE IN TICKS
+;	CREATE	CYCPID,CYCLE_TABLE	;START PROCESS TO DO CYCLE
+
+	movi	720h+150+180,a10
+	movi	ndqmchicks_setup,a2
+	calla	setup_message
+	movi	YSPACE,a0
+	move	a0,@mess_line_spacing
+	movi	CLSDEAD|123,a0
+	move	a0,@mess_objid
+	movi	ndqmchicks_str,a4
+	calla	print_string_C2
+
+;	movi	-0c000h,a3		;scroll text up screen (speed)
+	movi	-07000h,a3		;scroll text up screen (speed)
+	movi	OBJLST,a14
+ndqmlp
+	move	*a14,a14,L
+	jrz	ndqmx
+	move	*a14(OID),a2
+	cmpi	CLSDEAD|123,a2
+	jrne	ndqmlp
+	move	a3,*a14(OYVEL),L
+	jruc	ndqmlp
+ndqmx
+
 
 	movk	1,a0
 	move	a0,@DISPLAYON
+
+	SLEEPK	2
 	calla	display_unblank
 
+	SLEEP	2*TSEC
 
-	movi	6*TSEC,a10
-salp	SLEEPK	1
+
+
+ndqmlp2	SLEEPK	1
 	calla	get_all_buttons_cur2
-	jrz	nob
-
+	jrz	ndqmnob
       	clr	a0
 	move	a0,@SOUNDSUP		;turn all sounds on
 	SOUND1	bounce_snd
 	movk	1,a0
 	move	a0,@SOUNDSUP		;turn all sounds off
-	jruc	xb
-nob	
-	dsj	a10,salp
-xb
-	movk	8,a11
-	CREATE0	fade_down
-
-	SLEEP	40
-
-	calla	WIPEOUT
+	jruc	ndqmxb
+ndqmnob	
+	dsj	a10,ndqmlp2
+ndqmxb
 
 	RETP
+
+
+
+*****************************************************************************	
+* text table for cabchicks
+ndqmchicks_setup
+;	RJR_STR	osgemd_ascii,10,0,X,Y,BLUE,0
+;       RJR_STR	SGMD8WHT,10,0,X,Y,BLUE,0
+	RJR_STR	ogmd10_ascii,8,0,X,Y,SGMD8GLD,0
+
+
+ndqmchicks_str
+	.string	"ATTENTION BALLPLAYERS:",1
+	.string	" ",1
+	.string	"SO YOU THINK YOU'VE",1
+	.string	"CONQUERED JAM T.E.",1
+	.string	" ",1
+;	.string	"WE DON'T THINK SO.",1
+	.string	"WE KNOW YOU DIDN'T.",1
+	.string	" ",1
+	.string	"THIS SPECIAL EDITION",1
+	.string	"WILL PROVE:",1
+	.string	" ",1
+	.string	"WHAT WAS MISSING IS",1 
+	.string "NOW RESTORED IN FULL!",1
+	.string	" ",1
+	.string	"WE WOULD LIKE TO",1
+	.string "AWARD THE NBA JAM ",1 
+	.string "TOURNAMENT TROPHY.",1
+	.string	" ",1	     
+	.string	"FIRST YOU MUST DEFEAT",1
+	.string	"ALL 27 NBA TEAMS.",1
+	.string	" ",1
+	.string	"DEFEATING ALL 27 TEAMS",1
+	.string	"WILL ALLOW YOU TO BE",1
+	.string	"MATCHED UP AGAINST",1
+	.string	"SUPER STAR & SPECIAL",1
+	.string	"TEAMS THAT WILL SHOW",1
+	.string "NO MERCY!",1
+	.string	" ",1
+	.string	"ARE YOU UP FOR THE NBA",1
+	.string "JAM SPECIAL EDITION",1
+	.string "CHALLENGE? ",1
+	.string	" ",1
+	.string	"THEN STEP UP AND SHOW",1 
+	.string "SOME SKILL!",1
+	.string	" ",0
+	.even
+
+**
 
 
 *** AMM

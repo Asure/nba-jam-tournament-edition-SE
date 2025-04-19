@@ -1,13 +1,8 @@
-;how tf this works?
-;CHEERS	.set	0fff6ba30h
-
-;***> fff90530
-***> ffc00000
-
+;Memory ceiling for LOAD2 is $fffff000 (512 bytes below top)
+***> ffd40000
 ASM> BBVDA.TBL
-;FRM> CHEERS
-;FRM> REVX
-;FRM> DCS
-FRM> TROPHY
+FRM> TITLE
+FRM> CABPIC
+;DCS is to see where the end point is.
 FRM> DCS
 

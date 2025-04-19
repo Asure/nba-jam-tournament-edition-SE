@@ -1,0 +1,6 @@
+	.DATA
+TITLE	.set	0ffd40000h
+CABPIC	.set	0ffd9f580h
+DCS	.set	0ffdd4ee0h
+	.TEXT
+
