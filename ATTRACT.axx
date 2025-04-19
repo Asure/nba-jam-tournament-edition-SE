@@ -33,7 +33,6 @@ tuneend1_snd	.word	0f3ffH,08H,0800aH,0	;End quarter 1 tune
 	.ref	MRK_TURM,SHA_LIPM,TON_GOSM,JON_CARM,SAL_DIVM
 	.ref	JON_HEYM,JAM_RIVM
 	.ref	drw_chicks
-	.ref	drw_chicks2			;zip version
 	.ref	TWOPLAYERS			;0 = NO, 1 = YES 2 players
 
 	.ref	COLTAB2
@@ -212,7 +211,7 @@ cqyxlp
 	JSRP	drw_chicks
 cqyxnog
 	JSRP	show_copyright2
-	JSRP	drw_chicks2		;in select2.asm
+	JSRP	debugmoviecrap
 	JSRP	new_page
 	JSRP	show_title
 	JSRP	creditscreen
@@ -720,6 +719,77 @@ hztnln5	.string	"NBA JAM SESSION IS TRADEMARKED AND",0
 hztnln6	.string	"OWNED BY NBA PROPERTIES, INC.",0
 hztnln7	.string	"ALL RIGHTS RESERVED",0
 	.EVEN
+
+ SUBR 	debugmoviecrap
+	
+;AMM here's a nice place for zip image test right?.
+	.DATA
+REVX	.set	0ffe00000h
+DCS	.set	0ffe3b730h
+TROPHY	.set	0fff90530h
+;CHEERS	.set	0fff6ba30h
+CHEERS	.set	0ffd20000h
+
+	.TEXT
+; SUBR	show_trophy
+
+	calla	display_blank
+	calla	WIPEOUT
+
+;	movk	1,a0
+;	move	a0,@dpageflip
+	calla	dpageflip_off
+
+	clr	a0
+	move	a0,@dtype		;2D
+
+	movi	SCRNEND,a0		;[256,405]
+	move	a0,@SCRNLR,L
+
+	clr	a0
+	move	a0,@WORLDTLX,L
+	move	a0,@WORLDTLY,L
+	move	a0,@IRQSKYE
+
+	SLEEPK	1
+
+	movi	CHEERS,a8
+	clr	a9
+;	movi	SCRNST+SCRNXP,a10	;XY
+	clr	a10
+	.ref	movie_run
+	JSRP	movie_run
+
+	SLEEP	1*TSEC;+10		;need some time to decompress
+
+	movk	1,a0
+	move	a0,@DISPLAYON
+	calla	display_unblank
+
+
+	movi	6*TSEC,a10
+salp	SLEEPK	1
+	calla	get_all_buttons_cur2
+	jrz	nob
+
+      	clr	a0
+	move	a0,@SOUNDSUP		;turn all sounds on
+	SOUND1	bounce_snd
+	movk	1,a0
+	move	a0,@SOUNDSUP		;turn all sounds off
+	jruc	xb
+nob	
+	dsj	a10,salp
+xb
+	movk	8,a11
+	CREATE0	fade_down
+
+	SLEEP	40
+
+	calla	WIPEOUT
+
+	RETP
+
 
 *** AMM
  SUBRP	show_copyright2
