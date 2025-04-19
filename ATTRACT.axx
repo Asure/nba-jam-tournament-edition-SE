@@ -727,8 +727,6 @@ hztnln7	.string	"ALL RIGHTS RESERVED",0
 REVX	.set	0ffe00000h
 DCS	.set	0ffe3b730h
 TROPHY	.set	0fff90530h
-;CHEERS	.set	0fff6ba30h
-CHEERS	.set	0ffd20000h
 
 	.TEXT
 ; SUBR	show_trophy
@@ -753,7 +751,7 @@ CHEERS	.set	0ffd20000h
 
 	SLEEPK	1
 
-	movi	CHEERS,a8
+	movi	TROPHY,a8
 	clr	a9
 ;	movi	SCRNST+SCRNXP,a10	;XY
 	clr	a10

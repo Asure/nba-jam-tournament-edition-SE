@@ -1,6 +1,13 @@
-;Memory ceiling for LOAD2 is $fffff000 (512 bytes below top)
-;***> fff6ba30
-***> ffd20000
+;how tf this works?
+;CHEERS	.set	0fff6ba30h
+
+;***> fff90530
+***> ffc00000
+
 ASM> BBVDA.TBL
-FRM> CHICKS
-;FRM> TROPHY
+;FRM> CHEERS
+;FRM> REVX
+;FRM> DCS
+FRM> TROPHY
+FRM> DCS
+
