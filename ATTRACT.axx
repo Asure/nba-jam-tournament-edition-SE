@@ -214,9 +214,12 @@ cqyxlp
 	move	@kp_team2,a0
 	move	a0,@team2
 	JSRP	result_screen
-	JSRP	drw_chicks
-cqyxnog
+	.if	VDA
 	JSRP	drw_chicks2
+	.else
+	JSRP	drw_chicks
+	.endif
+cqyxnog
 	JSRP	show_copyright2
 	JSRP	new_page
 	JSRP	show_title
@@ -241,7 +244,11 @@ cqyxnog
 	JSRP	demogame
 	movi	musicoff_snd,a0
 	calla	snd_play1ovr
+	.if	VDA
+	JSRP	drw_chicks2
+	.else
 	JSRP	drw_chicks
+	.endif
 	JSRP	drw_ladder
 
 	move	@loop,a0
@@ -255,10 +262,12 @@ cqyxnog
 	jruc	cqyxlp
 
 
+* Controller by SYS.EQU
 
+	.if	VDA 			;1 or 0
 
-
-
+*************
+* Zip version
 show_title
 
 	clr	a0
@@ -277,7 +286,7 @@ show_title
 	move	a0,@WORLDTLY+16
 
 	SLEEPK	2
-	.if VDA
+
 	movk	1,a0
 	move	a0,@DISPLAYON
 	move	a0,@dpageflip
@@ -299,10 +308,56 @@ show_title
 	clr	a0
 	move	a0,@dpageflip
 
+	movi	6*TSEC,a10
+gzjzlp	SLEEPK	1
+	calla	get_all_buttons_cur2
+	jrz	gzjznob
+      	clr	a0
+	move	a0,@SOUNDSUP		;turn all sounds on
+	SOUND1	bounce_snd
+	movk	1,a0
+	.ref	SOUNDSUP
+	move	a0,@SOUNDSUP		;turn all sounds off
+	jruc	gzjzxb
+gzjznob	
+	dsj	a10,gzjzlp
+gzjzxb
+
+	clr	a10
+	movk	8,a11
+	CREATE0	fade_down
+	SLEEP	50
+
+
+	calla	WIPEOUT
+
+	RETP
+
 	.else
+*
+****************************************************************
+* Title screen
+
+show_title
+
+	clr	a0
+	move	a0,@IRQSKYE		;background color
+
+	calla	display_blank
+	calla	WIPEOUT
+
+	movk	1,a0
+	move	a0,@dpageflip
+	calla	display_2dsclmodeon
+
+	movk	10,a0
+	move	a0,@WORLDTLX+16
+	movi	1000,a0
+	move	a0,@WORLDTLY+16
+
+	SLEEPK	2
 	movi	ttl_t,a0
 	move	a0,@BAKMODS,L
-
 	calla	BGND_UD1
 	JSRP	scrn_scaleininit
 	SLEEPK	2
@@ -312,6 +367,14 @@ show_title
 	movi	[1,8],a10		;1st,last color
 	movk	2,a11			;Rate
 	CREATE	CYCPID,COLCYC
+
+;MJT
+
+;	movi	SUBLOGO_p,a8
+;	movi	cycram2,a9
+;	movi	[211,217],a10		;1st,last color
+;	movk	2,a11			;Rate
+;	CREATE	CYCPID,COLCYC
 
 	movi	P_STATIC,a8
 	movi	cycram2,a9
@@ -351,32 +414,23 @@ show_title
 
 
 	JSRP	scrn_scalein
-	.endif
 
 	movi	6*TSEC,a10
-gzjzlp	SLEEPK	1
+ttllp	SLEEPK	1
 	calla	get_all_buttons_cur2
-	jrz	gzjznob
+	jrz	ttlnob
       	clr	a0
 	move	a0,@SOUNDSUP		;turn all sounds on
 	SOUND1	bounce_snd
 	movk	1,a0
 	.ref	SOUNDSUP
 	move	a0,@SOUNDSUP		;turn all sounds off
-	jruc	gzjzxb
-gzjznob	
-	dsj	a10,gzjzlp
-gzjzxb
+	jruc	ttlxb
+ttlnob	
+	dsj	a10,ttllp
+ttlxb
 
 	JSRP	scrn_scaleout
-
-	.if	VDA
-	clr	a10
-	movk	8,a11
-	CREATE0	fade_down
-	SLEEP	50
-	.endif
-
 
 	calla	WIPEOUT
 
@@ -394,11 +448,13 @@ ttl_setscl
 	clr	a14
 	movx	a10,a14
 	divu	a14,a3
+;	move	*a2(IANIOFFX),a1
 	movi	-106,a1
 	mpys	a3,a1
 	sra	16,a1
 	addi	200,a1			;X base
 	move	a1,*a8(OXPOS)
+;	move	*a2(IANIOFFY),a1
 	movi	-98,a1
 	mpys	a3,a1
 	sra	16,a1
@@ -407,91 +463,10 @@ ttl_setscl
 
 	move	a10,*a8(ODATA_p),L	;Set scale value
 	rets
-
-
-	.if	0
-
-
- SUBRP	show_title2
-
-	calla	display_blank
-	calla	WIPEOUT
-
-	clr	a0
-	move	a0,@dtype		;2D
-
-	movk	1,a0			;page flipping on
-	move	a0,@dpageflip
-
-	movi	SCRNEND,a0		;[256,405]
-	move	a0,@SCRNLR,L
-
-	clr	a0
-	move	a0,@WORLDTLX,L
-	move	a0,@WORLDTLY,L
-	move	a0,@IRQSKYE
-
-	SLEEPK	2
-
-	movi	ftgfttl_t,a0
-	move	a0,@BAKMODS,L
-	calla	BGND_UD1
-
-	CREATE0	startcyc
-
-	clr	a10
-	movk	16,a11
-	CREATE0	fade_up
-
-	movk	1,a0
-	move	a0,@DISPLAYON
-
-	SLEEPK	2
-	calla	display_unblank
-
-	SLEEP	1*TSEC+30
-
-	movi	7*TSEC,a10
-ftgflp	SLEEPK	1
-	calla	get_all_buttons_cur2
-	jrz	ftgfnob
-      	clr	a0
-	move	a0,@SOUNDSUP		;turn all sounds on
-	SOUND1	bounce_snd
-	movk	1,a0
-	move	a0,@SOUNDSUP		;turn all sounds off
-	jruc	ftgfxb
-ftgfnob	
-	dsj	a10,ftgflp
-ftgfxb
-	movi	CYCPID,a0
-	calla	KIL1C
-
-	clr	a10
-	movk	8,a11
-	CREATE0	fade_down
-
-	SLEEP	40
-
-	RETP
-
-ftgfttl_t
-	.long	ttitleBMOD
-	.word	23,25
-	.long	0
-
-startcyc
-	SLEEPK	9
-	movi	STATIC_p,a8
-	movi	cycram,a9
-	movi	[1,8],a10		;1st,last color
-	movk	2,a11			;Rate
-	CREATE	CYCPID,COLCYC
-	DIE
-
 	.endif
 
-
+****************************************************************
+* Show an operator message if one has been entered
 
 	.ref	STRCNRMO_1
 	.ref	STRCNRMO
@@ -727,14 +702,13 @@ hztnln6	.string	"OWNED BY NBA PROPERTIES, INC.",0
 hztnln7	.string	"ALL RIGHTS RESERVED",0
 	.EVEN
 
+* Controlled by SYS.EQU
+	.if VDA
+
  SUBR 	drw_chicks2
-;AMM todo fix me .if and so on. (original is in select2.axx)
-;	.asg	200,X
-;	.asg	210,Y
 
 	.asg	294,X		;center point for scroller.
 	.asg	20,YSPACE	;Y Spacing between lines for scroller.
-;	.asg	10+250,Y	;Size of Y buf.
 	.asg	300,Y		;Start of Y buf.
 
 	.even
@@ -762,13 +736,6 @@ hztnln7	.string	"ALL RIGHTS RESERVED",0
 	movi	[0,0],a9
 	JSRP	movie_run
 
-	
-;	movi	[10,7],a8		;START AT COLOR 10, CYCLE 7 COLORS
-;	movi	BLUE,a9			;PAL NAME
-;	movi	COLTAB2,a10		;TABLE TO CYCLE WITH
-;	movk	2,a11			;RATE OF CYCLE IN TICKS
-;	CREATE	CYCPID,CYCLE_TABLE	;START PROCESS TO DO CYCLE
-
 	movi	720h+150+180,a10
 	movi	ndqmchicks_setup,a2
 	calla	setup_message
@@ -779,7 +746,6 @@ hztnln7	.string	"ALL RIGHTS RESERVED",0
 	movi	ndqmchicks_str,a4
 	calla	print_string_C2
 
-;	movi	-0c000h,a3		;scroll text up screen (speed)
 	movi	-07000h,a3		;scroll text up screen (speed)
 	movi	OBJLST,a14
 ndqmlp
@@ -791,8 +757,6 @@ ndqmlp
 	move	a3,*a14(OYVEL),L
 	jruc	ndqmlp
 ndqmx
-
-
 	movk	1,a0
 	move	a0,@DISPLAYON
 
@@ -834,7 +798,6 @@ ndqmchicks_str
 	.string	"SO YOU THINK YOU'VE",1
 	.string	"CONQUERED JAM T.E.",1
 	.string	" ",1
-;	.string	"WE DON'T THINK SO.",1
 	.string	"WE KNOW YOU DIDN'T.",1
 	.string	" ",1
 	.string	"THIS SPECIAL EDITION",1
@@ -866,10 +829,11 @@ ndqmchicks_str
 	.string	" ",0
 	.even
 
-**
+	.endif
 
 
-*** AMM
+*** AMM: New attract mode screen.
+
  SUBRP	show_copyright2
 
 	calla	display_blank
@@ -897,7 +861,7 @@ ndqmchicks_str
 
 	movk	1,a0
 	move	a0,@DISPLAYON
-;test fountain stars?
+;Fountain stars?
 	calla	display_2dsclstarmodeon
 
 	movk	10,a0
@@ -912,8 +876,6 @@ ndqmchicks_str
 
 	SLEEPK	2
 	calla	display_unblank
-
-	SLEEP	1*TSEC+30
 
 	movi	6*TSEC,a10
 iztnlp	SLEEPK	1

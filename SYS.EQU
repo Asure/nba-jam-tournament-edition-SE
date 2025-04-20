@@ -6,7 +6,7 @@ TEST3D	.equ	1
 
 ;If this is turned off, it will need the GFXROMS with the background data.
 ;Otherwise, we provide zipped VDA/BIN using BBVDA.TBL
-VDA	.equ	1
+VDA	.equ	0
 
 YUNIT	.equ	1
 TUNIT	.equ	1	;YUNIT also on
