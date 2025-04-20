@@ -5,7 +5,14 @@
 - Added Lewis, replaces Gamble on Boston
 - Moved Hornacek from Utah to Philadelphia
 - Moved D.Harper from New York to Dallas
-- Added Jordan as a spcial character, replaces Webber
+- Added Jordan as a special character, replaces Webber
+- Added Samples: Griffey, Jordan, Shaq, .. !!ADD HERE!!
 - Team Jam/All-Star lineup tweaked to have a better list of players
 - Griffey: KID --> NOV 21
 - Jordan: AIR --> FEB 17
+
+- ASU: Enabled 3D tank game. (Hold p1 shoot at matchup.)
+- ASU: More options in CMOS: Idiot boxes, Roster, GC Team unlock, Fatalities, Baby Size, Max Power and Shot %
+- ASU: Raiden hidden now has his signature lightning bolts displayed.
+- ASU: Added Copyright/Credits screen.
+

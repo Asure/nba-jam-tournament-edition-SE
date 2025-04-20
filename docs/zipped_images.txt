@@ -17,7 +17,7 @@ So in best case we have 0x1C91A8 gfxrom used for pixel data (and some PAL data i
 The PAL data is in BGNDPAL.TBL and is quite big as well. I'll get back to that later.
 
 I did a quick LOD test to only create the IRW with CHRVIC background data.
-This is a whopping 232216 bytes. For reference, a single head image is around 1200 bytes
+This is a whopping 232.216 bytes. For reference, a single head image is around 1200 bytes
 
 To save money on eproms, in hangtime they borrowed the VDA unzipper from the MK2 team. There are some examples of 
 VDA files into .BIN (which is the zipped format). The data compresses down around 50-75%
@@ -28,3 +28,5 @@ If we do this, it would create a hole of around 230K in gfxrom, that we can fill
 Program rom currently has room, around B0000 -FFFF0 is empty. ~320KB
 
 I will try and stick a picture there and see if i can unzip & display it :)
+
+title: 106.254
