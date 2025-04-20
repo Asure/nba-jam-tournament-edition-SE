@@ -2524,13 +2524,13 @@ bhnkstr_num
 	.even
 
 bhnkteam_names
-	.long	bhnkt7,bhnkt3,bhnkt18,bhnkt8
-	.long	bhnkt12,bhnkt24,bhnkt25,bhnkt23	
-	.long	bhnkt20,bhnkt17,bhnkt10,bhnkt1
-	.long	bhnkt5,bhnkt13,bhnkt14,bhnkt15
-	.long	bhnkt16,bhnkt0,bhnkt2,bhnkt19
-	.long	bhnkt4,bhnkt21,bhnkt22,bhnkt9
-	.long	bhnkt11,bhnkt6,bhnkt26
+	.long	bhnkt0,bhnkt1,bhnkt2,bhnkt3
+ 	.long	bhnkt4,bhnkt5,bhnkt6,bhnkt7	
+ 	.long	bhnkt8,bhnkt9,bhnkt10,bhnkt11
+ 	.long	bhnkt12,bhnkt13,bhnkt14,bhnkt15
+ 	.long	bhnkt16,bhnkt17,bhnkt18,bhnkt19
+ 	.long	bhnkt20,bhnkt21,bhnkt22,bhnkt23
+ 	.long	bhnkt24,bhnkt25,bhnkt26
 
 
 bhnkt0	.string	"ATLANTA HAWKS",0
