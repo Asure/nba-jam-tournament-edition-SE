@@ -1,10 +1,12 @@
+Making roms from mame debugger dumps:
+
 rem In mame debug:
-rem saver se1.bin,600000,200000,:gfxrom
+rem saver se1.bin,000000,200000,:gfxrom
 rem saver se2.bin,200000,200000,:gfxrom
 rem saver se3.bin,400000,200000,:gfxrom
 rem saver se4.bin,600000,200000,:gfxrom
 rem bin should be 2097152
-rem all: saver se1.bin,600000,200000,:gfxrom;saver se2.bin,200000,200000,:gfxrom;saver se3.bin,400000,200000,:gfxrom;saver se4.bin,600000,200000,:gfxrom
+rem all: saver se1.bin,000000,200000,:gfxrom;saver se2.bin,200000,200000,:gfxrom;saver se3.bin,400000,200000,:gfxrom;saver se4.bin,600000,200000,:gfxrom
 rem make em
 rem 0-200000
 c:\bin\far\srec_cat se1.bin -binary -split 4 0 -o l1_nba_jam_game_rom_ug14.ug14 -binary

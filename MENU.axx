@@ -2629,30 +2629,31 @@ SND_SETUP MESS_MAC  RD15FONT,SPACING20,200,SIY0,ROBO_WHITE,STRCNRM,0
 sounds_tab	.long	SND_ST0,SND_ST1,SND_ST2,SND_ST3
 		.long	SND_ST4,SND_ST5,SND_ST6,SND_ST7
 
-
-;SND_ST0	.string	"GAME START (U3)",0
-;SND_ST1	.string	"PERIOD END (U3)",0
-;SND_ST2	.string	"WHOOMP (U13)",0
-;SND_ST3	.string	"ALLEY OOP (U12)",0
-;SND_ST4	.string	"RANGE (U12)",0
-;SND_ST5	.string	"SHOWTIME (U13)",0
-;SND_ST6	.string	"SHOES? (U13)",0
-;SND_ST7	.string	"WEBBER (U12)",0
-SND_ST0	.string	"120",0
-SND_ST1	.string	"121",0
-SND_ST2	.string	"122",0
-SND_ST3	.string	"tune 000c (U12)",0
-SND_ST4	.string	"IT IS (U12)",0
-SND_ST5	.string	"GOOOD!! (U13)",0
-SND_ST6	.string	"countdown_snd (U13)",0
-SND_ST7	.string	"127",0
+SND_ST0	.string	"GAME START (U3)",0
+SND_ST1	.string	"PERIOD END (U3)",0
+SND_ST2	.string	"WHOOMP (U13)",0
+SND_ST3	.string	"O'NEAL (U12)",0
+SND_ST4	.string	"RANGE (U12)",0
+SND_ST5	.string	"SHOWTIME (U13)",0
+SND_ST6	.string	"SHOES? (U13)",0
+SND_ST7	.string	"WEBBER (U12)",0
+;SND_ST0	.string	"120",0
+;SND_ST1	.string	"121",0
+;SND_ST2	.string	"122",0
+;SND_ST3	.string	"tune 000c (U12)",0
+;SND_ST4	.string	"IT IS (U12)",0
+;SND_ST5	.string	"GOOOD!! (U13)",0
+;SND_ST6	.string	"countdown_snd (U13)",0
+;SND_ST7	.string	"127",0
 
 
 	.EVEN
 TEST_SOUND_TAB
-;	.WORD	01H,0aH,1abH,1b9H,01e3H,1CBH,1adh,69H
+	.WORD	01H,0aH,1abH,1b9H,01e3H,1CBH,1adh,69H	;orig one.
+;	.WORD	01f0H,0aH,1abH,1b9H,01e3H,1CBH,1adh,69H
 ;	.WORD	0120h,0121h,0122H,0123H,0214H,0215h,0216h,0217h
-	.WORD	01eh,01fh,021aH,021bH,021cH,021dh,021eh,021fh
+;	.WORD	01eh,01fh,021aH,021bH,021cH,021dh,021eh,021fh
+; 1f0 rainbow?
 ;need to score: Not 0x1F* 0x1D*  0x1E* 0x1C* 0x1A* 0x1B 0x19 0x18 0x17 0x16
 ; not 0x10 0x20 0x30 0x40 0x50 0x60
 ; 0x70 empty calls? 

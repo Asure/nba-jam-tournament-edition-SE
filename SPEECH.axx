@@ -1010,7 +1010,8 @@ ucnk3_points
 	jrnc	ucnkx3pts			;nc = name called
 
 ucnkno_name3p
-	movi	4,a0
+;	movi	4,a0		;5 choices but 6 in tab!
+	movi	5,a0		;Bring back the rainbow!
 	calla	rndrng0
 	sll	5,a0	;x 32 bits
 	addi	ucnk3ptab,a0
@@ -1359,7 +1360,7 @@ tmuxeasy_tab
 
 tmuxmed_jam
 
-	movi	6,a0
+	movi	6,a0		;7 choices
 	calla	rndrng0
 	sll	5,a0		;x 32 bits
 	addi	tmuxmed_tab,a0
@@ -1379,7 +1380,7 @@ tmuxmed_tab
 
 tmuxgood_jam
 
-	movi	2,a0
+	movi	2,a0		;3 choices
 	calla	rndrng0
 	sll	5,a0		;x 32 bits
 	addi	tmuxgood_tab,a0
@@ -1395,7 +1396,7 @@ tmuxgood_tab
 
 tmuxgreat_jam
 
-	movk	5,a0
+	movk	6,a0		;7 choices
 	calla	rndrng0
 	sll	5,a0		;x 32 bits
 	addi	tmuxgreat_tab,a0
@@ -1407,10 +1408,10 @@ tmuxgreat_tab
 	.long	scrs8		;0 spectacular dunk
 	.long	scrs16		;1 boom shakalaka
 	.long	scrs17		;2 razzle dazzle
+	.long	scrs18		;3 is it the shoes? ;add back shoes sample!
 	.long	scrs19		;4 kaboom
 	.long	scrs20		;5 monster jam
 	.long	takethat	;6 take that
-
 
  SUBR	seq_call_name
 
