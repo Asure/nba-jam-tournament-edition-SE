@@ -1,0 +1,28 @@
+Exporting TGA
+---------------------
+Dosbox --> ImageTool --> Save TGA file (CTRL+S)
+
+Editing/Saving PNG
+---------------------
+PhotoShop Portable CC 2015(or similar)
+
+Image --> Mode --> Indexed Color
+Palette: Local(Adaptive)
+Colors: 256
+Forced: Black and White
+Transparency: Checked/Selected
+Matte: None
+Dither: None
+
+Converting PNG to TGA
+---------------------
+Dosbox --> Pictview
+F7(Setup) --> Options for handling TGA
+Turn Off/No to all TGA Compression options listed
+
+Highlight PNG file
+F2(Convert) --> TGA 24bit
+
+Importing TGA
+---------------------
+Dosbox --> ImageTool --> Load TGA file (CTRL+L)
