@@ -2486,7 +2486,6 @@ player_names
 	.long	MOURN,MUTUMBO
 	.long	WILKINS,RODMAN
 	.long	RODMAN,WILKINS
-	.long	WILKINS,RODMAN
 
 ;	.long	MALONE_K,KEMP
 ;	.long	DROBINSON,BARKLEY

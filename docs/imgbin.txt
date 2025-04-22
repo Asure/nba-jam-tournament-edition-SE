@@ -1,0 +1,12 @@
+BB2	***> 2000000	0
+BBMUG	***> 3e0a000	3C1400  
+BB	***> 4673800	
+BB3	***> 58c3000	718600	
+
+
+BBMUG	***> 3e0a000	MAME: 3C1400
+BB2
+
+subtract 0x2000000 then divide by 0x8 to get the mame loadr address.
+
+4673800 = 2673800 /8 = 4Ce700
