@@ -219,8 +219,14 @@ cqyxlp
 	.else
 	JSRP	drw_chicks
 	.endif
+;AMM Show this only on the first loop i.e. powerup.
 cqyxnog
+	move	@loop,a0
+	cmpi	0,a0
+	jrnz	cqyxnog2
 	JSRP	show_copyright2
+
+cqyxnog2
 	JSRP	new_page
 	JSRP	show_title
 	JSRP	creditscreen
@@ -258,11 +264,12 @@ cqyxnog
 	jrnz	cqyxlp
 
 	JSRP	show_designteam
+	JSRP	show_copyright2
 
 	jruc	cqyxlp
 
 
-* Controller by SYS.EQU
+* Controlled by SYS.EQU
 
 	.if	VDA 			;1 or 0
 
@@ -900,11 +907,11 @@ iztnxb
 	.EVEN
 se_credz_t
 	WL	-1,SGMD8WHT
-	.word	-2,200-42,25
+	.word	-2,200-42,10
 	.byte	"WARNING",0
 	.long	0
 	WL	-1,SGMD8BLU ; Font col
-	.word	-2,20,40
+	.word	-2,20,25
 	.byte	"THIS GAME IS FOR USE IN",0
 	.long	0
 	WL	-1,SGMD8GLD ;SGMD8VIO
@@ -931,12 +938,18 @@ se_credz_t
 	.byte	" ",0
 	.long	0
 	WL	-1,RUBYPAL
-	.word	-2,200-42,200
+	.word	-2,200-42,180
 	.byte	"TEAM JAM",0
 	.long	0
 	WL	-1,SGMD8WHT
-	.word	-2,200-83,215
+	.word	-2,200-83,195
 	.byte	"ASURE AND RETRODRIVEN",0
+	.long	0
+	WL	-1,SGMD8VIO; SGMD8WHT
+	.word	-2,10,215
+	.byte	"KUDOS: RESSURECTA LUIGI30 CREEPING ZPAUL2FRESH8",0 
+	.long	0
+	.byte	"DEMIGODX DOCWALLACE DEATHENGINE2 MYPINBALLS AND J S",0
 	.long	0
 	.word 	0 ;to indicate end of this block
 	.even
