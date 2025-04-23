@@ -1,3 +1,4 @@
+Release 5.01
 - Added Shaq, replaces Anderson on Orlando
 - Added Jordan, replaces Kukoc on Chicago
 - Added Laimbeer, replaces Hunter on Detroit
@@ -6,13 +7,19 @@
 - Moved Hornacek from Utah to Philadelphia
 - Moved D.Harper from New York to Dallas
 - Added Jordan as a special character, replaces Webber
-- Added Samples: Griffey, Jordan, Shaq, .. !!ADD HERE!!
+- Added Samples: Griffey, Jordan, Shaq, .. 
 - Team Jam/All-Star lineup tweaked to have a better list of players
 - Griffey: KID --> NOV 21
 - Jordan: AIR --> FEB 17
 
-- ASU: Enabled 3D tank game. (Hold p1 shoot at matchup.)
-- ASU: More options in CMOS: Idiot boxes, Roster, GC Team unlock, Fatalities, Baby Size, Max Power and Shot %
-- ASU: Raiden hidden now has his signature lightning bolts displayed.
-- ASU: Added Copyright/Credits screen.
+- Enabled 3D tank game. (Hold p1 shoot at matchup.) (AMM)
+- More options in CMOS: Idiot boxes, Roster, GC Team unlock, Fatalities, Baby Size, Max Power and Shot % (AMM)
+- Raiden hidden now has his signature lightning bolts displayed. (AMM)
+- Added Copyright/Credits screen. (AMM)
+- Restore disabled "Shoes" and "Rainbow" samples. (AMM)
 
+Release 5.0
+- Enable Griffey
+
+Bugs:
+- Grand Champion team halftime substitutions are bugged. This exists on 1.0-4.0 roms as well.
