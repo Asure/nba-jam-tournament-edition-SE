@@ -124,7 +124,7 @@
 	.globl	bars_p
 	.globl	names_p
 	.globl	MBOX_R_P
-	.globl	armchip
+	.globl	jorchip
 	.globl	ladderBMOD
 	.globl	dabullBMOD
 	.globl	icPALS

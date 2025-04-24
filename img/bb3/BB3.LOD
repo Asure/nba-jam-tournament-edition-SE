@@ -187,7 +187,13 @@ kengrif.img
 ZOF>
 jordan.img
 ---> JORDAN
+PON>
 TVSCORE.IMG
 ---> LAIMBEER
 ---> PETROVIC
 ---> LEWIS
+ZOF>
+jordan.img
+POF>
+---> JORDAN90
+;Attract mode vert plate @05ff3f24H 9,41

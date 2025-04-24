@@ -1735,25 +1735,30 @@ er2HDRS:
 	.word	100,80
 	.long	0566fe2bH
 	.word	05000H
-	.word	72,62
+	.word	72,62		;Probably Pippen mug
 	.long	05679a6bH
 	.word	00H
-	.word	56,61
-	.long	056825ebH
+;	.word	56,61		;Armstrong mug x/y size
+	.word	67,61
+;	.long	056825ebH	;Pointer to image in gfxrom.
+	.long	05fcc446H	;Pointer to JOR_CHI
 	.word	00H
-	.word	56,60
+	.word	56,60		;Probably Grant mug
 	.long	056890abH
 	.word	00H
-	.word	16,69
+	.word	16,69		;name plate background?
 	.long	0568f9abH
 	.word	04000H
-	.word	12,67
-	.long	05690aebH
-	.word	04000H
-	.word	12,37
+;	.word	12,67		;name #2?
+;	.long	05690aebH	;pointer to image
+;	.word	04000H
+	.word	9,41		;Attract mode vert plate @05ff3f24H 9,41
+	.long	05ff3f24H	;loaded in bb3.bin!
+	.word	00H
+	.word	12,37		;name #1?        
 	.long	0569177bH
 	.word	04000H
-	.word	12,35
+	.word	12,35		;name #3?
 	.long	05691e6bH
 	.word	04000H
 	.word	60,58
@@ -1798,18 +1803,18 @@ dabullBLKS:
 	.word	00H	;pal5,pal4,hdr13-0
 	.word	040H,180,120,00H
 	.word	040H,180,240,00H
-	.word	03C48H,220,27,07H
+	.word	03C48H,220,27,07H	;first red box
 	.word	03C48H,220,103,07H
 	.word	03C48H,220,179,07H
-	.word	03D53H,223,191,08H
-	.word	03D49H,225,116,09H
-	.word	03D44H,226,41,0AH
-	.word	03E46H,288,32,0BH
+	.word	03D53H,223,191,08H	;mug Grant  flags,x,y,pal# from BGNDPAL.AXX
+	.word	03D49H,225,116,09H      ;mug Jordan
+	.word	03D44H,226,41,0AH	;mug Pippen
+	.word	03E46H,288,32,0BH	;name1 plate grey background
 	.word	03E46H,288,184,0BH
 	.word	03E46H,288,108,0BH
-	.word	04047H,290,109,0CH
-	.word	04047H,290,47,0DH
-	.word	04047H,290,203,0EH
+	.word	04047H,290,119,0CH      ;name 2
+	.word	04047H,290,47,0DH	;name 1
+	.word	04047H,290,203,0EH	;name 3?
 	.word	04042H,340,37,0FH
 	.word	04042H,340,113,0FH
 	.word	04042H,340,189,0FH

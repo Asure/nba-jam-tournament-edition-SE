@@ -224,6 +224,7 @@ cqyxnog
 	move	@loop,a0
 	cmpi	0,a0
 	jrnz	cqyxnog2
+	JSRP	drw_ladder		;for ladder debugging * REMOVE *
 	JSRP	show_copyright2
 
 cqyxnog2
