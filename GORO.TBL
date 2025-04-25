@@ -1,0 +1,23 @@
+	.DATA
+GOROS1:
+	.word   89,91,41,90
+	.long   05ff4aacH
+	.word   07000H
+	.long   GOROPAL
+GOROS2:
+	.word   106,91,51,90
+	.long   06002821H
+	.word   07000H
+	.long   GOROPAL
+GOROS3:
+	.word   116,88,56,87
+	.long   06012fe3H
+	.word   07000H
+	.long   GOROPAL
+GOROS4:
+	.word   113,86,54,85
+	.long   06024703H
+	.word   07000H
+	.long   GOROPAL
+	.TEXT
+

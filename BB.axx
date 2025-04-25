@@ -17,6 +17,10 @@
 	.include	"shawn.hdr"		;Macros
 	.include	"court.tbl"
 	.include	"crowd.tbl"
+;	.if	GORO
+	.include	"goro.tbl"
+	.include	"goropal.asm"
+;	.endif
 	.asg		0,SEQT
 	.include	"plyr.equ"
 
@@ -2132,7 +2136,8 @@ mxrzinit_t
 	.long	cheer1
 	WL	4002,cheer1_ptr
 	.word	0Ff5bH,0FFe7H,03e0H,39h,F
-	.long	cary1
+;	.long	cary1
+	.long	GOROS1
 	WL	4002,cheer2_ptr
 
 
@@ -2614,7 +2619,22 @@ cheer1_lst
 	LW	cheer3,6
 	LW	cheer2a,6
 	LWL0	cheer2,4*60
-
+	.if	GORO
+cheer2_lst
+	LW	GOROS1,20
+	LW	GOROS2,6
+	LW	GOROS3,6
+	LW	GOROS4,6
+	LW	GOROS3,6
+	LW	GOROS2,6
+	LW	GOROS1,6
+	LW	GOROS2,30
+	LW	GOROS3,6
+	LW	GOROS4,6
+	LW	GOROS3,6
+	LW	GOROS2,6
+	LWL0	GOROS1,4*60
+	.else
 cheer2_lst
 	LW	cary1,20
 	LW	cary2,6
@@ -2629,6 +2649,7 @@ cheer2_lst
 	LW	cary3,6
 	LW	cary2,6
 	LWL0	cary1,4*60
+	.endif
 
 
 	.def	random_ads

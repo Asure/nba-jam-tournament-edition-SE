@@ -1282,8 +1282,10 @@ tg_h	;GOSKIE
 jr_h	;JAMIE RIVET
 	.long	jamie1
 	.long	jamie1,jamie2,jamie3,jamie4,jamie5
-	.long	jamie6,jamie7,jamie8,jamie9,jamie10
-	.long	jamie11,jamie12,jamie13,jamie14,jamie15
+	.long	jamie1,jamie2,jamie3,jamie4,jamie5
+	.long	jamie1,jamie2,jamie3,jamie4,jamie5
+;	.long	jamie6,jamie7,jamie8,jamie9,jamie10
+;	.long	jamie11,jamie12,jamie13,jamie14,jamie15
 	.long	jamie16
 jc_h
 	.long	JC1
@@ -1302,16 +1304,21 @@ sd_h	;SAL DIVITA
 sl_h
 	.long	SHAW1
 	.long	SHAW1,SHAW2,SHAW3,SHAW4,SHAW5
+	.long	SHAW1,SHAW2,SHAW3,SHAW4,SHAW5
+	.long	SHAW1,SHAW2,SHAW3,SHAW4,SHAW5
 ;	.long	SHAW6,SHAW7,SHAW8,SHAW9,SHAW10
 ;	.long	SHAW11,SHAW12,SHAW13,SHAW14,SHAW15
 	.long	SHAW16
 mt_h
 	.long	MT01
 	.long	MT01,MT02,MT03,MT04,MT05
-	.long	MT06,MT07,MT08,MT09,MT10
-	.long	MT11,MT12,MT13,MT14,MT15
-	.long	MT16
 	.long	MT01,MT02,MT03,MT04,MT05
+	.long	MT01,MT02,MT03,MT04,MT05
+	.long	MT16
+
+;	.long	MT06,MT07,MT08,MT09,MT10
+;	.long	MT11,MT12,MT13,MT14,MT15
+;	.long	MT01,MT02,MT03,MT04,MT05
 jh_h	;JON HEY
 	.long	JONH1
 	.long	JONH1,JONH2,JONH3,JONH4,JONH5

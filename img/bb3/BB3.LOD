@@ -36,8 +36,9 @@ ourhds2.img
 ;---> JONH6,JONH7,JONH8,JONH9,JONH10,JONH11,JONH12,JONH13,JONH14,JONH15,JONH16
 PPP> 7
 ; Mark Turmell (Lead Programmer)
----> MT01,MT02,MT03,MT04,MT05,MT06,MT07
----> MT08,MT09,MT10,MT11,MT12,MT13,MT14,MT15,MT16
+---> MT01,MT02,MT03,MT04,MT05,MT16
+;MT06,MT07
+;---> MT08,MT09,MT10,MT11,MT12,MT13,MT14,MT15,MT16
 PPP> 0
 ; Sal Divita
 ; Number of heads cut down for Shaq/Mug
@@ -61,8 +62,9 @@ PPP> 0
 ---> SHAW16
 PPP> 6
 ; Jamie Rivett
----> jamie1,jamie2,jamie3,jamie4,jamie5,jamie6,jamie7,jamie8,jamie9
----> jamie10,jamie11,jamie12,jamie13,jamie14,jamie15,jamie16
+---> jamie1,jamie2,jamie3,jamie4,jamie5,jamie16
+;jamie6,jamie7,jamie8,jamie9
+;---> jamie10,jamie11,jamie12,jamie13,jamie14,jamie15,jamie16
 ; Petro
 ---> GEOR1,GEOR2,GEOR3,GEOR4,GEOR5,GEOR16
 ;,GEOR6,GEOR7,GEOR8,GEOR9,GEOR10,GEOR11,GEOR12,GEOR13
@@ -197,3 +199,12 @@ jordan.img
 POF>
 ---> JORDAN90
 ;Attract mode vert plate @05ff3f24H 9,41
+ASM> GORO.TBL
+GLO> GORO.GLO
+GORO.IMG
+PON>
+PPP> 7
+CON>
+XON>
+---> GOROS1,GOROS2,GOROS3,GOROS4
+

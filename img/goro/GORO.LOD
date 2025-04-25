@@ -1,0 +1,11 @@
+;Memory ceiling for LOAD2 is $fffff000 (512 bytes below top)
+IHDR SIZX:W,SIZY:W,ANIX:W,ANIY:W,SAG:L,CTRL:W,PAL:L
+;A80000
+;***> ffd40000
+;BC0000
+***> ffe80000
+ASM> GORO.TBL
+GLO> GORO.GLO
+GORO.IMG
+---> GORO1,GORO2,GORO3,GORO4
+

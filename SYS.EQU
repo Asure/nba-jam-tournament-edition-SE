@@ -1,5 +1,7 @@
 *THE T/Z-UNIT SYSTEM SPECIFIC EQUATES
 *.Last mod - 11/30/92 12:09
+;Testing GORO
+GORO	.equ	1
 
 ;This can be turned off for some more RAM/ROM space.
 TEST3D	.equ	1
