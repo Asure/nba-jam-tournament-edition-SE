@@ -217,6 +217,7 @@ organ2_snd	.word	0f3ffH,08H,080afH,0
 
 	.bss	cheer1_ptr,32
 	.bss	cheer2_ptr,32
+	.bss	goro_ptr,32
 
 	
 	BSSX	crplate_ptr	,32	;credit plate ptr
@@ -2136,9 +2137,13 @@ mxrzinit_t
 	.long	cheer1
 	WL	4002,cheer1_ptr
 	.word	0Ff5bH,0FFe7H,03e0H,39h,F
-;	.long	cary1
-	.long	GOROS1
+	.long	cary1
 	WL	4002,cheer2_ptr
+	.if	GORO
+	.word	0Ff5bH,0FFe7H,03e0H,39h,F
+	.long	GOROS1
+	WL	4002,goro_ptr
+	.endif
 
 
 
@@ -2353,8 +2358,13 @@ wttmsani_t	.long	bturn_5,bturn_4,bturn_3,bturn_2,bturn_1,bbord_10
 	move	a8,*a0(PDATA),L
 	move	a10,*a0(PDATA+32),L
 
-
-
+	.if	GORO
+	move	@goro_ptr,a8,L
+	movi	goro_lst,a10
+	CREATE0	crwd_ani
+	move	a8,*a0(PDATA),L
+	move	a10,*a0(PDATA+32),L
+	.endif
 
 	move	@bigcrwd3_ptr,a8,L
 	movi	bigcrwd_lst,a10
@@ -2619,22 +2629,7 @@ cheer1_lst
 	LW	cheer3,6
 	LW	cheer2a,6
 	LWL0	cheer2,4*60
-	.if	GORO
-cheer2_lst
-	LW	GOROS1,20
-	LW	GOROS2,6
-	LW	GOROS3,6
-	LW	GOROS4,6
-	LW	GOROS3,6
-	LW	GOROS2,6
-	LW	GOROS1,6
-	LW	GOROS2,30
-	LW	GOROS3,6
-	LW	GOROS4,6
-	LW	GOROS3,6
-	LW	GOROS2,6
-	LWL0	GOROS1,4*60
-	.else
+
 cheer2_lst
 	LW	cary1,20
 	LW	cary2,6
@@ -2649,6 +2644,18 @@ cheer2_lst
 	LW	cary3,6
 	LW	cary2,6
 	LWL0	cary1,4*60
+
+	.if	GORO
+goro_lst
+	LW	GOROS1,20
+	LW	GOROS2,6
+	LW	GOROS3,6
+	LW	GOROS4,6
+	LW	GOROS3,6
+	LW	GOROS4,30
+	LW	GOROS3,6
+	LW	GOROS2,6
+	LWL0	GOROS1,4*60
 	.endif
 
 
