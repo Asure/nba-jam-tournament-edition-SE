@@ -1741,7 +1741,7 @@ er2HDRS:
 ;	.word	56,61		;Armstrong mug x/y size
 	.word	67,61
 ;	.long	056825ebH	;Pointer to image in gfxrom.
-	.long	05fcc446H	;Pointer to JOR_CHI
+	.long	05f93ebcH	;Pointer to JOR_CHI *update when rebuild IRW/BIN!
 	.word	00H
 	.word	56,60		;Probably Grant mug
 	.long	056890abH
@@ -1752,8 +1752,8 @@ er2HDRS:
 ;	.word	12,67		;name #2?
 ;	.long	05690aebH	;pointer to image
 ;	.word	04000H
-	.word	9,41		;Attract mode vert plate @05ff3f24H 9,41
-	.long	05ff3f24H	;loaded in bb3.bin!
+	.word	9,41		;Attract mode vert plate @05ff3f24H 9,41 *update when rebuild IRW/BIN!
+	.long	05fbb99aH	;loaded in bb3.bin!
 	.word	00H
 	.word	12,37		;name #1?        
 	.long	0569177bH
