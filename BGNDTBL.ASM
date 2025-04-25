@@ -1813,8 +1813,8 @@ dabullBLKS:
 	.word	03E46H,288,184,0BH
 	.word	03E46H,288,108,0BH
 	.word	04047H,290,47,0CH  	;Jordan nameplate
-	.word	04047H,290,119,0DH	;Pippen nameplate
-	.word	04047H,290,203,0EH	;Grant nameplate
+	.word	04047H,290,125,0DH	;Pippen nameplate
+	.word	04047H,290,200,0EH	;Grant nameplate
 	.word	04042H,340,37,0FH
 	.word	04042H,340,113,0FH
 	.word	04042H,340,189,0FH
