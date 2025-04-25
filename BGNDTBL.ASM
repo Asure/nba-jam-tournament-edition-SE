@@ -1807,14 +1807,14 @@ dabullBLKS:
 	.word	03C48H,220,103,07H
 	.word	03C48H,220,179,07H
 	.word	03D53H,223,191,08H	;mug Grant  flags,x,y,pal# from BGNDPAL.AXX
-	.word	03D49H,225,116,09H      ;mug Jordan
-	.word	03D44H,226,41,0AH	;mug Pippen
+	.word	03D49H,226,41,09H   ;mug Jordan
+	.word	03D44H,225,116,0AH	;mug Pippen
 	.word	03E46H,288,32,0BH	;name1 plate grey background
 	.word	03E46H,288,184,0BH
 	.word	03E46H,288,108,0BH
-	.word	04047H,290,119,0CH      ;name 2
-	.word	04047H,290,47,0DH	;name 1
-	.word	04047H,290,203,0EH	;name 3?
+	.word	04047H,290,47,0CH  	;Jordan nameplate
+	.word	04047H,290,119,0DH	;Pippen nameplate
+	.word	04047H,290,203,0EH	;Grant nameplate
 	.word	04042H,340,37,0FH
 	.word	04042H,340,113,0FH
 	.word	04042H,340,189,0FH
