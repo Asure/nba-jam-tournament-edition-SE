@@ -1,25 +1,152 @@
-Release 5.01
-- Added Shaq, replaces Anderson on Orlando
-- Added Jordan, replaces Kukoc on Chicago
-- Added Laimbeer, replaces Hunter on Detroit
-- Added Petrovic, replaces Benjamin on New Jersey
-- Added Lewis, replaces Gamble on Boston
-- Moved Hornacek from Utah to Philadelphia
-- Moved D.Harper from New York to Dallas
-- Added Jordan as a special character, replaces Webber
-- Added Samples: Griffey, Jordan, Shaq, .. 
-- Team Jam/All-Star lineup tweaked to have a better list of players
+What's new?
+===========
+
+Welcome to release 5.02 of this 'Special Edition'. It's taken quite some time to get to this point.
+In fact, it took nearly 17 months since the original SE 5.0 edition. A personal (non-lethal) health issue caused
+me to halt work on many of my projects and focus on other matters.
+
+I've decided to slowly cherry-pick projects after getting some assistance of others who can work with me.
+I know these kind of games do not appeal to an extremely large number of people. But, as i have stated before
+i am not in it for money or fame. I just love this game, and many others from Midway. Playing it reminds me of
+all the fun moments i had in arcades as a teenager.
+
+
+Quality-of-life
+===============
+
+Several options are now available in the CMOS menu under 'EXTRA SETTINGS'. This includes some permanent powerups
+that were hard to do with a keyboard, and simple improvements. These are all operator adjustable now and can
+make for some fun games. The signature 'idiot' aka 'bozo' boxes that explain the game to new players are now
+disabled by default, and won't interrupt friendly matches between guests at your house who don't have a player
+record stored.
+
+Expanded roster and Grand Champion team unlock can be toggled when desired to add more depth to the game and
+bring some exiting new players into teams that you maybe never saw.
+
+Big Head was already in the CMOS options, but now you can also play as tiny ballers, enable max power to avoid
+most of the shoving, and have the chance of your shot going in displayed below the credit/free play box.
+
+Note that some of these options are for all players, including the CPU and can drastically change gameplay. 
+Except the 'Idiot' boxes, these options area all turned off by default!
+
+Restored stuff
+==============
+There's some nice stuff that was cut from TE so we brought it back. And some disabled stuff was enabled.
+You can now enjoy the hidden tank game again, but with a simpler button press. (not from attract!)
+Griffey now has his birthday as his code, and he's got voice samples to match.
+Laimbeer, Petrovic and Lewis are back, with samples. But Hunter, Benjamin and Gamble had to go for now.
+Some players were moved to other teams to create a more finetuned selection.
+
+And offcourse, Jordan & Shaq are back in the game for all to enjoy, with voice samples!
+
+Extra care was taken for proper head-body alignment and matching skin pallettes. Did i mention this is not
+a hex-edited rom, but compiled from original source?
+
+Speaking of source, there are some examples where changes from Midway caused some of Kitzrow's classics to never
+be called during gameplay. I'm not sure if that's by design, but the game now has a chance to curse, call out
+a nice Rainbow shot and make a comment about shoes again.
+
+Removed stuff
+=============
+In order to fit in the new players with the mugshots and all 16 head angles, most of the hidden design team has
+the head angles reduced. Many of the hiddens already had the 'basic' 5 head angles, and this was the only way to make
+room without dropping any other players. We could have added extra data but this would mean you had to upgrade
+the ROM mapper PAL chip and burn 27C080 instead. This would mean that for a few MB of data you would be burning
+a whopping 16x27C080. (And much of those chips would not be fully filled anyway.)
+
+No, we didn't touch the MK2 characters heads, they all have the 'deluxe' set of angles :)
+
+Raiden has his signature sparks back, those were previously only for Boon and Tobias and Raiden was simply
+commented out. 
+
+Some unused voice samples had to go. Alley-oops were never in this game. Guess we'll see you in Hangtime ;)
+
+Other
+=====
+There is now a credits screen that warns you to the full extent of the jam.
+I've taken in all of the stuff posted on forums and where possible, added or fixed it.
+Gameplay is not tweaked or touched, this is still as difficult as it was, just like Midway intended it to be.
+If you want to beat the game, learn the tricks against the CPU.
+
+Hint: From a code perspective, you can hear when it adjusts the drone skill.. 
+Score called out (upby/downby), organ sounds, crowd..
+
+We did our best to balance the new players, but just remember that you'll face them on a CPU team as well!
+
+What's left?
+============
+There is very little GFX rom space left to do anything substantial at this point without cutting down
+some of the big space eaters like the cheerleader images or change the title screen to a non-animated version.
+Those can be stuffed into the main program area as zipped data. The effort is not really worthwhile so
+I guess this will likely be the last release for T-Unit based boards.
+
+I'll port the new changes to the Midway WOLF architecture in a future update.
+There is nearly unlimited GFX space on that board, which would allow us to go crazy. No promises, no demands.
+
+I've used the little available space to put a familiar face in the game to 'cheer on' as the CPU dunks against you.
+
+Future
+======
+- Wolf Unit port will be ready when it's done. (New features/players/development is frozen for now.)
+- Some big plans for (Max) Hangtime are underway.
+- MK2 might appear on Wolf unit someday.
+- When i feel much better
+
+Enjoy!
+
+Notes:
+======
+We still need testers for both Wolf and T-Unit that are dedicated and willing.
+This release was not tested on real hardware, i lack the time and don't have any spare boards/roms.
+I don't take requests for features. There is no space to add your face in the game.
+
+Feedback is appreciated at the usual places. Don't sell this stuff, it's free to enjoy.
+All done from source, using time-period correct dev environment in DosBox.
+
+
+
+
+
+Release 5.02
+- Fix remaining ladder issues.
+- Fix CRC issues.
+- Added Shaq, replaces Anderson on Orlando.
+- Added Jordan, replaces Kukoc on Chicago.
+- Added Laimbeer, replaces Hunter on Detroit.
+- Added Petrovic, replaces Benjamin on New Jersey.
+- Added Lewis, replaces Gamble on Boston.
+- Moved Hornacek from Utah to Philadelphia.
+- Moved D.Harper from New York to Dallas.
+- Added Jordan as a special character, replaces Webber.
+- Added Samples: Griffey, Jordan, Shaq. 
+- Added big guy.
+- Team Jam/All-Star lineup tweaked to have a better list of players.
 - Griffey: KID --> NOV 21
 - Jordan: AIR --> FEB 17
+- Re-enabled the 3D tank game. (Hold p1 shoot at matchup.) 
+- More options in CMOS: Idiot boxes, Roster, GC Team unlock, Fatalities, Baby Size, Max Power and Shot %.
+- Raiden hidden now has his signature lightning bolts displayed.
+- Added Copyright/Credits screen.
+- Restore disabled "Shoes" and "Rainbow" samples.
+- Logo image now has 'Special Edition' instead of 'Tournament Edition'
 
-- Enabled 3D tank game. (Hold p1 shoot at matchup.) (AMM)
-- More options in CMOS: Idiot boxes, Roster, GC Team unlock, Fatalities, Baby Size, Max Power and Shot % (AMM)
-- Raiden hidden now has his signature lightning bolts displayed. (AMM)
-- Added Copyright/Credits screen. (AMM)
-- Restore disabled "Shoes" and "Rainbow" samples. (AMM)
+Release 5.01
+- Development test/work/debug version. Unreleased.
 
 Release 5.0
-- Enable Griffey
+- It's got Ken Griffey Jr. as a hidden character in it. (GKG - FEB 4)
+- It's got Gary Payton as a hidden character in it. (GEE - JUL 23)
+- Below stuff was removed in production roms 3.0+ at the NBA's request but is now enabled:
+- All the MK chars+Reaper+Elvis+Coman+Kongo are back.
+- Backboard can shatter. 
+- Kitzrow's "Get that shit outta here!" is also in. Samples are in normal sound roms it seems.
+- The 'shit' variant seems random and not always played.
+- They removed Ray Gay (Midway team, AUG 11) to make space for Ken Griffey's GFX.
+- Griffey Stats: (PLYRAT.ASM)
+- Speed 9 Shot 9 dunks 9, block 7, steal 7, Drone Skil '3'
+- Pass 34 - Power 12 - clutch 14 - ? - ?
+- GFX Rom area is really full, if you would hack in more players, you'll need to remove some.
+
 
 Bugs:
 - Grand Champion team halftime substitutions are bugged. This exists on 1.0-4.0 roms as well.
