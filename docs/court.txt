@@ -5,6 +5,8 @@ CRT2 364x138
 CRT3 365x138
 CRT4 274x138
 
+Total court size: 1546x138
+
 To get the COURT.BIN so we can use it in FRM> for LOD files:
 
 1. In IT Mark the images with spacebar. (for example in COURTZ.IMG you would mark CRT1 CRT2 CRT3 CRT4)
