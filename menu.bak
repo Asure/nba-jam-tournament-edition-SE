@@ -549,7 +549,7 @@ SC_COL
 GO_CPUTEST
 	JAUC	DIAGCPUTEST
 
-	.if	WUNIT
+	.if	1
 **************************************************************************
 *									 *
 *	  VOLUME ADJUSTMENT SELECTED					 *
@@ -581,12 +581,12 @@ GO_VOL
 	movi	bw|bh,a1
 ;	movi	ROBO_GREEN,a2
 	movi	ROBO_BLUE,a2
-	fcall	RECTANGLE,b6
+	FCALL	RECTANGLE,B6
 
 	movi	bxy+000030003H,a0	;make frame by filling blue with black
 	movi	bw|bh-000060006H,a1
 	movi	ROBO_BLACK,a2
-	fcall	RECTANGLE,b6
+	FCALL	RECTANGLE,B6
 
 	movi	pf_volume_4,a8		;MIN/MAX
 	JSRP	L_MESS
@@ -1006,100 +1006,6 @@ SNDMES
 	.byte	MUSICHAN,0
 	.byte	0		;THE END OF TABLE
 	.even
-	.if	WUNIT
-* General sound test
-DO_GENTEST
-
-	CALLA   CLR_SCRN
-        MOVI    M_DIGT,A2
-        MOVI    ROBO_GREEN,A3
-        JSRP    TOP_BOX			;PRINT TITLE BOX.
-
-        CALLA   SURE_BOX		;PUT A NICE BOX UP!
-
-	movi	rbucsnd_testing_mess,a8
-	JSRP	L_MESS
-
-	;reset the board
-	movi	00030h,a0		; hit sound reset bit
-	move	a0,@COIN_COUNTERS	; this is where reset bit is
-	movi	3000,a14		;wait a bit
-	dsjs	a14,$
-
-	movi	00020h,a0		; let it go
-	move	a0,@COIN_COUNTERS
-
-	SLEEP	TSEC/4			;250ms wait
-
-	movi	TSEC*7,a0		;wait for data available
-	JSRP	poll_sdav
-
-	movb	@SOUND,a0		;read from the board (better be 0x79)
-;	movb	*a0,a0
-	cmpi	79h,a0
-	jrne	sdav_not79
-
-	movi	TSEC/5,a0
-	JSRP	poll_sdav		;great.  now wait for the bong count
-
-	movb	@SOUND,a0
-	sll	5,a0			;X32
-	addi	diag_message_table,a0
-	move	*a0,a8,L
-	JSRP	L_MESS
-
-	calla   QSNDRST			;reset sound to fix volume etc.
-	
-	jauc	ANY_BUT
-
-sdav_not79
-	.if	DEBUG			;sound board misbehaving.  should
-	LOCKUP				; write a 0x79 after the checksum
-	.endif				; tests.  it wrote something else.
-
-	movi	rbuccheck_hardware,a8
-	JSRP	L_MESS
-	calla   QSNDRST			;try another reset.. oh well.
-        jauc    ANY_BUT
-
-diag_message_table
-	.long	rbuccheck_hardware
-	.long	rbucboard_ok
-	.long	rbucbad_u2_checksum
-	.long	rbucbad_u3_checksum
-	.long	rbucbad_u4_checksum
-	.long	rbucbad_u5_checksum
-	.long	rbucbad_u6_checksum
-	.long	rbucbad_u7_checksum
-	.long	rbucbad_u8_checksum
-	.long	rbucbad_u9_checksum
-	.long	rbucbad_ram
-
- SUBR	poll_sdav
-	PUSHP	a8
-	move	a0,a8
-
-
-
-psdav_0
-	move	@SOUNDIRQ,a1,W
-;	move	*a1,a1,W
-
-	btst	B_SDAV,a1
-	jrz	psdav_found
-	SLEEPK	1
-	dsj	a8,psdav_0
-	jruc	psdav_timeout
-
-psdav_found
-	nop
-
-psdav_timeout
-	move	a8,a0
-	PULLP	a8
-	RETP
-
-	.else
 DO_GENTEST
 	CLR	A3
 	SLEEPK	4			;LET IT GO A SEC!
@@ -1153,7 +1059,7 @@ SOUND_DONGER
         MOVI    DAC_ERR,A8
         JSRP    L_MESS		    ;PRINT ERROR
         JAUC    ANY_BUT		    ;AND TELL EM ANY BUTTON TO CONTINUE
-	.endif
+
 
 BLNK_SURE_BOX
 	MOVI	[41H,29H],A3
@@ -1174,69 +1080,6 @@ MESS_VOL
 	.byte	"GAME VOLUME ADJ."
 	.BYTE	   0
 	.EVEN
-rbucsnd_testing_mess
-	MESS_MAC RD7FONT,SPACING07,200,81,COLOR_YELLOW,STRCNRM,0
-	.STRING	"TESTING",0,0
-	.EVEN
-
-rbuccheck_hardware
-	MESS_MAC RD7FONT,SPACING07,200,91,COLOR_YELLOW,STRCNRM,0
-	.STRING	"NO RESPONSE FROM SOUND SYSTEM",0,1
-	.EVEN
-	MESS_MAC RD7FONT,SPACING07,200,101,COLOR_YELLOW,STRCNRM,0
-	.STRING	"CHECK HARDWARE",0,0
-	.EVEN
-
-rbucboard_ok
-	MESS_MAC RD7FONT,SPACING07,200,91,COLOR_YELLOW,STRCNRM,0
-	.STRING	"1 TONE - SOUND BOARD OK",0,0
-	.EVEN
-
-rbucbad_u2_checksum
-	MESS_MAC RD7FONT,SPACING07,200,91,COLOR_YELLOW,STRCNRM,0
-	.STRING	"BAD U2 CHECKSUM",0,0
-	.EVEN
-
-rbucbad_u3_checksum
-	MESS_MAC RD7FONT,SPACING07,200,91,COLOR_YELLOW,STRCNRM,0
-	.STRING	"BAD U3 CHECKSUM",0,0
-	.EVEN
-
-rbucbad_u4_checksum
-	MESS_MAC RD7FONT,SPACING07,200,91,COLOR_YELLOW,STRCNRM,0
-	.STRING	"BAD U4 CHECKSUM",0,0
-	.EVEN
-
-rbucbad_u5_checksum
-	MESS_MAC RD7FONT,SPACING07,200,91,COLOR_YELLOW,STRCNRM,0
-	.STRING	"BAD U5 CHECKSUM",0,0
-	.EVEN
-
-rbucbad_u6_checksum
-	MESS_MAC RD7FONT,SPACING07,200,91,COLOR_YELLOW,STRCNRM,0
-	.STRING	"BAD U6 CHECKSUM",0,0
-	.EVEN
-
-rbucbad_u7_checksum
-	MESS_MAC RD7FONT,SPACING07,200,91,COLOR_YELLOW,STRCNRM,0
-	.STRING	"BAD U7 CHECKSUM",0,0
-	.EVEN
-
-rbucbad_u8_checksum
-	MESS_MAC RD7FONT,SPACING07,200,91,COLOR_YELLOW,STRCNRM,0
-	.STRING	"BAD U8 CHECKSUM",0,0
-	.EVEN
-
-rbucbad_u9_checksum
-	MESS_MAC RD7FONT,SPACING07,200,91,COLOR_YELLOW,STRCNRM,0
-	.STRING	"BAD U9 CHECKSUM",0,1
-	.EVEN
-
-rbucbad_ram
-	MESS_MAC RD7FONT,SPACING07,200,91,COLOR_YELLOW,STRCNRM,0
-	.STRING	"RAM TEST FAILED",0,1
-	.EVEN
-
 	.endif
 
 
@@ -1353,7 +1196,7 @@ sxxhwait_release
 	jruc	sxxhloop
 
 sxxhexit
-	CALLA	QSNDRST
+;	CALLA	QSNDRST
 	RETP
 
 plot_sound
@@ -2788,7 +2631,7 @@ MEN_MAIN
 	 .WORD	 ROBO_WHITE	;COLOR OF TITLE
 	 .WORD	 MENU_X 	;UL X
 	 .WORD	 MENU_Y-3	;UL Y
-	 .WORD	 MENU_DY-7	;VERTICAL SPACING
+	 .WORD	 MENU_DY	;VERTICAL SPACING
 	 .WORD	 ROBO_WHITE	;COLOR WHEN NOT SELECTED
 	 .WORD	 16		;HEIGHT OF SELECTION BAR
 	 .WORD	 -4		;DISTANCE OF BAR FROM TOP OF TEXT (NEGATIVE)
@@ -2800,9 +2643,6 @@ MEN_MAIN
 	 .LONG	 MESS_GAME_AUD,GO_AUD,AUDIT_HELP
 	 .LONG	 MESS_GAME_ADJ,GO_ADJ,ADJUST_HELP
 	 .LONG	 MESS_EXTRA,GO_EXTRA,EXTRA_HELP		;Extra special menu
-	.if	WUNIT
-	 .LONG	 MESS_VOL,GO_VOL,UTIL_HELP
-	.endif
 	 .LONG	 MESS_UTIL,GO_UTIL,UTIL_HELP
 	 .LONG	 MESS_EXIT,0,EXIT_HELP	;SPECIAL CASE!
 	 .LONG	 0		;END
@@ -3182,8 +3022,8 @@ SND_ST2	.string	"WHOOMP (U13)",0
 SND_ST3	.string	"O'NEAL (U12)",0
 SND_ST4	.string	"RANGE (U12)",0
 SND_ST5	.string	"SHOWTIME (U13)",0
-SND_ST6	.string	"CRASH1 (01a6)",0
-SND_ST7	.string	"CRASH2 (01a8)",0
+SND_ST6	.string	"SHOES? (U13)",0
+SND_ST7	.string	"WEBBER (U12)",0
 ;SND_ST0	.string	"120",0
 ;SND_ST1	.string	"121",0
 ;SND_ST2	.string	"122",0
@@ -3195,15 +3035,47 @@ SND_ST7	.string	"CRASH2 (01a8)",0
 
 
 	.EVEN
-	.if	WUNIT
 TEST_SOUND_TAB
-	.WORD	0721H,000aH,01abH,01b9H,01e3H,01CBH,01a6h,01a8H	;DCS
-;	.WORD	0721H,000aH,01abH,01b9H,01e3H,01CBH,01adh,0069H	;DCS
-	.else
-TEST_SOUND_TAB
-	.WORD	01H,000aH,01abH,01b9H,01e3H,01CBH,01adh,0069H	;orig one.
-	.endif
+	.WORD	01H,0aH,1abH,1b9H,01e3H,1CBH,1adh,69H	;orig one.
+;	.WORD	01f0H,0aH,1abH,1b9H,01e3H,1CBH,1adh,69H
+;	.WORD	0120h,0121h,0122H,0123H,0214H,0215h,0216h,0217h
+;	.WORD	01eh,01fh,021aH,021bH,021cH,021dh,021eh,021fh
+; 1f0 rainbow?
+;need to score: Not 0x1F* 0x1D*  0x1E* 0x1C* 0x1A* 0x1B 0x19 0x18 0x17 0x16
+; not 0x10 0x20 0x30 0x40 0x50 0x60
+; 0x70 empty calls? 
+; 0x80 0x90 0xa0 YM2151 effects
+; 0xa0 fx
+; 0xb0 samples player
+; 0xc0 samples player
+; 0xd0 samples player
+; 0xe0 lotsa pass
+; 0xf0 more pass
+; 0x100 empty
+; 0x110 various speech/fx digital
+;080d3
+;Unused
+;1ebh - Just Seconds left
+;Check
+; 1c8 'HELLOO!" (we could cut it)
+; 057h 'to swuf?' 0d9h also. (it's SMITH lol..)
+;	.WORD	065h,066h,06aH,06bH,06cH,06dh,06eh,06fh
+;	Simmons,Smiths,Willis, rest is empty?
+; 0113H - Rim rockin, used in JAM for sure
 
+
+;snd_1	.word	0f990H,45,081d0H,0	;
+;snd_2	.word	0f990H,42,081d1H,0	;
+;snd_3	.word	0f990H,46,081d2H,0	;
+;snd_4	.word	0f990H,44,081d3H,0	;
+;snd_5	.word	0f990H,41,081d4H,0	;
+;snd_6	.word	0f990H,38,081d5H,0	;
+;snd_7	.word	0f990H,47,081f7H,0	;
+;snd_8	.word	0f990H,38,081f8H,0	;
+;snd_9	.word	0f990H,46,081f9H,0	;
+;snd_10	.word	0f990H,43,081faH,0	;
+;snd_15	.word	0f990H,57,081fbH,0	;
+;snd_20	.word	0f990H,50,081fcH,0	;
 
 
 MESS_SNDTST0	.string	"SOUND BOARD TEST",0

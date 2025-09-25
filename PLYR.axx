@@ -2460,6 +2460,8 @@ huxunohf	move	a14,*a13(plyr_anirevff)
 
 
 
+*******************************
+* Update player controls (called by main loop)
 
  SUBR	joy_read
 
@@ -2544,7 +2546,11 @@ sljwnop1	addk	16,a1			;P2
 	move	a14,*a1
 
 sljwnop2
-	move	@SWITCH2,a2
+	.if	WUNIT
+	move	@SWITCH4,a2		;fix for WUNIT
+	.else
+	move	@SWITCH2,a2		;fix for WUNIT/TUNIT differ
+	.endif
 	not	a2
 
 	addk	16,a1			;P3
@@ -2684,7 +2690,11 @@ sljwnop1	addk	16,a1			;P2
 	move	a14,*a1
 
 sljwnop2
-	move	@SWITCH2,a2
+	.if	WUNIT
+	move	@SWITCH4,a2		;fix for WUNIT
+	.else
+	move	@SWITCH2,a2		;fix for WUNIT/TUNIT differ
+	.endif
 	not	a2
 
 	addk	16,a1			;P3
@@ -6194,8 +6204,22 @@ iodtx
 	move	@scores+16,a0
 	move	a0,@kp_qscrs+16
 
+	.if	WUNIT
+	.ref	tuneend1psx_snd
+	push	a0
+	movi	ADJPSXSND,a0		;Get value from CMOS
+	calla	GET_ADJ			;0=on, 1=off
+	jrnz	origeq1			;Off? Original sound
+	movi	tuneend1psx_snd,a0
+	jruc	hlfcq1
+origeq1	movi	tuneend1_snd,a0
+hlfcq1	calla	snd_play1ovr
+	pull	a0
+
+	.else
 	movi	tuneend1_snd,a0
 	calla	snd_play1ovr
+	.endif
 
 	JSRP	hint_page
 	jruc	fbmhtob
@@ -6219,8 +6243,22 @@ fbmhnot1st
 	sub	a14,a0
 	move	a0,@kp_qscrs+48
 
+	.if	WUNIT
+	.ref	tunehalfpsx_snd
+	push	a0
+	movi	ADJPSXSND,a0		;Get value from CMOS
+	calla	GET_ADJ			;0=on, 1=off
+	jrnz	orighlf			;Off? Original sound
+	movi	tunehalfpsx_snd,a0
+	jruc	hlfcont
+orighlf	movi	tunehalf_snd,a0
+hlfcont	calla	snd_play1
+	pull	a0
+
+	.else
 	movi	tunehalf_snd,a0
 	calla	snd_play1ovr
+	.endif
 
 	JSRP	halftime_showclips
 
@@ -6371,8 +6409,21 @@ fbmhnothalf
 	sub	a14,a0
 	move	a0,@kp_qscrs+80
 
+	.if	WUNIT
+	push	a0
+	movi	ADJPSXSND,a0		;Get value from CMOS
+	calla	GET_ADJ			;0=on, 1=off
+	jrnz	origeq3			;Off? Original sound
+	movi	tuneend1psx_snd,a0
+	jruc	hlfcq3
+origeq3	movi	tuneend1_snd,a0
+hlfcq3	calla	snd_play1
+	pull	a0
+
+	.else
 	movi	tuneend1_snd,a0
 	calla	snd_play1ovr
+	.endif
 
 	JSRP	hint_page
 	jruc	fbmhtob
@@ -6482,8 +6533,22 @@ fbmhtie					;>Tie
 	movi	AUD_OVERTIME,a0
 	calla	AUD1
 
+	.if	WUNIT
+;Overtime
+	push	a0
+	movi	ADJPSXSND,a0		;Get value from CMOS
+	calla	GET_ADJ			;0=on, 1=off
+	jrnz	origeq3			;Off? Original sound
+	movi	tuneend1psx_snd,a0
+	jruc	hlfcq4
+origeq4	movi	tuneend1_snd,a0
+hlfcq4	calla	snd_play1
+	pull	a0
+
+	.else
 	movi	tuneend1_snd,a0
 	calla	snd_play1ovr
+	.endif
 
 	movk	1,a0
 	move	a0,@HALT
@@ -6802,9 +6867,22 @@ sgywturnon
 	SLEEP	90
 
 
+	.if	WUNIT
+;Game over?
+	push	a0
+	movi	ADJPSXSND,a0		;Get value from CMOS
+	calla	GET_ADJ			;0=on, 1=off
+	jrnz	origeq5			;Off? Original sound
+	movi	tuneend1psx_snd,a0
+	jruc	hlfcq5
+origeq5	movi	tuneend1_snd,a0
+hlfcq5	calla	snd_play1
+	pull	a0
 
+	.else
 	movi	tuneend_snd,a0
 	calla	snd_play1ovr
+	.endif
 
 	.ref	winning_msg
 	CREATE0	winning_msg

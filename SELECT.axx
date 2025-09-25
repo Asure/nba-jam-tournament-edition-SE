@@ -381,7 +381,23 @@ sabtlp	move	a0,*a2+
 	move	a0,@team2_switch
 	move	a0,@baby_flag
 
+;Amm CMOS PSX Music
+	.if	WUNIT
+	movi	ADJPSXSND,a0		;Get value from CMOS
+	calla	GET_ADJ			;0-1
+	jrnz	orig_selectm		;Off? Ext roster must be disabled in CMOS
+	jrz	psx_selectm		;On? Do this.
+
+psx_selectm
+	.ref	tune1psx_snd
+	movi	tune1psx_snd,a0
+	jruc	selectm_cont
+	.endif
+
+orig_selectm
 	movi	tune1_snd,a0
+
+selectm_cont
 	calla	snd_play1ovr
 
 	movi	MAX_CRTIME,a0
@@ -638,9 +654,14 @@ sabttimed_out
 
 strt_snd	
 	SLEEP	0d8H
+	.if	WUNIT
+	movi	ADJPSXSND,a0		;Get value from CMOS
+	calla	GET_ADJ			;0-1
+	jrz	strt_x			;On? Do this. (skip the "showtime" sample.)
+	.endif
 	movi	welcm_snd,a0
 	calla	snd_play1
-	DIE
+strt_x	DIE
 
 
  SUBRP	scrnrel_off

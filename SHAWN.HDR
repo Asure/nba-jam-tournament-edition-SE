@@ -9,6 +9,23 @@ BSSX	.macro	n,s
 	.bss	:n:,:s:
 	.endm
 
+FCALL	.macro	n,b
+	movi	:n:,:b:,L
+	exgpc	:b:
+	.endm
+
+BADCHK .MACRO 	reg,lo,hi,val
+	cmpi	:lo:,reg
+	jrlt	bad?
+	cmpi	:hi:,reg
+	jrgt	bad?
+	jruc	ok?
+bad?
+	movi	:val:,:reg:
+ok?
+	.endm
+
+
 SUBR	.macro	p1
 	.def	:p1:
 	.even

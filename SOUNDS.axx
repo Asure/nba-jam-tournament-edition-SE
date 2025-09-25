@@ -15,6 +15,13 @@
 	.ref	AUD1
 	.ref	gmqrtr
 
+	.if	WUNIT
+	.ref	GET_ADJ
+	.ref	PUT_ADJ
+	.ref	F_ADC_S
+	.endif
+
+
 
 	.def	SNDSND
 	.def	musicoff_snd,YAMOFF,FADE_DOWN,ALLOFF,FADE_UP,ALLOFF
@@ -23,6 +30,22 @@
 	.def	coin_snd,beep2_snd
 	.def	cntdown_snd
 	.def	tune2_snd,horn_snd
+
+	.if	WUNIT
+	.def	tune1psx_snd,tunehalfpsx_snd,tuneend1psx_snd
+	.def	tuneq1psx_snd,tuneq2psx_snd,tuneq3psx_snd,tuneq4psx_snd,tuneotpsx_snd
+
+tune1psx_snd	.word	0f3ffH,08H,0721H,0	;team select screen (PSX)
+tunehalfpsx_snd	.word   0f3ffH,08H,0724H,0   	;Half time tune (And between quarters + game over on PSX!) ;plyr.axx
+tuneend1psx_snd	.word	0f3ffH,08H,072AH,0	;End quarter 1/3/4/OT tune (from JAM)
+
+tuneq1psx_snd	.word	0f3ffH,08H,0722H,0	;Quarter 1 tune (Actually not q1.. psx uses matches.)
+tuneq2psx_snd	.word	0f3ffH,08H,0726H,0	;Quarter 2 tune (Actually not q1.. psx uses matches.)
+tuneq3psx_snd	.word	0f3ffH,08H,0727H,0	;Quarter 3 tune (Actually not q1.. psx uses matches.)
+tuneq4psx_snd	.word	0f3ffH,08H,0722H,0	;Quarter 4 tune (Actually not q1.. psx uses matches.)
+tuneotpsx_snd	.word	0f3ffH,08H,0726H,0	;Quarter o.t. tune	;score.axx, attract.axx
+
+	.endif
 
 
 SNDPRI	.SET	0  	;PRIORITY (00=LOWEST, FF=HIGHEST)
@@ -51,8 +74,31 @@ EXTENDED_CODE	EQU	7AH	;SEND THIS TO INDICATE EXTENDED SOUND CALL
 
 	.text
 
+* Cheap sound reset from MK3
+	.if	WUNIT
+ SUBR	snd_reset
+
+	clr 	a0
+	move	a0,@VMUX_CONTROL,W		; initialize sec chip
+
+	movi	00030h,a0		; hit sound reset bit
+	move	a0,@COIN_COUNTERS	; this is where reset bit is
+	movi	5000,a0			; wait for it to catch
+	dsjs	a0,$	
+	movi	00020h,a0		; let it go
+	move	a0,@COIN_COUNTERS
+
+	movi	ADJVOLUME,a0
+	calla	GET_ADJ
+
+	BADCHK	a0,0,255,28			;reg, lo, hi, val if bad
+	callr	set_volume			;Set master vol to CMOS level
 
 
+	rets
+
+
+	.else
  SUBR	snd_reset
 
 	movi	RESETBIT,a0	;Reset on
@@ -71,7 +117,24 @@ iectlp	move	a0,*a1+
 	jrlo	iectlp
 
 	rets
+	.endif
 
+* Cheap quiet reset from MK3
+
+	.if	WUNIT
+ SUBR	QSNDRST
+;sndresp:
+	callr	snd_reset
+
+	movi	ADJVOLUME,a0
+	calla	GET_ADJ
+
+	BADCHK	a0,0,255,28			;reg, lo, hi, val if bad
+	callr	set_volume			;Set master vol to CMOS level
+
+	clr	a3
+	jruc	SNDSND
+	.else
 
  SUBR	QSNDRST
 
@@ -85,6 +148,7 @@ iectlp	move	a0,*a1+
 
 	PULL	a3
 	rets
+	.endif
 
 
 
@@ -222,6 +286,96 @@ sud8
  .endif
 
 
+	.if	WUNIT
+*****************************************************************************
+* Raw hardware sound call.
+* 0a3H=sound code
+
+ SUBR	SNDSND
+
+	PUSH	a0,a1,a2,a3,a4
+	move	@SOUNDSUP,a0		; are we allowed ??
+	jrnz	sendx			; no
+
+	andi    07fffh,a3		; fix 08123H -> 0123H
+skipforvol
+
+	move	a3,a3			; is it a null call (negative)?
+	jrn	sendx
+
+
+
+	move	a3,a0
+	sll	32-16,a3
+	srl	32-8,a3			; a3 = high byte
+*
+* send high byte
+*
+;	move	@SOUND,a4,L
+	move	a3,@SOUND
+
+;	movk	2,a2
+	movk	5,a2
+	dsj	a2,$			; time for signal to get through
+ 	callr	poll_sirq
+*
+* send low byte
+*
+	sll	32-8,a0
+	srl	32-8,a0			; a3 = low byte
+;	move	@SOUND,a4,L
+	move	a0,@SOUND
+
+	callr	poll_sirq
+
+sendx	PULL	a0,a1,a2,a3,a4
+	rets
+
+*****************************************************************************
+* Special version for setting the volume
+
+ SUBR	SNDSNDVOL
+
+	PUSH	a0,a1,a2,a3,a4
+	move	@SOUNDSUP,a0		; are we allowed ??
+	jrnz	sendx			; no
+	jruc	skipforvol
+
+*****************************************************************************
+*  nosounds
+*
+*  cancels all sound calls. zeros all priorities and stops all
+*  currently running tunes.
+*
+
+ SUBR	nosounds
+
+	PUSH	a0,a1
+	clr	a3
+	callr	SNDSND			; silence the music board
+
+;	callr	clear_sound_ram
+
+	PULL	a0,a1
+	rets
+
+*****************************************************************************
+* Poll sound IRQ.  When IRQ goes high, sound board is ready for next call.
+* Do timeout so sound board can't screw things up.
+
+ SUBRP	poll_sirq
+
+	movi	390/3,a4		; 180 micros max firq delay on snd board
+niaopoll3
+	move	@SOUNDIRQ,a1,L
+	addi	(B_SIRQ-7),a1
+	movb	*a1,a1
+	jrn	niaopoll9			; done?
+	dsj	a4,niaopoll3
+niaopoll9
+	rets
+
+	.else
 
 SNDSND
 	PUSH	a3
@@ -269,6 +423,7 @@ ss50	movb	@SOUNDIRQ+B_SIRQ-7,a14
 
 uvbix	PULL	a3
 	rets
+	.endif
 
 
 
@@ -473,6 +628,57 @@ tuneq2_snd	.word	0f3ffH,08H,08006H,0	;Quarter 2 tune
 tuneq3_snd	.word	0f3ffH,08H,08007H,0	;Quarter 3 tune
 tuneq4_snd	.word	0f3ffH,08H,08008H,0	;Quarter 4 tune
 tuneot_snd	.word	0f3ffH,08H,0800bH,0	;Quarter o.t.
+
+	.if	WUNIT
+*****************************************************************************
+* Sets the volume of the DCS.
+* 0a0H=volume (0-255)
+*
+
+ SUBR	set_volume
+
+	PUSH	a0,a1,a3
+
+	andi	0FFh,a0			;forces value into range
+	movi	55AAh,a3
+	callr	SNDSNDVOL
+	
+	move	a0,a3			; volume
+	move	a0,a1
+	not	a1			; sans volume
+	sll	32-8,a1
+	srl	32-8,a1
+	sll	8,a3
+	or	a1,a3			; a3 = [volume,sans volume]
+	callr	SNDSNDVOL
+
+	move	a0,a1
+	movi	ADJVOLUME,a0
+	calla	PUT_ADJ
+	calla	F_ADC_S
+
+	PULL	a0,a1,a3
+	rets
+*****************************************************************************
+* Sets the volume of the DCS.
+* 0a0H=volume (0-255)
+*
+ SUBR	set_game_snd
+
+	PUSH	a0
+
+	movi	ADJVOLUME,a0
+	calla	GET_ADJ
+
+	BADCHK	a0,0,255,28			;reg, lo, hi, val if bad
+;	movi	020h,a0
+	callr	set_volume			;Set master vol to CMOS level
+	PULL	a0
+ 	rets
+
+
+	.endif
+
 
 
 

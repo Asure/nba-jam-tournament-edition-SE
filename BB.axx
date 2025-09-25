@@ -426,7 +426,62 @@ tglnskipit
 	jruc	mainlp
 
 
+** Wunit switch fixes
 
+	.if	WUNIT
+
+***************************************************************
+* Unstack switch queue
+
+ SUBRP	switch_unstack
+
+ipeqlp	move	@swstack_p,a3,L
+	cmpi	swstacktop,a3		;Stack at start? Yes if =
+	jreq	ipeqx
+	move	@FREE,a0,L		;Any procs left? No if 0
+	jrz	ipeqx
+
+	move	*a3+,a0			;Get entry
+	move	a3,@swstack_p,L		;Update stack ptr
+	sll	32-4,a0			;Clr bits above max (15) value
+	srl	32-4-4,a0		;*16 for look-up calc
+	move	a0,a2
+	add	a0,a2
+	add	a0,a2			;*3 for tbl offset from
+	addi	switch_t,a2		; table start
+	move	*a2+,a1			;Get switch PID; none if 0
+	jrz	ipeqlp
+	move	*a2+,a7,L		;*Switch code
+	movi	ACTIVE,a13		;*Proc list
+	calla	GETPRC
+	jruc	ipeqlp
+
+ipeqx	rets
+
+switch_t	;(Process ID or 0, *Routine)	;Put in audit??
+
+	WL	LC_PID,    LCOIN	;S0  - LEFT COIN (1)
+	WL	RC_PID,    RCOIN	;S1  - RIGHT COIN (2)
+	WL	PSWPID,    plyr_strtb1	;S2  - START 1
+	WL	SLAM_PID,  SLAM_SW	;S3  - SLAM TILT
+	WL	DIAG_PID,  DIAG		;S4  - TEST
+	WL	PSWPID,    plyr_strtb2	;S5  - START 2
+	WL	DIAG_PID,  SERVICE	;S6  - SERVICE CREDIT
+	WL	CC_PID,    CCOIN	;S7  - CENTER COIN (3)
+	WL	CC_PID,    XCOIN	;S8  - COIN 4
+	WL	PSWPID,    plyr_strtb3	;S9  - START 3
+	WL	PSWPID,    plyr_strtb4	;S10 - START 4
+	WL	0,0			;S11
+	WL	0,0			;S12
+;	WL	VOLBTN_PID,VOLBTN_PRESS	;S11 - VOLUME DOWN
+;	WL	VOLBTN_PID,VOLBTN_PRESS	;S12 - VOLUME UP
+	WL	0,0			;S13
+	WL	0,0			;S14
+	WL	0,0			;S15
+;	WL	CC_PID,    DBV		;S15 - DOLLAR BILL VALIDATOR
+
+****************************************************************
+	.else
 
 
  SUBRP	switch_unstack
@@ -569,6 +624,8 @@ switch_t	;(Process ID or 0, *Routine)	;Put in audit??
 	WL	0,0			;S31
 	.endif
 
+
+	.endif	;WUNIT
 
 
  SUBR	plyr_strtb1
@@ -1190,7 +1247,12 @@ game_start2
 	jalo	SUCIDE			;Not enough credits?
 	calla	P_START			;Take credits
 
+	.if	WUNIT
+	.ref	set_game_snd
+	calla	set_game_snd
+	.else
 	calla	QSNDRST
+	.endif
 	
 
 gs2
@@ -1317,8 +1379,21 @@ qtjybomb_out
 
 	clr	a0
 	move	a0,@cntrs_delay
+	.if	WUNIT
+	.ref	tuneq1psx_snd
+;Amm CMOS PSX Music
+	movi	ADJPSXSND,a0		;Get value from CMOS
+	calla	GET_ADJ			;0-1
+	jrnz	orig_q1			;Off? Original sound
+	movi	tuneq1psx_snd,a0
+	jruc	q1cont
+orig_q1	movi	tuneq1_snd,a0
+q1cont	calla	snd_play1
+
+	.else
 	movi	tuneq1_snd,a0
 	calla	snd_play1
+	.endif
 
 	JSRP	scrn_scaleout
 

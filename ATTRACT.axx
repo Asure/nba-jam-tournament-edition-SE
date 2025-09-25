@@ -139,6 +139,22 @@ cqyxslp	SLEEPK	1
 
  SUBR	amode_start
 
+	.if	WUNIT
+;DJT Start
+;BAD!! VERY BAD!!	;let the sound board reset finish up.
+;BAD!! VERY BAD!!	SLEEPK	8
+;
+; Yes this is actual code in NBA Hangtime..
+
+	.ref	set_game_snd
+	move	@SOUNDSUP,a0
+	clr	a14
+	move	a14,@SOUNDSUP
+	calla	set_game_snd
+	move	a0,@SOUNDSUP
+	.endif
+
+
 	movi	ACTIVE,a0		;>Look for indestructables
 	jruc	cqyxnxt
 
@@ -225,7 +241,10 @@ cqyxnog
 	cmpi	0,a0
 	jrnz	cqyxnog2
 ;	JSRP	drw_ladder		;for ladder debugging * REMOVE *
-	JSRP	show_copyright2
+	.if	WUNIT
+	.else
+	JSRP	show_copyright2		;bugged on real hw..
+	.endif
 
 cqyxnog2
 	JSRP	new_page

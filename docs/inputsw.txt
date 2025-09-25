@@ -1,0 +1,116 @@
+The original T-Unit has the switch layout at:
+
+SWITCH	.equ	1600000h	;I/O WIDGET BOARD	;
+COINS	.equ	1600010h				;SWITCH+10h (+16)
+SWITCH2	.equ	1600020h				;SWITCH+20h (+32)
+DIPSWITCH .equ	1600030h				;SWITCH+30h (+48)
+
+For Wolf unit, this is quite different:
+
+SWITCH	.equ	0187ff80h	;I/O WIDGET BOARD	;
+COINS	.equ	0187ffb0h				;SWITCH+30h
+SWITCH2	.equ	0187ffa0h				;SWITCH+20h
+DIPSWITCH .equ	0187ffa0h	;DIP SWITCHES		;SWITCH+20h
+
+WATCHDOG .equ	0187ffb0h
+COIN_COUNTERS	.EQU	187ff90h	;COIN COUNTER DRIVERS GNP 1/16/93
+
+reading 
+
+move    187ff90,a0,L will get values like FFFF FFFF into a0
+
+In T-Unit looking at:
+
+1600000: SWITCH
+P1: FFFx FFFF (x=E=Up, D=Dn, E=L, 7=R)
+P1: FFxF FFFF (x=B=Turb, E=Shot, D=Pass)
+P2: FxFF FFFF (x=E=Up, D=Down, E=Left, 7=Right)
+P2: xFFF FFFF (x=B=Turb, E=Shot, D=Pass)
+
+1600020: SWITCH2
+P3: FFFx 7FFD (x=E=Up, D=Dn, E=L, 7=R)
+P3: FFxF 7FFD (x=B=Turb, E=Shot, D=Pass)
+P4: FxFF 7FFD (x=E=Up, D=Dn, E=L, 7=R)
+P4: xFFF 7FFD (x=B=Turb, E=Shot, D=Pass)
+
+In W-Unit:
+
+187ff80	SWITCH
+P1: FFFx FFFF (x=E=Up, D=Dn, E=L, 7=R)
+P1: FFxF FFFF (x=B=Turb, E=Shot, D=Pass)
+P2: FxFF FFFF (x=E=Up, D=Down, E=Left, 7=Right)
+P2: xFFF FFFF (x=B=Turb, E=Shot, D=Pass)
+
+187ff80 SWITCH
+P3: FFFF FFFx (x=E=Up, D=Dn, E=L, 7=R)
+P3: FFFF FFxF (x=B=Turb, E=Shot, D=Pass)
+P4: FFFF FxFF (x=E=Up, D=Dn, E=L, 7=R)
+P4: FFFF xFFF (x=B=Turb, E=Shot, D=Pass)
+
+NBA: asm that does things with the switches:
+
+DIAG.AXX 
+ref: fudge_switches, fudge_switches_diag
+has: switchtest
+
+TEST.AXX
+def: fudge_switches,fudge_switches2, fudge_switches_diag
+om_getstick does stuff too. (operator message! forget for now!)
+om_getsticks controls the operator menu.
+
+DIAG fucks up when set to 4P, OK all when set to 2P??
+
+main.axx has the switch stack	
+
+COINS:
+These are in the wrong place for any action to work on Wunit?.
+1600010 COINS
+FFEF FFFF TEST
+FFFE FFFF COIN1
+FFFD FFFF COIN2
+FF7F FFFF COIN3
+FEFF FFFF COIN4
+
+FFFB FFFF START1
+FFDF FFFF START2
+FDFF FFFF START3
+FFBF FFFF START4
+
+187ffb0 COINS (starts/coins/test/service etc. are here.)
+
+FFEF FFFF TEST
+FFFE 0C00 COIN1
+FFFD 0C00 COIN2
+FF7F 0C00 COIN3
+FEFF 0C00 COIN4
+
+FFFB 0C00 START1
+FFDF 0C00 START2
+FDFF 0C00 START3
+FFBF 0C00 START4
+
+
+Asm that does things with COINS
+
+main.axx switch_stack
+bb.axx	 switch_unstack
+
+
+FFEF FFFF TEST
+FFFE 0C00 COIN1
+FFFD 0C00 COIN2
+FF7F 0C00 COIN3
+FEFF 0C00 COIN4
+
+FFFB 0C00 START1
+FFDF 0C00 START2
+FDFF 0C00 START3
+FFBF 0C00 START4
+
+
+	
+
+
+
+                        
+

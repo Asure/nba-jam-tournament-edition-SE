@@ -1,3 +1,22 @@
+**************************************************************
+*
+* Owner:	none
+*
+* Software:	JAMIE BEGELMAN, KURT MAHAN, EUGENE P. JARVIS
+* Initiated:	?
+*
+* Modified:	Shawn Liptak, 11/14/91	-Total carnage clean up
+* 		Shawn Liptak, 1/20/92	-DIP switch test
+* 		Shawn Liptak, 1/24/92	-Added line_draw
+* 		Shawn Liptak, 2/20/92	-Basketball cleanup
+* 		GEORGE PETRO, 1/17/93	-NBA JAM
+* 		JEFF JOHNSON, 6/9/95	-NBA 2
+*
+* COPYRIGHT (C) 1992 WILLIAMS ELECTRONICS GAMES, INC.
+*
+*.Last mod - 3/24/93 16:48
+*.Last mod - 4/12/95 4:00pm
+**************************************************************
 	.width	132
 	.option	b,d,l,t
 	.mnolist
@@ -13,8 +32,24 @@
 	.INCLUDE	GAME.EQU
 	.INCLUDE	DIPEQU.ASM
 
+	.if WUNIT
+	.ref	dec_to_asc
+	.ref	copy_string,copy_rom_string
+	.ref	concat_string
+	.ref	message_buffer
+	.ref	SOUNDSUP
+	.def	ROMCHECK	;for crc debug
+	.endif
+
+
 
 SCRXFUDGE	equ	56
+TSEC		equ	53
+**************************************************************************
+*									 *
+*	DEFS AND REFS							 *
+*									 *
+**************************************************************************
 	.ref	fudge_switches, fudge_switches_diag, CKTEST, CPU_RET
 	.REF	SNDSND,INTIO,WARMSET,GET_AUD,STORE_AUDIT,WDOGDIS
 	.ref	dirqtimer, AUD1, GAMSTATE, KILL_AUD, PCMOSRET
@@ -29,6 +64,7 @@ SCRXFUDGE	equ	56
 
 	.REF	SNDTST
 	.REF	SYSCOPY
+*SYMBOLS IN MENU.ASM
 	.REF	USA_1, USA_2, USA_3, USA_4, USA_ELECTITLE
 	.REF	GERMAN_1, GERMAN_2, GERMAN_3, GERMAN_4, GERMAN_ELECTITLE
 	.REF	FRENCH_1, FRENCH_2, FRENCH_3, FRENCH_4, FRENCH_ELECTITLE
@@ -54,6 +90,19 @@ SWITCH_SND	.EQU	0FF80H
 	.BSS	CERRORS,32
 	.BSS	CPASSES,32
 	.BSS	SCHANGE,16
+
+	.if	WUNIT
+	.bss	_snd_status,32
+	.bss	_b6_save,32		; Temporary register fer me
+	.bss	_temporary,32		; Another temp fer me
+	.bss	_snd_diag_code,16	; Temporary storage for sound diag code
+	.bss	_snd_chip_count,16	; Temporary register fer me
+	.bss	_pic_raw,128		; Stuff fer the PIC
+	.bss	_pic_temp,64
+	.ref	_serial_number
+	.ref	_man_date
+	.endif
+
 
 PAUSE	.macro TIME, REG
 	MOVI	:TIME:,:REG:,L
@@ -210,6 +259,7 @@ POWERTST
 	MOVI	STCKST,SP,L
 	move	a0,@WATCHDOG		;Reset
 
+;	HALT DMA AND ENABLE CACHE
 
 	clr	a14
 	move	a14,@DMACTRL
@@ -217,16 +267,336 @@ POWERTST
 
 	FCALL	INTIO,B6
 
+;	DISABLE VIDEO PALETTE RAMS, AUTOERASE AND ERROR LED
 
 	MOVI	SYSCINIT,A13
 	MOVE	A13,@SYSCTRL
 
 	FCALL	CPUTEST,SP
 	JAUC	WARMSET
+	.if WUNIT
+****************************************************************************
+*                                                                          *
+*  PIC SECURITY STUFF                                                      *
+*                                                                          *
+*  Security source for WWF-UNIT's PIC                                      *
+*                                                                          *
+*  Version 1.00                                                            *
+*  Written by:   Michael J. Lynch                                          *
+*  Copyright (c) 1994 by Williams Electronics Games Inc.                   *
+*  All rights reserved                                                     *
+*                                                                          *
+*     TTTTT   OOO  PPPP         SSS   EEEEE   CCC   RRRR  EEEEE TTTTT      *
+*       T    O   O P   P       S   S  E      C   C  R   R E       T        *
+*       T    O   O P   P       S      E      C      R   R E       T        *
+*       T    O   O PPPP         SSS   EEEE   C      RRRR  EEEE    T        *
+*       T    O   O P               S  E      C      R R   E       T        *
+*       T    O   O P           S   S  E      C   C  R  R  E       T        *
+*       T     OOO  P            SSS   EEEEE   CCC   R   R EEEEE   T        *
+*                                                                          *
+*                                                                          *
+*                    Company Confidential Information                      *
+*                        NEED TO KNOW BASIS ONLY                           *
+*                                                                          *
+* USE OR DISCLOSURE STRICTLY PROHIBITED UNLESS APPROVED IN WRITING FROM    *
+* WILLIAMS ELECTRONICS GAMES INC.                                          *
+*                                                                          *
+* Unapproved use or disclosure will result in severe torture!!!!!          *
+*                                                                          *
+****************************************************************************
+
+; _pic_bin2bcd Converts a hex number in a7 to BCD and puts it in A3
+_pic_bin2bcd:
+	clr	a3
+	movi	100000,a0
+_bin2bcd_loop:
+	sll	4,a3
+	move	a7,a1
+	divu	a0,a1
+	or	a1,a3
+	mpyu	a0,a1
+	sub	a1,a7
+	move	a0,a1
+	movk	10,a0
+	divu	a0,a1
+	move	a1,a0
+	jrnz	_bin2bcd_loop
+	FRET	b6
+
+******************************************************************************
+*                                                                            *
+* _bcd2hex - Converts a 32 bit (8 digit) BCD Number to Hexidecimal           *
+*                                                                            *
+* ENTRY                                                                      *
+*         A0 - BCD Number to be converted                                    *
+*         B6 - Return Address                                                *
+*                                                                            *
+* EXIT                                                                       *
+*         A2 - Converted Number (hex)                                        *
+*                                                                            *
+* USES                                                                       *
+*         A1 - Multiplier                                                    *
+*         A3 - Temporary                                                     *
+*         A4 - Digit Counter                                                 *
+*                                                                            *
+* Written by:  Michael J. Lynch                                              *
+*                                                                            *
+******************************************************************************
+_bcd2hex:
+	clr	a2		; Start with 0
+	movk	1,a1		; Starting Multiplier
+	movk	8,a4		; Number of BCD digits to convert
+_b2h_loop:			; Main BCD to hex conversion loop
+	move	a0,a3		; Put BCD number in temporary register
+	andi	0fh,a3		; get rid of bits not interested in
+	mpyu	a1,a3		; multiply by current multiplier
+	add	a3,a2		; Accumulate into final register
+	srl	4,a0		; Shift to next BCD digit
+	movk	10,a3		; Calculate next multiplier (mult = mult * 10)
+	mpyu	a3,a1		; New Multiplier
+	dsjs	a4,_b2h_loop	; Keep going until 8 BCD digits are done
+	FRET	b6		; return
+
+_read_pic_data:
+	setf	8,0
+	setf	32,0,1
+	movk	16,a9		; Number of bytes of data to read
+	movi	_pic_raw,a1	; address at which to store raw data from PIC
+	movk	010h,a8		; Send Request Serial Number Data Command
+	move	a8,@PIC_COMMAND
+_rp_data_loop:
+	setf	16,0
+	clr	a8
+	move	a8,@PIC_COMMAND
+	movi	1000000,a2	; Wait for PIC to acknowledge 
+_rp_ack_loop:
+	move	a2,a2		; Check for command timeout
+	jrz	gn_bad		; WOA PIC never acknowledged - ERROR!!!!
+	move	@WATCHDOG,a8,L
+;	move	a8,*a8
+	move	@SOUNDIRQ,a8,L
+;	move	*a8,a8
+	subi	1,a2
+	btst	12,a8		; Data available ?
+	jrnz	_rp_ack_loop	; NO
+	setf	8,0		; YES
+	move	@PIC_DATA,a0	; read data
+	move	a0,*a1+		; write to temp holding area
+	movk	010h,a8		; Acknowledge reciept of data
+	setf	16,0
+	move	a8,@PIC_COMMAND
+	movi	1000000,a2	; Wait for PIC n acknowlegde
+_rp_nack_loop:
+	move	a2,a2
+	jrz	gn_bad
+	move	@WATCHDOG,a8,L
+;	move	a8,*a8
+	move	@SOUNDIRQ,a8,L
+;	move	*a8,a8
+	subi	1,a2
+	btst	12,a8
+	jrz	_rp_nack_loop
+	dsj	a9,_rp_data_loop
+	clr	a4		; Holding Register for X
+	clr	a5		; Holding Register for Y
+	setf	8,0
+	movi	_pic_raw,a10
+	addi	060h,a10
+	move	*a10+,a4	; Get X
+	move	*a10,a5		; Get Y
+	setf	24,0
+	clr	a7		; Calculate B-3-5-9
+	movi	_pic_raw,a10
+	move	*a10,a7
+	subi	15732,a7
+	movi	581,a0
+	divu	a0,a7
+	sub	a4,a7		; B359 (binary)
+	FCALL	_pic_bin2bcd,b6	; B359 (bcd) a1 = B359
+	setf	4,0
+	srl	4,a3
+	move	a3,a0
+	andi	0fh,a0
+	movi	_pic_temp,a10
+	addi	014h,a10
+	move	a0,*a10		; Stuff the 5
+	srl	4,a3
+	move	a3,a0
+	andi	0fh,a0
+	movi	_pic_temp,a10
+	addk	0ch,a10
+	move	a0,*a10		; Stuff the 3
 
 
+	movi	_pic_raw,a10
+	addi	018h,a10
+	move	*a10,a7,1	; Calculate 2-A-0-8-6
+	subi	7463513,a7
+	movi	4223,a0
+	divu	a0,a7
+	sub	a5,a7
+	sub	a5,a7
+	sub	a4,a7		; 2A086 (binary)
+	FCALL	_pic_bin2bcd,b6	; 2A086 (bcd)
+	move	a3,a0
+	andi	0fh,a0
+	movi	_pic_temp,a10
+	addk	018h,a10
+	move	a0,*a10		; Stuff the 6
+	srl	4,a3
+	move	a3,a0
+	andi	0fh,a0
+	movi	_pic_temp,a10
+	addi	020h,a10
+	move	a0,*a10		; Stuff the 8
+	srl	4,a3
+	move	a3,a0
+	andi	0fh,a0
+	movi	_pic_temp,a10
+	move	a0,*a10		; Stuff the 0
+	srl	8,a3
+	move	a3,a0
+	andi	0fh,a0
+	movi	_pic_temp,a10
+	addk	8,a10
+	move	a0,*a10		; Stuff the 2
 
 
+	setf	24,0		; Calcuate 1-7-4
+	movi	038h,a10
+	addi	_pic_raw,a10
+	move	*a10,a7
+	subi	127984,a7
+	movi	7117,a0
+	divu	a0,a7
+	sub	a5,a7
+	sub	a5,a7
+	sub	a5,a7
+	sub	a5,a7
+	sub	a5,a7		; 174 (binary)
+	FCALL	_pic_bin2bcd,b6	; 174 (bcd) a1 = 174
+	setf	4,0
+	move	a3,a0
+	andi	0fh,a0
+	movi	_pic_temp,a10
+	addk	010h,a10
+	move	a0,*a10		; Stuff the 4
+	srl	4,a3
+	move	a3,a0
+	andi	0fh,a0
+	movi	_pic_temp,a10
+	addk	01ch,a10
+	move	a0,*a10		; Stuff the 7
+	srl	4,a3
+	move	a3,a0
+	andi	0fh,a0
+	movi	_pic_temp,a10
+	addk	4,a10
+	move	a0,*a10		; Stuff the 1
+
+	setf	16,0
+	movi	050h,a10
+	addi	_pic_raw,a10
+	move	*a10,a0		; This is a pointer to the date code
+	move	*a10,a1
+	sll	8,a1
+	srl	8,a0
+	andi	0ffh,a0
+	andi	0ff00h,a1
+	or	a1,a0
+	move	a0,@_man_date,L
+
+	setf	4,0
+	movi	_pic_temp,a10
+	addk	0ch,a10
+	move	*a10+,a0	; Most Significant Digit (serial number)
+	sll	4,a0
+	move	*a10+,a1
+	or	a1,a0
+	sll	4,a0
+	move	*a10+,a1
+	or	a1,a0
+	sll	4,a0
+	move	*a10+,a1
+	or	a1,a0
+	sll	4,a0
+	move	*a10+,a1
+	or	a1,a0
+	sll	4,a0
+	move	*a10+,a1	; Least Significant Digit (serial number)
+	or	a1,a0
+	FCALL	_bcd2hex,b6	; Convert to hex (a2 = serial # hex)
+	move	a2,@_serial_number,L
+	
+	setf	4,0
+	movi	_pic_temp,a10
+	move	*a10+,a0	; Most Significant Digit (game number)
+	sll	4,a0
+	move	*a10+,a1
+	or	a1,a0
+	sll	4,a0
+	move	*a10+,a1	; Least Significant Digit (game number)
+	or	a1,a0
+	FCALL	_bcd2hex,b6	; Convert to hex
+
+	clr	a1
+;DJT Start
+	cmpi	528,a2		; Development PIC Game Number
+	jrz	gn_good
+	cmpi	470,a2		; Real Game Number (Maximum Hangtime)
+	jrz	gn_good
+	cmpi	459,a2		; Real Game Number (Hangtime)
+	jrz	gn_good
+
+;AMM: We can accept other pics too.
+	jauc	gn_good
+
+;DJT End
+
+gn_bad:
+	movi	SEC_MESS_2,a0	; Level 2 Security Check failure
+	FCALL	STRINGCENTER,b6
+	addi	[220,0],a1
+	clr	a2
+	movi	COLOR_RED,a3
+	FCALL	STRING,b6
+; MJL
+;;;;	jauc	$		; Let the dog catch us
+; AMM: Pic Bypass fix. We end up here on timouts or errors.
+; Let's load a fake serial 
+	movi	1337,a2
+	move	a2,@_serial_number,L
+;	LOCKUP
+; MJL END
+gn_good:
+	setf	8,0		; Stomp on memory used to decode PIC
+	clr	a0
+	movi	16,a1
+	movi	_pic_raw,a2
+_stomp_temp:
+	move	a0,*a2+
+	dsjs	a1,_stomp_temp
+	movi	8,a1
+	movi	_pic_temp,a2
+_stomp_temp1:
+	move	a0,*a2+
+	dsjs	a1,_stomp_temp1
+	setf	16,1,0			;Field0 = Word sign extend
+	setf	32,0,1			;Field1 = Long word
+	rets
+	.endif
+
+**************************************************************************
+*											     *
+* 	POWERCMOS									     *
+* 											     *
+* 	CHECK THE CMOS AND DO A LOT OF OTHER STUFF -- SHOW THE	     *
+* 	POWER UP MESSAGES								     *
+* 											     *
+* 	ENTRY	NOTHING									     *
+* 	EXIT	NOTHING									     *
+*											     *
+**************************************************************************
 POWERCMOS:	
 	DINT
 	MOVI	SYSCINIT,A1
@@ -246,6 +616,141 @@ POWERCMOS:
 	CLR	A2
 	MOVI	COLOR_YELLOW,A3
 	FCALL	STRING,B6
+
+***
+* Wolf unit PIC stuff
+
+	.if	WUNIT
+	callr	_read_pic_data
+	movi	05018h,a13		; Palette 128 match color (BLACK)
+	move	a13,@VMUX_BREG1,W
+	movi	08080h,a13		; Set Palette # to 128
+	move	a13,@DMACMAP,W
+	movi	SEC_MESS_1,a0		; Print the message (won't show up)
+	FCALL	STRINGCENTER,b6		; Note - only shows up on pirate
+	addi	[210,0],a1		; hardware
+	clr	a2
+	movi	COLOR_RED,a3
+	FCALL	STRING,b6
+	clr	a13			; Set palette # back to 0
+	move	a13,@DMACMAP,W
+
+***
+* Wolf unit DCS stuff
+
+	movi	SNDREVPROMPT,a0		; Sound Revision Prompt
+	FCALL	STRINGCENTER,b6
+	addi	[120,0],a1
+	clr	a2
+	movi	COLOR_PURPLE,a3
+	FCALL	STRING,b6
+	move	@WATCHDOG,a0,W
+;	move	a0,*a0,W
+	move	@COINS,a0,L
+	movi	030h,a1				; Yank down the reset
+	move	a1,*a0,W
+	movi	10000,a1			; Hold it fer a while
+	dsjs	a1,$
+	movi	020h,a1				; Let it go
+	move	a1,*a0,W
+	movi	10000,a1
+	dsjs	a1,$
+	move	@SOUND,a0,L		; Bypass the diags
+;	movb	a0,*a0
+	move	@WATCHDOG,a0,W		; Kill the dog
+;	move	a0,*a0,W
+	movi	500000,a1			; Wait fer a while
+_swait_lp
+	move	@WATCHDOG,a0,W
+;	move	*a0,a0,W
+	dsjs	a1,_swait_lp
+;	movk	2,a2
+;_wait_diag
+;	movi	1000000,a1
+;_wait_diag_1
+;	move	@_soundirq_addr,a0,L
+;	move	*a0,a0,W
+;	btst	B_SDAV,a0		; Sound data waiting
+;	jrz	_diag_byte_1
+;	move	@_watchdog_addr,a0,L
+;	move	a0,*a0,W
+;	dsjs	a1,_wait_diag_1
+;	jruc	_snd_timeout
+;_diag_byte_1
+;	move	@SOUND,a0,W		; Yes - get rid of it
+;	movi	10000,a1
+;	dsjs	a1,$
+;	dsjs	a2,_wait_diag
+	clr	a3			; Turn on the sounds
+	move	a3,@SOUNDSUP,W
+	movi	999,a3			; Send revision request sound call
+	calla	SNDSND
+	movi	1000000,a2
+_sndrev_loop
+	move	@WATCHDOG,a0,W
+	move	@SOUNDIRQ,a0,W	; Wait fer a response
+;	move	*a0,a1,W
+	btst	B_SDAV,a1		; Got a response ?
+	jrz	_snd_response		; BR = yes
+	dsjs	a2,_sndrev_loop
+_snd_timeout
+	movi	SNDTIMEOUT,a0		; If we get here we never got a response
+	FCALL	STRINGCENTER,b6		; Tell operator about it
+	addi	[135,0],a1
+	clr	a2
+	movi	COLOR_RED,a3
+	FCALL	STRING,b6
+	jruc	_sndrev_done		; Then we be done
+_snd_response
+	move	@SOUND,a0,W	; Get sound revision data
+;	move	*a0,a0,W
+	move	a0,@_snd_chip_count,W	; Put up sound revision
+	move	a0,a1
+;	andi	0d0h,a1
+	andi	0ffh,a1
+	cmpi	0ffh,a1
+	jrz	_snd_timeout
+	andi	0f0h,a1
+	cmpi	0d0h,a1
+	jrz	_proto_version
+	movi	SNDRELEASEPROMPT,a4
+	jruc	_do_snd_version
+_proto_version
+	movi	SNDPROTOPROMPT,a4
+_do_snd_version
+	calla	copy_rom_string
+	move	@_snd_chip_count,a0,W
+	andi	0fh,a0
+	movk	15,a1
+	calla	dec_to_asc
+	calla	concat_string
+	movi	message_buffer,a0
+	FCALL	STRINGCENTER,b6
+	addi	[135,0],a1
+	clr	a2
+	movi	COLOR_WHITE,a3
+	FCALL	STRING,b6
+_sndrev_done
+
+	movi	GAMESNPROMPT,a0		; Put up Game Serial number
+	FCALL	STRINGCENTER,b6
+	addi	[160,0],a1
+	clr	a2
+	movi	COLOR_PURPLE,a3
+	FCALL	STRING,b6
+	move	@_serial_number,a0,L	; Serial number put here by _get_serial_number
+	movi	1000000,a1
+	calla	dec_to_asc
+	calla	copy_string
+	movi	message_buffer,a0
+	FCALL	STRINGCENTER,b6
+	addi	[175,0],a1
+	clr	a2
+	movi	COLOR_WHITE,a3
+	FCALL	STRING,b6
+
+
+	.endif
 
 	CALLA	CMOS_VAL		; CHECKSUM AUDITS/ADJUSTMENTS
 	JREQ	CMOSOK
@@ -296,7 +801,8 @@ CMOS1
 
 	MOVI	CMOS_DIP,A0
 	FCALL	STRINGCENTER,B6
-	ADDI	[110,0],A1
+;	ADDI	[110,0],A1
+	ADDI	[75,0],A1
 	CLR	A2
 	MOVI	COLOR_WHITE,A3
 	FCALL	STRING,B6
@@ -305,6 +811,9 @@ CMOS1
 	JRUC	CMOS4
 
 CMOS3
+;
+;        USING CMOS HERE
+;
 	MOVI	CMOS_CMOS,A0
 	FCALL	STRINGCENTER,B6
 	ADDI	[110,0],A1
@@ -357,6 +866,25 @@ CTMP_WAIT
 	DSJS	A0,CTMP_WAIT
 CTMP2
 	JAUC	PCMOSRET
+
+*** 
+* Extra messages for Wolf Unit init/reset
+SNDREVPROMPT
+	.string	"SOUND SYSTEM VERSION",0
+	.even
+SNDPROTOPROMPT
+	.string	"PROTO ",0
+	.even
+SNDRELEASEPROMPT
+	.string	"RELEASE ",0
+	.even
+SNDTIMEOUT
+	.string	"TIMEOUT ON RESPONSE FROM SOUND SECTION",0
+	.even
+GAMESNPROMPT
+	.string	"GAME SERIAL NUMBER",0
+	.even
+
 
 
 
@@ -429,13 +957,197 @@ DIAGSP:
 	MOVE	A0,@GAMSTATE,W
 	JAUC	mainlp
 
+	.if	WUNIT
+***********************************************
+* PICCHECK - Power up test for the PIC MicroController
+* Checks basic communications with the PIC chip
+*
+PICCHECK
+	movi	1fh,a0			;Command code 0xf
+	move	a0,@PIC_COMMAND,W
+	movi	0fh,a0
+	move	a0,@PIC_COMMAND,W
+	movi	100000,a0		;Wait for Acknowledge
+pic_loop
+	move	a1,@WATCHDOG		;Reset
+;	move	@_watchdog_addr,a1,L
+;	move	a1,*a1,W
+	move	@SOUNDIRQ,a1,W
+	btst	12,a1
+	jrz	_got_pic_ack		;BR = got acknowledge
+	dsjs	a0,pic_loop
+	movk	1,a0
+	jruc	_piccheck_done
+_got_pic_ack
+	move	@PIC_DATA,a0,W		;Read the data
+	movi	010h,a1
+	move	a1,@PIC_COMMAND,W	;Tell PIC we took data
+	movi	100000,a1
+_pic_nack_loop
+	move	a2,@WATCHDOG		;Reset
+;	move	@_watchdog_addr,a2,L
+;	move	a2,*a2,W
+	move	@SOUNDIRQ,a2,W
+;	move	*a2,a2,W
+	btst	12,a2
+	jrnz	_got_pic_nack
+	dsjs	a1,_pic_nack_loop
+	movk	1,a0
+	jruc	_piccheck_done
+_got_pic_nack
+	andi	0fh,a0
+	cmpi	0fh,a0
+	jrz	_pic_ok
+	movk	1,a0
+	jruc	_piccheck_done
+_pic_ok
+	clr	a0
+_piccheck_done
+	FRET	b5
 
+***************************************************
+* SNDCHECK - Sound Subsystem Check during CPUTEST
+*
+SNDCHECK
+	move	b6,@_b6_save,L
+	movi	00030h,a0		; hit sound reset bit
+	move	a0,@COIN_COUNTERS	; this is where reset bit is
+	movi	8,a0			; wait for it to catch
+	dsjs	a0,$	
+	movi	00020h,a0		; let it go
+	move	a0,@COIN_COUNTERS
+	
+;	SLEEP	TSEC/4			;250ms wait
+
+	movi	2000000,a1
+dsp_loop1
+	move	a0,@WATCHDOG		;Reset
+	move	@SOUNDIRQ,a2,W
+	btst	B_SDAV,a2
+	jrz	dsp_lp1_exit
+	dsjs	a1,dsp_loop1
+	movi	DSP,a10
+	movk	1,a0
+	move	a0,a11
+	inc	a11
+	FCALL	CHIPOUT,b5
+	movk	1,a0
+	jruc	dspcheck_done
+dsp_lp1_exit
+	move	@SOUND,a0,W
+;	move	*a0,a0,W
+	andi	0ffh,a0
+	cmpi	079h,a0
+	jrz	dsp_next_byte
+	movi	DSP,a10
+	movk	1,a0
+	move	a0,a11
+	inc	a11
+	FCALL	CHIPOUT,b5
+	movk	1,a0
+	jruc	dspcheck_done
+dsp_next_byte
+	movi	20000000,a1		;doubled, we need more time to allow DSP to finish all rom testing 
+dsp_loop2
+	move	a0,@WATCHDOG		;Reset
+	move	@SOUNDIRQ,a2,W
+	btst	B_SDAV,a2
+	jrz	dsp_lp2_exit
+	dsjs	a1,dsp_loop2
+	movi	DSP,a10
+	movk	1,a0
+	move	a0,a11
+	inc	a11
+	FCALL	CHIPOUT,b5
+	movk	1,a0
+	jruc	dspcheck_done
+dsp_lp2_exit
+	movi	DSP,a10
+	clr	a0
+	move	a0,a11
+	inc	a11
+	FCALL	CHIPOUT,b5
+	move	@SOUND,a0,W
+;	move	*a0,a0,W
+	andi	0ffh,a0
+	move	a0,a14
+	clr	a0
+	move	a0,a0
+	jrz	dsp_ok
+	movk	1,a0
+	jruc	dspcheck_done
+dsp_ok
+	clr	a0
+	move	a0,@_snd_status,L
+	subi	2,a14
+	move	a14,@_snd_diag_code,W
+	clr	a14
+	move	a14,@_snd_chip_count,W
+	movi	SROMTAB,a12,L
+snd_romok_loop
+	move	*a12+,a10,L
+	jrz	sndrom_done
+	move	@_snd_chip_count,a14,W
+	move	@_snd_diag_code,a11,W
+	cmp	a11,a14
+	jrnz	sndchip_ok
+	movk	2,a11
+	move	a11,@_snd_status,L
+	jruc	snd_chip_out
+sndchip_ok
+	movk	1,a11
+snd_chip_out
+	addk	1,a14
+	move	a14,@_snd_chip_count,W
+	FCALL	CHIPOUT,b5
+	move	@_snd_status,a11,L
+	jrz	snd_romok_loop
+	movk	1,a0
+	jruc	dspcheck_done
+sndrom_done
+	movi	SNDRAMTAB,a12,L
+snd_ramok_loop
+	move	*a12+,a10,L
+	jrz	sndram_done
+	move	@_snd_diag_code,a14,W
+	cmpi	8,a14
+	jrnz	sndram_ok
+	movk	2,a11
+	move	a11,@_snd_status,L
+	jruc	snd_ram_out
+sndram_ok
+	movk	1,a11
+snd_ram_out
+	FCALL	CHIPOUT,b5
+	move	@_snd_status,a11,L
+	jrz	snd_ramok_loop
+	movk	1,a0
+	jruc	dspcheck_done
+sndram_done
+	clr	a0
+dspcheck_done
+	movi	1000000,a1
+dspcheck_wait_exit_loop
+	move	a2,@WATCHDOG		;Reset
+;	move	@_watchdog_addr,a2,L
+;	move	a2,*a2,W
+	dsjs	a1,dspcheck_wait_exit_loop
+	move	@_b6_save,b6,L
+	FRET	b6
+CPUT_X	.EQU	180	;TEXT X POSITION
+CPUT_Y1	.EQU	118	;TEXT ROW 1 Y POSITION
+CPUT_Y2	.EQU	130	;TEXT ROW 2 Y POSITION
+CPUT_Y3	.EQU	142	;TEXT ROW 3 Y POSITION
+CPUT_CLRS .EQU	[CPUT_Y3-CPUT_Y1+10,389-CPUT_X]
+CPUT_CLR .EQU	[CPUT_Y1,CPUT_X]	;CLEAR START
+	.else
 CPUT_X	.EQU	25	;TEXT X POSITION
 CPUT_Y1	.EQU	128	;TEXT ROW 1 Y POSITION
 CPUT_Y2	.EQU	140	;TEXT ROW 2 Y POSITION
 CPUT_Y3	.EQU	152	;TEXT ROW 3 Y POSITION
 CPUT_CLR .EQU	[CPUT_Y1,CPUT_X]	;CLEAR START
 CPUT_CLRS .EQU	[CPUT_Y3-CPUT_Y1+15,200-CPUT_X]
+	.endif
 
 CPUTEST:	
 	move	a0,@WATCHDOG		;Reset
@@ -443,20 +1155,41 @@ CPUTEST:
 	FCALL	DSCRCLR,B6		;BLOW THE SCREEN OR IT LOOKS TOO UGLY
 
 	CLR	B0
+
+	.if	WUNIT
+	movi	SYSCINIT,a13
+	.else
 	MOVI	0FFFCH,A13
+	.endif
+
 	MOVE	A13,@SYSCTRL,W		;MAKE SURE WE'RE WRITING TO BIT MAP
 	MOVI	VRAMCHIPS,A14		;VERIFY BIT MAP
 	FCALL	RAMCHECK,B5
 
+;	ENABLE VIDEO PALETTE MAP ACCESS
 
+	.if	WUNIT
+;	movi	PALENB,a13
+	movi	SYSCINIT,a13
+	andni	PALENB,a13
+
+	.else
 	MOVI	PAL_SELECT,A13
+	.endif
+
 	MOVE	A13,@SYSCTRL,W
 	MOVI	PALCHIPS,A14		;VERIFY OBJECT PALETTE RAM
 	FCALL	RAMCHECK,B5
 	MOVE	B0,A12
 	
+;	DISABLE VIDEO PALETTE MAP ACCESS
 
+	.if	WUNIT
+	movi	SYSCINIT,a13
+	.else
 	MOVI	0FFFCH,A13
+	.endif
+
 	MOVE	A13,@SYSCTRL,W
 	FCALL	INITCOLR,B5		;RELOAD THE COLORS
 	FCALL	DSCRCLR,B6
@@ -498,6 +1231,9 @@ PSRAMCK
 
 	MOVE	A12,A12
 	JRNZ	PBADRAM
+	.if	DMADEBUG
+	JRUC	PDMACK
+	.endif
 
 PROMCK
 	MOVI	ROMCMESS,A0
@@ -527,18 +1263,45 @@ PROMCK
 	FCALL	ROMCHECK,B5
 	JRNZ	PROMABORT
 
+	.if	WUNIT
+	MOVI	IROMCHIPS_8MEG,A14
+	FCALL	ROMCHECK,B5
+	jrnz	PROMABORT
+	movi	SYSCINIT,a14
+	ori	0100h,a14
+	move	a14,@SYSCTRL,W		; Image IROM bank 1
+	movi	IROMCHIPS1_8MEG,a14
+	FCALL	ROMCHECK,b5
+	jrnz	PROMABORT
+	movi	SYSCINIT,a14
+	ori	0200h,a14
+	move	a14,@SYSCTRL,W		; Image IROM bank 2
+	movi	IROMCHIPS2_8MEG,a14
+	FCALL	ROMCHECK,b5
+	.else
+;new rom chip layout
 	MOVI	IROMCHIPS,A14
 	FCALL	ROMCHECK,B5
+	.endif
 PROMABORT
+	.if	WUNIT
+	getst	a3			;Save Z bit
+	movi	SYSCINIT,a14
+	move	a14,@SYSCTRL,W		; Back to IROM bank 0
+	.endif
 	MOVE	B0,A12
 	MOVI	CPUT_CLR,A0
 	MOVI	CPUT_CLRS,A1
 	MOVI	COLOR_BLACK,A2
 	FCALL	RECTANGLE,B6
-
+	.if	WUNIT
+	btst	29,a3			;Was ROM test user aborted?
+	jrz	PDMACK			; br=yes (Z if cc was NZ)
+	.endif
 	MOVE	A12,A12
 	JRNZ	PBADROM
 
+*WE CHECK ON THE DMA HERE
 PDMACK
 	MOVI	DMACMESS,A0
 	MOVI	[CPUT_Y1,CPUT_X],A1
@@ -559,7 +1322,62 @@ PDMACK
 	FCALL	RECTANGLE,B6
 
 	MOVE	A12,A12
+	.if	WUNIT
+	jrnz	PBADDMA
+	movi	SNDCMESS,a0
+	movi	[CPUT_Y1,CPUT_X],a1
+	clr	a2
+	movi	COLOR_YELLOW,a3
+	FCALL	STRING,b6
+	FCALL	SNDCHECK,b6
+;	movi	DSP,a10
+;	move	a0,a11
+	move	a0,a12
+;	inc	a11
+;	FCALL	CHIPOUT,b5
+	movi	CPUT_CLR,a0
+	movi	CPUT_CLRS,a1
+	movi	COLOR_BLACK,a2
+	FCALL	RECTANGLE,b6
+	move	a12,a12
+	jrnz	PBADSND
+
+	movi	PICCMESS,a0
+	movi	[CPUT_Y1,CPUT_X],a1
+	clr	a2
+	movi	COLOR_YELLOW,a3
+	FCALL	STRING,b6
+	FCALL	PICCHECK,b5
+	movi	PIC,a10
+	move	a0,a11
+	move	a0,a12
+	inc	a11
+	FCALL	CHIPOUT,b5
+	movi	CPUT_CLR,a0
+	movi	CPUT_CLRS,a1
+	movi	COLOR_BLACK,a2
+	FCALL	RECTANGLE,b6
+	move	a12,a12
+;	.endif
 	JRZ	PCPUGOOD
+;	.if	WUNIT
+	movi	PICBADMESS,a0
+	movi	[CPUT_Y1,CPUT_X],a1
+	clr	a2
+	movi	COLOR_RED,a3
+	FCALL	STRING,b6
+	jruc	PCPUBAD
+	.endif
+	.if	WUNIT
+PBADSND
+	movi	SNDBADMESS,a0
+	movi	[CPUT_Y1,CPUT_X],a1
+	clr	a2
+	movi	COLOR_RED,a3
+	FCALL	STRING,b6
+	jruc	PCPUBAD
+PBADDMA
+	.endif
 	MOVI	DMABADMESS,A0
 	MOVI	[CPUT_Y1,CPUT_X],A1
 	CLR	A2
@@ -634,10 +1452,15 @@ PCPUREALRET
 DMACMESS
 	.STRING	"CHECKING CUSTOM",0
 	.EVEN
+	.if	WUNIT
+DMABADMESS
+	.STRING	"CUSTOM CHIP U33 BAD",0
+	.EVEN
+	.else
 DMABADMESS
 	.STRING	"CUSTOM CHIP UE13 BAD",0
 	.EVEN
-
+	.endif
 ROMCMESS
 	.STRING	"CHECKING ROMS",0
 	.EVEN
@@ -648,6 +1471,20 @@ ROMBADMESS
 RAMBADMESS
 	.STRING	"RAM CHIPS BAD",0
 	.EVEN
+
+SNDCMESS
+	.string	"CHECKING SOUND SECTION",0
+	.even
+SNDBADMESS
+	.string	"SOUND SECTION BAD",0
+	.even
+PICCMESS
+	.string	"CHECKING PIC CHIP",0
+	.even
+PICBADMESS
+	.string	"PIC CHIP BAD",0
+	.even
+
 
 CPUGOOD
 	.STRING	"CPU BOARD OK",0
@@ -678,6 +1515,7 @@ CPUDLP1
 CPUD1
 	MOVE	B5,A13
 	FCALL	CHIPPLOT,B5		; PLOT ALL THE CHIPS
+
 	MOVI	BOARDSTRING,A0
 	MOVI	[25,11],A1
 	CLR	A2
@@ -688,7 +1526,17 @@ CPUD1
 	FCALL	STRING,B6
 	MOVE	A13,B5
 	FRET	B5
+	
+	.if	WUNIT
+BOARDSTRING	
+	.STRING	"NBA JAM SE",0
+	.EVEN
 
+BOARDSTRING2
+	.STRING	"WOLF UNIT",0
+	.EVEN
+
+	.else
 BOARDSTRING	
 	.STRING	"NBA JAM",0
 	.EVEN
@@ -696,6 +1544,7 @@ BOARDSTRING
 BOARDSTRING2
 	.STRING	"SPECIAL EDITION",0
 	.EVEN
+	.endif
 
 
 CHIPTABLE:
@@ -821,7 +1670,12 @@ DMACHECK
 	MOVI	[511,0],A14
 	MOVE	A14,@DMAWINDOW,L	;FULL HEIGHT WINDOW
 	MOVI	[100H,100H],A14
+
+	.if	WUNIT
+	MOVE	A14,@DMASCALEX,L
+	.else
 	MOVE	A14,@DMASCALEX
+	.endif
 
 	MOVI	[1,448],A14		;BLOW OUT TRADEMARK
 	MOVE	A14,@DMAHSIZE,L
@@ -832,6 +1686,9 @@ DMACHECK
 	MOVE	A14,@DMAHORIZ,L		;CLEAR DESTINATION ADDRESS
 
 	MOVI	2000000H,A14		;DMA LOGO LOCATION
+	.if	WUNIT
+	CLR	A14
+	.endif
 	MOVE	A14,@DMASAGL,L
 
 	MOVI	257,A14
@@ -865,7 +1722,17 @@ DMACLOOP
 	CMP	A3,A4
 	JRNZ	DMACBAD			;BR = DATA ERROR
 	DSJS	A2,DMACLOOP
+*
+*CHECK DATA IN OBJECT PALETTE
+*
+	.if	WUNIT
+;	movi	PALENB,a13
+	movi	SYSCINIT,a13
+	andni	PALENB,a13
+	.else
 	MOVI	PAL_SELECT,A13
+	.endif
+
 	MOVE	A13,@SYSCTRL,W		;ENABLE PALETTE
 
 	MOVI	0101000H,A0		;LOCATION
@@ -884,7 +1751,12 @@ DMACBAD
 	MOVE	A0,@DMACMAP,W
 	MOVK	1,A0
 DMACRET
+	.if WUNIT
+;	movi	SYSCINIT,a3
+	movi	SYSCINIT,a13
+	.else
 	MOVI	0FFFCH,A13
+	.endif
 	MOVE	A13,@SYSCTRL,W
 
 	SETF	16,0,0
@@ -1319,7 +2191,17 @@ SDLOOP
 	SLEEPK	1
 	PUSH	a12,a13
 
-	MOVE	@SWITCH,A10,L		; GRAB ME A SWITCH REGISTER
+	move	@COINS,a10,W
+	move	@SWITCH,a14,W
+;	move	@_coin_addr,a10,L
+;	move	*a10,a10,W
+;	move	@_switch_addr,a14,L
+;	move	*a14,a14,W
+	sll	16,a10
+	sll	16,a14		;mask off top 16
+	srl	16,a14
+	or	a14,a10
+;	MOVE	@SWITCH,A10,L		; GRAB ME A SWITCH REGISTER
 	NOT	A10
 	MOVE	A10,A0
 	ANDI	DONEMASK,A0
@@ -1338,13 +2220,23 @@ SDGO
 	CMP	A11,A10			; CHECK FOR CHANGES
 	JRZ	SDCK2
 	MOVE	A10,@SWSET1,L
+	.if	WUNIT
+	move	@SWITCH4,a10,W
+;	move	*a10,a10,W
+	.else
 	MOVE	@SWITCH+32,A10,L
+	.endif
 	NOT	A10
 	SLL	16,A10
 	SRL	16,A10
 	JRUC	SDPRC1
 SDCK2
+	.if	WUNIT
+	move	@SWITCH4,a10,W
+;	move	*a10,a10,W
+	.else
 	MOVE	@SWITCH+32,A10,L
+	.endif
 	NOT	A10
 	SLL	16,A10
 	SRL	16,A10
@@ -2407,6 +3299,17 @@ TEST
 	.STRING	"TEST",0
 	.EVEN
 
+	.if	WUNIT
+SEC_MESS_1
+	.string	"LEVEL 1 SECURITY CHECK",0
+	.even
+SEC_MESS_2
+;	.string	"LEVEL 2 SECURITY CHECK FAILURE",0
+	.string	"PIC SECURITY BYPASS ACTIVATED",0
+	.even
+	.endif
+
+
 J1MESS	.string	"JOY1",0
 J2MESS	.string	"JOY2",0
 J3MESS	.string	"JOY3",0
@@ -2854,7 +3757,26 @@ SCRLP	MOVE	B2,*B3+,L
 
 
 
-
+	.if WUNIT
+CPU_VECS:
+	VECMAC	COLOR_WHITE,5,5,5,243		; BOARD OUTLINE
+	VECMAC	COLOR_WHITE,5,243,390,243
+	VECMAC	COLOR_WHITE,390,243,390,5
+	VECMAC	COLOR_WHITE,390,5,355,5
+	VECMAC	COLOR_WHITE,355,5,355,10
+	VECMAC	COLOR_WHITE,355,10,343,10
+	VECMAC	COLOR_WHITE,343,10,343,5
+	VECMAC	COLOR_WHITE,343,5,326,5
+	VECMAC	COLOR_WHITE,326,5,326,10
+	VECMAC	COLOR_WHITE,326,10,323,10
+	VECMAC	COLOR_WHITE,323,10,323,5
+	VECMAC	COLOR_WHITE,323,5,212,5
+	VECMAC	COLOR_WHITE,212,5,212,10
+	VECMAC	COLOR_WHITE,212,10,200,10
+	VECMAC	COLOR_WHITE,200,10,200,5
+	VECMAC	COLOR_WHITE,200,5,5,5
+	.LONG	0
+	.else
 CPU_VECS:		       
 	VECMAC	COLOR_WHITE,5,15,390,15		; BOARD OUTLINE
 	VECMAC	COLOR_WHITE,390,15,390,254
@@ -2873,10 +3795,301 @@ CPU_VECS:
 	VECMAC	COLOR_WHITE,5,230,15,230
 	VECMAC	COLOR_WHITE,5,230,5,254
 	.LONG	0
+	.endif
 
 CPUXBASE	EQU	5
 CPUYBASE	EQU	5
 
+
+	.if	WUNIT
+CPU_CHIPS:
+CRAM1	CHIPMAC	0,347,152,30,13,5,3,CNAMEU36,0,28,2,1	; COLOR RAM (U36)
+CRAM2	CHIPMAC	1,313,152,30,13,5,3,CNAMEU37,0,28,2,1	; COLOR RAM (U37)
+
+VRAM1	CHIPMAC	2,347,207,38,13,8,3,CNAMEU14,0,36,2,1	; BANK 1 VIDEO RAM (U14)
+VRAM2	CHIPMAC	3,307,207,38,13,8,3,CNAMEU15,0,36,2,1	;   (PALETTE) (U15)
+VRAM3	CHIPMAC	4,267,207,38,13,8,3,CNAMEU16,0,36,2,1	; (U16)
+VRAM4	CHIPMAC	5,227,207,38,13,8,3,CNAMEU17,0,36,2,1	; (U17)
+
+VRAM5	CHIPMAC	6,347,225,38,13,8,3,CNAMEU10,0,36,2,1	; BANK 2 VIDEO RAM (U10)
+VRAM6	CHIPMAC	7,307,225,38,13,8,3,CNAMEU11,0,36,2,1	;   (PIXEL) (U11)
+VRAM7	CHIPMAC	8,267,225,38,13,8,3,CNAMEU12,0,36,2,1	; (U12)
+VRAM8	CHIPMAC	9,227,225,38,13,8,3,CNAMEU13,0,36,2,1	; (U13)
+
+CPU	CHIPMAC	0,330,50,35,35,7,13,CNAMEU59,0,3,3,1	; CPU (U59)
+
+DMA	CHIPMAC	0,246,157,38,38,8,16,CNAMEU33,0,3,3,1	; DMA (U33)
+
+PROM1	CHIPMAC	1,220,65,40,13,9,3,CNAMEU63,0,38,2,1	; PROGRAM ROM 1 (U63)
+PROM2	CHIPMAC	0,220,83,40,13,9,3,CNAMEU54,0,38,2,1	; PROGRAM ROM 2 (U54)
+
+IROM1	CHIPMAC	1,10,122,40,13,6,3,  CNAMEU133,0,38,2,1	; IMAGE ROM (U133)
+IROM2	CHIPMAC	2,52,122,40,13,6,3,  CNAMEU132,0,38,2,1	; IMAGE ROM (U132)
+IROM3	CHIPMAC	3,94,122,40,13,6,3,  CNAMEU131,0,38,2,1	; IMAGE ROM (U131)
+IROM4	CHIPMAC	4,136,122,40,13,6,3, CNAMEU130,0,38,2,1	; IMAGE ROM (U130)
+
+IROM5	CHIPMAC	5,10,137,40,13,6,3,  CNAMEU129,0,38,2,1	; IMAGE ROM (U129)
+IROM6	CHIPMAC	6,52,137,40,13,6,3,  CNAMEU128,0,38,2,1	; IMAGE ROM (U128)
+IROM7	CHIPMAC	7,94,137,40,13,6,3,  CNAMEU127,0,38,2,1	; IMAGE ROM (U127)
+IROM8	CHIPMAC	8,136,137,40,13,6,3, CNAMEU126,0,38,2,1	; IMAGE ROM (U126)
+
+IROM9	CHIPMAC	9,10,152,40,13,6,3,  CNAMEU125,0,38,2,1	; IMAGE ROM (U125)
+IROM10	CHIPMAC	10,52,152,40,13,6,3, CNAMEU124,0,38,2,1	; IMAGE ROM (U124)
+IROM11	CHIPMAC	11,94,152,40,13,6,3, CNAMEU123,0,38,2,1	; IMAGE ROM (U123)
+IROM12	CHIPMAC	12,136,152,40,13,6,3,CNAMEU122,0,38,2,1	; IMAGE ROM (U122)
+
+IROM13	CHIPMAC	13,10,167,40,13,6,3, CNAMEU121,0,38,2,1	; IMAGE ROM (U121)
+IROM14	CHIPMAC	14,52,167,40,13,6,3, CNAMEU120,0,38,2,1	; IMAGE ROM (U120)
+IROM15	CHIPMAC	15,94,167,40,13,6,3, CNAMEU119,0,38,2,1	; IMAGE ROM (U119)
+IROM16	CHIPMAC	16,136,167,40,13,6,3,CNAMEU118,0,38,2,1	; IMAGE ROM (U118)
+
+IROM17	CHIPMAC	17,10,182,40,13,6,3, CNAMEU117,0,38,2,1	; IMAGE ROM (U117)
+IROM18	CHIPMAC	18,52,182,40,13,6,3, CNAMEU116,0,38,2,1	; IMAGE ROM (U116)
+IROM19	CHIPMAC	19,94,182,40,13,6,3, CNAMEU115,0,38,2,1	; IMAGE ROM (U115)
+IROM20	CHIPMAC	20,136,182,40,13,6,3,CNAMEU114,0,38,2,1	; IMAGE ROM (U114)
+
+IROM21	CHIPMAC	21,10,197,40,13,6,3, CNAMEU113,0,38,2,1	; IMAGE ROM (U113)
+IROM22	CHIPMAC	22,52,197,40,13,6,3, CNAMEU112,0,38,2,1	; IMAGE ROM (U112)
+IROM23	CHIPMAC	23,94,197,40,13,6,3, CNAMEU111,0,38,2,1	; IMAGE ROM (U111)
+IROM24	CHIPMAC	24,136,197,40,13,6,3,CNAMEU110,0,38,2,1	; IMAGE ROM (U110)
+
+IROM25	CHIPMAC	25,10,212,40,13,6,3, CNAMEU109,0,38,2,1	; IMAGE ROM (U109)
+IROM26	CHIPMAC	26,52,212,40,13,6,3, CNAMEU108,0,38,2,1	; IMAGE ROM (U108)
+IROM27	CHIPMAC	27,94,212,40,13,6,3, CNAMEU107,0,38,2,1	; IMAGE ROM (U107)
+IROM28	CHIPMAC	28,136,212,40,13,6,3,CNAMEU106,0,38,2,1	; IMAGE ROM (U106)
+
+IROM29	CHIPMAC	29,10,227,40,13,6,3, CNAMEU105,0,38,2,1	; IMAGE ROM (U105)
+IROM30	CHIPMAC	30,52,227,40,13,6,3, CNAMEU104,0,38,2,1	; IMAGE ROM (U104)
+IROM31	CHIPMAC	31,94,227,40,13,6,3, CNAMEU103,0,38,2,1	; IMAGE ROM (U103)
+IROM32	CHIPMAC	32,136,227,40,13,6,3,CNAMEU102,0,38,2,1	; IMAGE ROM (U102)
+
+SRAM1	CHIPMAC	0,225,101,30,13,4,3,CNAMEU49,0,28,2,1	; SCRATCH PAD (U49)
+
+PIC	CHIPMAC	0,177,65,40,13,9,3,CNAMEU64,0,38,2,1	; PIC CHIP (U64)
+
+SROM1	CHIPMAC	1,49,57,40,13,14,3, CNAMEU2,0,38,2,1	; Sound Rom (U2)
+SROM2	CHIPMAC	2,49,72,40,13,14,3, CNAMEU3,0,38,2,1	; Sound Rom (U3)
+SROM3	CHIPMAC	3,49,87,40,13,14,3, CNAMEU4,0,38,2,1	; Sound Rom (U4)
+SROM4	CHIPMAC	4,49,102,40,13,14,3,CNAMEU5,0,38,2,1	; Sound Rom (U5)
+SROM5	CHIPMAC	5,7,57,40,13,14,3,  CNAMEU6,0,38,2,1	; Sound Rom (U6)
+SROM6	CHIPMAC	6,7,72,40,13,14,3,  CNAMEU7,0,38,2,1	; Sound Rom (U7)
+SROM7	CHIPMAC	7,7,87,40,13,14,3,  CNAMEU8,0,38,2,1	; Sound Rom (U8)
+SROM8	CHIPMAC	8,7,102,40,13,14,3, CNAMEU9,0,38,2,1	; Sound Rom (U9)
+
+DSP	CHIPMAC	0,118,77,35,35,13,13,CNAMEU1,0,3,3,1	; Sound DSP (U1)
+
+SNDRAM1	CHIPMAC	1,115,29,40,13,9,3,CNAMEU86,0,38,2,1	; Sound Ram 1 (U86)
+SNDRAM2	CHIPMAC	2,115,44,40,13,9,3,CNAMEU80,0,38,2,1	; Sound Ram 2 (U80)
+SNDRAM3	CHIPMAC	3,115,59,40,13,9,3,CNAMEU73,0,38,2,1	; Sound Ram 3 (U73)
+	.LONG	0
+
+VRAMTAB	.LONG	CRAM1,CRAM2
+	.LONG	VRAM1,VRAM2,VRAM3,VRAM4,VRAM5,VRAM6
+	.LONG	VRAM7,VRAM8
+	.LONG	0
+PROMTAB	.LONG	PROM1,PROM2
+	.LONG	0
+IROMTAB	.LONG	IROM1,IROM2,IROM3,IROM4
+	.LONG	IROM5,IROM6,IROM7,IROM8
+	.LONG	IROM9,IROM10,IROM11,IROM12
+	.LONG	IROM13,IROM14,IROM15,IROM16
+	.long	IROM17,IROM18,IROM19,IROM20
+	.long	IROM21,IROM22,IROM23,IROM24
+	.long	IROM25,IROM26,IROM27,IROM28
+	.long	IROM29,IROM30,IROM31,IROM32
+	.LONG	0
+;SRAMTAB	.LONG	SRAM1,SRAM2,SRAM3,SRAM4
+SRAMTAB	.LONG	SRAM1
+	.LONG	0
+SROMTAB	.long	SROM1, SROM2, SROM3, SROM4
+	.long	SROM5;, SROM6, SROM7, SROM8
+	.long	0
+SNDRAMTAB
+	.long	SNDRAM1, SNDRAM2, SNDRAM3
+	.long	0
+
+CNAMEU1
+	.string	"U1",0
+	.even
+CNAMEU2
+	.string	"U2",0
+	.even
+CNAMEU3
+	.string	"U3",0
+	.even
+CNAMEU4
+	.string	"U4",0
+	.even
+CNAMEU5
+	.string	"U5",0
+	.even
+CNAMEU6
+	.string	"U6",0
+	.even
+CNAMEU7
+	.string	"U7",0
+	.even
+CNAMEU8
+	.string	"U8",0
+	.even
+CNAMEU9
+	.string	"U9",0
+	.even
+CNAMEU10
+	.string	"U10",0
+	.even
+CNAMEU11
+	.string	"U11",0
+	.even
+CNAMEU12
+	.string	"U12",0
+	.even
+CNAMEU13
+	.string	"U13",0
+	.even
+CNAMEU14
+	.string	"U14",0
+	.even
+CNAMEU15
+	.string	"U15",0
+	.even
+CNAMEU16
+	.string	"U16",0
+	.even
+CNAMEU17
+	.string	"U17",0
+	.even
+CNAMEU33
+	.string	"U33",0
+	.even
+CNAMEU36
+	.string	"U36",0
+	.even
+CNAMEU37
+	.string	"U37",0
+	.even
+CNAMEU49
+	.string	"U49",0
+	.even
+CNAMEU54
+	.string	"U54",0
+	.even
+CNAMEU59
+	.string	"U59",0
+	.even
+CNAMEU63
+	.string	"U63",0
+	.even
+CNAMEU64
+	.string	"U64",0
+	.even
+CNAMEU73
+	.string	"U73",0
+	.even
+CNAMEU80
+	.string	"U80",0
+	.even
+CNAMEU86
+	.string	"U86",0
+	.even
+CNAMEU133
+	.string	"U133",0
+	.even
+CNAMEU132
+	.string	"U132",0
+	.even
+CNAMEU131
+	.string	"U131",0
+	.even
+CNAMEU130
+	.string	"U130",0
+	.even
+CNAMEU129
+	.string	"U129",0
+	.even
+CNAMEU128
+	.string	"U128",0
+	.even
+CNAMEU127
+	.string	"U127",0
+	.even
+CNAMEU126
+	.string	"U126",0
+	.even
+CNAMEU125
+	.string	"U125",0
+	.even
+CNAMEU124
+	.string	"U124",0
+	.even
+CNAMEU123
+	.string	"U123",0
+	.even
+CNAMEU122
+	.string	"U122",0
+	.even
+CNAMEU121
+	.string	"U121",0
+	.even
+CNAMEU120
+	.string	"U120",0
+	.even
+CNAMEU119
+	.string	"U119",0
+	.even
+CNAMEU118
+	.string	"U118",0
+	.even
+CNAMEU117
+	.string	"U117",0
+	.even
+CNAMEU116
+	.string	"U116",0
+	.even
+CNAMEU115
+	.string	"U115",0
+	.even
+CNAMEU114
+	.string	"U114",0
+	.even
+CNAMEU113
+	.string	"U113",0
+	.even
+CNAMEU112
+	.string	"U112",0
+	.even
+CNAMEU111
+	.string	"U111",0
+	.even
+CNAMEU110
+	.string	"U110",0
+	.even
+CNAMEU109
+	.string	"U109",0
+	.even
+CNAMEU108
+	.string	"U108",0
+	.even
+CNAMEU107
+	.string	"U107",0
+	.even
+CNAMEU106
+	.string	"U106",0
+	.even
+CNAMEU105
+	.string	"U105",0
+	.even
+CNAMEU104
+	.string	"U104",0
+	.even
+CNAMEU103
+	.string	"U103",0
+	.even
+CNAMEU102
+	.string	"U102",0
+	.even
+
+	.else
 
 CPU_CHIPS:
 CRAM1	CHIPMAC	0,125,25,20,45,7,11,CNAMEA8,1,2,2,1	; COLOR RAM
@@ -3046,10 +4259,36 @@ CNAMEJ22
 CNAMEJ23
 	.STRING	"UJ23",0
 	.EVEN
+	.endif
 
 
 
+	.if	WUNIT
+VRAMCHIPS:
 
+	RAM_CHIP 0,1, 8, 16, 1880000H, 18FFFF0H		; U37  (  0 - 7  )
+	RAM_CHIP 0,0, 7, 16, 1880008H, 18FFFF8H		; U36  (  8 - 14 )
+
+	RAM_CHIP 0, 8, 8, 32, 0000018H, 03FFFF8H	; U12
+	RAM_CHIP 0, 4, 8, 32, 0000010H, 03FFFF0H	; U16
+	RAM_CHIP 0, 9, 8, 32, 0000008H, 03FFFE8H	; U13
+	RAM_CHIP 0, 5, 8, 32, 0000000H, 03FFFE0H	; U17
+	.LONG	0
+
+PALCHIPS:
+
+	RAM_CHIP 0,6, 8, 32, 0000018H, 03FFFF8H		; U10
+	RAM_CHIP 0,2, 8, 32, 0000010H, 03FFFF0H		; U14
+	RAM_CHIP 0,7, 8, 32, 0000008H, 03FFFE8H		; U11
+	RAM_CHIP 0,3, 8, 32, 0000000H, 03FFFE0H		; U15
+	.LONG	0
+
+SRAMCHIPS
+	RAM_CHIP SRAM1,0, 16, 16, 1000000H, 13FFFF0H	; U49 (0-15)
+	.LONG	0
+
+
+	.else
 VRAMCHIPS:
 
 	RAM_CHIP 0,0, 8, 16, 1800000H, 187FFF0H		; UA8  (  0 - 3  )
@@ -3072,11 +4311,6 @@ PALCHIPS:
 
 	.LONG	0
 
-
-SRAMCHECK
-	.STRING	"CHECKING SCRATCH RAMS",0
-	.EVEN
-
 SRAMCHIPS
 	RAM_CHIP SRAM4,3, 4, 16, 1000004H, 13FFFF4H	; UJ7 (  4 - 7  )
 	RAM_CHIP SRAM3,2, 4, 16, 1000000H, 13FFFF0H	; UJ6 (  0 - 3  )
@@ -3084,7 +4318,11 @@ SRAMCHIPS
 	RAM_CHIP SRAM1,0, 4, 16, 100000CH, 13FFFFCH	; UJ4 ( 12 - 15 )
 
 	.LONG	0
+	.endif
 
+SRAMCHECK
+	.STRING	"CHECKING SCRATCH RAMS",0
+	.EVEN
 
 
 T2_SP	.WORD	048h
@@ -3711,8 +4949,13 @@ I2_ZZ:
 
 
    .EVEN
-CKSUM1	.equ	0bf69H	;05d0bH	;0ac9fH	;a911
-CKSUM2	.equ	03480H	;0edd7H	;0a0e2H	;9fff
+	.if	WUNIT
+CKSUM1	.equ	09d85h
+CKSUM2	.equ	02a9dH
+	.else
+CKSUM1	.equ	0e9a4h	;05d0bH	;0ac9fH	;a911
+CKSUM2	.equ	06630H	;0edd7H	;0a0e2H	;9fff
+	.endif
 
 PROMCHIPS
 	ROM_CHIP PROM1,0,0,16, 0FF800000H, 0FFFFFFF0H, CKSUM1	; UJ12
@@ -3725,16 +4968,7 @@ PROMCHIPS
 
 IROMCHIPS
 
-
-
-
 	.EVEN
-
-
-
-
-
-
 	ROM_CHIP IROM1,  1, 8,32,  2000000H, 2FFFFE0H, 01161H	; UG14
 	ROM_CHIP IROM9,  9, 8,32,  2000008H, 2FFFFE8H, 0748dH	; UJ14
 	ROM_CHIP IROM5,  5, 8,32,  2000010H, 2FFFFF0H, 08b9dH	; UG19 
@@ -3757,6 +4991,44 @@ IROMCHIPS
 
 	.LONG	0		; FORCE IT TO STOP HERE
 
+	.if	WUNIT
+
+	.EVEN
+IROMCHIPS_8MEG
+	.EVEN
+;	ROM_CHIP IROM1,  0, 8,32,  2000000H, 3FFFFE0H,05918H 	; U133
+;	ROM_CHIP IROM2,  1, 8,32,  2000008H, 3FFFFE8H,0E85CH 	; U132
+;	ROM_CHIP IROM3,  2, 8,32,  2000010H, 3FFFFF0H,095D8H 	; U131
+;	ROM_CHIP IROM4,  3, 8,32,  2000018H, 3FFFFF8H,0E855H 	; U130
+
+	ROM_CHIP IROM5,  4, 8,32,  4000000H, 5FFFFE0H,065e3H 	; U129
+	ROM_CHIP IROM6,  5, 8,32,  4000008H, 5FFFFE8H,0057FH 	; U128   x
+	ROM_CHIP IROM7,  6, 8,32,  4000010H, 5FFFFF0H,086FDH 	; U127
+	ROM_CHIP IROM8,  7, 8,32,  4000018H, 5FFFFF8H,02A1AH 	; U126
+	.LONG	0
+
+IROMCHIPS1_8MEG
+	ROM_CHIP IROM9,  8, 8,32,  2000000H, 3FFFFE0H,092F5H 	; U125
+	ROM_CHIP IROM10, 9, 8,32,  2000008H, 3FFFFE8H,0a7c1H 	; U124
+	ROM_CHIP IROM11,10, 8,32,  2000010H, 3FFFFF0H,08bb8H 	; U123
+	ROM_CHIP IROM12,11, 8,32,  2000018H, 3FFFFF8H,05001H 	; U122
+
+;	ROM_CHIP IROM13,12, 8,32,  4000000H, 5FFFFE0H,06dd1H 	; U121
+;	ROM_CHIP IROM14,13, 8,32,  4000008H, 5FFFFE8H,0a7bbH 	; U120
+;	ROM_CHIP IROM15,14, 8,32,  4000010H, 5FFFFF0H,03446H 	; U119
+;	ROM_CHIP IROM16,15, 8,32,  4000018H, 5FFFFF8H,0ff49H 	; U118
+	.LONG	0
+
+IROMCHIPS2_8MEG
+;	ROM_CHIP IROM21,16, 8,32,  4000000H, 5FFFFE0H,0ea80H 	; U???
+;	ROM_CHIP IROM22,17, 8,32,  4000008H, 5FFFFE8H,044d0H 	; U???
+;	ROM_CHIP IROM23,18, 8,32,  4000010H, 5FFFFF0H,08505H 	; U???
+;	ROM_CHIP IROM24,19, 8,32,  4000018H, 5FFFFF8H,008f2H 	; U???
+	.LONG	0
+
+
+
+	.endif
 
 
 	.END

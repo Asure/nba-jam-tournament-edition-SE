@@ -763,7 +763,11 @@ CRD_SCRN
 
 exhxexists
 	move	@HEBLNK,a0
+	.if	WUNIT
+	cmpi	HEBLNKINIT,a0
+	.else
 	cmpi	032H,a0
+	.endif
 	jrne	exhxinscl
 	move	@dtype,a0
 	jrge	exhxnotinscl
@@ -774,8 +778,11 @@ exhxnotinscl
 	SLEEPK	3
 exhxcont
 	callr	crd_updatetxt		;Display players per credit messages
-
+	.if	WUNIT
+	movi	HEBLNKINIT,a0
+	.else
 	movi	032H,a0			;Display on (just in case)
+	.endif
 	move	a0,@HEBLNK
 
 
@@ -2161,9 +2168,18 @@ BL2
 	SLEEPK	10H
 	JRUC	BLINK_LOOP
 
+	.if	WUNIT
+ROM_NAME
+	.byte	"NBA JAM SE WOLF REV 5.05 9/21/25",0
+	.even
+
+	.else
+
 ROM_NAME
 	.byte	"SPECIAL EDITION REV 5.02 4/26/25",0
 	.even
+
+	.endif
 
 FACTORY_TABLE
 
@@ -2205,6 +2221,12 @@ FACTORY_TABLE
 	.word	1	;ADJBABY	33	;Enably Baby Mode (0=on) "Small Jam"
 	.word	1	;ADJPOWER	34	;Max Power Mode "It's a blowout"
 	.word	1	;ADJSHOT	35	;Show shot %
+	.if	WUNIT
+	.word	1	;ADJPSXSND	36	;PSX Soundtrack (0=on)  "It's like THX but spelled different."
+	.word	125	;ADJVOLUME	37	;Music Volume (0-254) "This thing goes up to eleven?!"
+
+	.endif
+	
 ; MAKE SURE THIS STUFF MATCHES UP with LINK.EQU and AUDIT.EQU!
 
 	.if 0

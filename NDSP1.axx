@@ -2539,10 +2539,13 @@ zetrx	rets
 zetrerr	clr	a6
 	jruc	zetrh
 
-
-
+;	.if	WUNIT
+;	.asg	MEGBIT0,SCRNBUF
+;	.asg	MEGBIT1,PALBUF
+;	.else
 	.asg	SCRATCH+8*256*1024,SCRNBUF
 	.asg	SCRNBUF+8*128*1024,PALBUF
+;	.endif
 
 	.bss	scrnscl		,16
 
@@ -2703,10 +2706,19 @@ mirvcslp2	move	*a0+,*a1+,L
 	dsj	a3,mirvcslp
 
 	move	@SYSCOPY,a0
+	.if	WUNIT
+	andni	PALENB,a0
+	move	a0,@SYSCOPY
+	.if	DEBUG
+	andni	LEDON,a0
+	ori	WROMINTCLR,a0
+	.endif
+	.else
 	andni	100000b,a0
 	move	a0,@SYSCOPY
 	.if	DEBUG
 	andni	1000000b,a0
+	.endif
 	.endif
 	move	a0,@SYSCTRL
 
@@ -2726,11 +2738,22 @@ mirvcplp2	move	*a0+,*a1+,L
 	dsj	a3,mirvcplp
 
 	move	@SYSCOPY,a0
-	ori	100000b,a0
+
+	.if	WUNIT
+	ori	PALENB,a0
+	move	a0,@SYSCOPY
+	.if	DEBUG
+	andni	LEDON,a0
+	ori	WROMINTCLR,a0
+	.endif
+	.else
+;	ori	100000b,a0
 	move	a0,@SYSCOPY
 	.if	DEBUG
 	andni	1000000b,a0
 	.endif
+	.endif
+
 	move	a0,@SYSCTRL
 
 	rets

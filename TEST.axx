@@ -1094,6 +1094,23 @@ FORM_SWS:
 	move	a0,*a13(MEN_STIK),L	;SAVE "STUCK" STATE.
 	rets
 
+**************************************************************************
+* fudges from HT
+	.if	WUNIT
+fudge_switches
+	move	@SWITCH,a0,W
+	move	@SWITCH4,a1,W		;dirty
+	and	a1,a0
+	sll	16,a0
+	srl	16,a0
+	move	@COINS,a1,W
+	sll	16,a1
+	or	a1,a0
+
+	not	a0
+	rets
+
+	.else
 fudge_switches
 
 	move	@SWITCH,a0,L		;GET BOTH SWITCH WORDS
@@ -1124,11 +1141,33 @@ fudge_switches
 
 emtm2_plyrs
 	rets
+	.endif
+
+	.if	WUNIT
+fudge_switches_diag
+	move	@SWITCH,a0,W
+;	move	*a0,a0,W
+	move	@COINS,a1,W
+;	move	*a1,a1,W
+	sll	16,a1
+	or	a1,a0
+	not	a0			;COMPLEMENT
+	move	@SWITCH4,a1,L		;test
+;	move	*a1,a1
+	not	a1
+	move	a1,a14
+	andi	0011b,a14
+	sll	6,a14
+	or	a14,a1
+	or	a1,a0
+	FRET	B6
+	.else
 
 
 fudge_switches_diag
 
 	move	@SWITCH,a0,L		;GET BOTH SWITCH WORDS
+
 	not	a0			;COMPLEMENT
 
 	move	@TWOPLAYERS,a1		;0 = NO, 1 = YES 2 players
@@ -1156,7 +1195,9 @@ fudge_switches_diag
 
 emtm2_plyrs2
 	FRET	B6
+	.endif
 
+*** this one is the same on WUNIT and TUNITs
 fudge_switches2
 
 	callr	fudge_switches
@@ -1888,15 +1929,30 @@ hypllp	clr	a0
 om_getstick
 
 	PUSH	a1
+	.if	WUNIT
+	move	@SWITCH,a0,W
+;	move	*a0,a0,W
+	move	@COINS,a1,W
+;	move	*a1,a1,W
+	sll	16,a1
+	sll	16,a0
+	srl	16,a0
+	or	a1,a0
+	.else
 
 	move	@SWITCH,a0,L
+	.endif
 	not	a0
 	move	a0,a1
 	andi	0004007fh,a0		;P1 draw/start/stick
 	andi	00207f00h,a1		;P2 draw/start/stick
 	srl	8,a1
 	or	a1,a0
-	move	@SWITCH+32,a1
+	.if	WUNIT
+	move	@SWITCH2,a1,W
+	.else
+	move	@SWITCH+32,a1		
+	.endif
 	not	a1
 	andi	07fH,a1			;P3 draw/stick
 	or	a1,a0

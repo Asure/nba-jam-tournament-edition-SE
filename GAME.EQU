@@ -44,6 +44,7 @@ adpid		.equ	147
 takepid		.equ	148
 
 AMODE_PID	.equ	100h		;Attract mode
+FX_PID          .equ    151h            ;volume adjust bgnd noise
 INTRO_PID	.equ    300h		;Intro/player selection
 HISC_PID	.equ	600h		;Hiscore table entry
 ENDQRTR_PID	.equ	800h		;Hint pages/Halftime pages
@@ -71,6 +72,7 @@ ANIMPID2	.equ	4100h		;Animation2 PIDs (256)
 ANIMPID3	.equ	4200h		;Animation3 PIDs (256)
 ANIMPID4	.equ	4300h		;Animation4 PIDs (256)
 
+QSNDRST_PID	.equ	4400h
 
 ;OBJECT ID'S
 

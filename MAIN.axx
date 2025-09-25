@@ -12,8 +12,6 @@
 	.include	"game.equ"
 	.include	"shawn.hdr"
 	.include	dipequ.asm
-			
-
 
 	.ref	init_prog
 	.ref	display_init
@@ -289,7 +287,11 @@ ctlndmaoff
 
 	movi	CONTROL,a9		;0CHlear whole page
 	move	*a9,a6
+	.if	WUNIT
+	movk	0ch,a0
+	.else
 	movk	8,a0
+	.endif
 	move	a0,*a9			;Transparency off
 	movk	16,a0
 	move	a0,@PSIZE
@@ -329,9 +331,65 @@ di400	move	a7,*a8			;Restore
 	clr	a0
 	move	a0,@dirqdraw		;Draw done
 
+	.if	WUNIT
+ctln60hzcode
+	movi	FSWITCH,a4
+	move	@SWITCH,a0,L
+;	move	*a2,a0
+	move	@SWITCH4,a1,L		;dirty fix
+;	move	*a2,a1
+	move	@COINS,a2,L
+;	move	*a2,a2
+	sll	16,a2
+	movy	a2,a0
+	not	a0
+	move	@DIPSWITCH,a2,L
+;	move	*a2,a2
+	sll	16,a2
+	movy	a2,a1
+	not	a1
+
+	move	@TWOPLAYERS,a14		;if 2-player kit then fudge
+	jrz	camqnot_2			;the switches
+
+	clr	a2
+	movx	a0,a2
+	sll	8,a2
+	movx	a2,a0
+	srl	8+8,a2
+	movx	a2,a1
+
+camqnot_2
+	move	a0,*a4+,L
+	move	a1,*a4+,L
+
+	move	*a4(64),a2,L		;>switches_cur
+	move	*a4(96),a3,L		;>switches_cur+32
+	move	a2,*a4+,L		;>switches_old
+	move	a3,*a4+,L		;>switches_old+32
+	move	a0,*a4+,L		;>switches_cur
+	move	a1,*a4+,L		;>switches_cur+32
+	move	a2,a14
+	xor	a0,a14
+	and	a14,a0			;down transitions
+	and	a14,a2			;up transitions
+	move	a3,a14
+	xor	a1,a14
+	and	a14,a1			;down transitions
+	and	a14,a3			;up transitions
+	move	a2,*a4+,L		;>switches_up
+	move	a3,*a4+,L		;>switches_up+32
+	move	a0,*a4+,L		;>switches_down
+	move	a1,*a4+,L		;>switches_down+32
 
 
+	move	@dirqtimer,a1		;Tell mproc to run
+	addk	1,a1
+	move	a1,@dirqtimer
 
+	callr	switch_stack		;Scan misc switches
+
+	.else
 ctln60hzcode				;*** This code must run at 60HZ
 
 	movi	SWITCH,a2
@@ -384,11 +442,13 @@ ctlnnot_2
 
 
 
+
 	move	@dirqtimer,a1		;Tell mproc to run
 	addk	1,a1
 	move	a1,@dirqtimer
 
 	callr	switch_stack		;Scan misc switches
+	.endif
 
 
 	move	@C_FLAGS,a0,L		;0CHoin timers
@@ -507,20 +567,75 @@ wdogbone_t
 	.word	0,2,0,2,2,-1	;Watchdog feed table
 
 
-
+	.if	WUNIT
+*******************************
+* Scan switches
  SUBRP	switch_stack
+
+	move	@COINS,a0,L	;Get coin door extras
+;	move	*a0,a0,W
+
+	move	@GAMSTATE,a1,W		;In diagnostics?
+	jrn	yefrno_diptest
+	move	@DIPSWITCH,a1,L		;No. Map TEST dipswitch to coin door
+;	move	*a1,a1,W		; TEST switch
+	sll	4-0,a1			;Dip TEST bit0 -> coin TEST bit4
+	ori	~BIT4,a1		;Keep the rest of the coin door bits
+	and	a1,a0
+
+yefrno_diptest
+	ori	0ffff0000H,a0		;Pull unused bits UP
+
+	move	@swtemp2,a2,W		;Get previous previous state
+	move	@swtemp1,a1,W		;Get previous state
+	move	a1,@swtemp2,W		;Save new previous previous
+	move	a0,@swtemp1,W		;Save new previous
+	and	a1,a2			;Only stack if UP then UP & now DOWN
+	andn	a0,a2			; (new DOWNS now pos logic)
+	jrz	yefrx			;None to do if 0
+
+	move	@swstack_p,a3,L		;Current switch stack ptr
+	movk	01fH,a1			;XOR constant
+
+yefrlp	cmpi	swstackbot,a3		;Switch stack overflow?
+	jreq	yefrx
+	lmo	a2,a0
+	sll	a0,a2			;Get rid of DOWN bit
+	sll	1,a2
+	xor	a1,a0			;Do 1's comp to get true bit #
+	move	a0,-*a3,W		;Push switch # (0-15)
+	rl	a0,a2			;Restore remaining DOWN bits
+	jrnz	yefrlp			;Continue if more are DOWN (!0)
+
+	move	a3,@swstack_p,L		;Save new stack ptr
+
+yefrx	rets
+	.else
+
+*******************************
+* Scan switches
+ SUBRP	switch_stack
+
+;notes
+;SWITCH	 .equ	1600000h	;I/O WIDGET BOARD	;
+;COINS	 .equ	1600010h				;SWITCH+10h (+16)
+;SWITCH2 .equ	1600020h				;SWITCH+20h (+32)
+;
+;SWITCH	 .equ	0187ff80h	;I/O WIDGET BOARD	;
+;COINS	 .equ	0187ffb0h				;SWITCH+30h
+;SWITCH2 .equ	0187ff90h				;SWITCH+10h
+
 
 	move	@SWITCH,a0,L
 
-	.if	TUNIT
 	ori	0f800ffffH,a0	;Set ignore bits
-	.else
-	ori	0ff007f7fH,a0	;Set ignore bits
-	movb	@COINS+16,a1
+
+	movb	@COINS+16,a1 	;Probably not right for WUNIT; this reads switch2? 
+
 	jrn	swst30		;No P4 start?
 	subk	1,a0		;Clr bit 0
 swst30
-	.endif
+
 	move	@swtemp1,a1,L	;previous state t=n-1
 	move	@swtemp2,a2,L	;previous previous t=n-2
 	move	a1,@swtemp2,L	;new previous previous
@@ -545,6 +660,8 @@ fxzdlp	cmpi	swstackbot,a3
 	move	a3,@swstack_p,L	;restore switch stack
 
 fxzdx	rets
+	.endif
+
 
 
 
@@ -596,11 +713,19 @@ badtrap29
 
 
 
+
 gspioinit_t
+	.if WUNIT
+	.word	02bh		;0C0000000H -- HESYNC
+	.word	HEBLNKINIT	;0C0000010H -- HEBLNK
+	.word	01f5h		;0C0000020H -- HSBLNK
+	.word	01f9h		;0C0000030H -- HTOTAL
+	.else
 	.word	015h		;0C0000000H -- HESYNC
 	.word	HEBLNKINIT	;0C0000010H -- HEBLNK
 	.word	0fah		;0C0000020H -- HSBLNK
 	.word	0fch		;0C0000030H -- HTOTAL
+	.endif
 	.word	3		;0C0000040H -- VESYNC
 	.word	20		;0C0000050H -- VEBLNK
 	.word	274		;0C0000060H -- VSBLNK	;254 lines

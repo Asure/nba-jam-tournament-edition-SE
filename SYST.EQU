@@ -1,8 +1,5 @@
 *THE T/Z-UNIT SYSTEM SPECIFIC EQUATES
 *.Last mod - 11/30/92 12:09
-;Skip ROM checks, straight to DMA/DCS check
-DMADEBUG .equ	0
-
 ;Testing GORO
 GORO	.equ	1
 
@@ -17,7 +14,7 @@ YUNIT	.equ	1
 TUNIT	.equ	1	;YUNIT also on
 TUNITDB	.equ	0	;TUNIT debugging
 TUNIT2	.equ	1	;TUNIT also on
-WUNIT	.equ	1
+WUNIT	.equ	0
 
 DEBUG	.equ	0	;0 or 1
 IMGVIEW	.equ	0	;0 or 1
@@ -35,96 +32,51 @@ FULLPRICE .equ	1	;IF 1, INSTALL ALL COINAGE MODES
 PXSIZE		.equ	8
 SCRN_PTCH	.equ	512*PXSIZE
 
-	.if	WUNIT
-PIC_COMMAND	.equ	01600000h	;PIC Command Port
-PIC_DATA	.equ	PIC_COMMAND	;PIC Data Port
-
-SNDRSTBIT	.equ	16
-
-VMUX_CONTROL	.equ	1800000h	;VMUX Control Register
-;VMUX_BREG0	.equ	1820000h	;VMUX Background Register 0
-VMUX_BREG1	.equ	1830000h	;VMUX Background Register 1
-;VMUX_PALMATCH	.equ	1840000h	;VMUX Palette Match Register
-;VMUX_STATUS	.equ	1800000h	;VMUX Status Register
-
-;VMUX_MODE0	.equ	0		;I/O Mode 0
-;VMUX_MODE1	.equ	1		;I/O Mode 1
-;VMUX_MODE2	.equ	2		;I/O Mode 2
-;VMUX_MODE3	.equ	3		;I/O Mode 3
-;VMUX_MODE4	.equ	4		;I/O Mode 4
-;VMUX_MODE5	.equ	5		;I/O Mode 5
-;VMUX_MODE6	.equ	6		;I/O Mode 6
-;VMUX_MODE7	.equ	7		;I/O Mode 7
-
-;VMUX_IODISABLE	.equ	8		;I/O Disable
-;VMUX_ADDRGENENB	.equ	16		;Address Generator Enable
-
-;VMUX_VKEY0	.equ	0		;Video Key 0
-;VMUX_VKEY1	.equ	32		;Video Key 0
-;VMUX_VKEY2	.equ	64		;Video Key 0
-;VMUX_VKEY3	.equ	96		;Video Key 0
-;VMUX_VKEY4	.equ	128		;Video Key 0
-;VMUX_VKEY5	.equ	160		;Video Key 0
-;VMUX_VKEY6	.equ	192		;Video Key 0
-
-;VMUX_PALMENABL	.equ	256		;Palette Match Enable
-
-;VMUX_VDISABLE	.equ	512		;Video Disable
-;
-;VMUX_CSWIZZLE	.equ	1024		;Color RAM swizzle on writes
-;
-;VMUX_CRAMREAD	.equ	2048		;Force Read of CRAM Pixel Stream
-;
-;VMUX_INITMODE	.equ	VMUX_MODE0|VMUX_VKEY0
-	.endif
-
-
 ;System memory map
 SCREEN	.equ	0		;START OF SCREEN MEMORY
 SCRNE	.equ	200000h		;END OF SCREEN+1
 SCRATCH	.equ	1000000h	;START OF SCRATCH
 STCKST	.equ	10FFFF0h	;TOP OF STACK
-
-SCRATB	.equ	1000000h	;START OF SCRATCH
-SCRATE	.equ	13F7300h	;END OF SCRATCH+1
-SCRATL	.equ	SCRATE-SCRATB	;SCRATCH SIZE (BITS)
-MEGBIT0	.equ	SCRATE-200000h	;LOWER 128K BYTE BUFFER (SCREEN BUFFER, ETC)
-MEGBIT1	.equ	SCRATE-100000h	;UPPER 128K BYTE BUFFER (SCREEN BUFFER, ETC)
-PALENB		.equ	0800h	;Enable Color Palette
-
 CMOS	.equ	1400000h	;START OF CMOS RAM
 CMOSWE	.equ	CMOS+0ffff0h	;Write enable
 
-COLRAM	.equ	1880000h
+	.if	TUNIT
+COLRAM	.equ	1800000h
+	.elseif	YUNIT
+COLRAM	.equ	1810000h	;Color ram
+	.else
+COLRAM	.equ	1800000h
+	.endif
 CYCOLORS .equ	COLRAM+3E0h	;COLORS 62 AND 63 (LAST TWO IN PAL!)
 
 CMAPSEL	.equ	1a80080h	;COLOR MAP SELECT (0-15)
-
-;Below all taken from MK3
-SWITCH	.equ	0187ff80h	;I/O WIDGET BOARD
-COINS	.equ	0187ffb0h
-SWITCH2	.equ	0187ffa0h
-SWITCH4	.equ	0187ff90h	;hack, main game uses a kludge, diag/test can't live with this.
-DIPSWITCH .equ	0187ffa0h	;DIP SWITCHES
-WATCHDOG .equ	0187ffb0h
-COIN_COUNTERS	.EQU	187ff90h	;COIN COUNTER DRIVERS GNP 1/16/93
-
 	.if	TUNIT2
-SOUND	.equ	1680000h	;Auto strobe
-SOUNDR	.equ	1680000h	;Auto strobe (with wait state) ;amm not sure needed?
-SOUNDIRQ .equ	187ffc0h	;* irq input
-B_SDAV	.equ	10		;sound data available bit # (active hi)
-B_SIRQ	.equ	11		;Irq bit #
-SOUNDBIT .equ	0100h		;No strobe needed
-TALKPORT .equ	SOUNDIRQ	;Port to find this line
-B_WDOG	.equ	8		;(-) For watchdog triggered
-
+SWITCH	.equ	1600000h	;I/O WIDGET BOARD
+COINS	.equ	1600010h
+SWITCH2	.equ	1600020h
+DIPSWITCH .equ	1600030h	;DIP SWITCHES
+WATCHDOG .equ	1d81070h
+COIN_COUNTERS	.EQU	1D01020H	;COIN COUNTER DRIVERS GNP 1/16/93
+	.else
+SWITCH	.equ	1c00000h	;I/O WIDGET BOARD
+COINS	.equ	1c00010h
+SWITCH2	.equ	1c00020h
+DIPSWITCH .equ	1c00030h	;DIP SWITCHES
+	.endif
+	.if	TUNIT2
+SOUND	.equ	1d01030h	;Auto strobe
+SOUNDR	.equ	1d81030h	;Auto strobe (with wait state)
+SOUNDIRQ .equ	1d00000h	;* irq input
+B_SDAV	.equ	6		;sound data available bit # (active hi)
+B_SIRQ	.equ	7		;Irq bit #
+SOUNDBIT .equ	0ff00h		;No strobe needed
+TALKPORT .equ	1d00000h	;Port to find this line
+B_WDOG	.equ	4		;(-) For watchdog triggered
 	.elseif	TUNIT
 SOUND	.equ	1c01030h	;Auto strobe
 SOUNDIRQ .equ	1c00050h	;* irq input
 B_SIRQ	.equ	3		;Irq bit #
 SOUNDBIT .equ	0ff00h		;No strobe needed
-
 	.else
 SOUND	.equ	1e00000h	;Sound I/O; B0-B7=Sound#, B8=Reset (-)
 SOUNDIRQ .equ	SWITCH+10H	;* irq input
@@ -132,7 +84,7 @@ B_SIRQ	.equ	14		;Irq bit #
 SOUNDBIT .equ	0fd00h		;B9=Strobe (-)
 	.endif
 
-SYSCTRL	.equ	1B00000h	;System control latch
+SYSCTRL	.equ	1f00000h	;System control latch
 				;BIT 2 - LED select (1)
 				;BIT 4 - AUTO-ERASE ENABLE(0)
 				;BIT 5 - OBJECT PALETTE ENABLE(0)
@@ -144,37 +96,35 @@ ROM	.equ	0ff800000h	;PROGRAM ROM
 ;System stuff
 AUTOERAS	.equ	10h
 OBJPALET	.equ	20h
-
-;SYSCINIT	.equ	1880h	;INITIAL SYSCTRL VALUE (from MK3)
-;from HT
-SYSCINIT	.equ	0987fh	;LED OFF, IROM PAGE 0, PALETTE ON, WRROMINT ON
-
+	.if	DEBUG
+SYSCINIT	.equ	0ffb8h	;INITIAL SYSCTRL VALUE
+	.else
+SYSCINIT	.equ	0fff8h	;INITIAL SYSCTRL VALUE
+	.endif
 ERASECOL	.equ	0	;Screen erase color #
 ERASELOC	.equ	COLRAM	;Screen erase color loc
 
 ;DMA stuff
-DMAREGS		.equ	1a000c0h	;Bottom of dma registers for mmtm
+DMAREGS		.equ	1a800c0h	;Bottom of dma registers for mmtm
 
-DMAOFFST	.equ	1a00000h	;DMA offset
-DMACTRL		.equ	1a00010h	;DMA control. BIT 15:
-;DMAOFFST	.equ	1a80000h	;DMA offset
-;DMACTRL	.equ	1a80010h	;DMA control. BIT 15:
+DMAOFFST	.equ	1a80000h	;DMA offset
+DMACTRL		.equ	1a80010h	;DMA control. BIT 15:
 					;0=DMA IDLE (R), 1=DMA BUSY (R)
 					;0=STOP DMA (W*2), 1=START DMA (W)
 DMAGO		.equ	DMACTRL		;FOR SYSCHECK
-DMASAGL		.equ	1a00020h	;*Data start (low 16 bits)
-DMASAGH		.equ	1a00030h	;*Data start (high 16 bits)
-DMAHORIZ	.equ	1a00040h	;Dest X
-DMAVERT		.equ	1a00050h	;Dest Y
-DMAHSIZE	.equ	1a00060h	;Dest X size
-DMAVSIZE	.equ	1a00070h	;Dest Y size
-DMACMAP		.equ	1a00080h	;Color map select
-DMACONST	.equ	1a00090h	;Constant color
-DMASCALEX	.equ	1a000a0h	;X scale 8:8
-DMASCALEY	.equ	1a000b0h	;Y ^
-DMAWINDOW	.equ	1a000c0h	;Window LR or TB
-DMATEST		.equ	1a000e0h	;?
-DMACONF		.equ	1a000f0h	;Config
+DMASAGL		.equ	1a80020h	;*Data start (low 16 bits)
+DMASAGH		.equ	1a80030h	;*Data start (high 16 bits)
+DMAHORIZ	.equ	1a80040h	;Dest X
+DMAVERT		.equ	1a80050h	;Dest Y
+DMAHSIZE	.equ	1a80060h	;Dest X size
+DMAVSIZE	.equ	1a80070h	;Dest Y size
+DMACMAP		.equ	1a80080h	;Color map select
+DMACONST	.equ	1a80090h	;Constant color
+DMASCALEX	.equ	1a800a0h	;X scale 8:8
+DMASCALEY	.equ	1a800b0h	;Y ^
+DMAWINDOW	.equ	1a800c0h	;Window LR or TB
+DMATEST		.equ	1a800e0h	;?
+DMACONF		.equ	1a800f0h	;Config
 
 ;GNP START 1/14/93
 *	LAYOUT OF DMA CONFIG REGISTER
@@ -264,25 +214,5 @@ PALSRC	.equ	10h	;* palette color data
 PALDEST	.equ	30h	;Destination palette|Start color
 PALTSIZ	.equ	40h	;Size of each cell
 NUMPALT	.equ	48	;# of transfers allowed		;40
-******************************************************************************
-
-BIT0	equ	0001h
-BIT1	equ	0002h
-BIT2	equ	0004h
-BIT3	equ	0008h
-BIT4	equ	0010h
-BIT5	equ	0020h
-BIT6	equ	0040h
-BIT7	equ	0080h
-BIT8	equ	0100h
-BIT9	equ	0200h
-BIT10	equ	0400h
-BIT11	equ	0800h
-BIT12	equ	1000h
-BIT13	equ	2000h
-BIT14	equ	4000h
-BIT15	equ	8000h
-
-******************************************************************************
 
 

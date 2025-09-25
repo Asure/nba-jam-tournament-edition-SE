@@ -1,0 +1,15 @@
+ Volume in drive D is 4TB
+ Volume Serial Number is 544B-4152
+
+ Directory of D:\dosbox\tools\c\myjamsey\rom\gfx
+
+03-09-2025  14:28         1.048.576 l1.0_nba_hangtime_u_122_image_rom.u122
+03-09-2025  14:28         1.048.576 l1.0_nba_hangtime_u_123_image_rom.u123
+03-09-2025  14:28         1.048.576 l1.0_nba_hangtime_u_124_image_rom.u124
+03-09-2025  14:28         1.048.576 l1.0_nba_hangtime_u_125_image_rom.u125
+03-09-2025  14:28         1.048.576 l1.0_nba_hangtime_u_126_image_rom.u126
+03-09-2025  14:28         1.048.576 l1.0_nba_hangtime_u_127_image_rom.u127
+03-09-2025  14:28         1.048.576 l1.0_nba_hangtime_u_128_image_rom.u128
+03-09-2025  14:28         1.048.576 l1.0_nba_hangtime_u_129_image_rom.u129
+               8 File(s)      8.388.608 bytes
+               0 Dir(s)  815.693.393.920 bytes free

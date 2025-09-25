@@ -1,3 +1,14 @@
+**************************************************************
+*
+* Software:		Shawn Liptak
+* Initiated:		Jan 31,1992
+*
+* Modified:		!
+*
+* COPYRIGHT (C) 1992 WILLIAMS ELECTRONICS GAMES, INC.
+*
+*.Last mod - 3/22/93 20:50
+**************************************************************
       	.file	"3d.asm"
 	.title	"Mega 3d polygon code"
 	.width	132
@@ -13,12 +24,14 @@
 	.include	imgtbl.glo
 
 
+;sound headers used
 
 tankexpsnd	.word	0fcc0H,15,08153H,0	;Tank explosion
 plfiresnd	.word	0f450H,20,08129H,0	;Player cannon
 enfiresnd	.word	0f460H,20,0811dH,0	;Enemy cannon
 plhit_snd	.word	0fcf5H,05,08138H,0	;Hit backboard
 
+;symbols externally defined
 
 	.ref	_3dstat,gndstat
 	.ref	IRQSKYE
@@ -27,18 +40,26 @@ plhit_snd	.word	0fcf5H,05,08138H,0	;Hit backboard
 
 
 
+;symbols defined in this file
 
 
 
 ;D3NUMO	.equ	200
 D3NUMO	.equ	100
 
+*struct APTR
 OBJPTR	.equ	0	;UHL
+*endstruct
+*struct WORD
 OBJPTR	.equ	0	;UHW
+*endstruct
+*struct XYZ
 PTX	.equ	0	;SDW
 PTY	.equ	010H	;SDW
 PTZ	.equ	020H	;SDW
+*endstruct
 
+*struct D3OBJ
 D3LINK	.equ	0		;UHL *Next object or 0
 D3X	.equ	020H		;SHL X pos 24:8
 D3Y	.equ	040H		;SHL Y ^
@@ -56,6 +77,7 @@ D3FACE	.equ	0160H		;UHL *Face data
 D3ZTEMP	.equ	0180H		;SHW View relative Z for sorting
 D3PLINK	.equ	0190H		;UHL *Process that owns
 D3HDSZ	.equ	01b0H
+*endstruct
 
 
 XPTMSZ	.equ	(16*3*11*D3NUMO/4)&0fffff0H
@@ -101,7 +123,18 @@ BOGRATE	.equ	4
 	.text
 
 
+********************************
+* 3D point format. Label is shown on + end of axis.
+*	+---------+
+*	|    Y /  | Z goes negative into screen
+*	|    |/   |
+*	| ---+--X |
+*	|   /|    |
+*       |  Z |    |
+*	+---------+
 
+********************************
+* Test 3D code (Process)
 
  SUBR	_3d_test
 
@@ -243,7 +276,7 @@ gndi	move	*a10+,a6,L
 ;	move	@SWITCH,a0
 ;	andi	05808H,a0		;P1/2 sticks rgt and P2 but 1&3 down
 ;	jrnz	slp
-;	CREATE0	copyright_prtmsg
+	CREATE0	copyright_prtmsg
 slp
 	SLEEP	TSEC*140/BOGRATE
 
@@ -560,6 +593,10 @@ cruqerr
 	LOCKUP
 	jruc	cruqx
 
+*******************************
+* Get a object from 3D free list
+* 0A8H=*Object or 0
+* Trashes scratch
 
  SUBRP	_3d_getobj
 
@@ -602,6 +639,10 @@ ygoverr
 	jruc	ygovx
 
 
+*******************************
+* Put an object on 3D free list
+* A8=*Object
+* Trashes scratch
 
  SUBRP	_3d_freeobj
 
@@ -622,6 +663,18 @@ bxdnfree	move	@d3free_p,*a8+,L
 	rets
 
 
+*******************************
+* Get object from 3D free list and init
+* A0=X (24:8)
+* A1=Y
+* A2=Z
+* A3=XA
+* A4=YA
+* A5=ZA
+* A6=*Points
+* A7=*Face data
+* 0A8H=*Object or 0
+* Trashes scratch
 
  SUBRP	_3d_beginobj
 
@@ -661,6 +714,8 @@ veyperror	LOCKUP
 
 
 
+********************************
+* Build 3D view, called by display interrupt
 
  SUBR	_3d_build
 
@@ -811,7 +866,8 @@ dt6700	move	a0,@viewxa
 	sll	1,a0			;*2
 	sll	1,a1
 
-veypnoturb	move	@viewx,a2,L
+veypnoturb
+	move	@viewx,a2,L
 	add	a0,a2
 	move	a2,@viewx,L
 
@@ -837,14 +893,26 @@ dt7500
 
 	PULL	b2,b3,b4,b5,b6,b7,b8,b9,b10
 	PULL	a4,a13,a14
+
 	rets
 
 
 
 
+*******************************
+* Check distance and visability of objs center point
+* Adds to d3vis_p if visable
+* 0A11H=*Next free xform mem
+* Trashes A0-A7,B0-B1
 
+;x=x*cos(az)-y*sin(az)
+;y=x*sin(az)+y*cos(az)
 
+;y=y*cos(ax)-z*sin(ax)
+;z=y*sin(ax)+z*cos(ax)
 
+;z=z*cos(ay)-x*sin(ay)
+;x=z*sin(ay)+x*cos(ay)
 
 COSAZ	.equ	b0
 SINAZ	.equ	b1
@@ -1001,6 +1069,11 @@ lysunext	move	*a4+,a6,L
 
 
 
+*******************************
+* Check distance and visability of gnd objs
+* Adds to d3vis_p if visable
+* A11=*Next free xform mem
+* Trashes A0-A7,B0-B1
 
 
  SUBR	_3d_addgndvislist
@@ -1088,6 +1161,8 @@ cqjlnext	move	*a4+,a6,L
 
 
 
+*******************************
+* Xform objects on visable list relative to view point
 
 
  SUBRP	_3d_xformrelview
@@ -1199,10 +1274,31 @@ cuqwnext	move	*b8+,b8,L
 
 
 
+*******************************
+* Transform a set of XYZ points then add offset
+* A0=*Obj 3D Points
+* A1=*Mem for xformed pts
+* A8=Angle 0-255 about Z
+* A9=Angle 0-255 about X
+* A10=Angle 0-255 about Y
+* A12-A14=XYZ offsets after xform
+* Trashes A0-A7,B0-B1
 
+;x=x*cos(az)-y*sin(az)
+;y=x*sin(az)+y*cos(az)
 
+;y=y*cos(ax)-z*sin(ax)
+;z=y*sin(ax)+z*cos(ax)
 
+;z=z*cos(ay)-x*sin(ay)
+;x=z*sin(ay)+x*cos(ay)
 
+;COSAZ	.equ	b0
+;SINAZ	.equ	b1
+;COSAX	.equ	b2
+;SINAX	.equ	b3
+;COSAY	.equ	b4
+;SINAY	.equ	b5
 
 
  SUBR	_3d_xformoffset
@@ -1304,6 +1400,14 @@ ofiflp
 
 
 
+*******************************
+* Transform a set of XYZ points relative to 0,0,0
+* A0=*Obj 3D Points
+* A1=*Mem for xformed pts
+* A8=Angle 0-255 about Z
+* A9=Angle 0-255 about X
+* A10=Angle 0-255 about Y
+* Trashes A0-A7,B0-B1
 
 
  SUBR	_3d_xformrel0
@@ -1402,6 +1506,15 @@ ibnzlp
 
 
 
+********************************
+* Transform a set of XYZ points relative to an XYZ pt
+* A0=*Obj 3D Points
+* A1=*Mem for xformed pts
+* A8=Angle 0-255 about Z
+* A9=Angle 0-255 about X
+* A10=Angle 0-255 about Y
+* A12-A14=XYZ relative pt
+* Trashes A0-A7,B0-B1
 
 
 
@@ -1506,6 +1619,10 @@ dxrlp
 
 
 
+*******************************
+* Scale XY by Z and adjust for display
+* A0=*Xformed XYZ Points
+* Trashes A0-A7
  
  SUBRP	_3d_scalexy
 
@@ -1579,6 +1696,8 @@ stwix	PULL	a8,a9
 
 
 
+*******************************
+* Read players button (Process)
 
  SUBRP	plyr_readbut
 
@@ -1680,11 +1799,28 @@ mruhlp
 	jruc	mruhlp
 
 
+*******************************
+* Enemy fire randomly (Process)
 
  SUBRP	en_fire
 
+;#lp	SLEEPK	5
+;	movk	2,a0
+;	callr	rndrng0
+;	move	a0,a0
+;	jrnz	#lp		;Wait?
+;
+;
+;	CREATE0	en_msl
+;
+;	SLEEPK	5
+;	jruc	#lp
 
 
+*******************************
+* Fire a shell from an enemy (Process)
+* A8=*3D object
+* A10=Dir (0-255)
 
 	STRUCTPD
 	WORD	ens_hit		;!0=Shell collided with obj

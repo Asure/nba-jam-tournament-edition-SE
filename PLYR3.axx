@@ -207,6 +207,7 @@ cpbgexit1
 
 cpbgx	RETP
 
+*** this one below is disabled!
 
 plyr_jscrowdsnda
 	CREATE0	scrms
@@ -232,13 +233,13 @@ scrms	movi	scrm1_snd,a0
 	SLEEP	15
 	movi	scrm2_snd,a0
 	calla	snd_play1ovr
-	SLEEP	15
+	SLEEP	65
 	movi	scrm3_snd,a0
 	calla	snd_play1ovr
-	SLEEP	15
+	SLEEP	65
 	movi	scrm4_snd,a0
 	calla	snd_play1ovr
-	SLEEP	15
+	SLEEP	65
 	DIE
 
 	.ref	scrm1_snd,scrm2_snd,scrm3_snd,scrm4_snd

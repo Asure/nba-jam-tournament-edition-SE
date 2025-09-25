@@ -1841,19 +1841,46 @@ gjrunotot	move	a0,@game_time,L
 
 	CREATE	tvid,scr_clock
 
-	move	@gmqrtr,a0
+;Amm CMOS PSX Music (table ver.)
+	.if	WUNIT
+	movi	ADJPSXSND,a0		;Get value from CMOS
+	calla	GET_ADJ			;0=on, 1=off
+	jrnz	orgtune			;Off? Original sound
+
+psxtune	move	@gmqrtr,a0
+	sll	5,a0
+	addi	psxutune_t,a0
+	jruc	tunecont
+
+	.endif
+
+
+
+orgtune	move	@gmqrtr,a0
 	sll	5,a0
 	addi	gjrutune_t,a0
+
+tunecont
 	move	*a0,a0,L
 	calla	snd_play1ovr
-
 	jruc	gjrulp1
 
-gjrutune_t	.long	tuneq2_snd,tuneq2_snd,tuneq3_snd,tuneq4_snd,tuneq4_snd
+gjrutune_t	
+	.long	tuneq2_snd,tuneq2_snd,tuneq3_snd,tuneq4_snd,tuneq4_snd
 	.long	tuneot_snd,tuneot_snd,tuneot_snd
 	.long	tuneot_snd,tuneot_snd,tuneot_snd
 	.long	tuneot_snd,tuneot_snd,tuneot_snd
 	.long	tuneot_snd,tuneot_snd,tuneot_snd
+
+	.if	WUNIT
+	.ref	tuneq2psx_snd,tuneq3psx_snd,tuneq4psx_snd,tuneotpsx_snd
+psxutune_t	
+	.long	tuneq2psx_snd,tuneq2psx_snd,tuneq3psx_snd,tuneq4psx_snd,tuneq4psx_snd
+	.long	tuneotpsx_snd,tuneotpsx_snd,tuneotpsx_snd
+	.long	tuneotpsx_snd,tuneotpsx_snd,tuneotpsx_snd
+	.long	tuneotpsx_snd,tuneotpsx_snd,tuneotpsx_snd
+	.long	tuneotpsx_snd,tuneotpsx_snd,tuneotpsx_snd
+	.endif
 
  SUBRP	one_min_to_go
 
