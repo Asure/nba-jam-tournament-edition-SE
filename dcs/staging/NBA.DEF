@@ -1,0 +1,88 @@
+; **************************************************************************
+; *                                                                        *
+; * The signature string is put at the start of the first ROM, part U2.    *
+; * The date is automatically inserted, and takes up 8 characters. The     *
+; * signature string can be up to 108 characters long, leaving 100         *
+; * characters for arbitrary text.                                         *
+; *                                                                        *
+; **************************************************************************
+ 
+SIGNATURE='NBA JAM TE DCS (c) 2024 Williams'
+
+; **************************************************************************
+; *                                                                        *
+; *  The PLAYLIST file is the user-created playlist.                       *
+; *                                                                        *
+; **************************************************************************
+
+PLAYLIST='NBA.PLS'
+
+; **************************************************************************
+; *                                                                        *
+; * The event definition file, EVENTDEF, is needed by PLBUILD.EXE, and     *
+; * contains the opcode definitions and data structures used internally by *
+; * the playlist builder.                                                  *
+; *                                                                        *
+; **************************************************************************
+
+EVENTDEF='NBA.EVD'
+
+; **************************************************************************
+; *                                                                        *
+; * The region directory, REGDIR, is where the .CMP files are found.       *
+; *                                                                        *
+; **************************************************************************
+
+REGDIR='.\SNDS'
+
+; **************************************************************************
+; *                                                                        *
+; * ROM Configuration                                                      *
+; *                                                                        *
+; * Each ROM is assumed to be a 4 megabit part (0x80000 in length).        *
+; * Because the board can accommodate up to 8 Mb parts, the base addresses *
+; * of each ROM increase in increments of 0x100000. The format for the ROM *
+; * definition is:                                                         *
+; *                                                                        *
+; * ROM='name',base,length                                                 *
+; *                                                                        *
+; * The text and date (which is automatically inserted) are put at the     *
+; * beginning of the part.                                                 *
+; *                                                                        *
+; **************************************************************************
+
+MASKLIST='NBA.msk'
+LOCFILE='NBA.loc'
+
+ROM='U2.ROM',0x000000,0x100000, E
+ROM='U3.ROM',0x100000,0x100000,'S3 01/02/03', M
+ROM='U4.ROM',0x200000,0x100000,'S4 01/02/03', M
+ROM='U5.ROM',0x300000,0x100000,'S5 01/02/03', M
+;ROM='U6.ROM',0x400000,0x100000,'U6 %DATE%', M
+;ROM='U7.ROM',0x500000,0x080000,'U7 %DATE%', M
+;ROM='U8.ROM',0x600000,0x080000,'U8 %DATE%', M
+;ROM='U9.ROM',0x700000,0x080000,'U9 %DATE%', M
+
+; **************************************************************************
+; *                                                                        *
+; * The LOAD specifies the operating system code image, and any fixed      *
+; * tables used by the decompression algorithm (e.g. the CELP codebook).   *
+; * The LOAD= directive must come after the ROM= directive. Unused space   *
+; * up to the size specified is padded with FF.                            *
+; *                                                                        *
+; **************************************************************************
+
+;LOAD='opsys.bin',0x3000 ; ADSP-2105 op sys, 16k bytes in size - BOB, VLAD
+LOAD='videot6.bin',0x4000	; ADSP-2105 op sys, 16k bytes in size - JOE
+
+; **************************************************************************
+; *                                                                        *
+; * The basic system setup is four tracks.                                 *
+; *                                                                        *
+; **************************************************************************
+
+TRACKS = 6
+
+; **************************************************************************
+
+

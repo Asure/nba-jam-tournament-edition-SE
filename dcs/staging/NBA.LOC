@@ -1,0 +1,9 @@
+; .LOC file for NBA.DEF, 08/31/125, 04:39:39
+;
+;
+'U3.ROM', 0x100000,0x1C00,0x6A96  ; (Rom name,length, chksum info)
+;
+;  Region    Offset       Len      Frames  Parameters
+GLASS   ,    0x00000E,     8916,       206, 'HENRY[4.50] -vb47 -vi7 -vt3 '
+JORDAN  ,    0x0022E2,     2886,        91, 'HENRY[4.50] -vb47 -vi7 -vt3 '
+M_JORDAN,    0x002E28,     4152,       142, 'HENRY[4.50] -vb47 -vi7 -vt3 '

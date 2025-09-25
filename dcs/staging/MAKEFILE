@@ -1,0 +1,59 @@
+GAME = nba
+GAMEDIR = nba
+PLBUILD = plbuild 
+DEPS = ${GAME}.pls ${GAME}.evd ${GAME}.def
+EPROM = ${PLBUILD} -e
+MASK = ${PLBUILD} -m
+
+ROMS = 
+
+build:		dev load1
+
+me:		dev
+
+load:		
+		loadram -q 0=U2.ROM
+		loadram -q 1=U3.ROM
+		loadram -q 2=U4.ROM
+		loadram -q 3=U5.ROM
+		loadram -q 4=U6.ROM
+		loadram -q 5=U7.ROM
+#		loadram -q 6=U8.ROM
+#		loadram -q 7=U9.ROM
+		qcomm -d -i
+
+load1:
+		loadram -q 0=U2.ROM
+		qcomm -d -i
+
+dev:		${DEPS} 
+		cp devopsys.bin opsys.bin
+		${EPROM} ${GAME} 
+		touch dev
+		head -16 ${GAME}.lst
+
+roms:		${DEPS} 
+#		cp videot.bin opsys.bin
+		${EPROM} ${GAME} 
+		head -16 ${GAME}.lst
+
+dmask:		${DEPS}
+		cp devopsys.bin opsys.bin
+		${MASK} -d ${GAME}
+		head -16 ${GAME}.lst > ${GAME}.rom
+		tail -12 ${GAME}.lst >> ${GAME}.rom
+		cat ${GAME}.rom
+
+touch:
+		touch ${GAME}.pls
+
+cmplist:
+		grep -w play ${GAME}.pls > ${GAME}.t1
+		cut -f2 -d\' ${GAME}.t1 > ${GAME}.t2
+		sort ${GAME}.t2 | uniq > ${GAME}.cmp
+		rm ${GAME}.t1 ${GAME}.t2
+		
+backup:
+		xcopy ${GAME}.* f:\${GAMEDIR}
+		xcopy makefile  f:\${GAMEDIR}
+

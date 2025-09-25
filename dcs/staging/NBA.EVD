@@ -1,0 +1,29 @@
+;****************************************************************************
+; *                                                                        *
+; * Mortal Kombat II                                                       *
+; * (c) 1993 Williams Electronics Games, Inc.                              *
+; * .EVD file used by PLBUILD.EXP                                          *
+; *                                                                        *
+;****************************************************************************
+
+
+	end		0x00			
+	play		0x01,track,region,byte	
+	stop		0x02,track		
+	install		0x03,scall		
+	signal		0x04,byte		
+	marker		0x05,mark		
+
+	setvol		0x07,track,vol
+	upvol		0x08,track,vol
+	downvol		0x09,track,vol
+
+	rampvol		0x0a,track,vol,delay
+	rampupvol  	0x0b,track,vol,delay
+	rampdownvol	0x0c,track,vol,delay
+
+	loopstart	0x0e,byte
+	loopend		0x0f
+
+;****************************************************************************
+

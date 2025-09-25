@@ -1,0 +1,2208 @@
+Loaded ROM files from nbatest10.zip:
+  [U2] U2.ROM, 1048576 bytes
+  [U3] U3.ROM, 1048576 bytes
+  [U4] U4.ROM, 1048576 bytes
+  [U5] U5.ROM, 1048576 bytes
+  [U6] U6.ROM, 1048576 bytes
+
+U2 Signature: NBAJAM DCS AMM
+Known pinball machine: [Unknown]
+Version: DCS audio board, Software 1.01 (1993)
+Soft boot program offset: $01000
+ROM U2 catalog offset: $04000
+Maximum track number: 07 2a
+Number of audio channels: 6
+Track $0000 Channel 0 {    // Address $00055c9 [U2 $055c9], Time 7.68ms
+    Stop(channel 5);                                                // 0000 02 05
+    Wait(1) End;                                                    // 0001 00
+};
+Track $0001 Channel 0 {    // Address $00055d5 [U2 $055d5], Time 142333.44ms
+    SetMixingLevel(level 110);                                      // 0000 07 00 6E
+    Play(stream $2BA20A);                                           // 0000 01 00 2BA20A 01
+    Wait(1585) Loop (4) {                                           // 0631 0E 04
+      Play(stream $20000C);                                         // 0000 01 00 20000C 01
+      Wait(4237)                                                    // 108D 0F
+    }                                                               
+    End;                                                            // 0000 00
+};
+Track $0002 Channel 0 {    // Address $00055f6 [U2 $055f6], Time 406755.84ms
+    SetMixingLevel(level 110);                                      // 0000 07 00 6E
+    Play(stream $2E52BA);                                           // 0000 01 00 2E52BA 01
+    Wait(1627) Loop (8) {                                           // 065B 0E 08
+      Play(stream $10000C);                                         // 0000 01 00 10000C 01
+      Wait(6417)                                                    // 1911 0F
+    }                                                               
+    End;                                                            // 0000 00
+};
+Track $0003 Channel 0 {    // Address $0005617 [U2 $05617], Time 101237.76ms
+    SetMixingLevel(level 110);                                      // 0000 07 00 6E
+    Play(stream $30A116);                                           // 0000 01 00 30A116 01
+    Wait(908) Play(stream $17915E);                                 // 038C 01 00 17915E 01
+    Wait(6137) Play(stream $17915E);                                // 17F9 01 00 17915E 01
+    Wait(4835) SetMixingLevel(level 0, steps 1302);                 // 12E3 0A 00 00 0516
+    Wait(1302) End;                                                 // 0516 00
+};
+Track $0004 Channel 0 {    // Address $0005640 [U2 $05640], Time 94141.44ms
+    SetMixingLevel(level 110);                                      // 0000 07 00 6E
+    Play(stream $2A7B26);                                           // 0000 01 00 2A7B26 01
+    Wait(2043) Play(stream $2A7B26);                                // 07FB 01 00 2A7B26 01
+    Wait(2043) Play(stream $2A7B26);                                // 07FB 01 00 2A7B26 01
+    Wait(2043) Play(stream $2A7B26);                                // 07FB 01 00 2A7B26 01
+    Wait(2043) Play(stream $2A7B26);                                // 07FB 01 00 2A7B26 01
+    Wait(2043) Play(stream $2A7B26);                                // 07FB 01 00 2A7B26 01
+    Wait(741) SetMixingLevel(level 0, steps 1302);                  // 02E5 0A 00 00 0516
+    Wait(1302) End;                                                 // 0516 00
+};
+Track $0006 Channel 0 {    // Address $0005681 [U2 $05681], Time 237504.00ms
+    SetMixingLevel(level 110);                                      // 0000 07 00 6E
+    Play(stream $2F2580);                                           // 0000 01 00 2F2580 01
+    Wait(1109) Loop (8) {                                           // 0455 0E 08
+      Play(stream $250912);                                         // 0000 01 00 250912 01
+      Wait(3727)                                                    // 0E8F 0F
+    }                                                               
+    End;                                                            // 0000 00
+};
+Track $0007 Channel 0 {    // Address $00056a2 [U2 $056a2], Time 371635.19ms
+    SetMixingLevel(level 110);                                      // 0000 07 00 6E
+    Play(stream $2C9944);                                           // 0000 01 00 2C9944 01
+    Wait(1638) Loop (8) {                                           // 0666 0E 08
+      Play(stream $13E572);                                         // 0000 01 00 13E572 01
+      Wait(5844)                                                    // 16D4 0F
+    }                                                               
+    End;                                                            // 0000 00
+};
+Track $0008 Channel 0 {    // Address $00056c3 [U2 $056c3], Time 504545.28ms
+    SetMixingLevel(level 110);                                      // 0000 07 00 6E
+    Loop (8) {                                                      // 0000 0E 08
+      Play(stream $059866);                                         // 0000 01 00 059866 01
+      Wait(8212)                                                    // 2014 0F
+    }                                                               
+    End;                                                            // 0000 00
+};
+Track $000a Channel 0 {    // Address $00056dc [U2 $056dc], Time 94141.44ms
+    SetMixingLevel(level 110);                                      // 0000 07 00 6E
+    Play(stream $2A7B26);                                           // 0000 01 00 2A7B26 01
+    Wait(2043) Play(stream $2A7B26);                                // 07FB 01 00 2A7B26 01
+    Wait(2043) Play(stream $2A7B26);                                // 07FB 01 00 2A7B26 01
+    Wait(2043) Play(stream $2A7B26);                                // 07FB 01 00 2A7B26 01
+    Wait(2043) Play(stream $2A7B26);                                // 07FB 01 00 2A7B26 01
+    Wait(2043) Play(stream $2A7B26);                                // 07FB 01 00 2A7B26 01
+    Wait(741) SetMixingLevel(level 0, steps 1302);                  // 02E5 0A 00 00 0516
+    Wait(1302) End;                                                 // 0516 00
+};
+Track $0010 Channel 5 {    // Address $000571d [U2 $0571d], Time 967.68ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3AD8FA);                                           // 0000 01 05 3AD8FA 01
+    Wait(126) End;                                                  // 007E 00
+};
+Track $0011 Channel 5 {    // Address $000572f [U2 $0572f], Time 591.36ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $445882);                                           // 0000 01 05 445882 01
+    Wait(77) End;                                                   // 004D 00
+};
+Track $0012 Channel 5 {    // Address $0005741 [U2 $05741], Time 698.88ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $430C40);                                           // 0000 01 05 430C40 01
+    Wait(91) End;                                                   // 005B 00
+};
+Track $0013 Channel 5 {    // Address $0005753 [U2 $05753], Time 775.68ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $4288F2);                                           // 0000 01 05 4288F2 01
+    Wait(101) End;                                                  // 0065 00
+};
+Track $0014 Channel 5 {    // Address $0005765 [U2 $05765], Time 698.88ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $42C51A);                                           // 0000 01 05 42C51A 01
+    Wait(91) End;                                                   // 005B 00
+};
+Track $0015 Channel 5 {    // Address $0005777 [U2 $05777], Time 783.36ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3F6FB6);                                           // 0000 01 05 3F6FB6 01
+    Wait(102) End;                                                  // 0066 00
+};
+Track $0016 Channel 5 {    // Address $0005789 [U2 $05789], Time 545.28ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $440AD4);                                           // 0000 01 05 440AD4 01
+    Wait(71) End;                                                   // 0047 00
+};
+Track $0017 Channel 5 {    // Address $000579b [U2 $0579b], Time 829.44ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3E2286);                                           // 0000 01 05 3E2286 01
+    Wait(108) End;                                                  // 006C 00
+};
+Track $0018 Channel 5 {    // Address $00057ad [U2 $057ad], Time 675.84ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $432F6A);                                           // 0000 01 05 432F6A 01
+    Wait(88) End;                                                   // 0058 00
+};
+Track $0019 Channel 5 {    // Address $00057bf [U2 $057bf], Time 744.96ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $40000C);                                           // 0000 01 05 40000C 01
+    Wait(97) End;                                                   // 0061 00
+};
+Track $001a Channel 5 {    // Address $00057d1 [U2 $057d1], Time 583.68ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $416526);                                           // 0000 01 05 416526 01
+    Wait(76) End;                                                   // 004C 00
+};
+Track $001b Channel 5 {    // Address $00057e3 [U2 $057e3], Time 783.36ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $41725A);                                           // 0000 01 05 41725A 01
+    Wait(102) End;                                                  // 0066 00
+};
+Track $001c Channel 5 {    // Address $00057f5 [U2 $057f5], Time 729.60ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $437FB8);                                           // 0000 01 05 437FB8 01
+    Wait(95) End;                                                   // 005F 00
+};
+Track $001d Channel 5 {    // Address $0005807 [U2 $05807], Time 744.96ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3D609E);                                           // 0000 01 05 3D609E 01
+    Wait(97) End;                                                   // 0061 00
+};
+Track $001e Channel 5 {    // Address $0005819 [U2 $05819], Time 837.12ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3B9A5A);                                           // 0000 01 05 3B9A5A 01
+    Wait(109) End;                                                  // 006D 00
+};
+Track $001f Channel 5 {    // Address $000582b [U2 $0582b], Time 783.36ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3EACE8);                                           // 0000 01 05 3EACE8 01
+    Wait(102) End;                                                  // 0066 00
+};
+Track $0020 Channel 5 {    // Address $000583d [U2 $0583d], Time 798.72ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3F60FA);                                           // 0000 01 05 3F60FA 01
+    Wait(104) End;                                                  // 0068 00
+};
+Track $0021 Channel 5 {    // Address $000584f [U2 $0584f], Time 798.72ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3F5232);                                           // 0000 01 05 3F5232 01
+    Wait(104) End;                                                  // 0068 00
+};
+Track $0023 Channel 5 {    // Address $0005861 [U2 $05861], Time 706.56ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $43A12C);                                           // 0000 01 05 43A12C 01
+    Wait(92) End;                                                   // 005C 00
+};
+Track $0024 Channel 5 {    // Address $0005873 [U2 $05873], Time 714.24ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $43693A);                                           // 0000 01 05 43693A 01
+    Wait(93) End;                                                   // 005D 00
+};
+Track $0025 Channel 5 {    // Address $0005885 [U2 $05885], Time 752.64ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $425832);                                           // 0000 01 05 425832 01
+    Wait(98) End;                                                   // 0062 00
+};
+Track $0026 Channel 5 {    // Address $0005897 [U2 $05897], Time 668.16ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $417F82);                                           // 0000 01 05 417F82 01
+    Wait(87) End;                                                   // 0057 00
+};
+Track $0027 Channel 5 {    // Address $00058a9 [U2 $058a9], Time 721.92ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $413D64);                                           // 0000 01 05 413D64 01
+    Wait(94) End;                                                   // 005E 00
+};
+Track $0028 Channel 5 {    // Address $00058bb [U2 $058bb], Time 714.24ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $435DD0);                                           // 0000 01 05 435DD0 01
+    Wait(93) End;                                                   // 005D 00
+};
+Track $0029 Channel 5 {    // Address $00058cd [U2 $058cd], Time 691.20ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $43C1DE);                                           // 0000 01 05 43C1DE 01
+    Wait(90) End;                                                   // 005A 00
+};
+Track $002a Channel 5 {    // Address $00058df [U2 $058df], Time 706.56ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $43962A);                                           // 0000 01 05 43962A 01
+    Wait(92) End;                                                   // 005C 00
+};
+Track $002b Channel 5 {    // Address $00058f1 [U2 $058f1], Time 652.80ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $420D4E);                                           // 0000 01 05 420D4E 01
+    Wait(85) End;                                                   // 0055 00
+};
+Track $002c Channel 5 {    // Address $0005903 [U2 $05903], Time 844.80ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3FC6EC);                                           // 0000 01 05 3FC6EC 01
+    Wait(110) End;                                                  // 006E 00
+};
+Track $002f Channel 5 {    // Address $0005915 [U2 $05915], Time 798.72ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3FF20A);                                           // 0000 01 05 3FF20A 01
+    Wait(104) End;                                                  // 0068 00
+};
+Track $0030 Channel 5 {    // Address $0005927 [U2 $05927], Time 729.60ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $42AD1E);                                           // 0000 01 05 42AD1E 01
+    Wait(95) End;                                                   // 005F 00
+};
+Track $0031 Channel 5 {    // Address $0005939 [U2 $05939], Time 798.72ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $41B3A4);                                           // 0000 01 05 41B3A4 01
+    Wait(104) End;                                                  // 0068 00
+};
+Track $0032 Channel 5 {    // Address $000594b [U2 $0594b], Time 1190.40ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3AECBE);                                           // 0000 01 05 3AECBE 01
+    Wait(155) End;                                                  // 009B 00
+};
+Track $0033 Channel 5 {    // Address $000595d [U2 $0595d], Time 890.88ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3FB87E);                                           // 0000 01 05 3FB87E 01
+    Wait(116) End;                                                  // 0074 00
+};
+Track $0034 Channel 5 {    // Address $000596f [U2 $0596f], Time 944.64ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3E9DB0);                                           // 0000 01 05 3E9DB0 01
+    Wait(123) End;                                                  // 007B 00
+};
+Track $0035 Channel 5 {    // Address $0005981 [U2 $05981], Time 936.96ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3F3474);                                           // 0000 01 05 3F3474 01
+    Wait(122) End;                                                  // 007A 00
+};
+Track $0036 Channel 5 {    // Address $0005993 [U2 $05993], Time 706.56ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $42B924);                                           // 0000 01 05 42B924 01
+    Wait(92) End;                                                   // 005C 00
+};
+Track $0037 Channel 5 {    // Address $00059a5 [U2 $059a5], Time 791.04ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $408D92);                                           // 0000 01 05 408D92 01
+    Wait(103) End;                                                  // 0067 00
+};
+Track $0038 Channel 5 {    // Address $00059b7 [U2 $059b7], Time 936.96ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3E7F36);                                           // 0000 01 05 3E7F36 01
+    Wait(122) End;                                                  // 007A 00
+};
+Track $0039 Channel 5 {    // Address $00059c9 [U2 $059c9], Time 814.08ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $40FA76);                                           // 0000 01 05 40FA76 01
+    Wait(106) End;                                                  // 006A 00
+};
+Track $003a Channel 5 {    // Address $00059db [U2 $059db], Time 791.04ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $409B5E);                                           // 0000 01 05 409B5E 01
+    Wait(103) End;                                                  // 0067 00
+};
+Track $003b Channel 5 {    // Address $00059ed [U2 $059ed], Time 721.92ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $43007A);                                           // 0000 01 05 43007A 01
+    Wait(94) End;                                                   // 005E 00
+};
+Track $003c Channel 5 {    // Address $00059ff [U2 $059ff], Time 852.48ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $405554);                                           // 0000 01 05 405554 01
+    Wait(111) End;                                                  // 006F 00
+};
+Track $003d Channel 5 {    // Address $0005a11 [U2 $05a11], Time 591.36ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $43EC8A);                                           // 0000 01 05 43EC8A 01
+    Wait(77) End;                                                   // 004D 00
+};
+Track $003e Channel 5 {    // Address $0005a23 [U2 $05a23], Time 760.32ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $424BC6);                                           // 0000 01 05 424BC6 01
+    Wait(99) End;                                                   // 0063 00
+};
+Track $003f Channel 5 {    // Address $0005a35 [U2 $05a35], Time 867.84ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3FE3B0);                                           // 0000 01 05 3FE3B0 01
+    Wait(113) End;                                                  // 0071 00
+};
+Track $0040 Channel 5 {    // Address $0005a47 [U2 $05a47], Time 768.00ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $41DA6E);                                           // 0000 01 05 41DA6E 01
+    Wait(100) End;                                                  // 0064 00
+};
+Track $0041 Channel 5 {    // Address $0005a59 [U2 $05a59], Time 814.08ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $4122B2);                                           // 0000 01 05 4122B2 01
+    Wait(106) End;                                                  // 006A 00
+};
+Track $0042 Channel 5 {    // Address $0005a6b [U2 $05a6b], Time 883.20ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $40718E);                                           // 0000 01 05 40718E 01
+    Wait(115) End;                                                  // 0073 00
+};
+Track $0043 Channel 5 {    // Address $0005a7d [U2 $05a7d], Time 875.52ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3ECB2E);                                           // 0000 01 05 3ECB2E 01
+    Wait(114) End;                                                  // 0072 00
+};
+Track $0044 Channel 5 {    // Address $0005a8f [U2 $05a8f], Time 791.04ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $40DF76);                                           // 0000 01 05 40DF76 01
+    Wait(103) End;                                                  // 0067 00
+};
+Track $0045 Channel 5 {    // Address $0005aa1 [U2 $05aa1], Time 1121.28ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3C2D46);                                           // 0000 01 05 3C2D46 01
+    Wait(146) End;                                                  // 0092 00
+};
+Track $0047 Channel 5 {    // Address $0005ab3 [U2 $05ab3], Time 960.00ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3DC2DC);                                           // 0000 01 05 3DC2DC 01
+    Wait(125) End;                                                  // 007D 00
+};
+Track $0048 Channel 5 {    // Address $0005ac5 [U2 $05ac5], Time 883.20ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3E12C4);                                           // 0000 01 05 3E12C4 01
+    Wait(115) End;                                                  // 0073 00
+};
+Track $0049 Channel 5 {    // Address $0005ad7 [U2 $05ad7], Time 913.92ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3E512E);                                           // 0000 01 05 3E512E 01
+    Wait(119) End;                                                  // 0077 00
+};
+Track $004a Channel 5 {    // Address $0005ae9 [U2 $05ae9], Time 752.64ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $431804);                                           // 0000 01 05 431804 01
+    Wait(98) End;                                                   // 0062 00
+};
+Track $004b Channel 5 {    // Address $0005afb [U2 $05afb], Time 1320.96ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $3CEC1A);                                           // 0000 01 05 3CEC1A 01
+    Wait(132) End;                                                  // 0084 00
+};
+Track $004c Channel 5 {    // Address $0005b1a [U2 $05b1a], Time 806.40ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $4496FA);                                           // 0000 01 05 4496FA 01
+    Wait(65) End;                                                   // 0041 00
+};
+Track $004d Channel 5 {    // Address $0005b39 [U2 $05b39], Time 721.92ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $4428B2);                                           // 0000 01 05 4428B2 01
+    Wait(54) End;                                                   // 0036 00
+};
+Track $004e Channel 5 {    // Address $0005b58 [U2 $05b58], Time 1297.92ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $3B0080);                                           // 0000 01 05 3B0080 01
+    Wait(129) End;                                                  // 0081 00
+};
+Track $004f Channel 5 {    // Address $0005b77 [U2 $05b77], Time 1274.88ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $39B9B4);                                           // 0000 01 05 39B9B4 01
+    Wait(126) End;                                                  // 007E 00
+};
+Track $0050 Channel 5 {    // Address $0005b96 [U2 $05b96], Time 975.36ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $3E8E76);                                           // 0000 01 05 3E8E76 01
+    Wait(87) End;                                                   // 0057 00
+};
+Track $0051 Channel 5 {    // Address $0005bb5 [U2 $05bb5], Time 860.16ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $40B6D6);                                           // 0000 01 05 40B6D6 01
+    Wait(72) End;                                                   // 0048 00
+};
+Track $0053 Channel 5 {    // Address $0005bd4 [U2 $05bd4], Time 944.64ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $43E202);                                           // 0000 01 05 43E202 01
+    Wait(83) End;                                                   // 0053 00
+};
+Track $0054 Channel 5 {    // Address $0005bf3 [U2 $05bf3], Time 814.08ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $448E60);                                           // 0000 01 05 448E60 01
+    Wait(66) End;                                                   // 0042 00
+};
+Track $0055 Channel 5 {    // Address $0005c12 [U2 $05c12], Time 936.96ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $3DD302);                                           // 0000 01 05 3DD302 01
+    Wait(82) End;                                                   // 0052 00
+};
+Track $0056 Channel 5 {    // Address $0005c31 [U2 $05c31], Time 952.32ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $3D1E24);                                           // 0000 01 05 3D1E24 01
+    Wait(84) End;                                                   // 0054 00
+};
+Track $0057 Channel 5 {    // Address $0005c50 [U2 $05c50], Time 768.00ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $4445B0);                                           // 0000 01 05 4445B0 01
+    Wait(60) End;                                                   // 003C 00
+};
+Track $0058 Channel 5 {    // Address $0005c6f [U2 $05c6f], Time 1144.32ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $392154);                                           // 0000 01 05 392154 01
+    Wait(109) End;                                                  // 006D 00
+};
+Track $0059 Channel 5 {    // Address $0005c8e [U2 $05c8e], Time 1198.08ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $3A752C);                                           // 0000 01 05 3A752C 01
+    Wait(116) End;                                                  // 0074 00
+};
+Track $005a Channel 5 {    // Address $0005cad [U2 $05cad], Time 890.88ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $40C466);                                           // 0000 01 05 40C466 01
+    Wait(76) End;                                                   // 004C 00
+};
+Track $005b Channel 5 {    // Address $0005ccc [U2 $05ccc], Time 1121.28ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $3FAA0E);                                           // 0000 01 05 3FAA0E 01
+    Wait(106) End;                                                  // 006A 00
+};
+Track $005c Channel 5 {    // Address $0005ceb [U2 $05ceb], Time 1167.36ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $402AD2);                                           // 0000 01 05 402AD2 01
+    Wait(112) End;                                                  // 0070 00
+};
+Track $005d Channel 5 {    // Address $0005d0a [U2 $05d0a], Time 883.20ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $4414D2);                                           // 0000 01 05 4414D2 01
+    Wait(75) End;                                                   // 004B 00
+};
+Track $005e Channel 5 {    // Address $0005d29 [U2 $05d29], Time 1013.76ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $4232D2);                                           // 0000 01 05 4232D2 01
+    Wait(92) End;                                                   // 005C 00
+};
+Track $005f Channel 5 {    // Address $0005d48 [U2 $05d48], Time 1090.56ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $4219D2);                                           // 0000 01 05 4219D2 01
+    Wait(102) End;                                                  // 0066 00
+};
+Track $0060 Channel 5 {    // Address $0005d67 [U2 $05d67], Time 890.88ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $43F6AA);                                           // 0000 01 05 43F6AA 01
+    Wait(76) End;                                                   // 004C 00
+};
+Track $0061 Channel 5 {    // Address $0005d86 [U2 $05d86], Time 1128.96ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $3AC52C);                                           // 0000 01 05 3AC52C 01
+    Wait(107) End;                                                  // 006B 00
+};
+Track $0062 Channel 5 {    // Address $0005da5 [U2 $05da5], Time 983.04ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $42E8C6);                                           // 0000 01 05 42E8C6 01
+    Wait(88) End;                                                   // 0058 00
+};
+Track $0063 Channel 5 {    // Address $0005dc4 [U2 $05dc4], Time 814.08ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3E41B8);                                           // 0000 01 05 3E41B8 01
+    Wait(106) End;                                                  // 006A 00
+};
+Track $0064 Channel 5 {    // Address $0005dd6 [U2 $05dd6], Time 460.80ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $42F4A0);                                           // 0000 01 05 42F4A0 01
+    Wait(60) End;                                                   // 003C 00
+};
+Track $0065 Channel 5 {    // Address $0005de8 [U2 $05de8], Time 806.40ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $4323B8);                                           // 0000 01 05 4323B8 01
+    Wait(105) End;                                                  // 0069 00
+};
+Track $0066 Channel 5 {    // Address $0005dfa [U2 $05dfa], Time 606.72ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $438AF2);                                           // 0000 01 05 438AF2 01
+    Wait(79) End;                                                   // 004F 00
+};
+Track $0067 Channel 5 {    // Address $0005e0c [U2 $05e0c], Time 729.60ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $422654);                                           // 0000 01 05 422654 01
+    Wait(95) End;                                                   // 005F 00
+};
+Track $0068 Channel 5 {    // Address $0005e1e [U2 $05e1e], Time 706.56ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $42D108);                                           // 0000 01 05 42D108 01
+    Wait(92) End;                                                   // 005C 00
+};
+Track $0069 Channel 5 {    // Address $0005e30 [U2 $05e30], Time 568.32ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $43AC1A);                                           // 0000 01 05 43AC1A 01
+    Wait(74) End;                                                   // 004A 00
+};
+Track $006a Channel 5 {    // Address $0005e42 [U2 $05e42], Time 768.00ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $42A116);                                           // 0000 01 05 42A116 01
+    Wait(100) End;                                                  // 0064 00
+};
+Track $0080 Channel 1 {    // Address $0005e54 [U2 $05e54], Time 422.40ms
+    SetMixingLevel(level 100);                                      // 0000 07 01 64
+    Play(stream $44D1B0);                                           // 0000 01 01 44D1B0 01
+    Wait(55) End;                                                   // 0037 00
+};
+Track $0081 Channel 2 {    // Address $0005e66 [U2 $05e66], Time 422.40ms
+    SetMixingLevel(level 100);                                      // 0000 07 02 64
+    Play(stream $44D6F8);                                           // 0000 01 02 44D6F8 01
+    Wait(55) End;                                                   // 0037 00
+};
+Track $0082 Channel 3 {    // Address $0005e78 [U2 $05e78], Time 422.40ms
+    SetMixingLevel(level 100);                                      // 0000 07 03 64
+    Play(stream $44DC3A);                                           // 0000 01 03 44DC3A 01
+    Wait(55) End;                                                   // 0037 00
+};
+Track $0083 Channel 4 {    // Address $0005e8a [U2 $05e8a], Time 422.40ms
+    SetMixingLevel(level 100);                                      // 0000 07 04 64
+    Play(stream $0FF9F0);                                           // 0000 01 04 0FF9F0 01
+    Wait(55) End;                                                   // 0037 00
+};
+Track $0084 Channel 1 {    // Address $0005e9c [U2 $05e9c], Time 921.60ms
+    SetMixingLevel(level 100);                                      // 0000 07 01 64
+    Play(stream $3A894E);                                           // 0000 01 01 3A894E 01
+    Wait(120) End;                                                  // 0078 00
+};
+Track $0085 Channel 2 {    // Address $0005eae [U2 $05eae], Time 921.60ms
+    SetMixingLevel(level 100);                                      // 0000 07 02 64
+    Play(stream $3A894E);                                           // 0000 01 02 3A894E 01
+    Wait(120) End;                                                  // 0078 00
+};
+Track $0086 Channel 3 {    // Address $0005ec0 [U2 $05ec0], Time 921.60ms
+    SetMixingLevel(level 100);                                      // 0000 07 03 64
+    Play(stream $3A894E);                                           // 0000 01 03 3A894E 01
+    Wait(120) End;                                                  // 0078 00
+};
+Track $0087 Channel 4 {    // Address $0005ed2 [U2 $05ed2], Time 921.60ms
+    SetMixingLevel(level 100);                                      // 0000 07 04 64
+    Play(stream $3A894E);                                           // 0000 01 04 3A894E 01
+    Wait(120) End;                                                  // 0078 00
+};
+Track $0088 Channel 1 {    // Address $0005ee4 [U2 $05ee4], Time 1413.12ms
+    SetMixingLevel(level 100);                                      // 0000 07 01 64
+    Play(stream $356AE2);                                           // 0000 01 01 356AE2 01
+    Wait(184) End;                                                  // 00B8 00
+};
+Track $0089 Channel 2 {    // Address $0005ef6 [U2 $05ef6], Time 1413.12ms
+    SetMixingLevel(level 100);                                      // 0000 07 02 64
+    Play(stream $3588FC);                                           // 0000 01 02 3588FC 01
+    Wait(184) End;                                                  // 00B8 00
+};
+Track $008a Channel 3 {    // Address $0005f08 [U2 $05f08], Time 1413.12ms
+    SetMixingLevel(level 100);                                      // 0000 07 03 64
+    Play(stream $34D18C);                                           // 0000 01 03 34D18C 01
+    Wait(184) End;                                                  // 00B8 00
+};
+Track $008b Channel 4 {    // Address $0005f1a [U2 $05f1a], Time 1413.12ms
+    SetMixingLevel(level 100);                                      // 0000 07 04 64
+    Play(stream $361E22);                                           // 0000 01 04 361E22 01
+    Wait(184) End;                                                  // 00B8 00
+};
+Track $008c Channel 2 {    // Address $0005f2c [U2 $05f2c], Time 238.08ms
+    SetMixingLevel(level 25);                                       // 0000 07 02 19
+    Play(stream $44C566);                                           // 0000 01 02 44C566 01
+    Wait(31) End;                                                   // 001F 00
+};
+Track $0090 Channel 4 {    // Address $0005f3e [U2 $05f3e], Time 330.24ms
+    SetMixingLevel(level 100);                                      // 0000 07 04 64
+    Play(stream $44E160);                                           // 0000 01 04 44E160 01
+    Wait(43) End;                                                   // 002B 00
+};
+Track $0091 Channel 4 {    // Address $0005f50 [U2 $05f50], Time 337.92ms
+    SetMixingLevel(level 100);                                      // 0000 07 04 64
+    Play(stream $44FCDE);                                           // 0000 01 04 44FCDE 01
+    Wait(44) End;                                                   // 002C 00
+};
+Track $0092 Channel 4 {    // Address $0005f62 [U2 $05f62], Time 1052.16ms
+    SetMixingLevel(level 95);                                       // 0000 07 04 5F
+    Play(stream $3A2384);                                           // 0000 01 04 3A2384 01
+    Wait(137) End;                                                  // 0089 00
+};
+Track $0093 Channel 3 {    // Address $0005f74 [U2 $05f74], Time 652.80ms
+    SetMixingLevel(level 100);                                      // 0000 07 03 64
+    Play(stream $3FD550);                                           // 0000 01 03 3FD550 01
+    Wait(85) End;                                                   // 0055 00
+};
+Track $0097 Channel 4 {    // Address $0005f86 [U2 $05f86], Time 591.36ms
+    SetMixingLevel(level 100);                                      // 0000 07 04 64
+    Play(stream $423F50);                                           // 0000 01 04 423F50 01
+    Wait(77) End;                                                   // 004D 00
+};
+Track $00a0 Channel 4 {    // Address $0005f98 [U2 $05f98], Time 560.64ms
+    SetMixingLevel(level 100);                                      // 0000 07 04 64
+    Play(stream $4346AA);                                           // 0000 01 04 4346AA 01
+    Wait(73) End;                                                   // 0049 00
+};
+Track $00a2 Channel 4 {    // Address $0005faa [U2 $05faa], Time 552.96ms
+    SetMixingLevel(level 100);                                      // 0000 07 04 64
+    Play(stream $3F167C);                                           // 0000 01 04 3F167C 01
+    Wait(72) End;                                                   // 0048 00
+};
+Track $00a3 Channel 4 {    // Address $0005fbc [U2 $05fbc], Time 552.96ms
+    SetMixingLevel(level 100);                                      // 0000 07 04 64
+    Play(stream $3EF86C);                                           // 0000 01 04 3EF86C 01
+    Wait(72) End;                                                   // 0048 00
+};
+Track $00a4 Channel 4 {    // Address $0005fce [U2 $05fce], Time 952.32ms
+    SetMixingLevel(level 100);                                      // 0000 07 04 64
+    Play(stream $3C74BC);                                           // 0000 01 04 3C74BC 01
+    Wait(124) End;                                                  // 007C 00
+};
+Track $00a5 Channel 1 {    // Address $0005fe0 [U2 $05fe0], Time 2250.24ms
+    SetMixingLevel(level 100);                                      // 0000 07 01 64
+    Play(stream $346CBC);                                           // 0000 01 01 346CBC 01
+    Wait(293) End;                                                  // 0125 00
+};
+Track $00a7 Channel 1 {    // Address $0005ff2 [U2 $05ff2], Time 261.12ms
+    SetMixingLevel(level 100);                                      // 0000 07 01 64
+    Play(stream $1FFC92);                                           // 0000 01 01 1FFC92 01
+    Wait(34) End;                                                   // 0022 00
+};
+Track $00a8 Channel 3 {    // Address $0006004 [U2 $06004], Time 115.20ms
+    SetMixingLevel(level 100);                                      // 0000 07 03 64
+    Play(stream $44F916);                                           // 0000 01 03 44F916 01
+    Wait(15) End;                                                   // 000F 00
+};
+Track $00a9 Channel 3 {    // Address $0006016 [U2 $06016], Time 345.60ms
+    SetMixingLevel(level 100);                                      // 0000 07 03 64
+    Play(stream $446AF2);                                           // 0000 01 03 446AF2 01
+    Wait(45) End;                                                   // 002D 00
+};
+Track $00ae Channel 3 {    // Address $0006028 [U2 $06028], Time 3809.28ms
+    SetMixingLevel(level 100);                                      // 0000 07 03 64
+    SetMixingLevel(channel 0, decrease 50);                         // 0000 09 00 32
+    Play(stream $321816);                                           // 0000 01 03 321816 01
+    Wait(496) SetMixingLevel(channel 0, increase 127, steps 58);    // 01F0 0B 00 7F 003A
+    End;                                                            // 0000 00
+};
+Track $00af Channel 3 {    // Address $0006046 [U2 $06046], Time 1973.76ms
+    SetMixingLevel(level 100);                                      // 0000 07 03 64
+    SetMixingLevel(channel 0, decrease 50);                         // 0000 09 00 32
+    Play(stream $3394A8);                                           // 0000 01 03 3394A8 01
+    Wait(257) SetMixingLevel(channel 0, increase 127, steps 58);    // 0101 0B 00 7F 003A
+    End;                                                            // 0000 00
+};
+Track $00b0 Channel 5 {    // Address $0006064 [U2 $06064], Time 514.56ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $4473EC);                                           // 0000 01 05 4473EC 01
+    Wait(67) End;                                                   // 0043 00
+};
+Track $00b1 Channel 5 {    // Address $0006076 [U2 $06076], Time 929.28ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3EE95A);                                           // 0000 01 05 3EE95A 01
+    Wait(121) End;                                                  // 0079 00
+};
+Track $00b2 Channel 5 {    // Address $0006088 [U2 $06088], Time 729.60ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $4107E4);                                           // 0000 01 05 4107E4 01
+    Wait(95) End;                                                   // 005F 00
+};
+Track $00b3 Channel 5 {    // Address $000609a [U2 $0609a], Time 660.48ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3D818E);                                           // 0000 01 05 3D818E 01
+    Wait(86) End;                                                   // 0056 00
+};
+Track $00b4 Channel 5 {    // Address $00060ac [U2 $060ac], Time 1013.76ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3C6330);                                           // 0000 01 05 3C6330 01
+    Wait(132) End;                                                  // 0084 00
+};
+Track $00b6 Channel 5 {    // Address $00060be [U2 $060be], Time 990.72ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3B142C);                                           // 0000 01 05 3B142C 01
+    Wait(129) End;                                                  // 0081 00
+};
+Track $00b7 Channel 5 {    // Address $00060d0 [U2 $060d0], Time 683.52ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $433B0A);                                           // 0000 01 05 433B0A 01
+    Wait(89) End;                                                   // 0059 00
+};
+Track $00b8 Channel 5 {    // Address $00060e2 [U2 $060e2], Time 721.92ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $41CD94);                                           // 0000 01 05 41CD94 01
+    Wait(94) End;                                                   // 005E 00
+};
+Track $00b9 Channel 5 {    // Address $00060f4 [U2 $060f4], Time 706.56ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3D3F72);                                           // 0000 01 05 3D3F72 01
+    Wait(92) End;                                                   // 005C 00
+};
+Track $00ba Channel 5 {    // Address $0006106 [U2 $06106], Time 775.68ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3D0D78);                                           // 0000 01 05 3D0D78 01
+    Wait(101) End;                                                  // 0065 00
+};
+Track $00bb Channel 5 {    // Address $0006118 [U2 $06118], Time 744.96ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3E322A);                                           // 0000 01 05 3E322A 01
+    Wait(97) End;                                                   // 0061 00
+};
+Track $00bc Channel 5 {    // Address $000612a [U2 $0612a], Time 637.44ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $4199A6);                                           // 0000 01 05 4199A6 01
+    Wait(83) End;                                                   // 0053 00
+};
+Track $00bd Channel 5 {    // Address $000613c [U2 $0613c], Time 760.32ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $40ECF6);                                           // 0000 01 05 40ECF6 01
+    Wait(99) End;                                                   // 0063 00
+};
+Track $00be Channel 5 {    // Address $000614e [U2 $0614e], Time 583.68ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $443282);                                           // 0000 01 05 443282 01
+    Wait(76) End;                                                   // 004C 00
+};
+Track $00bf Channel 5 {    // Address $0006160 [U2 $06160], Time 929.28ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3DA24E);                                           // 0000 01 05 3DA24E 01
+    Wait(121) End;                                                  // 0079 00
+};
+Track $00c0 Channel 5 {    // Address $0006172 [U2 $06172], Time 660.48ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $4270B2);                                           // 0000 01 05 4270B2 01
+    Wait(86) End;                                                   // 0056 00
+};
+Track $00c1 Channel 5 {    // Address $0006184 [U2 $06184], Time 737.28ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3C9786);                                           // 0000 01 05 3C9786 01
+    Wait(96) End;                                                   // 0060 00
+};
+Track $00c2 Channel 5 {    // Address $0006196 [U2 $06196], Time 860.16ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3E6FF2);                                           // 0000 01 05 3E6FF2 01
+    Wait(112) End;                                                  // 0070 00
+};
+Track $00c3 Channel 5 {    // Address $00061a8 [U2 $061a8], Time 729.60ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $403904);                                           // 0000 01 05 403904 01
+    Wait(95) End;                                                   // 005F 00
+};
+Track $00c4 Channel 5 {    // Address $00061ba [U2 $061ba], Time 837.12ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3B4E84);                                           // 0000 01 05 3B4E84 01
+    Wait(109) End;                                                  // 006D 00
+};
+Track $00c5 Channel 5 {    // Address $00061cc [U2 $061cc], Time 791.04ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $406376);                                           // 0000 01 05 406376 01
+    Wait(103) End;                                                  // 0067 00
+};
+Track $00c6 Channel 5 {    // Address $00061de [U2 $061de], Time 599.04ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $4400C8);                                           // 0000 01 05 4400C8 01
+    Wait(78) End;                                                   // 004E 00
+};
+Track $00c7 Channel 5 {    // Address $00061f0 [U2 $061f0], Time 599.04ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $40A91C);                                           // 0000 01 05 40A91C 01
+    Wait(78) End;                                                   // 004E 00
+};
+Track $00c8 Channel 5 {    // Address $0006202 [U2 $06202], Time 706.56ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $41F3FC);                                           // 0000 01 05 41F3FC 01
+    Wait(92) End;                                                   // 005C 00
+};
+Track $00c9 Channel 5 {    // Address $0006214 [U2 $06214], Time 829.44ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $39CF3A);                                           // 0000 01 05 39CF3A 01
+    Wait(108) End;                                                  // 006C 00
+};
+Track $00cb Channel 5 {    // Address $0006226 [U2 $06226], Time 1013.76ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3CEC1A);                                           // 0000 01 05 3CEC1A 01
+    Wait(132) End;                                                  // 0084 00
+};
+Track $00cc Channel 5 {    // Address $0006238 [U2 $06238], Time 990.72ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3CB98E);                                           // 0000 01 05 3CB98E 01
+    Wait(129) End;                                                  // 0081 00
+};
+Track $00cd Channel 5 {    // Address $000624a [U2 $0624a], Time 414.72ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $4428B2);                                           // 0000 01 05 4428B2 01
+    Wait(54) End;                                                   // 0036 00
+};
+Track $00ce Channel 5 {    // Address $000625c [U2 $0625c], Time 499.20ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $4496FA);                                           // 0000 01 05 4496FA 01
+    Wait(65) End;                                                   // 0041 00
+};
+Track $00cf Channel 5 {    // Address $000626e [U2 $0626e], Time 967.68ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $39B9B4);                                           // 0000 01 05 39B9B4 01
+    Wait(126) End;                                                  // 007E 00
+};
+Track $00d0 Channel 5 {    // Address $0006280 [U2 $06280], Time 990.72ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3B0080);                                           // 0000 01 05 3B0080 01
+    Wait(129) End;                                                  // 0081 00
+};
+Track $00d1 Channel 5 {    // Address $0006292 [U2 $06292], Time 552.96ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $40B6D6);                                           // 0000 01 05 40B6D6 01
+    Wait(72) End;                                                   // 0048 00
+};
+Track $00d2 Channel 5 {    // Address $00062a4 [U2 $062a4], Time 668.16ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3E8E76);                                           // 0000 01 05 3E8E76 01
+    Wait(87) End;                                                   // 0057 00
+};
+Track $00d4 Channel 5 {    // Address $00062b6 [U2 $062b6], Time 506.88ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $448E60);                                           // 0000 01 05 448E60 01
+    Wait(66) End;                                                   // 0042 00
+};
+Track $00d5 Channel 5 {    // Address $00062c8 [U2 $062c8], Time 637.44ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $43E202);                                           // 0000 01 05 43E202 01
+    Wait(83) End;                                                   // 0053 00
+};
+Track $00d6 Channel 5 {    // Address $00062da [U2 $062da], Time 645.12ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3D1E24);                                           // 0000 01 05 3D1E24 01
+    Wait(84) End;                                                   // 0054 00
+};
+Track $00d7 Channel 5 {    // Address $00062ec [U2 $062ec], Time 629.76ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3DD302);                                           // 0000 01 05 3DD302 01
+    Wait(82) End;                                                   // 0052 00
+};
+Track $00d8 Channel 5 {    // Address $00062fe [U2 $062fe], Time 837.12ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $392154);                                           // 0000 01 05 392154 01
+    Wait(109) End;                                                  // 006D 00
+};
+Track $00d9 Channel 5 {    // Address $0006310 [U2 $06310], Time 460.80ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $4445B0);                                           // 0000 01 05 4445B0 01
+    Wait(60) End;                                                   // 003C 00
+};
+Track $00da Channel 5 {    // Address $0006322 [U2 $06322], Time 583.68ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $40C466);                                           // 0000 01 05 40C466 01
+    Wait(76) End;                                                   // 004C 00
+};
+Track $00db Channel 5 {    // Address $0006334 [U2 $06334], Time 890.88ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3A752C);                                           // 0000 01 05 3A752C 01
+    Wait(116) End;                                                  // 0074 00
+};
+Track $00dc Channel 5 {    // Address $0006346 [U2 $06346], Time 860.16ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $402AD2);                                           // 0000 01 05 402AD2 01
+    Wait(112) End;                                                  // 0070 00
+};
+Track $00dd Channel 5 {    // Address $0006358 [U2 $06358], Time 814.08ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3FAA0E);                                           // 0000 01 05 3FAA0E 01
+    Wait(106) End;                                                  // 006A 00
+};
+Track $00de Channel 5 {    // Address $000636a [U2 $0636a], Time 706.56ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $4232D2);                                           // 0000 01 05 4232D2 01
+    Wait(92) End;                                                   // 005C 00
+};
+Track $00df Channel 5 {    // Address $000637c [U2 $0637c], Time 576.00ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $4414D2);                                           // 0000 01 05 4414D2 01
+    Wait(75) End;                                                   // 004B 00
+};
+Track $00e0 Channel 5 {    // Address $000638e [U2 $0638e], Time 583.68ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $43F6AA);                                           // 0000 01 05 43F6AA 01
+    Wait(76) End;                                                   // 004C 00
+};
+Track $00e1 Channel 5 {    // Address $00063a0 [U2 $063a0], Time 783.36ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $4219D2);                                           // 0000 01 05 4219D2 01
+    Wait(102) End;                                                  // 0066 00
+};
+Track $00e2 Channel 5 {    // Address $00063b2 [U2 $063b2], Time 675.84ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $42E8C6);                                           // 0000 01 05 42E8C6 01
+    Wait(88) End;                                                   // 0058 00
+};
+Track $00e3 Channel 5 {    // Address $00063c4 [U2 $063c4], Time 821.76ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3AC52C);                                           // 0000 01 05 3AC52C 01
+    Wait(107) End;                                                  // 006B 00
+};
+Track $00e4 Channel 5 {    // Address $00063d6 [U2 $063d6], Time 1236.48ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $3EE95A);                                           // 0000 01 05 3EE95A 01
+    Wait(121) End;                                                  // 0079 00
+};
+Track $00e5 Channel 5 {    // Address $00063f5 [U2 $063f5], Time 821.76ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $4473EC);                                           // 0000 01 05 4473EC 01
+    Wait(67) End;                                                   // 0043 00
+};
+Track $00e6 Channel 5 {    // Address $0006414 [U2 $06414], Time 967.68ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $3D818E);                                           // 0000 01 05 3D818E 01
+    Wait(86) End;                                                   // 0056 00
+};
+Track $00e7 Channel 5 {    // Address $0006433 [U2 $06433], Time 1036.80ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $4107E4);                                           // 0000 01 05 4107E4 01
+    Wait(95) End;                                                   // 005F 00
+};
+Track $00e8 Channel 5 {    // Address $0006452 [U2 $06452], Time 1320.96ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $3C6330);                                           // 0000 01 05 3C6330 01
+    Wait(132) End;                                                  // 0084 00
+};
+Track $00e9 Channel 5 {    // Address $0006471 [U2 $06471], Time 1297.92ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $3B142C);                                           // 0000 01 05 3B142C 01
+    Wait(129) End;                                                  // 0081 00
+};
+Track $00ea Channel 5 {    // Address $0006490 [U2 $06490], Time 522.24ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $4461C0);                                           // 0000 01 05 4461C0 01
+    Wait(68) End;                                                   // 0044 00
+};
+Track $00eb Channel 5 {    // Address $00064a2 [U2 $064a2], Time 1029.12ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $41CD94);                                           // 0000 01 05 41CD94 01
+    Wait(94) End;                                                   // 005E 00
+};
+Track $00ec Channel 5 {    // Address $00064c1 [U2 $064c1], Time 990.72ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $433B0A);                                           // 0000 01 05 433B0A 01
+    Wait(89) End;                                                   // 0059 00
+};
+Track $00ed Channel 5 {    // Address $00064e0 [U2 $064e0], Time 1082.88ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $3D0D78);                                           // 0000 01 05 3D0D78 01
+    Wait(101) End;                                                  // 0065 00
+};
+Track $00ee Channel 5 {    // Address $00064ff [U2 $064ff], Time 1013.76ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $3D3F72);                                           // 0000 01 05 3D3F72 01
+    Wait(92) End;                                                   // 005C 00
+};
+Track $00ef Channel 5 {    // Address $000651e [U2 $0651e], Time 944.64ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $4199A6);                                           // 0000 01 05 4199A6 01
+    Wait(83) End;                                                   // 0053 00
+};
+Track $00f0 Channel 5 {    // Address $000653d [U2 $0653d], Time 1052.16ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $3E322A);                                           // 0000 01 05 3E322A 01
+    Wait(97) End;                                                   // 0061 00
+};
+Track $00f1 Channel 5 {    // Address $000655c [U2 $0655c], Time 890.88ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $443282);                                           // 0000 01 05 443282 01
+    Wait(76) End;                                                   // 004C 00
+};
+Track $00f2 Channel 5 {    // Address $000657b [U2 $0657b], Time 1067.52ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $40ECF6);                                           // 0000 01 05 40ECF6 01
+    Wait(99) End;                                                   // 0063 00
+};
+Track $00f3 Channel 5 {    // Address $000659a [U2 $0659a], Time 967.68ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $4270B2);                                           // 0000 01 05 4270B2 01
+    Wait(86) End;                                                   // 0056 00
+};
+Track $00f4 Channel 5 {    // Address $00065b9 [U2 $065b9], Time 1236.48ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $3DA24E);                                           // 0000 01 05 3DA24E 01
+    Wait(121) End;                                                  // 0079 00
+};
+Track $00f5 Channel 5 {    // Address $00065d8 [U2 $065d8], Time 1167.36ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $3E6FF2);                                           // 0000 01 05 3E6FF2 01
+    Wait(112) End;                                                  // 0070 00
+};
+Track $00f6 Channel 5 {    // Address $00065f7 [U2 $065f7], Time 1044.48ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $3C9786);                                           // 0000 01 05 3C9786 01
+    Wait(96) End;                                                   // 0060 00
+};
+Track $00f7 Channel 5 {    // Address $0006616 [U2 $06616], Time 1144.32ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $3B4E84);                                           // 0000 01 05 3B4E84 01
+    Wait(109) End;                                                  // 006D 00
+};
+Track $00f8 Channel 5 {    // Address $0006635 [U2 $06635], Time 1036.80ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $403904);                                           // 0000 01 05 403904 01
+    Wait(95) End;                                                   // 005F 00
+};
+Track $00f9 Channel 5 {    // Address $0006654 [U2 $06654], Time 906.24ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $4400C8);                                           // 0000 01 05 4400C8 01
+    Wait(78) End;                                                   // 004E 00
+};
+Track $00fa Channel 5 {    // Address $0006673 [U2 $06673], Time 1098.24ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $406376);                                           // 0000 01 05 406376 01
+    Wait(103) End;                                                  // 0067 00
+};
+Track $00fb Channel 5 {    // Address $0006692 [U2 $06692], Time 1013.76ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $41F3FC);                                           // 0000 01 05 41F3FC 01
+    Wait(92) End;                                                   // 005C 00
+};
+Track $00fc Channel 5 {    // Address $00066b1 [U2 $066b1], Time 906.24ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $40A91C);                                           // 0000 01 05 40A91C 01
+    Wait(78) End;                                                   // 004E 00
+};
+Track $00fe Channel 5 {    // Address $00066d0 [U2 $066d0], Time 1136.64ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $39CF3A);                                           // 0000 01 05 39CF3A 01
+    Wait(108) End;                                                  // 006C 00
+};
+Track $00ff Channel 5 {    // Address $00066ef [U2 $066ef], Time 1297.92ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $3CB98E);                                           // 0000 01 05 3CB98E 01
+    Wait(129) End;                                                  // 0081 00
+};
+Track $0111 Channel 3 {    // Address $000670e [U2 $0670e], Time 2388.48ms
+    SetMixingLevel(level 100);                                      // 0000 07 03 64
+    Play(stream $33EFDE);                                           // 0000 01 03 33EFDE 01
+    Wait(311) End;                                                  // 0137 00
+};
+Track $0112 Channel 2 {    // Address $0006720 [U2 $06720], Time 668.16ms
+    SetMixingLevel(level 100);                                      // 0000 07 02 64
+    Play(stream $43B706);                                           // 0000 01 02 43B706 01
+    Wait(87) End;                                                   // 0057 00
+};
+Track $0114 Channel 1 {    // Address $0006732 [U2 $06732], Time 529.92ms
+    SetMixingLevel(level 100);                                      // 0000 07 01 64
+    Play(stream $443C2C);                                           // 0000 01 01 443C2C 01
+    Wait(69) End;                                                   // 0045 00
+};
+Track $0115 Channel 1 {    // Address $0006744 [U2 $06744], Time 476.16ms
+    SetMixingLevel(level 100);                                      // 0000 07 01 64
+    Play(stream $44CB98);                                           // 0000 01 01 44CB98 01
+    Wait(62) End;                                                   // 003E 00
+};
+Track $0116 Channel 1 {    // Address $0006756 [U2 $06756], Time 499.20ms
+    SetMixingLevel(level 100);                                      // 0000 07 01 64
+    Play(stream $4485B8);                                           // 0000 01 01 4485B8 01
+    Wait(65) End;                                                   // 0041 00
+};
+Track $0117 Channel 1 {    // Address $0006768 [U2 $06768], Time 453.12ms
+    SetMixingLevel(level 100);                                      // 0000 07 01 64
+    Play(stream $449F56);                                           // 0000 01 01 449F56 01
+    Wait(59) End;                                                   // 003B 00
+};
+Track $0119 Channel 1 {    // Address $000677a [U2 $0677a], Time 360.96ms
+    SetMixingLevel(level 100);                                      // 0000 07 01 64
+    Play(stream $44F480);                                           // 0000 01 01 44F480 01
+    Wait(47) End;                                                   // 002F 00
+};
+Track $011c Channel 5 {    // Address $000678c [U2 $0678c], Time 1013.76ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $43A12C);                                           // 0000 01 05 43A12C 01
+    Wait(92) End;                                                   // 005C 00
+};
+Track $011d Channel 2 {    // Address $00067ab [U2 $067ab], Time 430.08ms
+    SetMixingLevel(level 100);                                      // 0000 07 02 64
+    Play(stream $44EB34);                                           // 0000 01 02 44EB34 01
+    Wait(56) End;                                                   // 0038 00
+};
+Track $011e Channel 5 {    // Address $00067bd [U2 $067bd], Time 1021.44ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $43693A);                                           // 0000 01 05 43693A 01
+    Wait(93) End;                                                   // 005D 00
+};
+Track $0120 Channel 2 {    // Address $00067dc [U2 $067dc], Time 1090.56ms
+    SetMixingLevel(level 100);                                      // 0000 07 02 64
+    Play(stream $3C3F5C);                                           // 0000 01 02 3C3F5C 01
+    Wait(142) End;                                                  // 008E 00
+};
+Track $0121 Channel 5 {    // Address $00067ee [U2 $067ee], Time 1059.84ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $425832);                                           // 0000 01 05 425832 01
+    Wait(98) End;                                                   // 0062 00
+};
+Track $0122 Channel 5 {    // Address $000680d [U2 $0680d], Time 975.36ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $417F82);                                           // 0000 01 05 417F82 01
+    Wait(87) End;                                                   // 0057 00
+};
+Track $0123 Channel 1 {    // Address $000682c [U2 $0682c], Time 883.20ms
+    SetMixingLevel(level 100);                                      // 0000 07 01 64
+    Play(stream $3F7E56);                                           // 0000 01 01 3F7E56 01
+    Wait(115) End;                                                  // 0073 00
+};
+Track $0125 Channel 5 {    // Address $000683e [U2 $0683e], Time 1029.12ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $413D64);                                           // 0000 01 05 413D64 01
+    Wait(94) End;                                                   // 005E 00
+};
+Track $0126 Channel 5 {    // Address $000685d [U2 $0685d], Time 1021.44ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $435DD0);                                           // 0000 01 05 435DD0 01
+    Wait(93) End;                                                   // 005D 00
+};
+Track $0127 Channel 5 {    // Address $000687c [U2 $0687c], Time 998.40ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $43C1DE);                                           // 0000 01 05 43C1DE 01
+    Wait(90) End;                                                   // 005A 00
+};
+Track $0128 Channel 2 {    // Address $000689b [U2 $0689b], Time 1052.16ms
+    SetMixingLevel(level 100);                                      // 0000 07 02 64
+    Play(stream $3D91F4);                                           // 0000 01 02 3D91F4 01
+    Wait(137) End;                                                  // 0089 00
+};
+Track $0129 Channel 2 {    // Address $00068ad [U2 $068ad], Time 414.72ms
+    SetMixingLevel(level 100);                                      // 0000 07 02 64
+    Play(stream $44BEA2);                                           // 0000 01 02 44BEA2 01
+    Wait(54) End;                                                   // 0036 00
+};
+Track $012a Channel 5 {    // Address $00068bf [U2 $068bf], Time 1013.76ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $43962A);                                           // 0000 01 05 43962A 01
+    Wait(92) End;                                                   // 005C 00
+};
+Track $012b Channel 5 {    // Address $00068de [U2 $068de], Time 1328.64ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $39378A);                                           // 0000 01 05 39378A 01
+    Wait(173) End;                                                  // 00AD 00
+};
+Track $012d Channel 5 {    // Address $00068f0 [U2 $068f0], Time 1374.72ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $38B0F2);                                           // 0000 01 05 38B0F2 01
+    Wait(179) End;                                                  // 00B3 00
+};
+Track $012e Channel 5 {    // Address $0006902 [U2 $06902], Time 929.28ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $400E54);                                           // 0000 01 05 400E54 01
+    Wait(121) End;                                                  // 0079 00
+};
+Track $012f Channel 5 {    // Address $0006914 [U2 $06914], Time 1436.16ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $380B4E);                                           // 0000 01 05 380B4E 01
+    Wait(187) End;                                                  // 00BB 00
+};
+Track $0130 Channel 5 {    // Address $0006926 [U2 $06926], Time 1274.88ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $3AD8FA);                                           // 0000 01 05 3AD8FA 01
+    Wait(126) End;                                                  // 007E 00
+};
+Track $0131 Channel 5 {    // Address $0006945 [U2 $06945], Time 898.56ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $445882);                                           // 0000 01 05 445882 01
+    Wait(77) End;                                                   // 004D 00
+};
+Track $0132 Channel 5 {    // Address $0006964 [U2 $06964], Time 1006.08ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $430C40);                                           // 0000 01 05 430C40 01
+    Wait(91) End;                                                   // 005B 00
+};
+Track $0133 Channel 5 {    // Address $0006983 [U2 $06983], Time 1082.88ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $4288F2);                                           // 0000 01 05 4288F2 01
+    Wait(101) End;                                                  // 0065 00
+};
+Track $0135 Channel 5 {    // Address $00069a2 [U2 $069a2], Time 1152.00ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $3FC6EC);                                           // 0000 01 05 3FC6EC 01
+    Wait(110) End;                                                  // 006E 00
+};
+Track $0137 Channel 5 {    // Address $00069c1 [U2 $069c1], Time 1121.28ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $3E41B8);                                           // 0000 01 05 3E41B8 01
+    Wait(106) End;                                                  // 006A 00
+};
+Track $0138 Channel 2 {    // Address $00069e0 [U2 $069e0], Time 491.52ms
+    SetMixingLevel(level 100);                                      // 0000 07 02 64
+    Play(stream $44AF6C);                                           // 0000 01 02 44AF6C 01
+    Wait(64) End;                                                   // 0040 00
+};
+Track $0139 Channel 2 {    // Address $00069f2 [U2 $069f2], Time 583.68ms
+    SetMixingLevel(level 100);                                      // 0000 07 02 64
+    Play(stream $444F28);                                           // 0000 01 02 444F28 01
+    Wait(76) End;                                                   // 004C 00
+};
+Track $013a Channel 2 {    // Address $0006a04 [U2 $06a04], Time 522.24ms
+    SetMixingLevel(level 100);                                      // 0000 07 02 64
+    Play(stream $447CE0);                                           // 0000 01 02 447CE0 01
+    Wait(68) End;                                                   // 0044 00
+};
+Track $013b Channel 2 {    // Address $0006a16 [U2 $06a16], Time 460.80ms
+    SetMixingLevel(level 100);                                      // 0000 07 02 64
+    Play(stream $44B736);                                           // 0000 01 02 44B736 01
+    Wait(60) End;                                                   // 003C 00
+};
+Track $013d Channel 2 {    // Address $0006a28 [U2 $06a28], Time 4416.00ms
+    SetMixingLevel(level 100);                                      // 0000 07 02 64
+    Play(stream $32CB02);                                           // 0000 01 02 32CB02 01
+    Wait(575) End;                                                  // 023F 00
+};
+Track $013e Channel 5 {    // Address $0006a3a [U2 $06a3a], Time 1006.08ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $42C51A);                                           // 0000 01 05 42C51A 01
+    Wait(91) End;                                                   // 005B 00
+};
+Track $013f Channel 5 {    // Address $0006a59 [U2 $06a59], Time 1090.56ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $3F6FB6);                                           // 0000 01 05 3F6FB6 01
+    Wait(102) End;                                                  // 0066 00
+};
+Track $0140 Channel 5 {    // Address $0006a78 [U2 $06a78], Time 852.48ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $440AD4);                                           // 0000 01 05 440AD4 01
+    Wait(71) End;                                                   // 0047 00
+};
+Track $0141 Channel 5 {    // Address $0006a97 [U2 $06a97], Time 1136.64ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $3E2286);                                           // 0000 01 05 3E2286 01
+    Wait(108) End;                                                  // 006C 00
+};
+Track $0142 Channel 5 {    // Address $0006ab6 [U2 $06ab6], Time 983.04ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $432F6A);                                           // 0000 01 05 432F6A 01
+    Wait(88) End;                                                   // 0058 00
+};
+Track $0144 Channel 3 {    // Address $0006ad5 [U2 $06ad5], Time 2257.92ms
+    SetMixingLevel(level 100);                                      // 0000 07 03 64
+    Play(stream $3419D8);                                           // 0000 01 03 3419D8 01
+    Wait(294) End;                                                  // 0126 00
+};
+Track $0145 Channel 5 {    // Address $0006ae7 [U2 $06ae7], Time 1052.16ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $40000C);                                           // 0000 01 05 40000C 01
+    Wait(97) End;                                                   // 0061 00
+};
+Track $0146 Channel 5 {    // Address $0006b06 [U2 $06b06], Time 890.88ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $416526);                                           // 0000 01 05 416526 01
+    Wait(76) End;                                                   // 004C 00
+};
+Track $0147 Channel 5 {    // Address $0006b25 [U2 $06b25], Time 1090.56ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $41725A);                                           // 0000 01 05 41725A 01
+    Wait(102) End;                                                  // 0066 00
+};
+Track $0148 Channel 3 {    // Address $0006b44 [U2 $06b44], Time 476.16ms
+    SetMixingLevel(level 100);                                      // 0000 07 03 64
+    Play(stream $44A772);                                           // 0000 01 03 44A772 01
+    Wait(62) End;                                                   // 003E 00
+};
+Track $0149 Channel 5 {    // Address $0006b56 [U2 $06b56], Time 768.00ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $42F4A0);                                           // 0000 01 05 42F4A0 01
+    Wait(60) End;                                                   // 003C 00
+};
+Track $014a Channel 3 {    // Address $0006b75 [U2 $06b75], Time 4162.56ms
+    SetMixingLevel(level 100);                                      // 0000 07 03 64
+    Play(stream $313090);                                           // 0000 01 03 313090 01
+    Wait(542) End;                                                  // 021E 00
+};
+Track $014b Channel 2 {    // Address $0006b87 [U2 $06b87], Time 4416.00ms
+    SetMixingLevel(level 100);                                      // 0000 07 02 64
+    Play(stream $32CB02);                                           // 0000 01 02 32CB02 01
+    Wait(575) End;                                                  // 023F 00
+};
+Track $014c Channel 5 {    // Address $0006b99 [U2 $06b99], Time 1113.60ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $4323B8);                                           // 0000 01 05 4323B8 01
+    Wait(105) End;                                                  // 0069 00
+};
+Track $014d Channel 3 {    // Address $0006bb8 [U2 $06bb8], Time 1474.56ms
+    SetMixingLevel(level 100);                                      // 0000 07 03 64
+    Play(stream $382362);                                           // 0000 01 03 382362 01
+    Wait(192) End;                                                  // 00C0 00
+};
+Track $014e Channel 3 {    // Address $0006bca [U2 $06bca], Time 4170.24ms
+    SetMixingLevel(level 100);                                      // 0000 07 03 64
+    Play(stream $3317E2);                                           // 0000 01 03 3317E2 01
+    Wait(543) End;                                                  // 021F 00
+};
+Track $014f Channel 5 {    // Address $0006bdc [U2 $06bdc], Time 913.92ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $438AF2);                                           // 0000 01 05 438AF2 01
+    Wait(79) End;                                                   // 004F 00
+};
+Track $0150 Channel 3 {    // Address $0006bfb [U2 $06bfb], Time 2757.12ms
+    SetMixingLevel(level 100);                                      // 0000 07 03 64
+    Play(stream $327D92);                                           // 0000 01 03 327D92 01
+    Wait(359) End;                                                  // 0167 00
+};
+Track $0151 Channel 5 {    // Address $0006c0d [U2 $06c0d], Time 1036.80ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $422654);                                           // 0000 01 05 422654 01
+    Wait(95) End;                                                   // 005F 00
+};
+Track $0152 Channel 5 {    // Address $0006c2c [U2 $06c2c], Time 1013.76ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $42D108);                                           // 0000 01 05 42D108 01
+    Wait(92) End;                                                   // 005C 00
+};
+Track $0153 Channel 3 {    // Address $0006c4b [U2 $06c4b], Time 3264.00ms
+    SetMixingLevel(level 100);                                      // 0000 07 03 64
+    Play(stream $335E3C);                                           // 0000 01 03 335E3C 01
+    Wait(425) End;                                                  // 01A9 00
+};
+Track $0154 Channel 4 {    // Address $0006c5d [U2 $06c5d], Time 1059.84ms
+    SetMixingLevel(level 100);                                      // 0000 07 04 64
+    Play(stream $3BF690);                                           // 0000 01 04 3BF690 01
+    Wait(138) End;                                                  // 008A 00
+};
+Track $0157 Channel 2 {    // Address $0006c6f [U2 $06c6f], Time 268.80ms
+    SetMixingLevel(level 100);                                      // 0000 07 02 64
+    Play(stream $44EFE4);                                           // 0000 01 02 44EFE4 01
+    Wait(35) End;                                                   // 0023 00
+};
+Track $0158 Channel 4 {    // Address $0006c81 [U2 $06c81], Time 2357.76ms
+    SetMixingLevel(level 100);                                      // 0000 07 04 64
+    Play(stream $3443AC);                                           // 0000 01 04 3443AC 01
+    Wait(307) End;                                                  // 0133 00
+};
+Track $0159 Channel 1 {    // Address $0006c93 [U2 $06c93], Time 883.20ms
+    SetMixingLevel(level 100);                                      // 0000 07 01 64
+    Play(stream $3DB2A4);                                           // 0000 01 01 3DB2A4 01
+    Wait(115) End;                                                  // 0073 00
+};
+Track $015d Channel 5 {    // Address $0006ca5 [U2 $06ca5], Time 1635.84ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3691F2);                                           // 0000 01 05 3691F2 01
+    Wait(213) End;                                                  // 00D5 00
+};
+Track $015e Channel 2 {    // Address $0006cb7 [U2 $06cb7], Time 4416.00ms
+    SetMixingLevel(level 100);                                      // 0000 07 02 64
+    Play(stream $32CB02);                                           // 0000 01 02 32CB02 01
+    Wait(575) End;                                                  // 023F 00
+};
+Track $015f Channel 2 {    // Address $0006cc9 [U2 $06cc9], Time 4416.00ms
+    SetMixingLevel(level 100);                                      // 0000 07 02 64
+    Play(stream $32CB02);                                           // 0000 01 02 32CB02 01
+    Wait(575) End;                                                  // 023F 00
+};
+Track $0160 Channel 2 {    // Address $0006cdb [U2 $06cdb], Time 583.68ms
+    SetMixingLevel(level 100);                                      // 0000 07 02 64
+    Play(stream $441EC8);                                           // 0000 01 02 441EC8 01
+    Wait(76) End;                                                   // 004C 00
+};
+Track $0161 Channel 5 {    // Address $0006ced [U2 $06ced], Time 875.52ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $43AC1A);                                           // 0000 01 05 43AC1A 01
+    Wait(74) End;                                                   // 004A 00
+};
+Track $0162 Channel 5 {    // Address $0006d0c [U2 $06d0c], Time 1075.20ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $42A116);                                           // 0000 01 05 42A116 01
+    Wait(100) End;                                                  // 0064 00
+};
+Track $0164 Channel 2 {    // Address $0006d2b [U2 $06d2b], Time 875.52ms
+    SetMixingLevel(level 100);                                      // 0000 07 02 64
+    Play(stream $3EBC0C);                                           // 0000 01 02 3EBC0C 01
+    Wait(114) End;                                                  // 0072 00
+};
+Track $0166 Channel 2 {    // Address $0006d3d [U2 $06d3d], Time 806.40ms
+    SetMixingLevel(level 100);                                      // 0000 07 02 64
+    Play(stream $41154C);                                           // 0000 01 02 41154C 01
+    Wait(105) End;                                                  // 0069 00
+};
+Track $0167 Channel 5 {    // Address $0006d4f [U2 $06d4f], Time 1658.88ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $36CB16);                                           // 0000 01 05 36CB16 01
+    Wait(216) End;                                                  // 00D8 00
+};
+Track $0168 Channel 5 {    // Address $0006d61 [U2 $06d61], Time 1136.64ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3B74B4);                                           // 0000 01 05 3B74B4 01
+    Wait(148) End;                                                  // 0094 00
+};
+Track $0169 Channel 5 {    // Address $0006d73 [U2 $06d73], Time 1574.40ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $36E778);                                           // 0000 01 05 36E778 01
+    Wait(205) End;                                                  // 00CD 00
+};
+Track $016e Channel 5 {    // Address $0006d85 [U2 $06d85], Time 775.68ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $427CD6);                                           // 0000 01 05 427CD6 01
+    Wait(101) End;                                                  // 0065 00
+};
+Track $016f Channel 5 {    // Address $0006d97 [U2 $06d97], Time 1643.52ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $371F98);                                           // 0000 01 05 371F98 01
+    Wait(214) End;                                                  // 00D6 00
+};
+Track $0172 Channel 5 {    // Address $0006da9 [U2 $06da9], Time 1267.20ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $398E8C);                                           // 0000 01 05 398E8C 01
+    Wait(165) End;                                                  // 00A5 00
+};
+Track $0173 Channel 5 {    // Address $0006dbb [U2 $06dbb], Time 1374.72ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3882D0);                                           // 0000 01 05 3882D0 01
+    Wait(179) End;                                                  // 00B3 00
+};
+Track $0175 Channel 5 {    // Address $0006dcd [U2 $06dcd], Time 1374.72ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $389A38);                                           // 0000 01 05 389A38 01
+    Wait(179) End;                                                  // 00B3 00
+};
+Track $0177 Channel 4 {    // Address $0006ddf [U2 $06ddf], Time 2457.60ms
+    SetMixingLevel(level 100);                                      // 0000 07 04 64
+    Play(stream $33C30E);                                           // 0000 01 04 33C30E 01
+    Wait(320) End;                                                  // 0140 00
+};
+Track $0178 Channel 5 {    // Address $0006df1 [U2 $06df1], Time 952.32ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3F0774);                                           // 0000 01 05 3F0774 01
+    Wait(124) End;                                                  // 007C 00
+};
+Track $0179 Channel 2 {    // Address $0006e03 [U2 $06e03], Time 990.72ms
+    SetMixingLevel(level 100);                                      // 0000 07 02 64
+    Play(stream $3BD1D8);                                           // 0000 01 02 3BD1D8 01
+    Wait(129) End;                                                  // 0081 00
+};
+Track $017a Channel 5 {    // Address $0006e15 [U2 $06e15], Time 1036.80ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $437FB8);                                           // 0000 01 05 437FB8 01
+    Wait(95) End;                                                   // 005F 00
+};
+Track $017b Channel 5 {    // Address $0006e34 [U2 $06e34], Time 1052.16ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $3D609E);                                           // 0000 01 05 3D609E 01
+    Wait(97) End;                                                   // 0061 00
+};
+Track $017c Channel 5 {    // Address $0006e53 [U2 $06e53], Time 1144.32ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $3B9A5A);                                           // 0000 01 05 3B9A5A 01
+    Wait(109) End;                                                  // 006D 00
+};
+Track $017d Channel 5 {    // Address $0006e72 [U2 $06e72], Time 1090.56ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $3EACE8);                                           // 0000 01 05 3EACE8 01
+    Wait(102) End;                                                  // 0066 00
+};
+Track $017e Channel 5 {    // Address $0006e91 [U2 $06e91], Time 1105.92ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $3F60FA);                                           // 0000 01 05 3F60FA 01
+    Wait(104) End;                                                  // 0068 00
+};
+Track $017f Channel 5 {    // Address $0006eb0 [U2 $06eb0], Time 1105.92ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $3F5232);                                           // 0000 01 05 3F5232 01
+    Wait(104) End;                                                  // 0068 00
+};
+Track $0180 Channel 5 {    // Address $0006ecf [U2 $06ecf], Time 1313.28ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $390AF8);                                           // 0000 01 05 390AF8 01
+    Wait(171) End;                                                  // 00AB 00
+};
+Track $0182 Channel 5 {    // Address $0006ee1 [U2 $06ee1], Time 1182.72ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3B27BA);                                           // 0000 01 05 3B27BA 01
+    Wait(154) End;                                                  // 009A 00
+};
+Track $0183 Channel 5 {    // Address $0006ef3 [U2 $06ef3], Time 1328.64ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $39F9D6);                                           // 0000 01 05 39F9D6 01
+    Wait(173) End;                                                  // 00AD 00
+};
+Track $0184 Channel 5 {    // Address $0006f05 [U2 $06f05], Time 1651.20ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $37715C);                                           // 0000 01 05 37715C 01
+    Wait(215) End;                                                  // 00D7 00
+};
+Track $0186 Channel 5 {    // Address $0006f17 [U2 $06f17], Time 1704.96ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $35E2FC);                                           // 0000 01 05 35E2FC 01
+    Wait(222) End;                                                  // 00DE 00
+};
+Track $0187 Channel 5 {    // Address $0006f29 [U2 $06f29], Time 683.52ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $435244);                                           // 0000 01 05 435244 01
+    Wait(89) End;                                                   // 0059 00
+};
+Track $0188 Channel 5 {    // Address $0006f3b [U2 $06f3b], Time 1336.32ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $39A426);                                           // 0000 01 05 39A426 01
+    Wait(174) End;                                                  // 00AE 00
+};
+Track $0189 Channel 5 {    // Address $0006f4d [U2 $06f4d], Time 867.84ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3F8CF2);                                           // 0000 01 05 3F8CF2 01
+    Wait(113) End;                                                  // 0071 00
+};
+Track $018a Channel 5 {    // Address $0006f5f [U2 $06f5f], Time 1774.08ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3600A8);                                           // 0000 01 05 3600A8 01
+    Wait(231) End;                                                  // 00E7 00
+};
+Track $018b Channel 5 {    // Address $0006f71 [U2 $06f71], Time 1551.36ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $37A690);                                           // 0000 01 05 37A690 01
+    Wait(202) End;                                                  // 00CA 00
+};
+Track $018d Channel 5 {    // Address $0006f83 [U2 $06f83], Time 1167.36ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3C08E0);                                           // 0000 01 05 3C08E0 01
+    Wait(152) End;                                                  // 0098 00
+};
+Track $018e Channel 5 {    // Address $0006f95 [U2 $06f95], Time 1758.72ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $354CB0);                                           // 0000 01 05 354CB0 01
+    Wait(229) End;                                                  // 00E5 00
+};
+Track $0190 Channel 5 {    // Address $0006fa7 [U2 $06fa7], Time 1774.08ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $363B82);                                           // 0000 01 05 363B82 01
+    Wait(231) End;                                                  // 00E7 00
+};
+Track $0193 Channel 5 {    // Address $0006fb9 [U2 $06fb9], Time 1474.56ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $37DA4C);                                           // 0000 01 05 37DA4C 01
+    Wait(192) End;                                                  // 00C0 00
+};
+Track $0195 Channel 5 {    // Address $0006fcb [U2 $06fcb], Time 1351.68ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $396336);                                           // 0000 01 05 396336 01
+    Wait(176) End;                                                  // 00B0 00
+};
+Track $0196 Channel 5 {    // Address $0006fdd [U2 $06fdd], Time 1021.44ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3CDB68);                                           // 0000 01 05 3CDB68 01
+    Wait(133) End;                                                  // 0085 00
+};
+Track $0197 Channel 5 {    // Address $0006fef [U2 $06fef], Time 898.56ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $407F9A);                                           // 0000 01 05 407F9A 01
+    Wait(117) End;                                                  // 0075 00
+};
+Track $0198 Channel 5 {    // Address $0007001 [U2 $07001], Time 1205.76ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3B61AA);                                           // 0000 01 05 3B61AA 01
+    Wait(157) End;                                                  // 009D 00
+};
+Track $0199 Channel 5 {    // Address $0007013 [U2 $07013], Time 629.76ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $426476);                                           // 0000 01 05 426476 01
+    Wait(82) End;                                                   // 0052 00
+};
+Track $019a Channel 5 {    // Address $0007025 [U2 $07025], Time 936.96ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $426476);                                           // 0000 01 05 426476 01
+    Wait(82) End;                                                   // 0052 00
+};
+Track $019b Channel 5 {    // Address $0007044 [U2 $07044], Time 714.24ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $429506);                                           // 0000 01 05 429506 01
+    Wait(93) End;                                                   // 005D 00
+};
+Track $019c Channel 5 {    // Address $0007056 [U2 $07056], Time 1328.64ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $385368);                                           // 0000 01 05 385368 01
+    Wait(173) End;                                                  // 00AD 00
+};
+Track $019d Channel 5 {    // Address $0007068 [U2 $07068], Time 1144.32ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3C1B18);                                           // 0000 01 05 3C1B18 01
+    Wait(149) End;                                                  // 0095 00
+};
+Track $019f Channel 5 {    // Address $000707a [U2 $0707a], Time 1244.16ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3A60E4);                                           // 0000 01 05 3A60E4 01
+    Wait(162) End;                                                  // 00A2 00
+};
+Track $01a0 Channel 5 {    // Address $000708c [U2 $0708c], Time 1728.00ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $365868);                                           // 0000 01 05 365868 01
+    Wait(225) End;                                                  // 00E1 00
+};
+Track $01a1 Channel 5 {    // Address $000709e [U2 $0709e], Time 1328.64ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $3CDB68);                                           // 0000 01 05 3CDB68 01
+    Wait(133) End;                                                  // 0085 00
+};
+Track $01a2 Channel 5 {    // Address $00070bd [U2 $070bd], Time 1205.76ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $407F9A);                                           // 0000 01 05 407F9A 01
+    Wait(117) End;                                                  // 0075 00
+};
+Track $01a3 Channel 5 {    // Address $00070dc [U2 $070dc], Time 1006.08ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3DF326);                                           // 0000 01 05 3DF326 01
+    Wait(131) End;                                                  // 0083 00
+};
+Track $01a4 Channel 5 {    // Address $00070ee [U2 $070ee], Time 1405.44ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $383B6A);                                           // 0000 01 05 383B6A 01
+    Wait(183) End;                                                  // 00B7 00
+};
+Track $01a5 Channel 5 {    // Address $0007100 [U2 $07100], Time 752.64ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $41E740);                                           // 0000 01 05 41E740 01
+    Wait(98) End;                                                   // 0062 00
+};
+Track $01a6 Channel 5 {    // Address $0007112 [U2 $07112], Time 1059.84ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $44E67E);                                           // 0000 01 05 44E67E 01
+    Wait(40) SetMixingLevel(level 100);                             // 0028 07 05 64
+    Play(stream $41E740);                                           // 0000 01 05 41E740 01
+    Wait(98) End;                                                   // 0062 00
+};
+Track $01a8 Channel 5 {    // Address $0007131 [U2 $07131], Time 1620.48ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $375696);                                           // 0000 01 05 375696 01
+    Wait(211) End;                                                  // 00D3 00
+};
+Track $01a9 Channel 5 {    // Address $0007143 [U2 $07143], Time 1121.28ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3BACE6);                                           // 0000 01 05 3BACE6 01
+    Wait(146) End;                                                  // 0092 00
+};
+Track $01ab Channel 5 {    // Address $0007155 [U2 $07155], Time 2119.68ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $352E34);                                           // 0000 01 05 352E34 01
+    Wait(276) End;                                                  // 0114 00
+};
+Track $01ad Channel 5 {    // Address $0007167 [U2 $07167], Time 1128.96ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3B3B30);                                           // 0000 01 05 3B3B30 01
+    Wait(147) End;                                                  // 0093 00
+};
+Track $01ae Channel 5 {    // Address $0007179 [U2 $07179], Time 967.68ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3E609C);                                           // 0000 01 05 3E609C 01
+    Wait(126) End;                                                  // 007E 00
+};
+Track $01af Channel 5 {    // Address $000718b [U2 $0718b], Time 1029.12ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3C8630);                                           // 0000 01 05 3C8630 01
+    Wait(134) End;                                                  // 0086 00
+};
+Track $01b2 Channel 5 {    // Address $000719d [U2 $0719d], Time 1927.68ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3490BC);                                           // 0000 01 05 3490BC 01
+    Wait(251) End;                                                  // 00FB 00
+};
+Track $01b4 Channel 5 {    // Address $00071af [U2 $071af], Time 1052.16ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3BE434);                                           // 0000 01 05 3BE434 01
+    Wait(137) End;                                                  // 0089 00
+};
+Track $01b6 Channel 5 {    // Address $00071c1 [U2 $071c1], Time 1482.24ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $37F338);                                           // 0000 01 05 37F338 01
+    Wait(193) End;                                                  // 00C1 00
+};
+Track $01b7 Channel 5 {    // Address $00071d3 [U2 $071d3], Time 952.32ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3CFCCC);                                           // 0000 01 05 3CFCCC 01
+    Wait(124) End;                                                  // 007C 00
+};
+Track $01ba Channel 5 {    // Address $00071e5 [U2 $071e5], Time 1574.40ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $373B46);                                           // 0000 01 05 373B46 01
+    Wait(205) End;                                                  // 00CD 00
+};
+Track $01bb Channel 5 {    // Address $00071f7 [U2 $071f7], Time 1297.92ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3A4C8E);                                           // 0000 01 05 3A4C8E 01
+    Wait(169) End;                                                  // 00A9 00
+};
+Track $01bc Channel 5 {    // Address $0007209 [U2 $07209], Time 1067.52ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3D2ECE);                                           // 0000 01 05 3D2ECE 01
+    Wait(139) End;                                                  // 008B 00
+};
+Track $01bf Channel 5 {    // Address $000721b [U2 $0721b], Time 1029.12ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3D5010);                                           // 0000 01 05 3D5010 01
+    Wait(134) End;                                                  // 0086 00
+};
+Track $01c0 Channel 5 {    // Address $000722d [U2 $0722d], Time 1075.20ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3BBF70);                                           // 0000 01 05 3BBF70 01
+    Wait(140) End;                                                  // 008C 00
+};
+Track $01c1 Channel 5 {    // Address $000723f [U2 $0723f], Time 1274.88ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $394D64);                                           // 0000 01 05 394D64 01
+    Wait(166) End;                                                  // 00A6 00
+};
+Track $01c2 Channel 5 {    // Address $0007251 [U2 $07251], Time 875.52ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3F4360);                                           // 0000 01 05 3F4360 01
+    Wait(114) End;                                                  // 0072 00
+};
+Track $01c4 Channel 5 {    // Address $0007263 [U2 $07263], Time 898.56ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3F2580);                                           // 0000 01 05 3F2580 01
+    Wait(117) End;                                                  // 0075 00
+};
+Track $01c7 Channel 5 {    // Address $0007275 [U2 $07275], Time 1720.32ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $36753E);                                           // 0000 01 05 36753E 01
+    Wait(224) End;                                                  // 00E0 00
+};
+Track $01c8 Channel 5 {    // Address $0007287 [U2 $07287], Time 860.16ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $404730);                                           // 0000 01 05 404730 01
+    Wait(112) End;                                                  // 0070 00
+};
+Track $01c9 Channel 5 {    // Address $0007299 [U2 $07299], Time 2142.72ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $1FD6F8);                                           // 0000 01 05 1FD6F8 01
+    Wait(279) End;                                                  // 0117 00
+};
+Track $01ca Channel 5 {    // Address $00072ab [U2 $072ab], Time 852.48ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3F9B8C);                                           // 0000 01 05 3F9B8C 01
+    Wait(111) End;                                                  // 006F 00
+};
+Track $01cb Channel 5 {    // Address $00072bd [U2 $072bd], Time 1512.96ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $378C0A);                                           // 0000 01 05 378C0A 01
+    Wait(197) End;                                                  // 00C5 00
+};
+Track $01cd Channel 5 {    // Address $00072cf [U2 $072cf], Time 783.36ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $40D1F2);                                           // 0000 01 05 40D1F2 01
+    Wait(102) End;                                                  // 0066 00
+};
+Track $01ce Channel 5 {    // Address $00072e1 [U2 $072e1], Time 1528.32ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $37C0EA);                                           // 0000 01 05 37C0EA 01
+    Wait(199) End;                                                  // 00C7 00
+};
+Track $01cf Channel 5 {    // Address $00072f3 [U2 $072f3], Time 652.80ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $43D75A);                                           // 0000 01 05 43D75A 01
+    Wait(85) End;                                                   // 0055 00
+};
+Track $01d0 Channel 5 {    // Address $0007305 [U2 $07305], Time 844.80ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $414AAA);                                           // 0000 01 05 414AAA 01
+    Wait(110) End;                                                  // 006E 00
+};
+Track $01d1 Channel 5 {    // Address $0007317 [U2 $07317], Time 791.04ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $42DCEA);                                           // 0000 01 05 42DCEA 01
+    Wait(103) End;                                                  // 0067 00
+};
+Track $01d2 Channel 5 {    // Address $0007329 [U2 $07329], Time 860.16ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $4157EC);                                           // 0000 01 05 4157EC 01
+    Wait(112) End;                                                  // 0070 00
+};
+Track $01d3 Channel 5 {    // Address $000733b [U2 $0733b], Time 837.12ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $413014);                                           // 0000 01 05 413014 01
+    Wait(109) End;                                                  // 006D 00
+};
+Track $01d4 Channel 5 {    // Address $000734d [U2 $0734d], Time 775.68ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $41A6A8);                                           // 0000 01 05 41A6A8 01
+    Wait(101) End;                                                  // 0065 00
+};
+Track $01d5 Channel 5 {    // Address $000735f [U2 $0735f], Time 714.24ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $43747E);                                           // 0000 01 05 43747E 01
+    Wait(93) End;                                                   // 005D 00
+};
+Track $01d6 Channel 5 {    // Address $0007371 [U2 $07371], Time 1881.60ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $34B1C4);                                           // 0000 01 05 34B1C4 01
+    Wait(245) End;                                                  // 00F5 00
+};
+Track $01d8 Channel 5 {    // Address $0007383 [U2 $07383], Time 1175.04ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3A382C);                                           // 0000 01 05 3A382C 01
+    Wait(153) End;                                                  // 0099 00
+};
+Track $01d9 Channel 5 {    // Address $0007395 [U2 $07395], Time 1182.72ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3AB15C);                                           // 0000 01 05 3AB15C 01
+    Wait(154) End;                                                  // 009A 00
+};
+Track $01da Channel 5 {    // Address $00073a7 [U2 $073a7], Time 1305.60ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $38C790);                                           // 0000 01 05 38C790 01
+    Wait(170) End;                                                  // 00AA 00
+};
+Track $01dc Channel 5 {    // Address $00073b9 [U2 $073b9], Time 1328.64ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $38DE1A);                                           // 0000 01 05 38DE1A 01
+    Wait(173) End;                                                  // 00AD 00
+};
+Track $01dd Channel 5 {    // Address $00073cb [U2 $073cb], Time 1251.84ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3978E2);                                           // 0000 01 05 3978E2 01
+    Wait(163) End;                                                  // 00A3 00
+};
+Track $01de Channel 5 {    // Address $00073dd [U2 $073dd], Time 1236.48ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3A0EBE);                                           // 0000 01 05 3A0EBE 01
+    Wait(161) End;                                                  // 00A1 00
+};
+Track $01df Channel 5 {    // Address $00073ef [U2 $073ef], Time 990.72ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3D711C);                                           // 0000 01 05 3D711C 01
+    Wait(129) End;                                                  // 0081 00
+};
+Track $01e0 Channel 5 {    // Address $0007401 [U2 $07401], Time 1351.68ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $38F492);                                           // 0000 01 05 38F492 01
+    Wait(176) End;                                                  // 00B0 00
+};
+Track $01e1 Channel 5 {    // Address $0007413 [U2 $07413], Time 737.28ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $4200AC);                                           // 0000 01 05 4200AC 01
+    Wait(96) End;                                                   // 0060 00
+};
+Track $01e2 Channel 5 {    // Address $0007425 [U2 $07425], Time 960.00ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3E02FC);                                           // 0000 01 05 3E02FC 01
+    Wait(125) End;                                                  // 007D 00
+};
+Track $01e3 Channel 5 {    // Address $0007437 [U2 $07437], Time 1236.48ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $39E48E);                                           // 0000 01 05 39E48E 01
+    Wait(161) End;                                                  // 00A1 00
+};
+Track $01e6 Channel 5 {    // Address $0007449 [U2 $07449], Time 1006.08ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3CA8A0);                                           // 0000 01 05 3CA8A0 01
+    Wait(131) End;                                                  // 0083 00
+};
+Track $01e8 Channel 5 {    // Address $000745b [U2 $0745b], Time 821.76ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3CCA7C);                                           // 0000 01 05 3CCA7C 01
+    Wait(107) End;                                                  // 006B 00
+};
+Track $01e9 Channel 5 {    // Address $000746d [U2 $0746d], Time 1344.00ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $386B4A);                                           // 0000 01 05 386B4A 01
+    Wait(175) End;                                                  // 00AF 00
+};
+Track $01ea Channel 5 {    // Address $000747f [U2 $0747f], Time 1850.88ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $2FDC86);                                           // 0000 01 05 2FDC86 01
+    Wait(241) End;                                                  // 00F1 00
+};
+Track $01ee Channel 5 {    // Address $0007491 [U2 $07491], Time 1758.72ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $35C516);                                           // 0000 01 05 35C516 01
+    Wait(229) End;                                                  // 00E5 00
+};
+Track $01ef Channel 5 {    // Address $00074a3 [U2 $074a3], Time 1751.04ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $350FB0);                                           // 0000 01 05 350FB0 01
+    Wait(228) End;                                                  // 00E4 00
+};
+Track $01f0 Channel 5 {    // Address $00074b5 [U2 $074b5], Time 1635.84ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3703BC);                                           // 0000 01 05 3703BC 01
+    Wait(213) End;                                                  // 00D5 00
+};
+Track $01f1 Channel 5 {    // Address $00074c7 [U2 $074c7], Time 1098.24ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3B878A);                                           // 0000 01 05 3B878A 01
+    Wait(143) End;                                                  // 008F 00
+};
+Track $01f2 Channel 5 {    // Address $00074d9 [U2 $074d9], Time 1766.40ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $36AE84);                                           // 0000 01 05 36AE84 01
+    Wait(230) End;                                                  // 00E6 00
+};
+Track $01f3 Channel 5 {    // Address $00074eb [U2 $074eb], Time 821.76ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $41C09E);                                           // 0000 01 05 41C09E 01
+    Wait(107) End;                                                  // 006B 00
+};
+Track $01f4 Channel 1 {    // Address $00074fd [U2 $074fd], Time 1075.20ms
+    SetMixingLevel(level 110);                                      // 0000 07 01 6E
+    SetMixingLevel(channel 0, decrease 15);                         // 0000 09 00 0F
+    Play(stream $4502EA);                                           // 0000 01 01 4502EA 01
+    Wait(110) SetMixingLevel(channel 0, increase 15, steps 20);     // 006E 0B 00 0F 0014
+    Wait(30) End;                                                   // 001E 00
+};
+Track $01f5 Channel 5 {    // Address $000751b [U2 $0751b], Time 1789.44ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $35A70E);                                           // 0000 01 05 35A70E 01
+    Wait(233) End;                                                  // 00E9 00
+};
+Track $01f6 Channel 5 {    // Address $000752d [U2 $0752d], Time 1182.72ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3A9D6C);                                           // 0000 01 05 3A9D6C 01
+    Wait(154) End;                                                  // 009A 00
+};
+Track $01f7 Channel 5 {    // Address $000753f [U2 $0753f], Time 890.88ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $401C94);                                           // 0000 01 05 401C94 01
+    Wait(116) End;                                                  // 0074 00
+};
+Track $01f8 Channel 5 {    // Address $0007551 [U2 $07551], Time 714.24ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $43CCA2);                                           // 0000 01 05 43CCA2 01
+    Wait(93) End;                                                   // 005D 00
+};
+Track $01f9 Channel 5 {    // Address $0007563 [U2 $07563], Time 867.84ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3EDA46);                                           // 0000 01 05 3EDA46 01
+    Wait(113) End;                                                  // 0071 00
+};
+Track $01fa Channel 5 {    // Address $0007575 [U2 $07575], Time 821.76ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $418C9A);                                           // 0000 01 05 418C9A 01
+    Wait(107) End;                                                  // 006B 00
+};
+Track $01fb Channel 5 {    // Address $0007587 [U2 $07587], Time 1082.88ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3C515C);                                           // 0000 01 05 3C515C 01
+    Wait(141) End;                                                  // 008D 00
+};
+Track $01fc Channel 5 {    // Address $0007599 [U2 $07599], Time 952.32ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $3DE31C);                                           // 0000 01 05 3DE31C 01
+    Wait(124) End;                                                  // 007C 00
+};
+Track $01fd Channel 5 {    // Address $00075ab [U2 $075ab], Time 1735.68ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $34F0AC);                                           // 0000 01 05 34F0AC 01
+    Wait(226) End;                                                  // 00E2 00
+};
+Track $01fe Channel 5 {    // Address $00075bd [U2 $075bd], Time 506.88ms
+    SetMixingLevel(level 100);                                      // 0000 07 05 64
+    Play(stream $4500A0);                                           // 0000 01 05 4500A0 01
+    Wait(66) End;                                                   // 0042 00
+};
+Track $03e7 Channel 0 {    // Address $00075cf [U2 $075cf], Time 38.40ms
+    WriteDataPort(byte $01);                                        // 0000 04 01
+    Wait(5) End;                                                    // 0005 00
+};
+Track $03e8 Channel 0 {    // Address $00075db [U2 $075db], Time 7.68ms
+    WriteDataPort(byte $FD);                                        // 0000 04 FD
+    Wait(1) End;                                                    // 0001 00
+};
+Track $03e9 Channel 1 {    // Address $00075e7 [U2 $075e7], Time 7.68ms
+    WriteDataPort(byte $FD);                                        // 0000 04 FD
+    Wait(1) End;                                                    // 0001 00
+};
+Track $03ea Channel 2 {    // Address $00075f3 [U2 $075f3], Time 7.68ms
+    WriteDataPort(byte $FD);                                        // 0000 04 FD
+    Wait(1) End;                                                    // 0001 00
+};
+Track $03eb Channel 3 {    // Address $00075ff [U2 $075ff], Time 7.68ms
+    WriteDataPort(byte $FD);                                        // 0000 04 FD
+    Wait(1) End;                                                    // 0001 00
+};
+Track $03ec Channel 4 {    // Address $000760b [U2 $0760b], Time 7.68ms
+    WriteDataPort(byte $FD);                                        // 0000 04 FD
+    Wait(1) End;                                                    // 0001 00
+};
+Track $03ed Channel 5 {    // Address $0007617 [U2 $07617], Time 7.68ms
+    WriteDataPort(byte $FD);                                        // 0000 04 FD
+    Wait(1) End;                                                    // 0001 00
+};
+Track $0721 Channel 0 {    // Address $0007623 [U2 $07623], Time 150804.48ms
+    SetMixingLevel(level 120);                                      // 0000 07 00 78
+    Play(stream $31A4C8);                                           // 0000 01 00 31A4C8 01
+    Wait(889) Loop (3) {                                            // 0379 0E 03
+      Play(stream $1AD880);                                         // 0000 01 00 1AD880 01
+      Wait(6249)                                                    // 1869 0F
+    }                                                               
+    End;                                                            // 0000 00
+};
+Track $0722 Channel 0 {    // Address $0007644 [U2 $07644], Time 295188.47ms
+    SetMixingLevel(level 120);                                      // 0000 07 00 78
+    Play(stream $0F69CE);                                           // 0000 01 00 0F69CE 01
+    Wait(924) Loop (8) {                                            // 039C 0E 08
+      Play(stream $2298F2);                                         // 0000 01 00 2298F2 01
+      Wait(4689)                                                    // 1251 0F
+    }                                                               
+    End;                                                            // 0000 00
+};
+Track $0724 Channel 0 {    // Address $0007665 [U2 $07665], Time 153676.80ms
+    SetMixingLevel(level 120);                                      // 0000 07 00 78
+    Play(stream $0076F2);                                           // 0000 01 00 0076F2 01
+    Wait(10005) Play(stream $0076F2);                               // 2715 01 00 0076F2 01
+    Wait(8703) SetMixingLevel(level 0, steps 1302);                 // 21FF 0A 00 00 0516
+    Wait(1302) End;                                                 // 0516 00
+};
+Track $0726 Channel 0 {    // Address $0007686 [U2 $07686], Time 616965.12ms
+    SetMixingLevel(level 120);                                      // 0000 07 00 78
+    Play(stream $30000C);                                           // 0000 01 00 30000C 01
+    Wait(1134) Loop (8) {                                           // 046E 0E 08
+      Play(stream $0A907C);                                         // 0000 01 00 0A907C 01
+      Wait(9900)                                                    // 26AC 0F
+    }                                                               
+    End;                                                            // 0000 00
+};
+Track $0727 Channel 0 {    // Address $00076a7 [U2 $076a7], Time 235814.39ms
+    SetMixingLevel(level 120);                                      // 0000 07 00 78
+    Play(stream $2D79EA);                                           // 0000 01 00 2D79EA 01
+    Wait(1513) Loop (8) {                                           // 05E9 0E 08
+      Play(stream $1DFBA6);                                         // 0000 01 00 1DFBA6 01
+      Wait(3649)                                                    // 0E41 0F
+    }                                                               
+    End;                                                            // 0000 00
+};
+Track $072a Channel 0 {    // Address $00076c8 [U2 $076c8], Time 61647.36ms
+    SetMixingLevel(level 120);                                      // 0000 07 00 78
+    Play(stream $28F8AA);                                           // 0000 01 00 28F8AA 01
+    Wait(2475) Play(stream $275D7A);                                // 09AB 01 00 275D7A 01
+    Wait(2776) Play(stream $275D7A);                                // 0AD8 01 00 275D7A 01
+    Wait(1474) SetMixingLevel(level 0, steps 1302);                 // 05C2 0A 00 00 0516
+    Wait(1302) End;                                                 // 0516 00
+};
