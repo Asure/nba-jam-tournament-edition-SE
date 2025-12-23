@@ -4988,8 +4988,8 @@ I2_ZZ:
 
    .EVEN
 	.if	WUNIT
-CKSUM1	.equ	0c7b1h
-CKSUM2	.equ	0859bH
+CKSUM1	.equ	00417h
+CKSUM2	.equ	088b7H
 	.else
 CKSUM1	.equ	0e9a4h	;05d0bH	;0ac9fH	;a911
 CKSUM2	.equ	06630H	;0edd7H	;0a0e2H	;9fff

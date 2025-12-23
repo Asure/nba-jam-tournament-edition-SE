@@ -302,7 +302,12 @@ pass_speech
 ;.word	0f980H,28,08051H,0	;TO HARPER_D
 
 ; .word	0f980H,50,0805fH,0	;TO NANDERSON	
- .word	0f980H,50,081b9H,0	;ONEAL		;ONEAL no 'to' speech
+	.if	WUNIT
+ .word	0f980H,50,081beH,0	;TO ONEAL	;Wolf Unit only
+	.else
+ .word	0f980H,50,081beH,0	;ONEAL		;ONEAL no 'to' speech
+	.endif
+
  .word	0f980H,37,080fbH,0	;TO AHARDAWAY
  .word	0f980H,40,080e4H,0	;TO SKILES	( ORLANDO )
 
@@ -345,8 +350,13 @@ pass_speech
 
 ; Team Jam / Allstars
  .word	0f980H,40,0817cH,0	;TO JORDAN
+	.if	WUNIT
+ .word	0f980H,50,081beH,0	;TO ONEAL	;Wolf Unit only
+ .word	0f980H,50,081beH,0	;TO ONEAL	;Wolf Unit only
+	.else
  .word	0f980H,50,081b9H,0	;ONEAL		;ONEAL no 'to' speech
  .word	0f980H,50,081b9H,0	;ONEAL		;ONEAL no 'to' speech
+	.endif
  .word	0f980H,40,0817cH,0	;TO JORDAN
 
  .word	0f980H,46,080f5H,0	;TO ROBINSON	( SAN ANTONIO )
@@ -532,7 +542,7 @@ name_speech
 ;.word	0f980H,28,080d1H,0	;HARPER_D	( DALLAS )
 
 ; .word	0f980H,45,080e1H,0	;NANDERSON
- .word	0f980H,45,081b9H,0	;ONEAL		;ONEAL no 'to' speech
+ .word	0f980H,45,081b9H,0	;ONEAL		
  .word	0f980H,37,080c8H,0	;AHARDAWAY
  .word	0f980H,40,080b1H,0	;SKILES
 
@@ -576,8 +586,8 @@ name_speech
 ; Team Jam / Allstars
 
  .word	0f980H,35,0801eH,0	;JORDAN		( CHICAGO )
- .word	0f980H,45,081b9H,0	;ONEAL		;ONEAL no 'to' speech
- .word	0f980H,45,081b9H,0	;ONEAL		;ONEAL no 'to' speech
+ .word	0f980H,45,081b9H,0	;ONEAL		
+ .word	0f980H,45,081b9H,0	;ONEAL		
  .word	0f980H,35,0801eH,0	;JORDAN		( CHICAGO )
 
  .word	0f980H,46,080c2H,0	;ROBINSON	( SAN ANTONIO )
@@ -740,10 +750,10 @@ special_name_speech
 	.word	0f980H,50,08197H,0	;50 SCORP		
 	.word	0f980H,50,081a5H,0	;51 REPT   
 		
-	.word	0f980H,1,081feH,0		;52 GRANNER
+	.word	0f980H,1,081feH,0	;52 GRANNER
 	.word	0f980H,40,081ebH,0	;53 GRIFFEY
 	.word	0f980H,40,080B1H,0	;54 SKILES
-	.word	0f980H,1,081feH,0		;55 LINHOFF
+	.word	0f980H,1,081feH,0	;55 LINHOFF
 
 
 	.word	0f980H,37,080bbH,0	;56 WILKINS
@@ -827,12 +837,16 @@ special_pass_speech
 	.word	0f980H,50,081a2H,0	;50 SCORP		
 	.word	0f980H,50,081a6H,0	;51 REPT		
 
-	.word	0f980H,1,081feH,0		;52 GRANNER
+	.word	0f980H,1,081feH,0	;52 GRANNER
 
-	.word	0f980H,40,081ebH,0	;53 TO GRIFFEY
+	.if	WUNIT
+	.word	0f980H,40,0819aH,0	;53 TO GRIFFEY (Wolf only)
+	.else
+	.word	0f980H,40,081ebH,0	;53 GRIFFEY 
+	.endif
 
 	.word	0f980H,40,080e4H,0	;54 SKILES
-	.word	0f980H,1,081feH,0		;55 LINHOFF
+	.word	0f980H,1,081feH,0	;55 LINHOFF
 
 
 

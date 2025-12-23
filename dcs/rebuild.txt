@@ -223,7 +223,7 @@ Encoding .\input\pohawkins.wav : OK, 107 DCS frames, 5070 bytes in ROM (10.1:1 c
 Encoding .\input\pomourning.wav : OK, 98 DCS frames, 3139 bytes in ROM (15.0:1 compression, 33365 avg bps)
 Encoding .\input\popippen.wav : OK, 95 DCS frames, 3431 bytes in ROM (13.3:1 compression, 37621 avg bps)
 Encoding .\input\poarmstrng.wav : OK, 126 DCS frames, 5059 bytes in ROM (12.0:1 compression, 41824 avg bps)
-Encoding .\input\pokukoc.wav : OK, 109 DCS frames, 4748 bytes in ROM (11.0:1 compression, 45375 avg bps)
+Encoding .\input\pojordan.wav : OK, 75 DCS frames, 2703 bytes in ROM (13.3:1 compression, 37542 avg bps)
 Encoding .\input\pogrant.wav : OK, 86 DCS frames, 4198 bytes in ROM (9.8:1 compression, 50848 avg bps)
 Encoding .\input\poprice.wav : OK, 82 DCS frames, 4122 bytes in ROM (9.5:1 compression, 52363 avg bps)
 Encoding .\input\podaughrty.wav : OK, 84 DCS frames, 4265 bytes in ROM (9.5:1 compression, 52889 avg bps)
@@ -236,7 +236,7 @@ Encoding .\input\porogers.wav : OK, 106 DCS frames, 3957 bytes in ROM (12.9:1 co
 Encoding .\input\poithomas.wav : OK, 108 DCS frames, 5459 bytes in ROM (9.5:1 compression, 52652 avg bps)
 Encoding .\input\podumars.wav : OK, 108 DCS frames, 4003 bytes in ROM (13.0:1 compression, 38609 avg bps)
 Encoding .\input\poelliot.wav : OK, 96 DCS frames, 4378 bytes in ROM (10.5:1 compression, 47504 avg bps)
-Encoding .\input\pohunter.wav : OK, 102 DCS frames, 3367 bytes in ROM (14.5:1 compression, 34385 avg bps)
+Encoding .\input\polaimbeer.wav : OK, 120 DCS frames, 3864 bytes in ROM (14.9:1 compression, 33542 avg bps)
 Encoding .\input\pohardaway.wav : OK, 92 DCS frames, 3248 bytes in ROM (13.6:1 compression, 36775 avg bps)
 Encoding .\input\pomullin.wav : OK, 78 DCS frames, 3513 bytes in ROM (10.7:1 compression, 46915 avg bps)
 Encoding .\input\powebber.wav : OK, 74 DCS frames, 2796 bytes in ROM (12.7:1 compression, 39358 avg bps)
@@ -303,24 +303,18 @@ Encoding .\input\poscorpion.wav : OK, 117 DCS frames, 3575 bytes in ROM (15.7:1 
 Encoding .\input\griffey-1.wav : OK, 82 DCS frames, 3131 bytes in ROM (12.6:1 compression, 39774 avg bps)
 Encoding .\input\poreptile.wav : OK, 98 DCS frames, 3260 bytes in ROM (14.4:1 compression, 34651 avg bps)
 Encoding .\input\posubzero.wav : OK, 133 DCS frames, 4274 bytes in ROM (14.9:1 compression, 33474 avg bps)
-rework.prg(2777): warning: This statement (and everything after it) is unreachable due to an earlier Wait(forever) and/or End
-rework.prg(2788): warning: This statement (and everything after it) is unreachable due to an earlier Wait(forever) and/or End
-rework.prg(2792): warning: This statement (and everything after it) is unreachable due to an earlier Wait(forever) and/or End
-rework.prg(2796): warning: This statement (and everything after it) is unreachable due to an earlier Wait(forever) and/or End
-rework.prg(2800): warning: This statement (and everything after it) is unreachable due to an earlier Wait(forever) and/or End
-rework.prg(2804): warning: This statement (and everything after it) is unreachable due to an earlier Wait(forever) and/or End
-rework.prg(2808): warning: This statement (and everything after it) is unreachable due to an earlier Wait(forever) and/or End
-rework.prg(2812): warning: This statement (and everything after it) is unreachable due to an earlier Wait(forever) and/or End
+rework.prg(2027): error: Wait(stream) can only be used after Play() with a stream processed earlier in the script.
+rework.prg(2035): error: Wait(stream) can only be used after Play() with a stream processed earlier in the script.
+rework.prg(2794): warning: This statement (and everything after it) is unreachable due to an earlier Wait(forever) and/or End
+rework.prg(2805): warning: This statement (and everything after it) is unreachable due to an earlier Wait(forever) and/or End
+rework.prg(2809): warning: This statement (and everything after it) is unreachable due to an earlier Wait(forever) and/or End
+rework.prg(2813): warning: This statement (and everything after it) is unreachable due to an earlier Wait(forever) and/or End
+rework.prg(2817): warning: This statement (and everything after it) is unreachable due to an earlier Wait(forever) and/or End
+rework.prg(2821): warning: This statement (and everything after it) is unreachable due to an earlier Wait(forever) and/or End
+rework.prg(2825): warning: This statement (and everything after it) is unreachable due to an earlier Wait(forever) and/or End
+rework.prg(2829): warning: This statement (and everything after it) is unreachable due to an earlier Wait(forever) and/or End
+rework.prg(2026): error: Stream 'pooneal' is not defined
+rework.prg(2034): error: Stream 'pooneal' is not defined
 
-Script compilation succeeded, but note that 8 warnings were generated
-
-Generating new ROM set to nbatest10.zip
-ROM .zip file layout:
-Chip  Size   Bytes Used  Unused  Filename
-U2    1M     1048436     140     U2.ROM
-U3    1M     1048500     76      U3.ROM
-U4    1M     1048154     422     U4.ROM
-U5    1M     1048540     36      U5.ROM
-U6    1M     329012      719564  U6.ROM
-
-ROM creation succeeded
+Script compilation failed with 4 errors, 8 warnings
+No ROM images generated

@@ -1455,7 +1455,8 @@ Stream pohawkins "pohawkins.wav";
 Stream pomourning "pomourning.wav";
 Stream popippen "popippen.wav";
 Stream poarmstrng "poarmstrng.wav";
-Stream pokukoc "pokukoc.wav";
+//Stream pokukoc "pokukoc.wav";
+Stream pokukoc "pojordan.wav";
 Stream pogrant "pogrant.wav";
 Stream poprice "poprice.wav";
 Stream podaughrty "podaughrty.wav";
@@ -1468,7 +1469,8 @@ Stream porogers "porogers.wav";
 Stream poithomas "poithomas.wav";
 Stream podumars "podumars.wav";
 Stream poelliot "poelliot.wav";
-Stream pohunter "pohunter.wav";
+//Stream pohunter "pohunter.wav";
+Stream pohunter "polaimbeer.wav";
 Stream pohardaway "pohardaway.wav";
 Stream pomullin "pomullin.wav";
 Stream powebber "powebber.wav";
@@ -1504,8 +1506,6 @@ Stream poewing "poewing.wav";
 Stream pomason "pomason.wav";
 Stream postarks "postarks.wav";
 Stream pooakley "pooakley.wav";
-// Stream pohardaway "pohardaway.wav";
-//Stream poanderson "poanderson.wav";
 Stream poskiles "poskiles.wav";
 Stream poweatherspoon "poweatherspoon.wav";
 Stream pobradley "pobradley.wav";
@@ -1676,7 +1676,7 @@ Track $001b channel 5 {
     Play(pohunter);   		// start an audio clip
     Wait(Stream);          		// ...and wait for it to finish before exiting
 };
-// Golden state
+// Golden state Nuggets
 Track $00c8 channel 5 {
     SetMixingLevel(level 100); 		// always set the mixing level for a new track
     Play(pohardaway);   		// start an audio clip
@@ -1692,6 +1692,7 @@ Track $0069 channel 5 {
     Play(powebber);   		// start an audio clip
     Wait(Stream);          		// ...and wait for it to finish before exiting
 };
+
 // houston
 Track $00d8 channel 5 {
     SetMixingLevel(level 100); 		// always set the mixing level for a new track
@@ -2015,6 +2016,22 @@ Track $01a5 channel 5 {
 Track $0196 channel 5 {
     SetMixingLevel(level 100); 		// always set the mixing level for a new track
     Play(posubzero);   		// start an audio clip
+    Wait(Stream);          		// ...and wait for it to finish before exiting
+};
+
+//Shaq Oneal
+
+Track $01b9 channel 5 {
+    SetMixingLevel(level 100);
+    Play(pooneal);   		// start an audio clip
+    Wait(Stream);          		// ...and wait for it to finish before exiting
+};
+Track $01be channel 5 {
+    SetMixingLevel(level 100);
+    Play(to);
+    Wait(40);
+    SetMixingLevel(level 100);
+    Play(pooneal);   		// start an audio clip
     Wait(Stream);          		// ...and wait for it to finish before exiting
 };
 
@@ -2752,7 +2769,7 @@ Track $01a6 channel 5 {
     Play(poreptile);   		// start an audio clip
     Wait(Stream);          		// ...and wait for it to finish before exiting
 };
-Track $019A channel 5 {
+Track $019a channel 5 {
     SetMixingLevel(level 100);
     Play(to);
     Wait(40);
