@@ -158,6 +158,11 @@ dtlxcntr_t	.byte	2,3,1,2
 iajzlp	move	*b0+,*b2+
 	dsj	b1,iajzlp
 
+	.if	WUNIT
+	movi	VMUX_INITMODE,a0
+	move	a0,@VMUX_CONTROL,W
+	.endif
+
 	exgpc	b6
 
 

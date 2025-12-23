@@ -47,7 +47,7 @@ VMUX_BREG1	.equ	1830000h	;VMUX Background Register 1
 ;VMUX_PALMATCH	.equ	1840000h	;VMUX Palette Match Register
 ;VMUX_STATUS	.equ	1800000h	;VMUX Status Register
 
-;VMUX_MODE0	.equ	0		;I/O Mode 0
+VMUX_MODE0	.equ	0		;I/O Mode 0
 ;VMUX_MODE1	.equ	1		;I/O Mode 1
 ;VMUX_MODE2	.equ	2		;I/O Mode 2
 ;VMUX_MODE3	.equ	3		;I/O Mode 3
@@ -59,7 +59,7 @@ VMUX_BREG1	.equ	1830000h	;VMUX Background Register 1
 ;VMUX_IODISABLE	.equ	8		;I/O Disable
 ;VMUX_ADDRGENENB	.equ	16		;Address Generator Enable
 
-;VMUX_VKEY0	.equ	0		;Video Key 0
+VMUX_VKEY0	.equ	0		;Video Key 0
 ;VMUX_VKEY1	.equ	32		;Video Key 0
 ;VMUX_VKEY2	.equ	64		;Video Key 0
 ;VMUX_VKEY3	.equ	96		;Video Key 0
@@ -75,7 +75,7 @@ VMUX_BREG1	.equ	1830000h	;VMUX Background Register 1
 ;
 ;VMUX_CRAMREAD	.equ	2048		;Force Read of CRAM Pixel Stream
 ;
-;VMUX_INITMODE	.equ	VMUX_MODE0|VMUX_VKEY0
+VMUX_INITMODE	.equ	VMUX_MODE0|VMUX_VKEY0
 	.endif
 
 

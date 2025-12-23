@@ -255,11 +255,76 @@ GND_Y		.equ	116-40	;Master in NDSP1
 
  SUBR	init_prog
 
+	.if	WUNIT
+	.ref	InitPIC
+	
+	
+;============================================
+;;; New type startup code for Wolf unit.  ;;;
+;;; If not, we hang at a colored screen!  ;;;
+;;; Taken from Hangtime code and applied. ;;;
+
+ 	dint				;Interrupts OFF
+	setf	16,1,0			;Word sign extend
+	setf	32,1,1			;Long word sign extend
+	movi	STCKST,sp		;Setup the stack pointer
+
+	clr 	a0			;Initial mode for VMUX chip
+	move	a0,@VMUX_CONTROL,W
+
+	movi	00030h,a0		;Hit sound reset bit
+	move	a0,@COIN_COUNTERS	;This is where reset bit is
+	movi	100,a0			;Wait for it to catch
+	dsjs	a0,$	
+	movi	00020h,a0		;Let it go
+	move	a0,@COIN_COUNTERS
+
+
+	move	@SOUNDIRQ,a0		;Read watchdog status
+	btst	8,a0			;Is this reset from a watchdog?
+;DJT Start
+	jrnz	aelqcont			; br=no
+
+	movk	AUDLOCK,a0		;Audit a Dog
+	jruc	aelqaud
+aelqcont
+	move	@WDOGRAM,a0,L		;Has machine been initialized?
+	cmpi	WDOGNUM,a0
+	jrne	initp50			; br=no, must be powerup
+
+	move	@dirqtimer,a0		;Did we have a process KO?
+	cmpi	400,a0
+	jrlo	initp50			; br=no, continue regular startup
+
+	movi	AUD_LOCKUP,a0		;Audit a proc KO
+aelqaud
+;DJT End
+	calla	AUD1
+
+;04/01/95 - NOTE:  It may look a little dumb to have two calls to InitPIC
+;here instead of one above before the read for the watchdog status and it may
+;be tempting to move the InitPIC call to before the watchdog status read BUT
+;don't do it!!!  The watchdog status MUST be read BEFORE the PIC is initialized
+;or the status of the watchdog will be reset.
+
+initp50
+	calla	InitPIC			;Init PIC and I/O system
+
+	move	a0,@WATCHDOG		;Kill the dog fer yucks
+	calla	READ_DIP		;Read the dipswitches
+	btst	6,a0			;Is power-up test bypass switch on?
+	jaz	POWERTST		; br=do power-up tests; go to WARMSET
+
+	calla	InitPIC			;Reinit PIC and I/O system
+
+ 	.else				; Else, we are TUNIT build.
+;=== T-Unit init
 	dint
 	setf	16,1,0			;Field0 = Word sign extend
 	setf	32,0,1			;Field1 = Long word
 	movi	STCKST,sp		;Top of stack
 
+;	calla	InitPic			;todo!!
 	.if	DEBUG
 	move	a0,@01e00000H		;Clr FPGA rom protect
 	.endif
@@ -312,7 +377,7 @@ initp50
 	jauc	POWERTST		;board test etc...
 tglnnopt
 
-
+	.endif
  SUBR	WARMSET
 
 	dint

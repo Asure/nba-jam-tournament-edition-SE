@@ -101,6 +101,7 @@ SWITCH_SND	.EQU	0FF80H
 	.bss	_pic_temp,64
 	.ref	_serial_number
 	.ref	_man_date
+	.def	InitPIC
 	.endif
 
 
@@ -583,6 +584,38 @@ _stomp_temp1:
 	dsjs	a1,_stomp_temp1
 	setf	16,1,0			;Field0 = Word sign extend
 	setf	32,0,1			;Field1 = Long word
+	rets
+
+***************************************************************
+* InitPIC - Initializes the PIC Microcontroller
+*
+InitPIC
+	clr	a0			;Reset the PIC
+	move	a0,@COIN_COUNTERS,W
+	movi	10,a0			;Hold RESET fer a bit
+	dsjs	a0,$
+	movi	010h,a0			;Set no command request
+	move	a0,@PIC_COMMAND,W
+	movi	020h,a0			;Allow PIC to run
+	move	a0,@COIN_COUNTERS,W
+	movi	200000000,a1
+_pwait_loop
+	move	@SOUNDIRQ,a0,W
+	btst	12,a0
+	jrz	_pnwait
+	move	a0,@WATCHDOG,W
+	dsjs	a1,_pwait_loop
+_pnwait
+	movi	010h,a0
+	move	a0,@PIC_COMMAND,W
+	movi	2000000,a1
+_pwait_loop1
+	move	@SOUNDIRQ,a0,W
+	btst	12,a0
+	jrnz	_pwait_done
+	move	a0,@WATCHDOG,W
+	dsjs	a1,_pwait_loop1
+_pwait_done
 	rets
 	.endif
 
@@ -1944,7 +1977,12 @@ ROMPLOT
 
 ROMNOPLOT
 	ADDI	ROM_SIZE,A14
+	.if	WUNIT
+	MOVE	@COINS,A13,L
+	sll	16,a13
+	.else
 	MOVE	@SWITCH,A13,L
+	.endif
 	ANDI	START_BITS,A13
 	CMPI	START_BITS,A13
 	JRNE	ROMABORT
@@ -4950,8 +4988,8 @@ I2_ZZ:
 
    .EVEN
 	.if	WUNIT
-CKSUM1	.equ	09d85h
-CKSUM2	.equ	02a9dH
+CKSUM1	.equ	0c7b1h
+CKSUM2	.equ	0859bH
 	.else
 CKSUM1	.equ	0e9a4h	;05d0bH	;0ac9fH	;a911
 CKSUM2	.equ	06630H	;0edd7H	;0a0e2H	;9fff

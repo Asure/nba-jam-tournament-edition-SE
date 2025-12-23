@@ -1,0 +1,36 @@
+Todo (new port started, new switches, NBA Jam SE 5.x based w/ all cool stuff from there.) 
+17-9-2025
+- Fix crowd cheer bg loop too short? (SLEEP macro .equ stuff? Wrong no. of ticks in sounds.axx?)
+- Finalize: Merge it all back into GIT, check T-Unit conditionals
+- Maybe add the coin door volume buttons?
+
+Doing
+-
+
+Done
+- Now using direct switch/dip/cmos access from MK3 src code sys/link.equ and friends.
+- Fixed DIAG using new direct inputs
+- Fixed main game using new direct inputs
+- Fix low volume at boot
+- PIC Serial init/resets/print
+- DCS init /resets/etc
+- Add DCS Volume Adjustment option
+- Add PSX DCS option in Extra menu.
+- Adjustment for DCS PSX soundtrack
+- Note: get_stick_cur uses 60hzloop and switch_stack for inputs. diag.axx reads direct using fudge_switches..
+- Port ROM test / CPU board screen vecs, etc.
+- Diag sound tst SNDTST etc.
+- Re-implement DCS into sound stack. (volume, play sounds, etc.)
+- Main.axx fix sound init/reset
+- Sounds.axx add dcs reset etc
+- Sounds.axx quick fix to remap old style soundboard codes into DCS xx xx byte commands ;0
+- Fix vol adjust text align.
+- Menu.axx fix the general sound test. DO_GENTEST (reset commented?)
+- Skipped: Update sound codes to Wolf format (patched SNDSND in sound.axx)
+- Workaround: Fix volume adjust codes (special case SNDSNDVOL in sound.axx)
+- Implement PSX Soundtrack.
+- Fixed 3p input stuck down. (switch2 vs switch4) in various spots.
+- Prog ROM CRC’s
+- Remove need for PIC.
+- Diag: adapt DMA check and SOUND during CPU board tests to Wolf.
+- Conditional build: SYS.EQU option WUNIT=X. 

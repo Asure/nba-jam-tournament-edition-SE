@@ -2170,7 +2170,7 @@ BL2
 
 	.if	WUNIT
 ROM_NAME
-	.byte	"NBA JAM SE WOLF REV 5.05 9/21/25",0
+	.byte	"NBA JAM SE WOLF REV 5.05 12/23/25",0
 	.even
 
 	.else
