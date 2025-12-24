@@ -33,7 +33,7 @@ Signature "NBAJAM DCS AMM";
 
 Default encoding parameters (
 //Type=0, Subtype=0, BitRate=70000,
-Type=*, Subtype=*, BitRate=70000,
+Type=*, Subtype=*, BitRate=71000,
 //PowerCut=97, MinRange=5, MaxError=5);
 PowerCut=97.5, MinRange=5, MaxError=10);
 
@@ -1540,6 +1540,7 @@ Stream poscorpion "poscorpion.wav";
 Stream griffey "griffey-1.wav";
 Stream poreptile "poreptile.wav";
 Stream posubzero "posubzero.wav";
+Stream pooneal "pooneal.wav";
 //
 
 // Player names speech commands

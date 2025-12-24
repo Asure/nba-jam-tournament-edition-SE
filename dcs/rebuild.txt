@@ -1,8 +1,8 @@
 Loading prototype ROM set from base.zip
 Compiling script from rework.prg
-Encoding .\input\dummy.wav : OK, 66 DCS frames, 586 bytes in ROM (54.1:1 compression, 9249 avg bps)
-Encoding .\input\dummy.wav : OK, 66 DCS frames, 586 bytes in ROM (54.1:1 compression, 9249 avg bps)
-Encoding .\input\dummy.wav : OK, 66 DCS frames, 586 bytes in ROM (54.1:1 compression, 9249 avg bps)
+Encoding .\input\dummy.wav : OK, 66 DCS frames, 629 bytes in ROM (50.4:1 compression, 9927 avg bps)
+Encoding .\input\dummy.wav : OK, 66 DCS frames, 629 bytes in ROM (50.4:1 compression, 9927 avg bps)
+Encoding .\input\dummy.wav : OK, 66 DCS frames, 629 bytes in ROM (50.4:1 compression, 9927 avg bps)
 Encoding .\input\game_start.wav-intro.wav : OK, 1585 DCS frames, 63290 bytes in ROM (12.0:1 compression, 41594 avg bps)
 Encoding .\input\game_start.wav-loop.wav : OK, 4237 DCS frames, 170213 bytes in ROM (11.9:1 compression, 41847 avg bps)
 Encoding .\input\nbajamte-002.wav-intro.wav : OK, 1627 DCS frames, 53958 bytes in ROM (14.5:1 compression, 34546 avg bps)
@@ -33,7 +33,7 @@ Encoding .\input\sqk1_snd.wav : OK, 69 DCS frames, 2436 bytes in ROM (13.6:1 com
 Encoding .\input\sqk2_snd.wav : OK, 62 DCS frames, 1559 bytes in ROM (19.1:1 compression, 26193 avg bps)
 Encoding .\input\sqk3_snd.wav : OK, 65 DCS frames, 2216 bytes in ROM (14.1:1 compression, 35513 avg bps)
 Encoding .\input\sqk4_snd.wav : OK, 59 DCS frames, 2076 bytes in ROM (13.6:1 compression, 36653 avg bps)
-Encoding .\input\119_swipe.wav : OK, 47 DCS frames, 1173 bytes in ROM (19.2:1 compression, 25997 avg bps)
+Encoding .\input\119_swipe.wav : OK, 47 DCS frames, 1205 bytes in ROM (18.7:1 compression, 26707 avg bps)
 Encoding .\input\swat_snd.wav : OK, 35 DCS frames, 1180 bytes in ROM (14.2:1 compression, 35119 avg bps)
 Encoding .\input\steal_snd.wav : OK, 85 DCS frames, 3679 bytes in ROM (11.1:1 compression, 45086 avg bps)
 Encoding .\input\pass_snd.wav : OK, 31 DCS frames, 1586 bytes in ROM (9.4:1 compression, 53293 avg bps)
@@ -47,10 +47,10 @@ Encoding .\input\miss3_snd.wav : OK, 68 DCS frames, 2263 bytes in ROM (14.4:1 co
 Encoding .\input\missd1_snd.wav : OK, 137 DCS frames, 4185 bytes in ROM (15.7:1 compression, 31820 avg bps)
 Encoding .\input\hitbboard_snd.wav : OK, 64 DCS frames, 1993 bytes in ROM (15.4:1 compression, 32438 avg bps)
 Encoding .\input\flsh1_snd.wav : OK, 15 DCS frames, 968 bytes in ROM (7.4:1 compression, 67222 avg bps)
-Encoding .\input\flsh2_snd.wav : OK, 45 DCS frames, 2297 bytes in ROM (9.4:1 compression, 53171 avg bps)
+Encoding .\input\flsh2_snd.wav : OK, 45 DCS frames, 2394 bytes in ROM (9.0:1 compression, 55417 avg bps)
 Encoding .\input\explode_snd.wav : OK, 425 DCS frames, 13931 bytes in ROM (14.6:1 compression, 34145 avg bps)
 Encoding .\input\whstle_snd.wav : OK, 62 DCS frames, 2041 bytes in ROM (14.6:1 compression, 34291 avg bps)
-Encoding .\input\win_snd.wav : OK, 293 DCS frames, 9215 bytes in ROM (15.3:1 compression, 32761 avg bps)
+Encoding .\input\win_snd.wav : OK, 293 DCS frames, 9241 bytes in ROM (15.2:1 compression, 32853 avg bps)
 Encoding .\input\cursor_snd1.wav : OK, 55 DCS frames, 1352 bytes in ROM (19.5:1 compression, 25606 avg bps)
 Encoding .\input\cursor_snd2.wav : OK, 55 DCS frames, 1345 bytes in ROM (19.6:1 compression, 25473 avg bps)
 Encoding .\input\cursor_snd3.wav : OK, 55 DCS frames, 1318 bytes in ROM (20.0:1 compression, 24962 avg bps)
@@ -72,11 +72,11 @@ Encoding .\input\baddec_snd.wav : OK, 124 DCS frames, 4268 bytes in ROM (13.9:1 
 Encoding .\input\cheer_snd.wav : OK, 294 DCS frames, 10708 bytes in ROM (13.2:1 compression, 37939 avg bps)
 Encoding .\input\cheer1_snd.wav : OK, 311 DCS frames, 10745 bytes in ROM (13.9:1 compression, 35989 avg bps)
 Encoding .\input\cheer3_snd.wav : OK, 543 DCS frames, 18009 bytes in ROM (14.5:1 compression, 34548 avg bps)
-Encoding .\input\boo1_snd.wav : OK, 542 DCS frames, 29751 bytes in ROM (8.7:1 compression, 57178 avg bps)
-Encoding .\input\boo_snd.wav : OK, 359 DCS frames, 19823 bytes in ROM (8.7:1 compression, 57518 avg bps)
+Encoding .\input\boo1_snd.wav : OK, 542 DCS frames, 30800 bytes in ROM (8.4:1 compression, 59194 avg bps)
+Encoding .\input\boo_snd.wav : OK, 359 DCS frames, 20537 bytes in ROM (8.4:1 compression, 59590 avg bps)
 Encoding .\input\airball_snd.wav : OK, 192 DCS frames, 6152 bytes in ROM (15.0:1 compression, 33377 avg bps)
 Encoding .\input\organ1_snd.wav : OK, 496 DCS frames, 25980 bytes in ROM (9.2:1 compression, 54561 avg bps)
-Encoding .\input\organ2_snd.wav : OK, 257 DCS frames, 11878 bytes in ROM (10.4:1 compression, 48144 avg bps)
+Encoding .\input\organ2_snd.wav : OK, 257 DCS frames, 12329 bytes in ROM (10.0:1 compression, 49972 avg bps)
 Encoding .\input\needshot.wav : OK, 175 DCS frames, 6021 bytes in ROM (14.0:1 compression, 35839 avg bps)
 Encoding .\input\runout.wav : OK, 222 DCS frames, 7595 bytes in ROM (14.0:1 compression, 35637 avg bps)
 Encoding .\input\facial.wav : OK, 229 DCS frames, 7653 bytes in ROM (14.4:1 compression, 34812 avg bps)
@@ -129,7 +129,7 @@ Encoding .\input\hothand.wav : OK, 226 DCS frames, 7939 bytes in ROM (13.7:1 com
 Encoding .\input\upby.wav : OK, 85 DCS frames, 2728 bytes in ROM (15.0:1 compression, 33431 avg bps)
 Encoding .\input\scrtied.wav : OK, 205 DCS frames, 6992 bytes in ROM (14.1:1 compression, 35528 avg bps)
 Encoding .\input\yes.wav : OK, 114 DCS frames, 3794 bytes in ROM (14.4:1 compression, 34667 avg bps)
-Encoding .\input\swish_sp.wav : OK, 107 DCS frames, 4331 bytes in ROM (11.9:1 compression, 42163 avg bps)
+Encoding .\input\swish_sp.wav : OK, 107 DCS frames, 4413 bytes in ROM (11.6:1 compression, 42961 avg bps)
 Encoding .\input\shts0.wav : OK, 231 DCS frames, 7545 bytes in ROM (14.7:1 compression, 34023 avg bps)
 Encoding .\input\shts1.wav : OK, 131 DCS frames, 4333 bytes in ROM (14.5:1 compression, 34455 avg bps)
 Encoding .\input\shts2.wav : OK, 229 DCS frames, 7729 bytes in ROM (14.2:1 compression, 35157 avg bps)
@@ -211,48 +211,48 @@ Encoding .\input\t_spurs.wav : OK, 114 DCS frames, 3864 bytes in ROM (14.2:1 com
 Encoding .\input\t_supersonics.wav : OK, 146 DCS frames, 4630 bytes in ROM (15.1:1 compression, 33034 avg bps)
 Encoding .\input\t_jazz.wav : OK, 103 DCS frames, 3532 bytes in ROM (14.0:1 compression, 35720 avg bps)
 Encoding .\input\t_bullets.wav : OK, 95 DCS frames, 3077 bytes in ROM (14.8:1 compression, 33739 avg bps)
-Encoding .\input\popass-to.wav : OK, 32 DCS frames, 1205 bytes in ROM (12.7:1 compression, 39225 avg bps)
+Encoding .\input\popass-to.wav : OK, 32 DCS frames, 1251 bytes in ROM (12.3:1 compression, 40723 avg bps)
 Encoding .\input\pomanning.wav : OK, 87 DCS frames, 3898 bytes in ROM (10.7:1 compression, 46671 avg bps)
-Encoding .\input\poaugmon.wav : OK, 83 DCS frames, 3330 bytes in ROM (12.0:1 compression, 41792 avg bps)
-Encoding .\input\powillis.wav : OK, 100 DCS frames, 3079 bytes in ROM (15.6:1 compression, 32073 avg bps)
-Encoding .\input\pobrown.wav : OK, 95 DCS frames, 3628 bytes in ROM (12.6:1 compression, 39781 avg bps)
+Encoding .\input\poaugmon.wav : OK, 83 DCS frames, 3457 bytes in ROM (11.5:1 compression, 43386 avg bps)
+Encoding .\input\powillis.wav : OK, 100 DCS frames, 3175 bytes in ROM (15.1:1 compression, 33073 avg bps)
+Encoding .\input\pobrown.wav : OK, 95 DCS frames, 3743 bytes in ROM (12.2:1 compression, 41042 avg bps)
 Encoding .\input\pomacdan.wav : OK, 109 DCS frames, 4902 bytes in ROM (10.7:1 compression, 46846 avg bps)
-Encoding .\input\pogamble.wav : OK, 97 DCS frames, 3656 bytes in ROM (12.7:1 compression, 39261 avg bps)
-Encoding .\input\pojohnsn_l.wav : OK, 129 DCS frames, 5006 bytes in ROM (12.4:1 compression, 40423 avg bps)
+Encoding .\input\pogamble.wav : OK, 97 DCS frames, 3786 bytes in ROM (12.3:1 compression, 40657 avg bps)
+Encoding .\input\pojohnsn_l.wav : OK, 129 DCS frames, 5221 bytes in ROM (11.9:1 compression, 42159 avg bps)
 Encoding .\input\pohawkins.wav : OK, 107 DCS frames, 5070 bytes in ROM (10.1:1 compression, 49357 avg bps)
-Encoding .\input\pomourning.wav : OK, 98 DCS frames, 3139 bytes in ROM (15.0:1 compression, 33365 avg bps)
+Encoding .\input\pomourning.wav : OK, 98 DCS frames, 3226 bytes in ROM (14.6:1 compression, 34290 avg bps)
 Encoding .\input\popippen.wav : OK, 95 DCS frames, 3431 bytes in ROM (13.3:1 compression, 37621 avg bps)
-Encoding .\input\poarmstrng.wav : OK, 126 DCS frames, 5059 bytes in ROM (12.0:1 compression, 41824 avg bps)
+Encoding .\input\poarmstrng.wav : OK, 126 DCS frames, 5236 bytes in ROM (11.6:1 compression, 43287 avg bps)
 Encoding .\input\pojordan.wav : OK, 75 DCS frames, 2703 bytes in ROM (13.3:1 compression, 37542 avg bps)
 Encoding .\input\pogrant.wav : OK, 86 DCS frames, 4198 bytes in ROM (9.8:1 compression, 50848 avg bps)
 Encoding .\input\poprice.wav : OK, 82 DCS frames, 4122 bytes in ROM (9.5:1 compression, 52363 avg bps)
 Encoding .\input\podaughrty.wav : OK, 84 DCS frames, 4265 bytes in ROM (9.5:1 compression, 52889 avg bps)
 Encoding .\input\ponance.wav : OK, 87 DCS frames, 3352 bytes in ROM (12.5:1 compression, 40134 avg bps)
-Encoding .\input\pojackson.wav : OK, 97 DCS frames, 4221 bytes in ROM (11.0:1 compression, 45329 avg bps)
-Encoding .\input\pomashburn.wav : OK, 102 DCS frames, 3876 bytes in ROM (12.6:1 compression, 39583 avg bps)
-Encoding .\input\pomutombo.wav : OK, 116 DCS frames, 5154 bytes in ROM (10.8:1 compression, 46282 avg bps)
+Encoding .\input\pojackson.wav : OK, 97 DCS frames, 4381 bytes in ROM (10.6:1 compression, 47047 avg bps)
+Encoding .\input\pomashburn.wav : OK, 102 DCS frames, 4018 bytes in ROM (12.2:1 compression, 41033 avg bps)
+Encoding .\input\pomutombo.wav : OK, 116 DCS frames, 5326 bytes in ROM (10.5:1 compression, 47827 avg bps)
 Encoding .\input\poellis.wav : OK, 76 DCS frames, 3468 bytes in ROM (10.5:1 compression, 47533 avg bps)
 Encoding .\input\porogers.wav : OK, 106 DCS frames, 3957 bytes in ROM (12.9:1 compression, 38886 avg bps)
 Encoding .\input\poithomas.wav : OK, 108 DCS frames, 5459 bytes in ROM (9.5:1 compression, 52652 avg bps)
-Encoding .\input\podumars.wav : OK, 108 DCS frames, 4003 bytes in ROM (13.0:1 compression, 38609 avg bps)
+Encoding .\input\podumars.wav : OK, 108 DCS frames, 4117 bytes in ROM (12.6:1 compression, 39709 avg bps)
 Encoding .\input\poelliot.wav : OK, 96 DCS frames, 4378 bytes in ROM (10.5:1 compression, 47504 avg bps)
 Encoding .\input\polaimbeer.wav : OK, 120 DCS frames, 3864 bytes in ROM (14.9:1 compression, 33542 avg bps)
 Encoding .\input\pohardaway.wav : OK, 92 DCS frames, 3248 bytes in ROM (13.6:1 compression, 36775 avg bps)
 Encoding .\input\pomullin.wav : OK, 78 DCS frames, 3513 bytes in ROM (10.7:1 compression, 46915 avg bps)
-Encoding .\input\powebber.wav : OK, 74 DCS frames, 2796 bytes in ROM (12.7:1 compression, 39358 avg bps)
-Encoding .\input\poolajuwon.wav : OK, 109 DCS frames, 5685 bytes in ROM (9.2:1 compression, 54329 avg bps)
+Encoding .\input\powebber.wav : OK, 74 DCS frames, 2915 bytes in ROM (12.2:1 compression, 41033 avg bps)
+Encoding .\input\poolajuwon.wav : OK, 109 DCS frames, 5875 bytes in ROM (8.9:1 compression, 56145 avg bps)
 Encoding .\input\pomaxwell.wav : OK, 104 DCS frames, 3783 bytes in ROM (13.2:1 compression, 37891 avg bps)
 Encoding .\input\pohorry.wav : OK, 76 DCS frames, 3379 bytes in ROM (10.8:1 compression, 46313 avg bps)
-Encoding .\input\posmith.wav : OK, 60 DCS frames, 2423 bytes in ROM (11.9:1 compression, 42066 avg bps)
-Encoding .\input\pomiller.wav : OK, 54 DCS frames, 2511 bytes in ROM (10.3:1 compression, 48438 avg bps)
+Encoding .\input\posmith.wav : OK, 60 DCS frames, 2538 bytes in ROM (11.3:1 compression, 44062 avg bps)
+Encoding .\input\pomiller.wav : OK, 54 DCS frames, 2590 bytes in ROM (10.0:1 compression, 49961 avg bps)
 Encoding .\input\posealy.wav : OK, 60 DCS frames, 3033 bytes in ROM (9.5:1 compression, 52656 avg bps)
 Encoding .\input\posmits.wav : OK, 79 DCS frames, 2871 bytes in ROM (13.2:1 compression, 37856 avg bps)
 Encoding .\input\powilkins.wav : OK, 97 DCS frames, 3982 bytes in ROM (11.7:1 compression, 42762 avg bps)
 Encoding .\input\poharper-r.wav : OK, 72 DCS frames, 3472 bytes in ROM (10.0:1 compression, 50231 avg bps)
-Encoding .\input\poroberts.wav : OK, 85 DCS frames, 3204 bytes in ROM (12.7:1 compression, 39265 avg bps)
-Encoding .\input\popeeler.wav : OK, 94 DCS frames, 3398 bytes in ROM (13.3:1 compression, 37655 avg bps)
+Encoding .\input\poroberts.wav : OK, 85 DCS frames, 3306 bytes in ROM (12.3:1 compression, 40515 avg bps)
+Encoding .\input\popeeler.wav : OK, 94 DCS frames, 3519 bytes in ROM (12.8:1 compression, 38996 avg bps)
 Encoding .\input\podivac.wav : OK, 129 DCS frames, 5036 bytes in ROM (12.3:1 compression, 40665 avg bps)
-Encoding .\input\pocampbell.wav : OK, 91 DCS frames, 3054 bytes in ROM (14.3:1 compression, 34959 avg bps)
+Encoding .\input\pocampbell.wav : OK, 91 DCS frames, 3154 bytes in ROM (13.8:1 compression, 36103 avg bps)
 Encoding .\input\poworthy.wav : OK, 126 DCS frames, 5509 bytes in ROM (11.0:1 compression, 45544 avg bps)
 Encoding .\input\porice.wav : OK, 66 DCS frames, 2201 bytes in ROM (14.4:1 compression, 34738 avg bps)
 Encoding .\input\poseikaly.wav : OK, 83 DCS frames, 2696 bytes in ROM (14.8:1 compression, 33835 avg bps)
@@ -271,7 +271,7 @@ Encoding .\input\pobenjamin.wav : OK, 99 DCS frames, 3456 bytes in ROM (13.8:1 c
 Encoding .\input\poewing.wav : OK, 92 DCS frames, 4254 bytes in ROM (10.4:1 compression, 48166 avg bps)
 Encoding .\input\pomason.wav : OK, 104 DCS frames, 3772 bytes in ROM (13.2:1 compression, 37780 avg bps)
 Encoding .\input\postarks.wav : OK, 95 DCS frames, 3198 bytes in ROM (14.3:1 compression, 35066 avg bps)
-Encoding .\input\pooakley.wav : OK, 101 DCS frames, 4267 bytes in ROM (11.4:1 compression, 44008 avg bps)
+Encoding .\input\pooakley.wav : OK, 101 DCS frames, 4417 bytes in ROM (11.0:1 compression, 45555 avg bps)
 Encoding .\input\poskiles.wav : OK, 121 DCS frames, 3857 bytes in ROM (15.1:1 compression, 33204 avg bps)
 Encoding .\input\poweatherspoon.wav : OK, 92 DCS frames, 3042 bytes in ROM (14.5:1 compression, 34443 avg bps)
 Encoding .\input\pobradley.wav : OK, 101 DCS frames, 3092 bytes in ROM (15.7:1 compression, 31889 avg bps)
@@ -300,21 +300,28 @@ Encoding .\input\poellison.wav : OK, 88 DCS frames, 2976 bytes in ROM (14.2:1 co
 Encoding .\input\pocheaney.wav : OK, 102 DCS frames, 3743 bytes in ROM (13.1:1 compression, 38225 avg bps)
 Encoding .\input\poraiden.wav : OK, 67 DCS frames, 2291 bytes in ROM (14.0:1 compression, 35619 avg bps)
 Encoding .\input\poscorpion.wav : OK, 117 DCS frames, 3575 bytes in ROM (15.7:1 compression, 31829 avg bps)
-Encoding .\input\griffey-1.wav : OK, 82 DCS frames, 3131 bytes in ROM (12.6:1 compression, 39774 avg bps)
+Encoding .\input\griffey-1.wav : OK, 82 DCS frames, 3252 bytes in ROM (12.1:1 compression, 41311 avg bps)
 Encoding .\input\poreptile.wav : OK, 98 DCS frames, 3260 bytes in ROM (14.4:1 compression, 34651 avg bps)
 Encoding .\input\posubzero.wav : OK, 133 DCS frames, 4274 bytes in ROM (14.9:1 compression, 33474 avg bps)
-rework.prg(2027): error: Wait(stream) can only be used after Play() with a stream processed earlier in the script.
-rework.prg(2035): error: Wait(stream) can only be used after Play() with a stream processed earlier in the script.
-rework.prg(2794): warning: This statement (and everything after it) is unreachable due to an earlier Wait(forever) and/or End
-rework.prg(2805): warning: This statement (and everything after it) is unreachable due to an earlier Wait(forever) and/or End
-rework.prg(2809): warning: This statement (and everything after it) is unreachable due to an earlier Wait(forever) and/or End
-rework.prg(2813): warning: This statement (and everything after it) is unreachable due to an earlier Wait(forever) and/or End
-rework.prg(2817): warning: This statement (and everything after it) is unreachable due to an earlier Wait(forever) and/or End
-rework.prg(2821): warning: This statement (and everything after it) is unreachable due to an earlier Wait(forever) and/or End
-rework.prg(2825): warning: This statement (and everything after it) is unreachable due to an earlier Wait(forever) and/or End
-rework.prg(2829): warning: This statement (and everything after it) is unreachable due to an earlier Wait(forever) and/or End
-rework.prg(2026): error: Stream 'pooneal' is not defined
-rework.prg(2034): error: Stream 'pooneal' is not defined
+Encoding .\input\pooneal.wav : OK, 121 DCS frames, 3930 bytes in ROM (14.8:1 compression, 33833 avg bps)
+rework.prg(2795): warning: This statement (and everything after it) is unreachable due to an earlier Wait(forever) and/or End
+rework.prg(2806): warning: This statement (and everything after it) is unreachable due to an earlier Wait(forever) and/or End
+rework.prg(2810): warning: This statement (and everything after it) is unreachable due to an earlier Wait(forever) and/or End
+rework.prg(2814): warning: This statement (and everything after it) is unreachable due to an earlier Wait(forever) and/or End
+rework.prg(2818): warning: This statement (and everything after it) is unreachable due to an earlier Wait(forever) and/or End
+rework.prg(2822): warning: This statement (and everything after it) is unreachable due to an earlier Wait(forever) and/or End
+rework.prg(2826): warning: This statement (and everything after it) is unreachable due to an earlier Wait(forever) and/or End
+rework.prg(2830): warning: This statement (and everything after it) is unreachable due to an earlier Wait(forever) and/or End
 
-Script compilation failed with 4 errors, 8 warnings
-No ROM images generated
+Script compilation succeeded, but note that 8 warnings were generated
+
+Generating new ROM set to nbatest10.zip
+ROM .zip file layout:
+Chip  Size   Bytes Used  Unused  Filename
+U2    1M     1048484     92      U2.ROM
+U3    1M     1048500     76      U3.ROM
+U4    1M     1048154     422     U4.ROM
+U5    1M     1048182     394     U5.ROM
+U6    1M     336968      711608  U6.ROM
+
+ROM creation succeeded
