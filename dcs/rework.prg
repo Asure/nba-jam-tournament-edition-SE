@@ -283,6 +283,22 @@ Track $0722 channel 0 {
     }
 };
 
+// Intermission: Deluxe halftime (was 0004)
+// PC and PSX use this one on all quarters end including half time.
+// Arcade has a special half time tune. Ports do not!
+
+Stream PsxHalfTimeTheme "Psx-halftime.wav" (BitRate=70000,PowerCut=97.5, MinRange=5, MaxError=5);
+
+Track $0724 channel 0 {	
+    SetMixingLevel(level 120);   	// always set the mixing level for a new track
+    Play(PsxHalfTimeTheme);
+    Wait(Stream);          		// ...and wait for it to finish before exiting this loop
+    Play(PsxHalfTimeTheme);
+    Wait(Stream - 10.0 sec);
+    SetMixingLevel(Level 0, steps 10 sec); //
+    Wait(Stream);	
+};
+
 // Q2 (was 0006)
 Track $0726 channel 0 {	
     SetMixingLevel(level 120);   	// always set the mixing level for a new track
@@ -303,24 +319,6 @@ Track $0727 channel 0 {
     Play("PsxQ3-v2-loop.wav" (BitRate=70000,PowerCut=97.5, MinRange=5, MaxError=6));       	// start an audio clip
     Wait(Stream);          		// ...and wait for it to finish before exiting this loop
     }
-};
-
-
-
-// Intermission: Deluxe halftime (was 0004)
-// PC and PSX use this one on all quarters end including half time.
-// Arcade has a special half time tune. Ports do not!
-
-Stream PsxHalfTimeTheme "Psx-halftime.wav" (BitRate=70000,PowerCut=97.5, MinRange=5, MaxError=5);
-
-Track $0724 channel 0 {	
-    SetMixingLevel(level 120);   	// always set the mixing level for a new track
-    Play(PsxHalfTimeTheme);
-    Wait(Stream);          		// ...and wait for it to finish before exiting this loop
-    Play(PsxHalfTimeTheme);
-    Wait(Stream - 10.0 sec);
-    SetMixingLevel(Level 0, steps 10 sec); //
-    Wait(Stream);	
 };
 
 // Intermission: Q1/Q3/Q4/Overtime intermission (was 000A)
@@ -443,6 +441,8 @@ Track $008c channel 2 {
     Play("pass_snd.wav");       	// start an audio clip
     Wait(Stream);          		// ...and wait for it to finish before exiting
 };
+
+// i am here in plbuild
 Track $0179 channel 2 {
     SetMixingLevel(level 100); 		// always set the mixing level for a new track
     Play("fball_snd.wav");       	// start an audio clip
@@ -463,11 +463,7 @@ Track $0120 channel 2 {			// chan2 more dunky
     Play("dunk_snd.wav");       	// start an audio clip
     Wait(Stream);          		// ...and wait for it to finish before exiting
 };
-Track $013b channel 2 {
-    SetMixingLevel(level 100); 		// always set the mixing level for a new track
-    Play("miss_snd.wav");       	// start an audio clip
-    Wait(Stream);          		// ...and wait for it to finish before exiting
-};
+// here
 Track $0139 channel 2 {
     SetMixingLevel(level 100); 		// always set the mixing level for a new track
     Play("miss2_snd.wav");       	// start an audio clip
@@ -478,6 +474,12 @@ Track $013a channel 2 {
     Play("miss3_snd.wav");       	// start an audio clip
     Wait(Stream);          		// ...and wait for it to finish before exiting
 };
+Track $013b channel 2 {
+    SetMixingLevel(level 100); 		// always set the mixing level for a new track
+    Play("miss_snd.wav");       	// start an audio clip
+    Wait(Stream);          		// ...and wait for it to finish before exiting
+};
+
 Track $0128 channel 2 {
     SetMixingLevel(level 100); 		// always set the mixing level for a new track
     Play("missd1_snd.wav");       	// start an audio clip
@@ -488,6 +490,10 @@ Track $0138 channel 2 {
     Play("hitbboard_snd.wav");       	// start an audio clip
     Wait(Stream);          		// ...and wait for it to finish before exiting
 };
+
+//done!
+
+
 //camera flashes on dunks track 3
 Track $00a8 channel 3 {
     SetMixingLevel(level 100); 		// always set the mixing level for a new track
@@ -512,6 +518,7 @@ Track $0148 channel 3 {
     Play("whstle_snd.wav");       	// start an audio clip
     Wait(Stream);          		// ...and wait for it to finish before exiting
 };
+// done
 Track $00a5 channel 1 {
     SetMixingLevel(level 100); 		// always set the mixing level for a new track
     Play("win_snd.wav");	       	// start an audio clip
@@ -560,6 +567,7 @@ Track $0087 channel 4 {
     Play(select);	       	// start an audio clip
     Wait(Stream);          		// ...and wait for it to finish before exiting
 };
+//done
 Track $0088 channel 1 {
     SetMixingLevel(level 100); 		// always set the mixing level for a new track
     Play("fullgame_snd1.wav");	       	// start an audio clip
@@ -580,9 +588,15 @@ Track $008b channel 4 {
     Play("fullgame_snd4.wav");	       	// start an audio clip
     Wait(Stream);          		// ...and wait for it to finish before exiting
 };
-Track $0097 channel 4 {
+// HERE
+Track $0090 channel 4 {
     SetMixingLevel(level 100); 		// always set the mixing level for a new track
-    Play("infoex_snd.wav");	       	// start an audio clip
+    Play("tick_snd.wav");	       	// start an audio clip
+    Wait(Stream);          		// ...and wait for it to finish before exiting
+};
+Track $0091 channel 4 {
+    SetMixingLevel(level 100); 		// always set the mixing level for a new track
+    Play("tock_snd.wav");	       	// start an audio clip
     Wait(Stream);          		// ...and wait for it to finish before exiting
 };
 Track $0092 channel 4 {
@@ -591,6 +605,13 @@ Track $0092 channel 4 {
 //    Play("alert_snd.wav");	       	// start an audio clip
     Wait(Stream);          		// ...and wait for it to finish before exiting
 };
+Track $0097 channel 4 {
+    SetMixingLevel(level 100); 		// always set the mixing level for a new track
+    Play("infoex_snd.wav");	       	// start an audio clip
+    Wait(Stream);          		// ...and wait for it to finish before exiting
+};
+//done
+
 Track $00a0 channel 4 {
     SetMixingLevel(level 100); 		// always set the mixing level for a new track
     Play("warn_snd.wav");	       	// start an audio clip
@@ -611,18 +632,9 @@ Track $00a4 channel 4 {
     Play("coin_snd.wav");	       	// start an audio clip
     Wait(Stream);          		// ...and wait for it to finish before exiting
 };
+//done
 
 
-Track $0090 channel 4 {
-    SetMixingLevel(level 100); 		// always set the mixing level for a new track
-    Play("tick_snd.wav");	       	// start an audio clip
-    Wait(Stream);          		// ...and wait for it to finish before exiting
-};
-Track $0091 channel 4 {
-    SetMixingLevel(level 100); 		// always set the mixing level for a new track
-    Play("tock_snd.wav");	       	// start an audio clip
-    Wait(Stream);          		// ...and wait for it to finish before exiting
-};
 Track $01b7 channel 5 {			// chan 5 for speech!
     SetMixingLevel(level 100); 		// always set the mixing level for a new track
     Play("baddec_snd.wav");	       	// start an audio clip
@@ -638,24 +650,24 @@ Track $0111 channel 3 {
     Play("cheer1_snd.wav");	       	// start an audio clip
     Wait(Stream);          		// ...and wait for it to finish before exiting
 };
-Track $014e channel 3 {
-    SetMixingLevel(level 100); 		// always set the mixing level for a new track
-    Play("cheer3_snd.wav");	       	// start an audio clip
-    Wait(Stream);          		// ...and wait for it to finish before exiting
-};
 Track $014a channel 3 {
     SetMixingLevel(level 100); 		// always set the mixing level for a new track
     Play("boo1_snd.wav");	       	// start an audio clip
     Wait(Stream);          		// ...and wait for it to finish before exiting
 };
-Track $0150 channel 3 {
-    SetMixingLevel(level 100); 		// always set the mixing level for a new track
-    Play("boo_snd.wav");	       	// start an audio clip
-    Wait(Stream);          		// ...and wait for it to finish before exiting
-};
 Track $014d channel 3 {
     SetMixingLevel(level 100); 		// always set the mixing level for a new track
     Play("airball_snd.wav");	       	// start an audio clip
+    Wait(Stream);          		// ...and wait for it to finish before exiting
+};
+Track $014e channel 3 {
+    SetMixingLevel(level 100); 		// always set the mixing level for a new track
+    Play("cheer3_snd.wav");	       	// start an audio clip
+    Wait(Stream);          		// ...and wait for it to finish before exiting
+};
+Track $0150 channel 3 {
+    SetMixingLevel(level 100); 		// always set the mixing level for a new track
+    Play("boo_snd.wav");	       	// start an audio clip
     Wait(Stream);          		// ...and wait for it to finish before exiting
 };
 
@@ -763,6 +775,16 @@ Track $01cd channel 5 {
     Play("downby.wav");		       	// start an audio clip
     Wait(Stream);          		// ...and wait for it to finish before exiting
 };
+Track $01cf channel 5 {
+    SetMixingLevel(level 100); 		// always set the mixing level for a new track
+    Play("upby.wav");       		// start an audio clip
+    Wait(Stream);          		// ...and wait for it to finish before exiting
+};
+
+
+
+
+//here
 
 
 
@@ -978,11 +1000,6 @@ Track $01fd channel 5 {
 //    Play("downby.wav");       		// start an audio clip
 //   Wait(Stream);          		// ...and wait for it to finish before exiting
 //};
-Track $01cf channel 5 {
-    SetMixingLevel(level 100); 		// always set the mixing level for a new track
-    Play("upby.wav");       		// start an audio clip
-    Wait(Stream);          		// ...and wait for it to finish before exiting
-};
 Track $01ba channel 5 {
     SetMixingLevel(level 100); 		// always set the mixing level for a new track
     Play("scrtied.wav");       		// start an audio clip
@@ -1307,19 +1324,9 @@ Track $019f channel 5 {
 
 // Teams
 // let's put them on channel 5, so the game noises on 1-2-3-4 keep going.
-Track $0035 channel 5 {
+Track $0030 channel 5 {
     SetMixingLevel(level 100); 		// always set the mixing level for a new track
-    Play("t_hawks.wav");       		// start an audio clip
-    Wait(Stream);          		// ...and wait for it to finish before exiting
-};
-Track $0033 channel 5 {
-    SetMixingLevel(level 100); 		// always set the mixing level for a new track
-    Play("t_celtics.wav");       		// start an audio clip
-    Wait(Stream);          		// ...and wait for it to finish before exiting
-};
-Track $0036 channel 5 {
-    SetMixingLevel(level 100); 		// always set the mixing level for a new track
-    Play("t_hornets.wav");     		// start an audio clip
+    Play("t_bullets.wav");   		// start an audio clip
     Wait(Stream);          		// ...and wait for it to finish before exiting
 };
 Track $0031 channel 5 {
@@ -1332,34 +1339,9 @@ Track $0032 channel 5 {
     Play("t_cavel.wav");       		// start an audio clip
     Wait(Stream);          		// ...and wait for it to finish before exiting
 };
-Track $003c channel 5 {
+Track $0033 channel 5 {
     SetMixingLevel(level 100); 		// always set the mixing level for a new track
-    Play("t_mavericks.wav");   		// start an audio clip
-    Wait(Stream);          		// ...and wait for it to finish before exiting
-};
-Track $003e channel 5 {
-    SetMixingLevel(level 100); 		// always set the mixing level for a new track
-    Play("t_nuggets.wav");   		// start an audio clip
-    Wait(Stream);          		// ...and wait for it to finish before exiting
-};
-Track $0040 channel 5 {
-    SetMixingLevel(level 100); 		// always set the mixing level for a new track
-    Play("t_pistons.wav");   		// start an audio clip
-    Wait(Stream);          		// ...and wait for it to finish before exiting
-};
-Track $0048 channel 5 {
-    SetMixingLevel(level 100); 		// always set the mixing level for a new track
-    Play("t_warriors.wav");   		// start an audio clip
-    Wait(Stream);          		// ...and wait for it to finish before exiting
-};
-Track $0041 channel 5 {
-    SetMixingLevel(level 100); 		// always set the mixing level for a new track
-    Play("t_rockets.wav");   		// start an audio clip
-    Wait(Stream);          		// ...and wait for it to finish before exiting
-};
-Track $003f channel 5 {
-    SetMixingLevel(level 100); 		// always set the mixing level for a new track
-    Play("t_pacers.wav");   		// start an audio clip
+    Play("t_celtics.wav");       		// start an audio clip
     Wait(Stream);          		// ...and wait for it to finish before exiting
 };
 Track $0034 channel 5 {
@@ -1367,64 +1349,14 @@ Track $0034 channel 5 {
     Play("t_clippers.wav");   		// start an audio clip
     Wait(Stream);          		// ...and wait for it to finish before exiting
 };
-Track $003a channel 5 {
+Track $0035 channel 5 {
     SetMixingLevel(level 100); 		// always set the mixing level for a new track
-    Play("t_lakers.wav");   		// start an audio clip
+    Play("t_hawks.wav");       		// start an audio clip
     Wait(Stream);          		// ...and wait for it to finish before exiting
 };
-Track $004a channel 5 {
+Track $0036 channel 5 {
     SetMixingLevel(level 100); 		// always set the mixing level for a new track
-    Play("t_bucks.wav");   		// start an audio clip
-    Wait(Stream);          		// ...and wait for it to finish before exiting
-};
-Track $0047 channel 5 {
-    SetMixingLevel(level 100); 		// always set the mixing level for a new track
-    Play("t_timber.wav");   		// start an audio clip
-    Wait(Stream);          		// ...and wait for it to finish before exiting
-};
-Track $003d channel 5 {
-    SetMixingLevel(level 100); 		// always set the mixing level for a new track
-    Play("t_nets.wav");   		// start an audio clip
-    Wait(Stream);          		// ...and wait for it to finish before exiting
-};
-Track $0039 channel 5 {
-    SetMixingLevel(level 100); 		// always set the mixing level for a new track
-    Play("t_knicks.wav");   		// start an audio clip
-    Wait(Stream);          		// ...and wait for it to finish before exiting
-};
-Track $003b channel 5 {
-    SetMixingLevel(level 100); 		// always set the mixing level for a new track
-    Play("t_magic.wav");   		// start an audio clip
-    Wait(Stream);          		// ...and wait for it to finish before exiting
-};
-Track $0042 channel 5 {
-    SetMixingLevel(level 100); 		// always set the mixing level for a new track
-    Play("t_sixers.wav");   		// start an audio clip
-    Wait(Stream);          		// ...and wait for it to finish before exiting
-};
-Track $0044 channel 5 {
-    SetMixingLevel(level 100); 		// always set the mixing level for a new track
-    Play("t_suns.wav");   		// start an audio clip
-    Wait(Stream);          		// ...and wait for it to finish before exiting
-};
-Track $0049 channel 5 {
-    SetMixingLevel(level 100); 		// always set the mixing level for a new track
-    Play("t_blazers.wav");   		// start an audio clip
-    Wait(Stream);          		// ...and wait for it to finish before exiting
-};
-Track $0038 channel 5 {
-    SetMixingLevel(level 100); 		// always set the mixing level for a new track
-    Play("t_kings.wav");   		// start an audio clip
-    Wait(Stream);          		// ...and wait for it to finish before exiting
-};
-Track $0043 channel 5 {
-    SetMixingLevel(level 100); 		// always set the mixing level for a new track
-    Play("t_spurs.wav");   		// start an audio clip
-    Wait(Stream);          		// ...and wait for it to finish before exiting
-};
-Track $0045 channel 5 {
-    SetMixingLevel(level 100); 		// always set the mixing level for a new track
-    Play("t_supersonics.wav"); 		// start an audio clip
+    Play("t_hornets.wav");     		// start an audio clip
     Wait(Stream);          		// ...and wait for it to finish before exiting
 };
 Track $0037 channel 5 {
@@ -1432,11 +1364,107 @@ Track $0037 channel 5 {
     Play("t_jazz.wav");   		// start an audio clip
     Wait(Stream);          		// ...and wait for it to finish before exiting
 };
-Track $0030 channel 5 {
+Track $0038 channel 5 {
     SetMixingLevel(level 100); 		// always set the mixing level for a new track
-    Play("t_bullets.wav");   		// start an audio clip
+    Play("t_kings.wav");   		// start an audio clip
     Wait(Stream);          		// ...and wait for it to finish before exiting
 };
+Track $0039 channel 5 {
+    SetMixingLevel(level 100); 		// always set the mixing level for a new track
+    Play("t_knicks.wav");   		// start an audio clip
+    Wait(Stream);          		// ...and wait for it to finish before exiting
+};
+Track $003a channel 5 {
+    SetMixingLevel(level 100); 		// always set the mixing level for a new track
+    Play("t_lakers.wav");   		// start an audio clip
+    Wait(Stream);          		// ...and wait for it to finish before exiting
+};
+Track $003b channel 5 {
+    SetMixingLevel(level 100); 		// always set the mixing level for a new track
+    Play("t_magic.wav");   		// start an audio clip
+    Wait(Stream);          		// ...and wait for it to finish before exiting
+};
+Track $003c channel 5 {
+    SetMixingLevel(level 100); 		// always set the mixing level for a new track
+    Play("t_mavericks.wav");   		// start an audio clip
+    Wait(Stream);          		// ...and wait for it to finish before exiting
+};
+Track $003d channel 5 {
+    SetMixingLevel(level 100); 		// always set the mixing level for a new track
+    Play("t_nets.wav");   		// start an audio clip
+    Wait(Stream);          		// ...and wait for it to finish before exiting
+};
+Track $003e channel 5 {
+    SetMixingLevel(level 100); 		// always set the mixing level for a new track
+    Play("t_nuggets.wav");   		// start an audio clip
+    Wait(Stream);          		// ...and wait for it to finish before exiting
+};
+Track $003f channel 5 {
+    SetMixingLevel(level 100); 		// always set the mixing level for a new track
+    Play("t_pacers.wav");   		// start an audio clip
+    Wait(Stream);          		// ...and wait for it to finish before exiting
+};
+Track $0040 channel 5 {
+    SetMixingLevel(level 100); 		// always set the mixing level for a new track
+    Play("t_pistons.wav");   		// start an audio clip
+    Wait(Stream);          		// ...and wait for it to finish before exiting
+};
+Track $0041 channel 5 {
+    SetMixingLevel(level 100); 		// always set the mixing level for a new track
+    Play("t_rockets.wav");   		// start an audio clip
+    Wait(Stream);          		// ...and wait for it to finish before exiting
+};
+Track $0042 channel 5 {
+    SetMixingLevel(level 100); 		// always set the mixing level for a new track
+    Play("t_sixers.wav");   		// start an audio clip
+    Wait(Stream);          		// ...and wait for it to finish before exiting
+};
+Track $0043 channel 5 {
+    SetMixingLevel(level 100); 		// always set the mixing level for a new track
+    Play("t_spurs.wav");   		// start an audio clip
+    Wait(Stream);          		// ...and wait for it to finish before exiting
+};
+Track $0044 channel 5 {
+    SetMixingLevel(level 100); 		// always set the mixing level for a new track
+    Play("t_suns.wav");   		// start an audio clip
+    Wait(Stream);          		// ...and wait for it to finish before exiting
+};
+Track $0045 channel 5 {
+    SetMixingLevel(level 100); 		// always set the mixing level for a new track
+    Play("t_supersonics.wav"); 		// start an audio clip
+    Wait(Stream);          		// ...and wait for it to finish before exiting
+};
+Track $0047 channel 5 {
+    SetMixingLevel(level 100); 		// always set the mixing level for a new track
+    Play("t_timber.wav");   		// start an audio clip
+    Wait(Stream);          		// ...and wait for it to finish before exiting
+};
+
+Track $0048 channel 5 {
+    SetMixingLevel(level 100); 		// always set the mixing level for a new track
+    Play("t_warriors.wav");   		// start an audio clip
+    Wait(Stream);          		// ...and wait for it to finish before exiting
+};
+Track $0049 channel 5 {
+    SetMixingLevel(level 100); 		// always set the mixing level for a new track
+    Play("t_blazers.wav");   		// start an audio clip
+    Wait(Stream);          		// ...and wait for it to finish before exiting
+};
+
+Track $004a channel 5 {
+    SetMixingLevel(level 100); 		// always set the mixing level for a new track
+    Play("t_bucks.wav");   		// start an audio clip
+    Wait(Stream);          		// ...and wait for it to finish before exiting
+};
+
+
+
+
+
+
+
+
+
 
 // recycle 'to' pass speech
 Stream to "popass-to.wav";

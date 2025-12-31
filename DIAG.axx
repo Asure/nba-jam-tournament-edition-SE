@@ -1167,6 +1167,7 @@ dspcheck_wait_exit_loop
 	dsjs	a1,dspcheck_wait_exit_loop
 	move	@_b6_save,b6,L
 	FRET	b6
+
 CPUT_X	.EQU	180	;TEXT X POSITION
 CPUT_Y1	.EQU	118	;TEXT ROW 1 Y POSITION
 CPUT_Y2	.EQU	130	;TEXT ROW 2 Y POSITION

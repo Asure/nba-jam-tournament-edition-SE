@@ -273,10 +273,11 @@ gndi	move	*a10+,a6,L
 	SLEEP	TSEC*7/BOGRATE
 
 
-;	move	@SWITCH,a0
-;	andi	05808H,a0		;P1/2 sticks rgt and P2 but 1&3 down
-;	jrnz	slp
-	CREATE0	copyright_prtmsg
+	move	@SWITCH,a0
+	andi	05808H,a0		;P1/2 sticks rgt and P2 but 1&3 down
+	jrnz	slp
+	CREATE0	copyright_prtmsg	;disable hidden copyright msg for now.
+
 slp
 	SLEEP	TSEC*140/BOGRATE
 
