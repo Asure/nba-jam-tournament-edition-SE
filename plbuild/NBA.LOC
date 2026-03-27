@@ -1,72 +1,87 @@
-; .LOC file for NBA.DEF, 12/29/125, 16:12:02
+; .LOC file for NBA.DEF, 12/29/125, 18:55:51
 ;
 ;
-'U3.ROM', 0x100000,0xBA00,0xAB55  ; (Rom name,length, chksum info)
-;
-;  Region    Offset       Len      Frames  Parameters
-FIFTEEN ,    0x00000E,     5904,       140, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-FOUR    ,    0x00171E,     4116,       108, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-MAIN2B  ,    0x002732,   389604,      6416, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-ORGAN1  ,    0x061916,    36842,       495, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-ORGAN2  ,    0x06A900,    18436,       256, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-PSMAIN2B,    0x06F104,   293822,      4688, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-RUNOUT  ,    0x0B6CC2,    10322,       221, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-SCRM1   ,    0x0B9514,    25064,       574, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-TWO     ,    0x0BF6FC,     3636,       102, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-;
-'U4.ROM', 0x100000,0x4400,0x04FC  ; (Rom name,length, chksum info)
+'U3.ROM', 0x100000,0xDA00,0x7F81  ; (Rom name,length, chksum info)
 ;
 ;  Region    Offset       Len      Frames  Parameters
-MAIN1B  ,    0x00000E,   288802,      4236, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-MAIN7A  ,    0x046830,    77840,      1637, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-MAIN7B  ,    0x059840,   358700,      5843, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-NINE    ,    0x0B116C,     5100,       112, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+MAIN7A  ,    0x00000E,    77840,      1637, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+MAIN7B  ,    0x01301E,   358700,      5843, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+MAIN8   ,    0x06A94A,   573818,      8211, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+ORGAN1  ,    0x0F6AC4,    36842,       495, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
 ;
-'U5.ROM', 0x100000,0xB200,0xE31D  ; (Rom name,length, chksum info)
-;
-;  Region    Offset       Len      Frames  Parameters
-BADDEC  ,    0x00000E,     6166,       123, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-MAIN3A  ,    0x001824,    63242,       907, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-MATCHUP ,    0x010F2E,     7380,       160, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-NEEDSHOT,    0x012C02,     8900,       174, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-PSMAIN4 ,    0x014EC6,   712154,     10004, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-PSMAIN7B,    0x0C2CA0,   242742,      3648, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-VERSUS  ,    0x0FE0D6,     5426,       103, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-;
-'U6.ROM', 0x100000,0xD900,0x3FC1  ; (Rom name,length, chksum info)
+'U4.ROM', 0x100000,0xA200,0x11EF  ; (Rom name,length, chksum info)
 ;
 ;  Region    Offset       Len      Frames  Parameters
-EIGHT   ,    0x00000E,     3446,        92, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-MAIN3B  ,    0x000D84,   420924,      6136, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-ONE     ,    0x0679C0,     4062,       109, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-PSEND1A ,    0x06899E,   180850,      2474, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-PSMAIN1B,    0x094C10,   408500,      6248, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-SEVEN   ,    0x0F87C4,     4536,       115, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-SIX     ,    0x0F997C,     3630,        92, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-TEN     ,    0x0FA7AA,     4312,       106, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-TWENTY  ,    0x0FB882,     5180,       123, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+MINUTE  ,    0x00000E,     8480,       191, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+ORGAN2  ,    0x00212E,    18436,       256, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+PSMAIN2B,    0x006932,   293822,      4688, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+PSMAIN4 ,    0x04E4F0,   712154,     10004, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+REJECTS ,    0x0FC2CA,     9848,       229, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+TAKETHAT,    0x0FE942,     5294,       112, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
 ;
-'U7.ROM', 0x100000,0x5000,0xBF41  ; (Rom name,length, chksum info)
+'U5.ROM', 0x100000,0xBB00,0x16EA  ; (Rom name,length, chksum info)
 ;
 ;  Region    Offset       Len      Frames  Parameters
-MAIN6B  ,    0x00000E,   232668,      3726, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-PSEND1B ,    0x038CEA,   161380,      2775, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-PSMAIN6B,    0x06034E,   622644,      9899, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-UPBY    ,    0x0F8382,     3654,        84, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+EXCUSE  ,    0x00000E,     6344,       139, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+MAIN1B  ,    0x0018D6,   288802,      4236, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+PSMAIN1B,    0x0480F8,   408500,      6248, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+PSMAIN7A,    0x0ABCAC,   100696,      1512, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+PSMAIN7B,    0x0C4604,   242742,      3648, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
 ;
-'U8.ROM', 0x100000,0xB900,0x966A  ; (Rom name,length, chksum info)
+'U6.ROM', 0x100000,0xBF00,0xC43C  ; (Rom name,length, chksum info)
 ;
 ;  Region    Offset       Len      Frames  Parameters
-DOWNBY  ,    0x00000E,     4380,       101, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-FACIAL  ,    0x00112A,    10936,       228, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-FIVE    ,    0x003BE2,     4380,       100, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-MAIN1A  ,    0x004CFE,    95518,      1584, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-MAIN2A  ,    0x01C21C,    74312,      1626, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-MAIN4   ,    0x02E464,   147816,      2042, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-MAIN6A  ,    0x0525CC,    68090,      1108, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-PSMAIN1A,    0x062FC6,    48402,       888, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-PSMAIN2A,    0x06ECD8,    60152,       923, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-PSMAIN6A,    0x07D7D0,    68736,      1133, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-PSMAIN7A,    0x08E450,   100696,      1512, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-THREE   ,    0x0A6DA8,     4458,       111, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
-WELCM   ,    0x0A7F12,    10272,       196, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+FACIAL  ,    0x00000E,    10936,       228, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+MAIN1A  ,    0x002AC6,    95518,      1584, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+MAIN2A  ,    0x019FE4,    74312,      1626, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+MAIN4   ,    0x02C22C,   147816,      2042, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+MAIN6A  ,    0x050394,    68090,      1108, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+MAIN6B  ,    0x060D8E,   232668,      3726, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+PSEND1A ,    0x099A6A,   180850,      2474, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+PSEND1B ,    0x0C5CDC,   161380,      2775, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+PSMAIN6A,    0x0ED340,    68736,      1133, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+WINGAME ,    0x0FDFC0,     7948,       178, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+;
+'U7.ROM', 0x100000,0xA800,0xB848  ; (Rom name,length, chksum info)
+;
+;  Region    Offset       Len      Frames  Parameters
+AMBUSHED,    0x00000E,     5278,       116, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+BADDEC  ,    0x0014AC,     6166,       123, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+DOWNBY  ,    0x002CC2,     4380,       101, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+EIGHT   ,    0x003DDE,     3446,        92, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+FIFTEEN ,    0x004B54,     5904,       140, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+FIVE    ,    0x006264,     4380,       100, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+FLAGRANT,    0x007380,     4700,       123, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+FOUR    ,    0x0085DC,     4116,       108, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+HELLO   ,    0x0095F0,     4562,       111, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+HORN    ,    0x00A7C2,     6224,       114, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+INTOSTND,    0x00C012,     9626,       223, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+MAIN2B  ,    0x00E5AC,   389604,      6416, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+MAIN3A  ,    0x06D790,    63242,       907, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+MATCHUP ,    0x07CE9A,     7380,       160, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+MUNGED  ,    0x07EB6E,     4226,       120, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+NEEDSHOT,    0x07FBF0,     8900,       174, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+NINE    ,    0x081EB4,     5100,       112, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+ONE     ,    0x0832A0,     4062,       109, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+OVERTIME,    0x08427E,     7570,       170, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+PSMAIN1A,    0x086010,    48402,       888, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+PSMAIN2A,    0x091D22,    60152,       923, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+REJECT  ,    0x0A081A,     8202,       192, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+RUNOUT  ,    0x0A2824,    10322,       221, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+SCRM1   ,    0x0A5076,    25064,       574, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+SEVEN   ,    0x0AB25E,     4536,       115, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+SIX     ,    0x0AC416,     3630,        92, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+TEN     ,    0x0AD244,     4312,       106, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+THREE   ,    0x0AE31C,     4458,       111, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+TIP     ,    0x0AF486,     6206,       151, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+TOFLOOR ,    0x0B0CC4,     8280,       198, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+TWENTY  ,    0x0B2D1C,     5180,       123, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+UPBY    ,    0x0B4158,     3654,        84, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+VERSUS  ,    0x0B4F9E,     5426,       103, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+;
+'U8.ROM', 0x100000,0xFD00,0x758B  ; (Rom name,length, chksum info)
+;
+;  Region    Offset       Len      Frames  Parameters
+MAIN3B  ,    0x00000E,   420924,      6136, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+PSMAIN6B,    0x066C4A,   622644,      9899, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '
+TWO     ,    0x0FEC7E,     3636,       102, 'HENRY[3.75] -vb95 -vi7 -vr79 -vt0 '

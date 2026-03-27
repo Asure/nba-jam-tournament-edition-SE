@@ -125,6 +125,7 @@ SOUNDCALLS
 	291	immed	291	;Countdown Bonk
 	296	immed	296	;missed dunk cartoon
 	297	immed	297	;Ball Bounce
+	302	immed	302	;munged
 
 	312	immed	312	;Hit backboard
 	313	immed	313	;miss sounds
@@ -144,13 +145,26 @@ SOUNDCALLS
 
 	339	immed	339	;Glass explode
 	343	immed	343
+	345	immed	345	;horn
 	350	immed	317	;Crowd screams
 	351	immed	317	;Crowd screams
+	371	immed	371	;wingame
+	376	immed	376	;flagrant
 	377	immed	377	;Fireball
+	384	immed	384	;Overtime!
 	390	immed	390	;Running out of time
+	393	immed	393
+	397	immed	397	;Heres the tip
+	403	immed	403	;One Minute
+	438	immed	438	;rejected
 	439	immed 	439	;bad decision
+	448	immed	448	;excuse me
+	452	immed	452
+	455	immed	455	;intostand
+	456	immed	456	;hello!
 	459	immed	459	;welcome
 	461	immed	461	;down by
+	462	immed 	462	;tofloor
 	463	immed	463	;up by
 	464	immed	464	;one
 	465	immed	465	;
@@ -158,6 +172,7 @@ SOUNDCALLS
 	467	immed	467	;
 	468	immed	468	;
 	469	immed	469	;six
+	498	immed	498	;rejects shot
 	503	immed	503	;seven
 	504	immed	504	;
 	505	immed	505	;
@@ -747,6 +762,13 @@ END
     45 end                                                          ;// 002D 00
     end
 
+;Track $0173 Channel 5
+    playlist 371, 5 ,'Speech: .. win the game!' ; {    // Address $0006dbb [U2 $06dbb], Time 1374.72ms
+    0	setvol 5, 100                                                 ;// 0000 07 05 64
+    0	play	5, 'wingame', 1 ; ** single play                          ;// 0000 01 05 388B90 01
+    179 end                                                         ;// 00B3 00
+    end
+
 ;Track $00ae Channel 3
     playlist 174, 3 ,'Special: Organ fade-over-back 1' ; {    // Address $0006028 [U2 $06028], Time 3809.28ms
     0	setvol 3, 70                                                 ;// 0000 07 03 64
@@ -856,6 +878,14 @@ END
     54 end                                                          ;// 0036 00
     end
 
+;Track $012e Channel 5
+    playlist 302, 5 ,'Speech: Munged!' ; {    // Address $0006902 [U2 $06902], Time 929.28ms
+    0	setvol 5, 100                                                 ;// 0000 07 05 64
+    0	play	5, 'munged', 1 ; ** single play                          ;// 0000 01 05 402B2A 01
+    121 end                                                         ;// 0079 00
+    end
+
+
 ;//oops
 ;Track $0138 Channel 2
     playlist 312, 2 ,'FX: Hit backboard' ; {    // Address $00069e0 [U2 $069e0], Time 491.52ms
@@ -949,16 +979,60 @@ END
     35 end                                                          ;// 0023 00
     end
 
+;Track $0159 Channel 1
+    playlist 345, 1 ,'FX: Air Horn' ; {    // Address $0006c93 [U2 $06c93], Time 883.20ms
+    0	setvol 1, 100                                                 ;// 0000 07 01 64
+    0	play	1, 'horn', 1 ; ** single play                          ;// 0000 01 01 3DAD52 01
+    115 end                                                         ;// 0073 00
+    end
 
+;Track $0178 Channel 5
+    playlist 376, 5 ,'Speech: Flagrant' ; {    // Address $0006df1 [U2 $06df1], Time 952.32ms
+    0	setvol 5, 100                                                 ;// 0000 07 05 64
+    0	play	5, 'flagrant', 1 ; ** single play                          ;// 0000 01 05 3F2194 01
+    124 end                                                         ;// 007C 00
+    end
 
-
-
+;Track $0180 Channel 5
+    playlist 384, 5 ,'Speech: Overtime!' ; {    // Address $0006ecf [U2 $06ecf], Time 1313.28ms
+    0	setvol 5, 100                                                 ;// 0000 07 05 64
+    0	play	5, 'overtime', 1 ; ** single play                          ;// 0000 01 05 392AAC 01
+    171 end                                                         ;// 00AB 00
+    end
 
 ;Track $0186 Channel 5
     playlist 390, 5 ,'Speech: .. running out of time!' ; {    // Address $0006f17 [U2 $06f17], Time 1704.96ms
     0	setvol 5, 100                                                 ;// 0000 07 05 64
     0	play	5, 'runout', 1 ; ** single play                          ;// 0000 01 05 35EBBC 01
     222 end                                                         ;// 00DE 00
+    end
+
+;Track $0189 Channel 5
+    playlist 393, 5 ,'Speech: Take That!' ; {    // Address $0006f4d [U2 $06f4d], Time 867.84ms
+    0	setvol 5, 100                                                 ;// 0000 07 05 64
+    0	play	5, 'takethat', 1 ; ** single play                          ;// 0000 01 05 3FC47C 01
+    113 end                                                         ;// 0071 00
+    end
+
+;Track $018d Channel 5
+    playlist 397, 5 ,'Speech: Heres the tip' ; {    // Address $0006f83 [U2 $06f83], Time 1167.36ms
+    0	setvol 5, 100                                                 ;// 0000 07 05 64
+    0	play	5, 'tip', 1 ; ** single play                          ;// 0000 01 05 3C0206 01
+    152 end                                                         ;// 0098 00
+    end
+
+;Track $0193 Channel 5
+    playlist 403, 5 ,'Speech: One minute to go' ; {    // Address $0006fb9 [U2 $06fb9], Time 1474.56ms
+    0	setvol 5, 100                                                 ;// 0000 07 05 64
+    0	play	5, 'minute', 1 ; ** single play                          ;// 0000 01 05 37E30C 01
+    192 end                                                         ;// 00C0 00
+    end
+
+;Track $01b6 Channel 5
+    playlist 438, 5 ,'Speech: Rejected' ; {    // Address $00071c1 [U2 $071c1], Time 1482.24ms
+    0	setvol 5, 100                                                 ;// 0000 07 05 64
+    0	play	5, 'reject', 1 ; ** single play                          ;// 0000 01 05 37FBF8 01
+    193 end                                                         ;// 00C1 00
     end
 
 ;Track $01b7 Channel 5
@@ -968,6 +1042,34 @@ END
     124 end                                                         ;// 007C 00
     end
 
+;Track $01c0 Channel 5
+    playlist 448, 5 ,'Speech: Excuse me!' ; {    // Address $000725e [U2 $0725e], Time 1075.20ms
+    0	setvol 5, 100                                                 ;// 0000 07 05 64
+    0	play	5, 'excuse', 1 ; ** single play                          ;// 0000 01 05 3BB896 01
+    140 end                                                         ;// 008C 00
+    end
+
+;Track $01c4 Channel 5
+    playlist 452, 5 ,'Speech: Ambushed' ; {    // Address $0007294 [U2 $07294], Time 898.56ms
+    0	setvol 5, 100                                                 ;// 0000 07 05 64
+    0	play	5, 'ambushed', 1 ; ** single play                          ;// 0000 01 05 3F3FA0 01
+    117 end                                                         ;// 0075 00
+    end
+
+;Track $01c7 Channel 5
+    playlist 455, 5 ,'Speech: Into the stands!' ; {    // Address $00072a6 [U2 $072a6], Time 1720.32ms
+    0	setvol 5, 100                                                 ;// 0000 07 05 64
+    0	play	5, 'intostnd', 1 ; ** single play                          ;// 0000 01 05 367DFE 01
+    224 end                                                         ;// 00E0 00
+    end
+
+;Track $01c8 Channel 5
+    playlist 456, 5 ,'Speech: Hello!' ; {    // Address $00072b8 [U2 $072b8], Time 860.16ms
+    0	setvol 5, 100                                                 ;// 0000 07 05 64
+    0	play	5, 'hello', 1 ; ** single play                          ;// 0000 01 05 4055DA 01
+    112 end                                                         ;// 0070 00
+    end
+       
 ;Track $01cb Channel 5
     playlist 459, 5 ,'Speech: Showtime!' ; {    // Address $00072ee [U2 $072ee], Time 1512.96ms
     0	setvol 5, 100                                                 ;// 0000 07 05 64
@@ -980,6 +1082,13 @@ END
     0	setvol 5, 100                                                 ;// 0000 07 05 64
     0	play	5, 'downby', 1 ; ** single play                          ;// 0000 01 05 40FC2E 01
     102 end                                                         ;// 0066 00
+    end
+
+;Track $01ce Channel 5
+    playlist 462, 5 ,'Speech: Knocked to the floor' ; {    // Address $0007312 [U2 $07312], Time 1528.32ms
+    0	setvol 5, 100                                                 ;// 0000 07 05 64
+    0	play	5, 'tofloor', 1 ; ** single play                          ;// 0000 01 05 37C9AA 01
+    199 end                                                         ;// 00C7 00
     end
 
 ;Track $01cf Channel 5
@@ -1093,6 +1202,13 @@ END
     0	setvol 5, 100                                                 ;// 0000 07 05 64
     0	play	5, 'facial', 1 ; ** single play                          ;// 0000 01 05 35CDD6 01
     229 end                                                         ;// 00E5 00
+    end
+
+;Track $01f2 Channel 5
+    playlist 498, 5 ,'Speech: Rejects the shot!' ; {    // Address $000750a [U2 $0750a], Time 1766.40ms
+    0	setvol 5, 100                                                 ;// 0000 07 05 64
+    0	play	5, 'rejects', 1 ; ** single play                          ;// 0000 01 05 36B744 01
+    230 end                                                         ;// 00E6 00
     end
 
 

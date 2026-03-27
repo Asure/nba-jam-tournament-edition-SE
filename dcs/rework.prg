@@ -784,7 +784,7 @@ Track $01cf channel 5 {
 
 
 
-//here
+
 
 
 
@@ -798,6 +798,20 @@ Track $01cb channel 5 {
     Play("welcm_snd.wav");       	// start an audio clip
     Wait(Stream);          		// ...and wait for it to finish before exiting
 };
+Track $01de channel 5 {
+    SetMixingLevel(level 100); 		// always set the mixing level for a new track
+    Play("matchup.wav");       		// start an audio clip
+    Wait(Stream);          		// ...and wait for it to finish before exiting
+};
+
+Track $002f channel 5 {
+    SetMixingLevel(level 100); 		// always set the mixing level for a new track
+    Play("versus.wav");       		// start an audio clip
+    Wait(Stream);          		// ...and wait for it to finish before exiting
+};
+
+//here
+
 //from downtown
 //Track $018e channel 5 {
 //    SetMixingLevel(level 100); 		// always set the mixing level for a new track
@@ -813,19 +827,6 @@ Track $01cb channel 5 {
 Track $0193 channel 5 {
     SetMixingLevel(level 100); 		// always set the mixing level for a new track
     Play("minute_snd.wav");       	// start an audio clip
-    Wait(Stream);          		// ...and wait for it to finish before exiting
-};
-
-
-Track $01de channel 5 {
-    SetMixingLevel(level 100); 		// always set the mixing level for a new track
-    Play("matchup.wav");       		// start an audio clip
-    Wait(Stream);          		// ...and wait for it to finish before exiting
-};
-
-Track $002f channel 5 {
-    SetMixingLevel(level 100); 		// always set the mixing level for a new track
-    Play("versus.wav");       		// start an audio clip
     Wait(Stream);          		// ...and wait for it to finish before exiting
 };
 
@@ -846,6 +847,7 @@ Track $0159 channel 1 {
     Play("horn_snd.wav");      		// start an audio clip
     Wait(Stream);          		// ...and wait for it to finish before exiting
 };
+// here
 
 
 Track $0173 channel 5 {
@@ -877,6 +879,13 @@ Track $0178 channel 5 {
     Play("flagrant.wav");      		// start an audio clip
     Wait(Stream);          		// ...and wait for it to finish before exiting
 };
+//done
+
+	Track $01c0 channel 5 {
+    SetMixingLevel(level 100); 		// always set the mixing level for a new track
+    Play("excuse.wav");       		// start an audio clip
+    Wait(Stream);          		// ...and wait for it to finish before exiting
+};
 
 Track $01ce channel 5 {
     SetMixingLevel(level 100); 		// always set the mixing level for a new track
@@ -897,11 +906,7 @@ Track $01c8 channel 5 {
     Wait(Stream);          		// ...and wait for it to finish before exiting
 };
 
-Track $01c0 channel 5 {
-    SetMixingLevel(level 100); 		// always set the mixing level for a new track
-    Play("excuse.wav");       		// start an audio clip
-    Wait(Stream);          		// ...and wait for it to finish before exiting
-};
+
 Track $01b6 channel 5 {
     SetMixingLevel(level 100); 		// always set the mixing level for a new track
     Play("reject.wav");       		// start an audio clip
@@ -912,6 +917,7 @@ Track $01f2 channel 5 {
     Play("rejects.wav");       		// start an audio clip
     Wait(Stream);          		// ...and wait for it to finish before exiting
 };
+//here!
 Track $0188 channel 5 {
     SetMixingLevel(level 100); 		// always set the mixing level for a new track
     Play("greatd.wav");       		// start an audio clip
