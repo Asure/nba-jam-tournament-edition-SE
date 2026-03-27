@@ -732,3 +732,72 @@ team_speech[24],1,0x81,1,0x8045,"24 SEATTLE		""Supersonics""",SPEECH.axx
 team_speech[25],1,0x81,1,0x8037,"25 UTAH		""Jazz""",SPEECH.axx
 team_speech[26],1,0x81,1,0x8030,"26 WASHINGTON		""Bullets""",SPEECH.axx
 team_speech[27],1,0x81,1,0x81E2,GOOOOD!!!,SPEECH.axx
+fgatteam_snds[0],1,0xA9,1,0x81F6,He scores    0  GOSKIE,SELECT2.axx
+fgatteam_snds[1],1,0xA9,1,0x81C8,Hello!       1  RIVETT,SELECT2.axx
+fgatteam_snds[2],1,0xA9,1,0x819C,boom shaka   2  CARLTON,SELECT2.axx
+fgatteam_snds[3],1,0xA9,1,0x8172,It's blowout 3  DIVITA,SELECT2.axx
+fgatteam_snds[4],1,0xA9,1,0x81C2,Yes!	      4  LIPTAK,SELECT2.axx
+fgatteam_snds[5],1,0xA1,1,0x81AB,whoomp       5  TURMELL,SELECT2.axx
+fgatteam_snds[6],1,0xA9,1,0x8172,It's blowout 6  HEY,SELECT2.axx
+fgatteam_snds[7],1,0xA9,1,0x8172,It's blowout 7  PETRO,SELECT2.axx
+fgatteam_snds[8],1,0xA9,1,0x81F6,He scores    8  NEWCOMER,SELECT2.axx
+fgatteam_snds[9],1,0xA9,1,0x81D6,coffin       9  OURSLER,SELECT2.axx
+fgatteam_snds[10],1,0xA9,1,0x81C8,Hello!       10 LASCO,SELECT2.axx
+fgatteam_snds[11],1,0xA9,1,0x819C,boom shak    11 MORRIS,SELECT2.axx
+fgatteam_snds[12],1,0xA9,1,0x81C8,Hello!       12 MEDNICK,SELECT2.axx
+fgatteam_snds[13],1,0xA9,1,0x812B,shoes?       13 FORDEN,SELECT2.axx
+fgatteam_snds[14],1,0xA9,1,0x812B,fantastic    14 KINKEAD,SELECT2.axx
+fgatteam_snds[15],1,0xA9,1,0x81C8,Hello!       15 JARVIS,SELECT2.axx
+fgatteam_snds[16],1,0xA9,1,0x8196,16 SUBZ,SELECT2.axx
+fgatteam_snds[17],1,0xA9,1,0x81C8,Hello!       17 HAEGER,SELECT2.axx
+fgatteam_snds[18],1,0xA9,1,0x81B7,bad decision 18 SIMPSON,SELECT2.axx
+fgatteam_snds[19],1,0xA9,1,0x81C8,Hello!       19 GREEN,SELECT2.axx
+fgatteam_snds[20],1,0xA9,1,0x81C8,Hello!       20 GENTILE,SELECT2.axx
+fgatteam_snds[21],1,0xA9,1,0x81E0,its good     21 DILLON,SELECT2.axx
+fgatteam_snds[22],1,0xA9,1,0x81C8,Hello!       22 LOWES,SELECT2.axx
+fgatteam_snds[23],1,0xA9,1,0x8175,bucket       23 VOGEL,SELECT2.axx
+fgatteam_snds[24],1,0xA9,1,0x81F0,rainbow      24 TSUI,SELECT2.axx
+fgatteam_snds[25],1,0xA9,1,0x81C8,Hello!       25 KAM,SELECT2.axx
+fgatteam_snds[26],1,0xA9,1,0x81C8,Hello!       26 DEAL,SELECT2.axx
+fgatteam_snds[27],1,0xA9,1,0x81D7,gotta shoot  27 BOOTY,SELECT2.axx
+fgatteam_snds[28],1,0xA9,1,0x81F6,he scores    28 LOFFRE,SELECT2.axx
+fgatteam_snds[29],1,0xA9,1,0x81E8,swish!       29 PENACHO,SELECT2.axx
+fgatteam_snds[30],1,0xA9,1,0x81E3,range!       30 BARKER,SELECT2.axx
+fgatteam_snds[31],1,0xA9,1,0x81C8,Hello!       31 COX,SELECT2.axx
+fgatteam_snds[32],1,0xA9,1,0x80B0,32 RAIDEN,SELECT2.axx
+fgatteam_snds[33],1,0xA9,1,0x81F1,no good      33 REAPER,SELECT2.axx
+fgatteam_snds[34],1,0xA9,1,0x81C8,Hello!       34 MACIKA,SELECT2.axx
+fgatteam_snds[35],1,0xA9,1,0x81DD,wide open    35 SHARPE,SELECT2.axx
+fgatteam_snds[36],1,0xA9,1,0x81D9,ugly shot    36 BERAN,SELECT2.axx
+fgatteam_snds[37],5,0xA9,1,0x8177,tarzan       38 KONGO,SELECT2.axx
+fgatteam_snds[38],1,0xA9,1,0x81CE,knocked      39 PONTAREL,SELECT2.axx
+fgatteam_snds[39],1,0xA9,1,0x81C0,excuse       40 ELVIS,SELECT2.axx
+fgatteam_snds[40],1,0xA9,1,0x81B4,no way       41 DAVIS,SELECT2.axx
+fgatteam_snds[41],1,0xA9,1,0x81AE,kaboom       42 BOON,SELECT2.axx
+fgatteam_snds[42],1,0xA9,1,0x812B,shoes!       43 TOBIAS,SELECT2.axx
+fgatteam_snds[43],1,0xA9,1,0x8198,brick        44 HEITSCH,SELECT2.axx
+fgatteam_snds[44],1,0xA9,1,0x81C8,Hello!       45 DABEL,SELECT2.axx
+fgatteam_snds[45],1,0xA9,1,0x81C8,Hello!       46 MARTINEZ,SELECT2.axx
+fgatteam_snds[46],1,0xA9,1,0x81C8,Hello!       47 DAVIES,SELECT2.axx
+fgatteam_snds[47],1,0xA9,1,0x81EA,oh my        48 HOSK,SELECT2.axx
+fgatteam_snds[48],1,0xA9,1,0x819D,sweet        49 OLIV,SELECT2.axx
+fgatteam_snds[49],1,0xA9,1,0x8197,50 SCORP,SELECT2.axx
+fgatteam_snds[50],1,0xA9,1,0x81A5,51 REPT,SELECT2.axx
+fgatteam_snds[51],1,0xA9,1,0x81C8,Hello!       52 GRANNER,SELECT2.axx
+fgatteam_snds[52],1,0x80,1,0x81EB,Griffey      53 GRIFFEY,SELECT2.axx
+fgatteam_snds[53],1,0xA9,1,0x81D6,nail         54 SKILES,SELECT2.axx
+fgatteam_snds[54],1,0xA9,1,0x81C8,Hello!       55 LINHOFF,SELECT2.axx
+fgatteam_snds[55],1,0xA9,1,0x81F6,He scores    56 WILKINS,SELECT2.axx
+fgatteam_snds[56],1,0xA9,1,0x81C8,Hello!       57 BROWN,SELECT2.axx
+fgatteam_snds[57],1,0xA9,1,0x819C,boom shaka   58 MOURNING,SELECT2.axx
+fgatteam_snds[58],1,0xA9,1,0x8172,It's blowout 59 PIPPEN,SELECT2.axx
+fgatteam_snds[59],1,0xA9,1,0x81C2,Yes!	      60 GARY PAYTON,SELECT2.axx
+fgatteam_snds[60],1,0x80,1,0x801E,Jordan       61 JORDAN,SELECT2.axx
+fgatteam_snds[61],1,0xA9,1,0x8172,It's blowout 62 OLAJUWON,SELECT2.axx
+fgatteam_snds[62],1,0xA9,1,0x8172,It's blowout 63 COLEMAN,SELECT2.axx
+fgatteam_snds[63],1,0xA9,1,0x81F6,He scores    64 EWING,SELECT2.axx
+fgatteam_snds[64],1,0xA9,1,0x81D6,coffin       65 BARKLEY,SELECT2.axx
+fgatteam_snds[65],1,0xA9,1,0x81C8,Hello!       66 ROBINSON,SELECT2.axx
+fgatteam_snds[66],1,0xA9,1,0x819C,boom shak    67 KEMP,SELECT2.axx
+fgatteam_snds[67],1,0xA9,1,0x81C8,Hello!       68 MALONE,SELECT2.axx
+fgatteam_snds[68],1,0xA9,1,0x81C8,Hello!       68 MALONE,SELECT2.axx
