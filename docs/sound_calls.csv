@@ -296,3 +296,439 @@ push2_snd,5,0x85,1,0x816C,Push ugh,PLYRSEQ2.axx
 ungh_snd,5,0x85,1,0x816C,Push ugh,PLYRSEQ2.axx
 tarzan,5,0x91,1,0x8177,tarzan yell!,PLYRLSEQ.axx
 tarzan,5,0x91,1,0x8177,tarzan yell!,PLYRDSEQ.axx
+pass_speech[0],1,0x80,1,0x8050,TO MANNING,SPEECH.axx
+pass_speech[1],1,0x80,1,0x80EF,TO AUGMON	( ATLANTA ),SPEECH.axx
+pass_speech[2],1,0x80,1,0x8162,TO WILLIS,SPEECH.axx
+pass_speech[3],1,0x80,1,0x8145,TO LEWIS,SPEECH.axx
+pass_speech[4],1,0x80,1,0x80F7,TO MCDAN,SPEECH.axx
+pass_speech[5],1,0x80,1,0x80F8,TO BROWN	( BOSTON ),SPEECH.axx
+pass_speech[6],1,0x80,1,0x80E9,TO JOHNSN_L	( CHARLOTTE ),SPEECH.axx
+pass_speech[7],1,0x80,1,0x8061,TO HAWKINS,SPEECH.axx
+pass_speech[8],1,0x80,1,0x8121,TO MOURNING,SPEECH.axx
+pass_speech[9],1,0x80,1,0x817C,TO JORDAN,SPEECH.axx
+pass_speech[10],1,0x80,1,0x80E7,TO PIPPEN,SPEECH.axx
+pass_speech[11],1,0x80,1,0x8130,TO ARMSTRNG,SPEECH.axx
+pass_speech[12],1,0x80,1,0x80E6,TO GRANT_HC	( CHICAGO ),SPEECH.axx
+pass_speech[13],1,0x80,1,0x8055,TO PRICE,SPEECH.axx
+pass_speech[14],1,0x80,1,0x8056,TO DAUGHRTY	( CLEVELAND ),SPEECH.axx
+pass_speech[15],1,0x80,1,0x8122,TO NANCE,SPEECH.axx
+pass_speech[16],1,0x80,1,0x817B,TO JACKSON,SPEECH.axx
+pass_speech[17],1,0x80,1,0x817D,TO MASHBURN,SPEECH.axx
+pass_speech[18],1,0x80,1,0x8051,TO HARPER_D,SPEECH.axx
+pass_speech[19],1,0x80,1,0x8059,TO MUTUMBO,SPEECH.axx
+pass_speech[20],1,0x80,1,0x805A,TO ELLIS	( DENVER ),SPEECH.axx
+pass_speech[21],1,0x80,1,0x8137,TO ROGERS,SPEECH.axx
+pass_speech[22],1,0x80,1,0x80FE,TO THOMAS,SPEECH.axx
+pass_speech[23],1,0x80,1,0x8147,TO LAIMBEER,SPEECH.axx
+pass_speech[24],1,0x80,1,0x8141,TO DUMARS,SPEECH.axx
+pass_speech[25],1,0x80,1,0x80F6,TO ELLIOT,SPEECH.axx
+pass_speech[26],1,0x80,1,0x80FB,TO HARDAWAY,SPEECH.axx
+pass_speech[27],1,0x80,1,0x80FC,TO MULLIN	( GOLDEN STATE ),SPEECH.axx
+pass_speech[28],1,0x80,1,0x8161,TO WEBBER,SPEECH.axx
+pass_speech[29],1,0x80,1,0x8058,TO OLAJUWON,SPEECH.axx
+pass_speech[30],1,0x80,1,0x817F,TO MAXWELL,SPEECH.axx
+pass_speech[31],1,0x80,1,0x8146,TO HORRY,SPEECH.axx
+pass_speech[32],1,0x80,1,0x8057,TO SMITH	( HOUSTON ),SPEECH.axx
+pass_speech[33],1,0x80,1,0x804D,TO MILLER,SPEECH.axx
+pass_speech[34],1,0x80,1,0x8149,TO SEALY,SPEECH.axx
+pass_speech[35],1,0x80,1,0x814F,TO SMITS,SPEECH.axx
+pass_speech[36],1,0x80,1,0x80F0,TO WILKINS,SPEECH.axx
+pass_speech[37],1,0x80,1,0x8051,TO HARPER_R	( L.A. CLIPPERS ),SPEECH.axx
+pass_speech[38],1,0x80,1,0x802B,TO ROBERTS,SPEECH.axx
+pass_speech[39],1,0x80,1,0x8125,TO PEELER,SPEECH.axx
+pass_speech[40],1,0x80,1,0x804E,TO DIVAC	( L.A. LAKERS ),SPEECH.axx
+pass_speech[41],1,0x80,1,0x813E,TO CAMPBELL,SPEECH.axx
+pass_speech[42],1,0x80,1,0x804F,TO WORTHY,SPEECH.axx
+pass_speech[43],1,0x80,1,0x8054,TO RICE,SPEECH.axx
+pass_speech[44],1,0x80,1,0x8053,TO SEIKALY	( MIAMI ),SPEECH.axx
+pass_speech[45],1,0x80,1,0x811C,TO MINER,SPEECH.axx
+pass_speech[46],1,0x80,1,0x8131,TO BAKER,SPEECH.axx
+pass_speech[47],1,0x80,1,0x804B,TO EDWARDS	( MILWAUKEE ),SPEECH.axx
+pass_speech[48],1,0x80,1,0x8140,TO DAY,SPEECH.axx
+pass_speech[49],1,0x80,1,0x80FF,TO LOHAUS,SPEECH.axx
+pass_speech[50],1,0x80,1,0x805E,TO LAETNER,SPEECH.axx
+pass_speech[51],1,0x80,1,0x805D,TO PERSON	( MINNESOTTA ),SPEECH.axx
+pass_speech[52],1,0x80,1,0x812A,TO RIDER,SPEECH.axx
+pass_speech[53],1,0x80,1,0x8060,TO COLEMAN,SPEECH.axx
+pass_speech[54],1,0x80,1,0x80F2,TO PETROVIC,SPEECH.axx
+pass_speech[55],1,0x80,1,0x805F,TO KANDERSON	( NEW JERSEY ),SPEECH.axx
+pass_speech[56],1,0x80,1,0x811E,TO CMORRIS,SPEECH.axx
+pass_speech[57],1,0x80,1,0x80EE,TO EWING,SPEECH.axx
+pass_speech[58],1,0x80,1,0x817E,TO MASON,SPEECH.axx
+pass_speech[59],1,0x80,1,0x8151,TO STARKS,SPEECH.axx
+pass_speech[60],1,0x80,1,0x80ED,TO OAKLEY	( NEW YORK ),SPEECH.axx
+pass_speech[61],1,0x80,1,0x81BE,TO ONEAL	;Wolf Unit only,SPEECH.axx
+pass_speech[62],1,0x80,1,0x80FB,TO AHARDAWAY,SPEECH.axx
+pass_speech[63],1,0x80,1,0x80E4,TO SKILES	( ORLANDO ),SPEECH.axx
+pass_speech[64],1,0x80,1,0x8152,TO WEATHERSPOON,SPEECH.axx
+pass_speech[65],1,0x80,1,0x8133,TO BRADLEY,SPEECH.axx
+pass_speech[66],1,0x80,1,0x8062,TO HORNACEK	( PHILADELPHIA ),SPEECH.axx
+pass_speech[67],1,0x80,1,0x80EC,TO BARKLEY,SPEECH.axx
+pass_speech[68],1,0x80,1,0x80EB,TO MAJERLE	( PHOENIX ),SPEECH.axx
+pass_speech[69],1,0x80,1,0x80E9,TO KJOHNSON,SPEECH.axx
+pass_speech[70],1,0x80,1,0x80F4,TO DREXLER,SPEECH.axx
+pass_speech[71],1,0x80,1,0x80F3,TO PORTER	( PORTLAND ),SPEECH.axx
+pass_speech[72],1,0x80,1,0x80F5,TO CROBINSON,SPEECH.axx
+pass_speech[73],1,0x80,1,0x80E6,TO GRANT_HV,SPEECH.axx
+pass_speech[74],1,0x80,1,0x814C,TO SIMMONS,SPEECH.axx
+pass_speech[75],1,0x80,1,0x817A,TO HURLEY,SPEECH.axx
+pass_speech[76],1,0x80,1,0x8127,TO RICHMOND,SPEECH.axx
+pass_speech[77],1,0x80,1,0x805B,TO TISDALE,SPEECH.axx
+pass_speech[78],1,0x80,1,0x805C,TO WEBB	( SACRAMENTO ),SPEECH.axx
+pass_speech[79],1,0x80,1,0x80F5,TO ROBINSON	( SAN ANTONIO ),SPEECH.axx
+pass_speech[80],1,0x80,1,0x8135,TO RODMAN,SPEECH.axx
+pass_speech[81],1,0x80,1,0x805A,TO DELLIS,SPEECH.axx
+pass_speech[82],1,0x80,1,0x80F1,TO KEMP,SPEECH.axx
+pass_speech[83],1,0x80,1,0x8126,TO PAYTON	( SEATTLE ),SPEECH.axx
+pass_speech[84],1,0x80,1,0x80EA,TO GILL,SPEECH.axx
+pass_speech[85],1,0x80,1,0x804C,TO SCHREMPF	( INDIANA ),SPEECH.axx
+pass_speech[86],1,0x80,1,0x80FA,TO MALONE_K,SPEECH.axx
+pass_speech[87],1,0x80,1,0x80F9,TO STOCKTON	( UTAH ),SPEECH.axx
+pass_speech[88],1,0x80,1,0x8132,TO BENOIT,SPEECH.axx
+pass_speech[89],1,0x80,1,0x80E8,TO GUGLIOTA	( WASHINGTON ),SPEECH.axx
+pass_speech[90],1,0x80,1,0x8142,TO ELLISON,SPEECH.axx
+pass_speech[91],1,0x80,1,0x813F,TO CHEANEY,SPEECH.axx
+pass_speech[92],1,0x80,1,0x817C,TO JORDAN,SPEECH.axx
+pass_speech[93],1,0x80,1,0x81BE,TO ONEAL	;Wolf Unit only,SPEECH.axx
+pass_speech[94],1,0x80,1,0x81BE,TO ONEAL	;Wolf Unit only,SPEECH.axx
+pass_speech[95],1,0x80,1,0x817C,TO JORDAN,SPEECH.axx
+pass_speech[96],1,0x80,1,0x80F5,TO ROBINSON	( SAN ANTONIO ),SPEECH.axx
+pass_speech[97],1,0x80,1,0x80F9,TO STOCKTON	( UTAH ),SPEECH.axx
+pass_speech[98],1,0x80,1,0x80F9,TO STOCKTON	( UTAH ),SPEECH.axx
+pass_speech[99],1,0x80,1,0x80F5,TO ROBINSON	( SAN ANTONIO ),SPEECH.axx
+pass_speech[100],1,0x80,1,0x80EC,TO barkley,SPEECH.axx
+pass_speech[101],1,0x80,1,0x80FA,TO MALONE_K,SPEECH.axx
+pass_speech[102],1,0x80,1,0x80FA,TO MALONE_K,SPEECH.axx
+pass_speech[103],1,0x80,1,0x80EC,TO barkley,SPEECH.axx
+pass_speech[104],1,0x80,1,0x8058,TO OLAJUWON,SPEECH.axx
+pass_speech[105],1,0x80,1,0x80FE,TO THOMAS,SPEECH.axx
+pass_speech[106],1,0x80,1,0x80FE,TO THOMAS,SPEECH.axx
+pass_speech[107],1,0x80,1,0x8058,TO OLAJUWON,SPEECH.axx
+pass_speech[108],1,0x80,1,0x80F1,TO KEMP,SPEECH.axx
+pass_speech[109],1,0x80,1,0x804D,TO MILLER,SPEECH.axx
+pass_speech[110],1,0x80,1,0x804D,TO MILLER,SPEECH.axx
+pass_speech[111],1,0x80,1,0x80F1,TO KEMP,SPEECH.axx
+pass_speech[112],1,0x80,1,0x80F4,TO DREXLER,SPEECH.axx
+pass_speech[113],1,0x80,1,0x80EE,TO EWING,SPEECH.axx
+pass_speech[114],1,0x80,1,0x80EE,TO EWING,SPEECH.axx
+pass_speech[115],1,0x80,1,0x80F4,TO DREXLER,SPEECH.axx
+pass_speech[116],1,0x80,1,0x80E9,TO JOHNSN_L	( CHARLOTTE ),SPEECH.axx
+pass_speech[117],1,0x80,1,0x8141,TO DUMARS,SPEECH.axx
+pass_speech[118],1,0x80,1,0x8141,TO DUMARS,SPEECH.axx
+pass_speech[119],1,0x80,1,0x80E9,TO JOHNSN_L	( CHARLOTTE ),SPEECH.axx
+pass_speech[120],1,0x80,1,0x8060,TO COLEMAN,SPEECH.axx
+pass_speech[121],1,0x80,1,0x80FC,TO MULLIN	( GOLDEN STATE ),SPEECH.axx
+pass_speech[122],1,0x80,1,0x80FC,TO MULLIN	( GOLDEN STATE ),SPEECH.axx
+pass_speech[123],1,0x80,1,0x8060,TO COLEMAN,SPEECH.axx
+pass_speech[124],1,0x80,1,0x8059,TO MUTUMBO,SPEECH.axx
+pass_speech[125],1,0x80,1,0x8121,TO MOURNING,SPEECH.axx
+pass_speech[126],1,0x80,1,0x8121,TO MOURNING,SPEECH.axx
+pass_speech[127],1,0x80,1,0x8059,TO MUTUMBO,SPEECH.axx
+pass_speech[128],1,0x80,1,0x80F0,TO WILKINS,SPEECH.axx
+pass_speech[129],1,0x80,1,0x8135,TO RODMAN,SPEECH.axx
+pass_speech[130],1,0x80,1,0x8135,TO RODMAN,SPEECH.axx
+pass_speech[131],1,0x80,1,0x80F0,TO WILKINS,SPEECH.axx
+pass_speech[132],1,0x90,1,0x81FE,silence,SPEECH.axx
+pass_speech[133],1,0x90,1,0x81FE,silence,SPEECH.axx
+pass_speech[134],1,0x90,1,0x81FE,silence,SPEECH.axx
+pass_speech[135],1,0x90,1,0x81FE,silence,SPEECH.axx
+pass_speech[136],1,0x90,1,0x81FE,silence,SPEECH.axx
+name_speech[0],1,0x80,1,0x80D2,MANNING	( L.A. CLIPPERS ),SPEECH.axx
+name_speech[1],1,0x80,1,0x80BC,AUGMON,SPEECH.axx
+name_speech[2],1,0x80,1,0x806A,WILLIS,SPEECH.axx
+name_speech[3],1,0x80,1,0x8019,LEWIS,SPEECH.axx
+name_speech[4],1,0x80,1,0x80C4,MCDAN,SPEECH.axx
+name_speech[5],1,0x80,1,0x80C3,BROWN		( BOSTON ),SPEECH.axx
+name_speech[6],1,0x80,1,0x80B6,JOHNSN_L	( CHARLOTTE ),SPEECH.axx
+name_speech[7],1,0x80,1,0x80E3,HAWKINS,SPEECH.axx
+name_speech[8],1,0x80,1,0x8025,MOURNING,SPEECH.axx
+name_speech[9],1,0x80,1,0x801E,JORDAN		( CHICAGO ),SPEECH.axx
+name_speech[10],1,0x80,1,0x80B2,PIPPEN,SPEECH.axx
+name_speech[11],1,0x80,1,0x8010,ARMSTRNG,SPEECH.axx
+name_speech[12],1,0x80,1,0x80B3,GRANT_HC,SPEECH.axx
+name_speech[13],1,0x80,1,0x80D7,PRICE		( CLEVELAND ),SPEECH.axx
+name_speech[14],1,0x80,1,0x80D6,DAUGHRTY,SPEECH.axx
+name_speech[15],1,0x80,1,0x8026,NANCE,SPEECH.axx
+name_speech[16],1,0x80,1,0x801D,JACKSON,SPEECH.axx
+name_speech[17],1,0x80,1,0x801F,MASHBURN,SPEECH.axx
+name_speech[18],1,0x80,1,0x80D1,HARPER_D	( DALLAS ),SPEECH.axx
+name_speech[19],1,0x80,1,0x80DB,MUTUMBO	( DENVER ),SPEECH.axx
+name_speech[20],1,0x80,1,0x80DA,ELLIS,SPEECH.axx
+name_speech[21],1,0x80,1,0x8063,ROGERS,SPEECH.axx
+name_speech[22],1,0x80,1,0x80C9,THOMAS		( DETROIT ),SPEECH.axx
+name_speech[23],1,0x80,1,0x801B,LAIMBEER,SPEECH.axx
+name_speech[24],1,0x80,1,0x8017,DUMARS,SPEECH.axx
+name_speech[25],1,0x80,1,0x80C1,ELLIOT,SPEECH.axx
+name_speech[26],1,0x80,1,0x80C8,HARDAWAY	( GOLDEN STATE ),SPEECH.axx
+name_speech[27],1,0x80,1,0x80C7,MULLIN,SPEECH.axx
+name_speech[28],1,0x80,1,0x8069,WEBBER,SPEECH.axx
+name_speech[29],1,0x80,1,0x80D8,OLAJUWON	( HOUSTON ),SPEECH.axx
+name_speech[30],1,0x80,1,0x8021,MAXWELL,SPEECH.axx
+name_speech[31],1,0x80,1,0x801A,HORRY,SPEECH.axx
+name_speech[32],1,0x80,1,0x80D9,SMITH,SPEECH.axx
+name_speech[33],1,0x80,1,0x80CD,MILLER		( INDIANA ),SPEECH.axx
+name_speech[34],1,0x80,1,0x8064,SEALY,SPEECH.axx
+name_speech[35],1,0x80,1,0x8066,SMITS,SPEECH.axx
+name_speech[36],1,0x80,1,0x80BB,WILKINS	( ATLANTA ),SPEECH.axx
+name_speech[37],1,0x80,1,0x80D1,HARPER_R,SPEECH.axx
+name_speech[38],1,0x80,1,0x802B,ROBERTS,SPEECH.axx
+name_speech[39],1,0x80,1,0x8027,PEELER,SPEECH.axx
+name_speech[40],1,0x80,1,0x80D0,DIVAC,SPEECH.axx
+name_speech[41],1,0x80,1,0x8014,CAMPBELL,SPEECH.axx
+name_speech[42],1,0x80,1,0x80CF,WORTHY		( L.A. LAKERS ),SPEECH.axx
+name_speech[43],1,0x80,1,0x80D4,RICE		( MIAMI ),SPEECH.axx
+name_speech[44],1,0x80,1,0x80D5,SEIKALY,SPEECH.axx
+name_speech[45],1,0x80,1,0x8023,MINER,SPEECH.axx
+name_speech[46],1,0x80,1,0x8011,BAKER,SPEECH.axx
+name_speech[47],1,0x80,1,0x80CB,EDWARDS,SPEECH.axx
+name_speech[48],1,0x80,1,0x8016,DAY,SPEECH.axx
+name_speech[49],1,0x80,1,0x80CC,LOHAUS		( MILWAUKEE ),SPEECH.axx
+name_speech[50],1,0x80,1,0x80DE,LAETNER	( MINNESOTTA ),SPEECH.axx
+name_speech[51],1,0x80,1,0x80DF,PERSON,SPEECH.axx
+name_speech[52],1,0x80,1,0x802A,RIDER,SPEECH.axx
+name_speech[53],1,0x80,1,0x80E0,COLEMAN	( NEW JERSEY ),SPEECH.axx
+name_speech[54],1,0x80,1,0x80BD,PETROVIC,SPEECH.axx
+name_speech[55],1,0x80,1,0x80E1,KANDERSON,SPEECH.axx
+name_speech[56],1,0x80,1,0x8024,CMORRIS,SPEECH.axx
+name_speech[57],1,0x80,1,0x80B9,EWING		( NEW YORK ),SPEECH.axx
+name_speech[58],1,0x80,1,0x8020,MASON,SPEECH.axx
+name_speech[59],1,0x80,1,0x8067,STARKS,SPEECH.axx
+name_speech[60],1,0x80,1,0x80BA,OAKLEY,SPEECH.axx
+name_speech[61],1,0x80,1,0x81B9,ONEAL,SPEECH.axx
+name_speech[62],1,0x80,1,0x80C8,AHARDAWAY,SPEECH.axx
+name_speech[63],1,0x80,1,0x80B1,SKILES,SPEECH.axx
+name_speech[64],1,0x80,1,0x8068,WEATHERSPOON	( PHILADELPHIA ),SPEECH.axx
+name_speech[65],1,0x80,1,0x8013,BRADLEY,SPEECH.axx
+name_speech[66],1,0x80,1,0x80E2,HORNACEK,SPEECH.axx
+name_speech[67],1,0x80,1,0x80B7,BARKLEY	( PHOENIX ),SPEECH.axx
+name_speech[68],1,0x80,1,0x80B8,MAJERLE,SPEECH.axx
+name_speech[69],1,0x80,1,0x80B6,KJOHNSON,SPEECH.axx
+name_speech[70],1,0x80,1,0x80BF,DREXLER	( PORTLAND ),SPEECH.axx
+name_speech[71],1,0x80,1,0x80C0,PORTER,SPEECH.axx
+name_speech[72],1,0x80,1,0x80C2,CROBINSON,SPEECH.axx
+name_speech[73],1,0x80,1,0x80B3,GRANT_HV,SPEECH.axx
+name_speech[74],1,0x80,1,0x8065,SIMMONS,SPEECH.axx
+name_speech[75],1,0x80,1,0x801C,HURLEY,SPEECH.axx
+name_speech[76],1,0x80,1,0x8029,RICHMOND,SPEECH.axx
+name_speech[77],1,0x80,1,0x80DD,TISDALE	( SACRAMENTO ),SPEECH.axx
+name_speech[78],1,0x80,1,0x80DC,WEBB,SPEECH.axx
+name_speech[79],1,0x80,1,0x80C2,ROBINSON	( SAN ANTONIO ),SPEECH.axx
+name_speech[80],1,0x80,1,0x802C,RODMAN,SPEECH.axx
+name_speech[81],1,0x80,1,0x80DA,DELLIS,SPEECH.axx
+name_speech[82],1,0x80,1,0x80BE,KEMP		( SEATTLE ),SPEECH.axx
+name_speech[83],1,0x80,1,0x8028,PAYTON,SPEECH.axx
+name_speech[84],1,0x80,1,0x80EA,GILL,SPEECH.axx
+name_speech[85],1,0x80,1,0x80CE,SCHREMPF,SPEECH.axx
+name_speech[86],1,0x80,1,0x80C5,MALONE_K	( UTAH ),SPEECH.axx
+name_speech[87],1,0x80,1,0x80C6,STOCKTON,SPEECH.axx
+name_speech[88],1,0x80,1,0x8012,BENOIT,SPEECH.axx
+name_speech[89],1,0x80,1,0x80B4,GUGLIOTTA	( WASHINGTON ),SPEECH.axx
+name_speech[90],1,0x80,1,0x8018,ELLISON,SPEECH.axx
+name_speech[91],1,0x80,1,0x8015,CHEANEY,SPEECH.axx
+name_speech[92],1,0x80,1,0x801E,JORDAN		( CHICAGO ),SPEECH.axx
+name_speech[93],1,0x80,1,0x81B9,ONEAL,SPEECH.axx
+name_speech[94],1,0x80,1,0x81B9,ONEAL,SPEECH.axx
+name_speech[95],1,0x80,1,0x801E,JORDAN		( CHICAGO ),SPEECH.axx
+name_speech[96],1,0x80,1,0x80C2,ROBINSON	( SAN ANTONIO ),SPEECH.axx
+name_speech[97],1,0x80,1,0x80C6,STOCKTON,SPEECH.axx
+name_speech[98],1,0x80,1,0x80C6,STOCKTON,SPEECH.axx
+name_speech[99],1,0x80,1,0x80C2,ROBINSON	( SAN ANTONIO ),SPEECH.axx
+name_speech[100],1,0x80,1,0x80B7,Barkley,SPEECH.axx
+name_speech[101],1,0x80,1,0x80C5,MALONE_K	( UTAH ),SPEECH.axx
+name_speech[102],1,0x80,1,0x80C5,MALONE_K	( UTAH ),SPEECH.axx
+name_speech[103],1,0x80,1,0x80B7,Barkley,SPEECH.axx
+name_speech[104],1,0x80,1,0x80D8,OLAJUWON	( HOUSTON ),SPEECH.axx
+name_speech[105],1,0x80,1,0x80C9,THOMAS		( DETROIT ),SPEECH.axx
+name_speech[106],1,0x80,1,0x80C9,THOMAS		( DETROIT ),SPEECH.axx
+name_speech[107],1,0x80,1,0x80D8,OLAJUWON	( HOUSTON ),SPEECH.axx
+name_speech[108],1,0x80,1,0x80BE,KEMP		( SEATTLE ),SPEECH.axx
+name_speech[109],1,0x80,1,0x80CD,MILLER		( INDIANA ),SPEECH.axx
+name_speech[110],1,0x80,1,0x80CD,MILLER		( INDIANA ),SPEECH.axx
+name_speech[111],1,0x80,1,0x80BE,KEMP		( SEATTLE ),SPEECH.axx
+name_speech[112],1,0x80,1,0x80BF,DREXLER	( PORTLAND ),SPEECH.axx
+name_speech[113],1,0x80,1,0x80B9,EWING		( NEW YORK ),SPEECH.axx
+name_speech[114],1,0x80,1,0x80B9,EWING		( NEW YORK ),SPEECH.axx
+name_speech[115],1,0x80,1,0x80BF,DREXLER	( PORTLAND ),SPEECH.axx
+name_speech[116],1,0x80,1,0x80B6,JOHNSN_L	( CHARLOTTE ),SPEECH.axx
+name_speech[117],1,0x80,1,0x8017,DUMARS,SPEECH.axx
+name_speech[118],1,0x80,1,0x8017,DUMARS,SPEECH.axx
+name_speech[119],1,0x80,1,0x80B6,JOHNSN_L	( CHARLOTTE ),SPEECH.axx
+name_speech[120],1,0x80,1,0x80E0,COLEMAN	( NEW JERSEY ),SPEECH.axx
+name_speech[121],1,0x80,1,0x80C7,MULLIN,SPEECH.axx
+name_speech[122],1,0x80,1,0x80C7,MULLIN,SPEECH.axx
+name_speech[123],1,0x80,1,0x80E0,COLEMAN	( NEW JERSEY ),SPEECH.axx
+name_speech[124],1,0x80,1,0x80DB,MUTUMBO	( DENVER ),SPEECH.axx
+name_speech[125],1,0x80,1,0x8025,MOURNING,SPEECH.axx
+name_speech[126],1,0x80,1,0x8025,MOURNING,SPEECH.axx
+name_speech[127],1,0x80,1,0x80DB,MUTUMBO	( DENVER ),SPEECH.axx
+name_speech[128],1,0x80,1,0x80BB,WILKINS	( ATLANTA ),SPEECH.axx
+name_speech[129],1,0x80,1,0x802C,RODMAN,SPEECH.axx
+name_speech[130],1,0x80,1,0x802C,RODMAN,SPEECH.axx
+name_speech[131],1,0x80,1,0x80BB,WILKINS	( ATLANTA ),SPEECH.axx
+name_speech[132],1,0x90,1,0x81FE,silence,SPEECH.axx
+name_speech[133],1,0x90,1,0x81FE,silence,SPEECH.axx
+name_speech[134],1,0x90,1,0x81FE,silence,SPEECH.axx
+special_name_speech[0],1,0x80,1,0x81FE,0  GOSKIE,SPEECH.axx
+special_name_speech[1],1,0x80,1,0x81FE,1  RIVETT,SPEECH.axx
+special_name_speech[2],1,0x80,1,0x81FE,2  CARLTON,SPEECH.axx
+special_name_speech[3],1,0x80,1,0x81FE,3  DIVITA,SPEECH.axx
+special_name_speech[4],1,0x80,1,0x81FE,4  LIPTAK,SPEECH.axx
+special_name_speech[5],1,0x80,1,0x81FE,5  TURMELL,SPEECH.axx
+special_name_speech[6],1,0x80,1,0x81FE,6  HEY,SPEECH.axx
+special_name_speech[7],1,0x80,1,0x81FE,7  PETRO,SPEECH.axx
+special_name_speech[8],1,0x80,1,0x81FE,8  NEWCOMER,SPEECH.axx
+special_name_speech[9],1,0x80,1,0x81FE,9  OURSLER,SPEECH.axx
+special_name_speech[10],1,0x80,1,0x81FE,10 LASCO,SPEECH.axx
+special_name_speech[11],1,0x80,1,0x81FE,11 MORRIS,SPEECH.axx
+special_name_speech[12],1,0x80,1,0x81FE,12 MEDNICK,SPEECH.axx
+special_name_speech[13],1,0x80,1,0x81FE,13 FORDEN,SPEECH.axx
+special_name_speech[14],1,0x80,1,0x81FE,14 KINKEAD,SPEECH.axx
+special_name_speech[15],1,0x80,1,0x81FE,15 JARVIS,SPEECH.axx
+special_name_speech[16],1,0x80,1,0x8196,16 SUBZ,SPEECH.axx
+special_name_speech[17],1,0x80,1,0x81FE,17 HAEGER,SPEECH.axx
+special_name_speech[18],1,0x80,1,0x81FE,18 SIMPSON,SPEECH.axx
+special_name_speech[19],1,0x80,1,0x81FE,19 GREEN,SPEECH.axx
+special_name_speech[20],1,0x80,1,0x81FE,20 GENTILE,SPEECH.axx
+special_name_speech[21],1,0x80,1,0x81FE,21 DILLON,SPEECH.axx
+special_name_speech[22],1,0x80,1,0x81FE,22 LOWES,SPEECH.axx
+special_name_speech[23],1,0x80,1,0x81FE,23 VOGEL,SPEECH.axx
+special_name_speech[24],1,0x80,1,0x81FE,24 TSUI,SPEECH.axx
+special_name_speech[25],1,0x80,1,0x81FE,25 KAM,SPEECH.axx
+special_name_speech[26],1,0x80,1,0x81FE,26 DEAL,SPEECH.axx
+special_name_speech[27],1,0x80,1,0x81FE,27 BOOTY,SPEECH.axx
+special_name_speech[28],1,0x80,1,0x81FE,28 LOFFRE,SPEECH.axx
+special_name_speech[29],1,0x80,1,0x81FE,29 PENACHO,SPEECH.axx
+special_name_speech[30],1,0x80,1,0x81FE,30 BARKER,SPEECH.axx
+special_name_speech[31],1,0x80,1,0x81FE,31 COX,SPEECH.axx
+special_name_speech[32],1,0x80,1,0x80B0,32 RAIDEN,SPEECH.axx
+special_name_speech[33],1,0x80,1,0x81FE,33 REAPER,SPEECH.axx
+special_name_speech[34],1,0x80,1,0x81FE,34 MACIKA,SPEECH.axx
+special_name_speech[35],1,0x80,1,0x81FE,35 SHARPE,SPEECH.axx
+special_name_speech[36],1,0x80,1,0x81FE,36 BERAN,SPEECH.axx
+special_name_speech[37],1,0x80,1,0x81FE,38 KONGO,SPEECH.axx
+special_name_speech[38],1,0x80,1,0x81FE,39 PONTAREL,SPEECH.axx
+special_name_speech[39],1,0x80,1,0x81FE,40 ELVIS,SPEECH.axx
+special_name_speech[40],1,0x80,1,0x81FE,41 DAVIS,SPEECH.axx
+special_name_speech[41],1,0x80,1,0x81FE,42 BOON,SPEECH.axx
+special_name_speech[42],1,0x80,1,0x81FE,43 TOBIAS,SPEECH.axx
+special_name_speech[43],1,0x80,1,0x81FE,44 HEITSCH,SPEECH.axx
+special_name_speech[44],1,0x80,1,0x81FE,45 DABEL,SPEECH.axx
+special_name_speech[45],1,0x80,1,0x81FE,46 MARTINEZ,SPEECH.axx
+special_name_speech[46],1,0x80,1,0x81FE,47 DAVIES,SPEECH.axx
+special_name_speech[47],1,0x80,1,0x81FE,48 HOSK,SPEECH.axx
+special_name_speech[48],1,0x80,1,0x81FE,49 OLIV,SPEECH.axx
+special_name_speech[49],1,0x80,1,0x8197,50 SCORP,SPEECH.axx
+special_name_speech[50],1,0x80,1,0x81A5,51 REPT,SPEECH.axx
+special_name_speech[51],1,0x80,1,0x81FE,52 GRANNER,SPEECH.axx
+special_name_speech[52],1,0x80,1,0x81EB,53 GRIFFEY,SPEECH.axx
+special_name_speech[53],1,0x80,1,0x80B1,54 SKILES,SPEECH.axx
+special_name_speech[54],1,0x80,1,0x81FE,55 LINHOFF,SPEECH.axx
+special_name_speech[55],1,0x80,1,0x80BB,56 WILKINS,SPEECH.axx
+special_name_speech[56],1,0x80,1,0x80C3,57 BROWN,SPEECH.axx
+special_name_speech[57],1,0x80,1,0x8025,58 MOURNING,SPEECH.axx
+special_name_speech[58],1,0x80,1,0x80B2,59 PIPPEN,SPEECH.axx
+special_name_speech[59],1,0x80,1,0x8028,60 PAYTON,SPEECH.axx
+special_name_speech[60],1,0x80,1,0x801E,61 JORDAN,SPEECH.axx
+special_name_speech[61],1,0x80,1,0x80D8,62 OLAJUWON,SPEECH.axx
+special_name_speech[62],1,0x80,1,0x80E0,63 COLEMAN,SPEECH.axx
+special_name_speech[63],1,0x80,1,0x80B9,64 EWING,SPEECH.axx
+special_name_speech[64],1,0x80,1,0x80B7,65 BARKLEY,SPEECH.axx
+special_name_speech[65],1,0x80,1,0x80C2,66 ROBINSON,SPEECH.axx
+special_name_speech[66],1,0x80,1,0x80BE,67 KEMP,SPEECH.axx
+special_name_speech[67],1,0x80,1,0x80C5,68 MALONE,SPEECH.axx
+special_pass_speech[0],1,0x80,1,0x81FE,0  GOSKIE,SPEECH.axx
+special_pass_speech[1],1,0x80,1,0x81FE,1  RIVETT,SPEECH.axx
+special_pass_speech[2],1,0x80,1,0x81FE,2  CARLTON,SPEECH.axx
+special_pass_speech[3],1,0x80,1,0x81FE,3  DIVITA,SPEECH.axx
+special_pass_speech[4],1,0x80,1,0x81FE,4  LIPTAK,SPEECH.axx
+special_pass_speech[5],1,0x80,1,0x81FE,5  TURMELL,SPEECH.axx
+special_pass_speech[6],1,0x80,1,0x81FE,6  HEY,SPEECH.axx
+special_pass_speech[7],1,0x80,1,0x81FE,7  PETRO,SPEECH.axx
+special_pass_speech[8],1,0x80,1,0x81FE,8  NEWCOMER,SPEECH.axx
+special_pass_speech[9],1,0x80,1,0x81FE,9  OURSLER,SPEECH.axx
+special_pass_speech[10],1,0x80,1,0x81FE,10 LASCO,SPEECH.axx
+special_pass_speech[11],1,0x80,1,0x81FE,11 MORRIS,SPEECH.axx
+special_pass_speech[12],1,0x80,1,0x81FE,12 MEDNICK,SPEECH.axx
+special_pass_speech[13],1,0x80,1,0x81FE,13 FORDEN,SPEECH.axx
+special_pass_speech[14],1,0x80,1,0x81FE,14 KINKEAD,SPEECH.axx
+special_pass_speech[15],1,0x80,1,0x81FE,15 JARVIS,SPEECH.axx
+special_pass_speech[16],1,0x80,1,0x81A1,16 SUBZ,SPEECH.axx
+special_pass_speech[17],1,0x80,1,0x81FE,17 HAEGER,SPEECH.axx
+special_pass_speech[18],1,0x80,1,0x81FE,18 SIMPSON,SPEECH.axx
+special_pass_speech[19],1,0x80,1,0x81FE,19 GREEN,SPEECH.axx
+special_pass_speech[20],1,0x80,1,0x81FE,20 GENTILE,SPEECH.axx
+special_pass_speech[21],1,0x80,1,0x81FE,21 DILLON,SPEECH.axx
+special_pass_speech[22],1,0x80,1,0x81FE,22 LOWES,SPEECH.axx
+special_pass_speech[23],1,0x80,1,0x81FE,23 VOGEL,SPEECH.axx
+special_pass_speech[24],1,0x80,1,0x81FE,24 TSUI,SPEECH.axx
+special_pass_speech[25],1,0x80,1,0x81FE,25 KAM,SPEECH.axx
+special_pass_speech[26],1,0x80,1,0x81FE,26 DEAL,SPEECH.axx
+special_pass_speech[27],1,0x80,1,0x81FE,27 BOOTY,SPEECH.axx
+special_pass_speech[28],1,0x80,1,0x81FE,28 LOFFRE,SPEECH.axx
+special_pass_speech[29],1,0x80,1,0x81FE,29 PENACHO,SPEECH.axx
+special_pass_speech[30],1,0x80,1,0x81FE,30 BARKER,SPEECH.axx
+special_pass_speech[31],1,0x80,1,0x81FE,31 COX,SPEECH.axx
+special_pass_speech[32],1,0x80,1,0x80E5,32 RAIDEN,SPEECH.axx
+special_pass_speech[33],1,0x80,1,0x81FE,33 REAPER,SPEECH.axx
+special_pass_speech[34],1,0x80,1,0x81FE,34 MACIKA,SPEECH.axx
+special_pass_speech[35],1,0x80,1,0x81FE,35 SHARPE,SPEECH.axx
+special_pass_speech[36],1,0x80,1,0x81FE,36 BERAN,SPEECH.axx
+special_pass_speech[37],1,0x80,1,0x81FE,38 KONGO,SPEECH.axx
+special_pass_speech[38],1,0x80,1,0x81FE,39 PONTAREL,SPEECH.axx
+special_pass_speech[39],1,0x80,1,0x81FE,40 ELVIS,SPEECH.axx
+special_pass_speech[40],1,0x80,1,0x81FE,41 DAVIS,SPEECH.axx
+special_pass_speech[41],1,0x80,1,0x81FE,42 BOON,SPEECH.axx
+special_pass_speech[42],1,0x80,1,0x81FE,43 TOBIAS,SPEECH.axx
+special_pass_speech[43],1,0x80,1,0x81FE,44 HEITSCH,SPEECH.axx
+special_pass_speech[44],1,0x80,1,0x81FE,45 DABEL,SPEECH.axx
+special_pass_speech[45],1,0x80,1,0x81FE,46 MARTINEZ,SPEECH.axx
+special_pass_speech[46],1,0x80,1,0x81FE,47 DAVIES,SPEECH.axx
+special_pass_speech[47],1,0x80,1,0x81FE,48 HOSK,SPEECH.axx
+special_pass_speech[48],1,0x80,1,0x81FE,49 OLIV,SPEECH.axx
+special_pass_speech[49],1,0x80,1,0x81A2,50 SCORP,SPEECH.axx
+special_pass_speech[50],1,0x80,1,0x81A6,51 REPT,SPEECH.axx
+special_pass_speech[51],1,0x80,1,0x81FE,52 GRANNER,SPEECH.axx
+special_pass_speech[52],1,0x80,1,0x819A,53 TO GRIFFEY (Wolf only),SPEECH.axx
+special_pass_speech[53],1,0x80,1,0x80E4,54 SKILES,SPEECH.axx
+special_pass_speech[54],1,0x80,1,0x81FE,55 LINHOFF,SPEECH.axx
+special_pass_speech[55],1,0x80,1,0x80F0,56 TO WILKINS,SPEECH.axx
+special_pass_speech[56],1,0x80,1,0x80F8,57 TO BROWN,SPEECH.axx
+special_pass_speech[57],1,0x80,1,0x8121,58 TO MOURNING,SPEECH.axx
+special_pass_speech[58],1,0x80,1,0x80E7,59 TO PIPPEN,SPEECH.axx
+special_pass_speech[59],1,0x80,1,0x8126,60 TO PAYTON	( SEATTLE ),SPEECH.axx
+special_pass_speech[60],1,0x80,1,0x817C,61 TO JORDAN,SPEECH.axx
+special_pass_speech[61],1,0x80,1,0x8058,62 TO OLAJUWON,SPEECH.axx
+special_pass_speech[62],1,0x80,1,0x8060,63 TO COLEMAN,SPEECH.axx
+special_pass_speech[63],1,0x80,1,0x80EE,64 TO EWING,SPEECH.axx
+special_pass_speech[64],1,0x80,1,0x80EC,65 TO BARKLEY,SPEECH.axx
+special_pass_speech[65],1,0x80,1,0x80F5,66 TO ROBINSON,SPEECH.axx
+special_pass_speech[66],1,0x80,1,0x80F1,67 TO KEMP,SPEECH.axx
+special_pass_speech[67],1,0x80,1,0x80FA,68 TO MALONE,SPEECH.axx
+team_speech[0],1,0x81,1,0x8035,"00 ATLANTA		""Hawks""",SPEECH.axx
+team_speech[1],1,0x81,1,0x8033,"01 BOSTON		""Celtics""",SPEECH.axx
+team_speech[2],1,0x81,1,0x8036,"02 CHARLOTTE		""Hornets""",SPEECH.axx
+team_speech[3],1,0x81,1,0x8031,"03 CHICAGO		""Bulls""",SPEECH.axx
+team_speech[4],1,0x81,1,0x8032,"04 CLEVELAND		""Cavaliers""",SPEECH.axx
+team_speech[5],1,0x81,1,0x803C,"05 DALLAS		""Maverick""",SPEECH.axx
+team_speech[6],1,0x81,1,0x803E,"06 DENVER		""Nuggets""",SPEECH.axx
+team_speech[7],1,0x81,1,0x8040,"07 DETROIT		""Pistons""",SPEECH.axx
+team_speech[8],1,0x81,1,0x8048,"08 GOLDEN STATE	""Warriors""",SPEECH.axx
+team_speech[9],1,0x81,1,0x8041,"09 HOUSTON		""Rockets""",SPEECH.axx
+team_speech[10],1,0x81,1,0x803F,"10 INDIANA		""Pacers""",SPEECH.axx
+team_speech[11],1,0x81,1,0x8034,"11 L.A. CLIPPERS	""Clippers""",SPEECH.axx
+team_speech[12],1,0x81,1,0x803A,"12 L.A. LAKERS		""Lakers""",SPEECH.axx
+team_speech[13],1,0x81,1,0x8046,"13 MIAMI		""Heat""",SPEECH.axx
+team_speech[14],1,0x81,1,0x804A,"14 MILWAUKEE		""Bucks""",SPEECH.axx
+team_speech[15],1,0x81,1,0x8047,"15 MINNESOTTA		""Timberwolves""",SPEECH.axx
+team_speech[16],1,0x81,1,0x803D,"16 NEW JERSEY		""Nets""",SPEECH.axx
+team_speech[17],1,0x81,1,0x8039,"17 NEW YORK		""Knicks""",SPEECH.axx
+team_speech[18],1,0x81,1,0x803B,"18 ORLANDO		""Magic""",SPEECH.axx
+team_speech[19],1,0x81,1,0x8042,"19 PHILADELPHIA	""Sixers""",SPEECH.axx
+team_speech[20],1,0x81,1,0x8044,"20 PHOENIX		""Suns""",SPEECH.axx
+team_speech[21],1,0x81,1,0x8049,"21 PORTLAND		""Blazers""",SPEECH.axx
+team_speech[22],1,0x81,1,0x8038,"22 SACRAMENTO		""Kings""",SPEECH.axx
+team_speech[23],1,0x81,1,0x8043,"23 SAN ANTONIO		""Spurs""",SPEECH.axx
+team_speech[24],1,0x81,1,0x8045,"24 SEATTLE		""Supersonics""",SPEECH.axx
+team_speech[25],1,0x81,1,0x8037,"25 UTAH		""Jazz""",SPEECH.axx
+team_speech[26],1,0x81,1,0x8030,"26 WASHINGTON		""Bullets""",SPEECH.axx
+team_speech[27],1,0x81,1,0x81E2,GOOOOD!!!,SPEECH.axx
