@@ -1,7 +1,4 @@
 call,channel,priority,non_interruptable,sound_code,comment,source_file
-CVSDOFF,0,0xF0,0,0x807D,SPEECH OFF,RACKUP.axx
-kilfgnd,0,0x00,0,0x807F,Kill foregnd snds,RACKUP.axx
-fburn,0,0x48,0,0x80D7,^ burn,RACKUP.axx
 cheer2_snd,0,0x94,1,0x8144,Long cheer,PLYR3.axx
 cheer_snd,0,0x98,1,0x8144,Quick cheer,SELECT.axx
 cheer2_snd,0,0x94,1,0x8144,Long cheer,SELECT.axx
@@ -17,19 +14,6 @@ boo_snd,0,0x94,1,0x8150,Boo,PLYRSEQ2.axx
 horn_snd,0,0xFE,1,0x8159,horn,SOUNDS.axx
 whstle_snd,1,0xF5,1,0x0148,Ref whistle at game start,PLYR.axx
 versus,1,0xFF,1,0x802F,versus,SPEECH.axx
-yousuck,1,0xA0,1,0x80C5,You suck at this game!,RACKUP.axx
-totcarn,1,0x80,1,0x80CF,Total carnage!,RACKUP.axx
-gluck,1,0xF7,0,0x80E5,"""Good luck""",RACKUP.axx
-ahkb1,1,0xA0,1,0x80EB,Akhboob speech,RACKUP.axx
-ahkb2,1,0xA0,1,0x80EC,^,RACKUP.axx
-ahkb3,1,0xA0,1,0x80ED,^,RACKUP.axx
-ahkbsta,1,0xA0,1,0x80EE,^ start angry,RACKUP.axx
-ahkbang,1,0xA0,1,0x80EF,^ angry,RACKUP.axx
-gigle1,1,0xA0,1,0x80F3,Rackup winner laughs,RACKUP.axx
-fpain1,1,0x65,1,0x80F6,Player in pain,RACKUP.axx
-fpain2,1,0x60,0,0x80F7,^,RACKUP.axx
-fpain3,1,0x60,0,0x80FD,^,RACKUP.axx
-shout,1,0xA0,0,0x80FE,Rackup victory shout,RACKUP.axx
 scrs26,1,0x81,1,0x812B,FANTASTIC!,SPEECH.axx
 scrs24,1,0x81,1,0x812D,the easy jam,SPEECH.axx
 munged,1,0x90,1,0x812E,munged,SPEECH.axx
@@ -37,7 +21,6 @@ fancy,1,0x81,1,0x812F,fancy move,PLYRLSEQ.axx
 fancy,1,0x81,1,0x812F,fancy move,PLYRDSEQ.axx
 scrs25,1,0x81,1,0x812F,fancy move,SPEECH.axx
 whstle_snd,1,0xF5,1,0x8148,Ref whistle at game start,SCORE.axx
-DOLLAR,1,0xF7,1,0x814E,BUY 4 DOLLAR,RACKUP.axx
 getout,1,0x90,1,0x815D,get that outta here,SPEECH.axx
 scrm4_snd,1,0x80,0,0x815F,,SCREAM.axx
 heatup_snd,1,0xF1,1,0x8168,He's heating up,SPEECH.axx
@@ -167,23 +150,7 @@ snd_10,1,0x90,1,0x81FA,,SPEECH.axx
 snd_15,1,0x90,1,0x81FB,,SPEECH.axx
 snd_20,1,0x90,1,0x81FC,,SPEECH.axx
 hothand,1,0x90,1,0x81FD,He's got a hot hand,SPEECH.axx
-rackoff,2,0x81,1,0x80A7,Rackup bonus off,RACKUP.axx
 flsh1_snd,2,0xBE,1,0x80A8,,PLYR2.axx
-racksup,2,0x80,0,0x80B3,Rackup bonus sweep up,RACKUP.axx
-rackp1p,2,0x80,1,0x80B4,Rackup P1 gets 1000 pts,RACKUP.axx
-rackp2p,2,0x80,1,0x80B5,^ P2,RACKUP.axx
-stats1,2,0x80,0,0x8100,Rackup stat line snd,RACKUP.axx
-stats2,2,0x80,0,0x8101,^,RACKUP.axx
-stats3,2,0x80,0,0x8102,^,RACKUP.axx
-stats4,2,0x80,0,0x8103,^,RACKUP.axx
-stats5,2,0x80,0,0x8104,^,RACKUP.axx
-stats6,2,0x80,0,0x8105,^,RACKUP.axx
-stats7,2,0x80,0,0x8106,^,RACKUP.axx
-stats8,2,0x80,0,0x8107,^,RACKUP.axx
-stats9,2,0x80,0,0x8108,^,RACKUP.axx
-stats10,2,0x80,0,0x8109,^,RACKUP.axx
-stats11,2,0x80,0,0x810A,^,RACKUP.axx
-stats12,2,0x80,0,0x810B,^,RACKUP.axx
 beep1_snd,3,0xF7,0,0x0080,MENU BAR MOVE SOUND,TEST.axx
 SELECT_SND,3,0xF7,0,0x0084,MENU OPTION SELECT SOUND,TEST.axx
 pass_snd,3,0xA7,0,0x008C,short pass,PLYR.axx
@@ -203,13 +170,11 @@ tune2_snd,3,0xFE,0,0x8002,main game play tune,SOUNDS.axx
 tuneend_snd,3,0xFF,0,0x8003,End game time tune,PLYR.axx
 tunehalf_snd,3,0xFF,0,0x8004,Half time tune,PLYR.axx
 tunehalf_snd,3,0xFF,0,0x8004,Half time tune,PLYR3.axx
-ermtune,3,0xF0,0,0x8004,Electrocution tune,RACKUP.axx
 tune1end_snd,3,0xFE,0,0x8004,End team select tune,SELECT.axx
 congrats_snd,3,0xFF,0,0x8004,,SELECT2.axx
 tuneq2_snd,3,0xFF,0,0x8006,Quarter 2 tune,ATTRACT.axx
 tuneq2_snd,3,0xFF,0,0x8006,Quarter 2 tune,SOUNDS.axx
 tuneq2_snd,3,0xFF,0,0x8006,Quarter 2 tune,SCORE.axx
-TUNE4,3,0xFE,0,0x8007,Rackup tune,RACKUP.axx
 tuneq3_snd,3,0xFF,0,0x8007,Quarter 3 tune,ATTRACT.axx
 tuneq3_snd,3,0xFF,0,0x8007,Quarter 3 tune,SOUNDS.axx
 tuneq3_snd,3,0xFF,0,0x8007,Quarter 3 tune,SCORE.axx
@@ -271,17 +236,11 @@ ting_snd,3,0xFF,0,0x80A6,Scroll snd,ATTRACT.axx
 eat_snd,3,0x1F,0,0x80A7,Suck up credit snd,BB.axx
 flsh2_snd,3,0xBE,1,0x80A9,,PLYR2.axx
 organ1_snd,3,0xFF,0,0x80AE,,BB.axx
-TXTSND1,3,0xF7,0,0x80AE,,RACKUP.axx
 organ1_snd,3,0xFF,0,0x80AE,,SPEECH.axx
 organ2_snd,3,0xFF,0,0x80AF,,BB.axx
 organ2_snd,3,0xFF,0,0x80AF,,SPEECH.axx
-txtssnd,3,0xF7,0,0x80B1,Text shrink,RACKUP.axx
 scrm1_snd,3,0x80,0,0x813D,,SCREAM.axx
 fball_snd,4,0xB0,1,0x0179,Fire ball launch,PLYR.axx
-rackgun,4,0xA0,1,0x8030,Player shoots gun,RACKUP.axx
-fisthit,4,0xA0,1,0x803C,Ahkboob hits desk,RACKUP.axx
-fryexp,4,0x50,1,0x803E,Fry explosion,RACKUP.axx
-fskullb,4,0x60,0,0x8040,Skull bounce,RACKUP.axx
 swish_snd,4,0xA0,1,0x8112,Ball swish,PLYR2.axx
 enfiresnd,4,0x60,0,0x811D,Enemy cannon,D3.axx
 dunk_snd,4,0xA4,1,0x8120,Dunk,PLYR2.axx
@@ -312,8 +271,6 @@ sqk2_snd,5,0x84,0,0x0115,,PLYR.axx
 sqk3_snd,5,0x84,0,0x0116,,PLYR.axx
 sqk4_snd,5,0x84,0,0x0117,,PLYR.axx
 swat_snd,5,0x94,1,0x0157,Swat ball (Steals & blocks),PLYR.axx
-fshock,5,0x40,0,0x80BB,Electric chair shocks,RACKUP.axx
-fryexp2,5,0x50,1,0x80D9,^,RACKUP.axx
 cheer1_snd,5,0x84,1,0x8111,Long cheer,PLYR3.axx
 cheer1_snd,5,0x84,1,0x8111,Long cheer,SELECT.axx
 cheer1_snd,5,0x84,1,0x8111,Long cheer,PLYR2.axx
