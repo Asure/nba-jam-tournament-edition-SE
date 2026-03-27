@@ -1,0 +1,341 @@
+call,channel,priority,non_interruptable,sound_code,comment,source_file
+CVSDOFF,0,0xF0,0,0x807D,SPEECH OFF,RACKUP.axx
+kilfgnd,0,0x00,0,0x807F,Kill foregnd snds,RACKUP.axx
+fburn,0,0x48,0,0x80D7,^ burn,RACKUP.axx
+cheer2_snd,0,0x94,1,0x8144,Long cheer,PLYR3.axx
+cheer_snd,0,0x98,1,0x8144,Quick cheer,SELECT.axx
+cheer2_snd,0,0x94,1,0x8144,Long cheer,SELECT.axx
+cheer_snd,0,0x98,1,0x8144,Quick cheer,PLYR2.axx
+cheer2_snd,0,0x94,1,0x8144,Long cheer,PLYR2.axx
+boo1_snd,0,0x84,1,0x814A,Boo,SELECT.axx
+boo1_snd,0,0x84,1,0x814A,Boo,PLYR2.axx
+scrm2_snd,0,0x40,0,0x814B,,BB.axx
+scrm2_snd,0,0x80,0,0x814B,,SCREAM.axx
+airball_snd,0,0x94,1,0x814D,"crowd screams ""air ball""",PLYR.axx
+cheer_snd,0,0x98,1,0x814E,,AUDIT.axx
+boo_snd,0,0x94,1,0x8150,Boo,PLYRSEQ2.axx
+horn_snd,0,0xFE,1,0x8159,horn,SOUNDS.axx
+whstle_snd,1,0xF5,1,0x0148,Ref whistle at game start,PLYR.axx
+versus,1,0xFF,1,0x802F,versus,SPEECH.axx
+yousuck,1,0xA0,1,0x80C5,You suck at this game!,RACKUP.axx
+totcarn,1,0x80,1,0x80CF,Total carnage!,RACKUP.axx
+gluck,1,0xF7,0,0x80E5,"""Good luck""",RACKUP.axx
+ahkb1,1,0xA0,1,0x80EB,Akhboob speech,RACKUP.axx
+ahkb2,1,0xA0,1,0x80EC,^,RACKUP.axx
+ahkb3,1,0xA0,1,0x80ED,^,RACKUP.axx
+ahkbsta,1,0xA0,1,0x80EE,^ start angry,RACKUP.axx
+ahkbang,1,0xA0,1,0x80EF,^ angry,RACKUP.axx
+gigle1,1,0xA0,1,0x80F3,Rackup winner laughs,RACKUP.axx
+fpain1,1,0x65,1,0x80F6,Player in pain,RACKUP.axx
+fpain2,1,0x60,0,0x80F7,^,RACKUP.axx
+fpain3,1,0x60,0,0x80FD,^,RACKUP.axx
+shout,1,0xA0,0,0x80FE,Rackup victory shout,RACKUP.axx
+scrs26,1,0x81,1,0x812B,FANTASTIC!,SPEECH.axx
+scrs24,1,0x81,1,0x812D,the easy jam,SPEECH.axx
+munged,1,0x90,1,0x812E,munged,SPEECH.axx
+fancy,1,0x81,1,0x812F,fancy move,PLYRLSEQ.axx
+fancy,1,0x81,1,0x812F,fancy move,PLYRDSEQ.axx
+scrs25,1,0x81,1,0x812F,fancy move,SPEECH.axx
+whstle_snd,1,0xF5,1,0x8148,Ref whistle at game start,SCORE.axx
+DOLLAR,1,0xF7,1,0x814E,BUY 4 DOLLAR,RACKUP.axx
+getout,1,0x90,1,0x815D,get that outta here,SPEECH.axx
+scrm4_snd,1,0x80,0,0x815F,,SCREAM.axx
+heatup_snd,1,0xF1,1,0x8168,He's heating up,SPEECH.axx
+onfire_snd,1,0xA1,1,0x8169,He's on fire,SPEECH.axx
+onfire_snd,1,0xFE,1,0x8169,He's on fire,PLYR2.axx
+fake_snd,1,0x81,1,0x816E,Head fake,PLYR2.axx
+uncon,1,0x81,1,0x816F,he's unconscious,SPEECH.axx
+wingame,1,0xFF,1,0x8173,win the game,SPEECH.axx
+arewinrs,1,0xFF,1,0x8174,are the winners,SPEECH.axx
+cantbuy,1,0x81,1,0x8175,can't buy a bucket,SPEECH.axx
+flagrant,1,0x90,1,0x8178,flagrant,SPEECH.axx
+overtime_snd,1,0xFF,1,0x8180,overtime!,PLYR.axx
+ovrtme,1,0xFF,1,0x8180,overtime!,SPEECH.axx
+intoot_snd,1,0x90,1,0x8180,Into o.t.,SCORE.axx
+scrs0,1,0x81,1,0x8182,and it's good,SPEECH.axx
+anncr3_snd,1,0xF8,0,0x8182,And it's good,PLYR2.axx
+anncr4_snd,1,0xF6,1,0x8183,At the buzzer,PLYR.axx
+shts7,1,0xA0,1,0x8183,at the buzzer,SPEECH.axx
+scrs13,1,0x81,1,0x8184,gets a lucky bounce,SPEECH.axx
+scrs2,1,0x81,1,0x8187,got it!,SPEECH.axx
+greatd,1,0x90,1,0x8188,great defense,SPEECH.axx
+takethat,1,0x90,1,0x8189,take that!,SPEECH.axx
+shts0,1,0x80,0,0x818A,from the 3 point line,SPEECH.axx
+anncr5_snd,1,0xF6,1,0x818B,From long range,PLYR.axx
+shts5,1,0x80,0,0x818B,from long range,SPEECH.axx
+tip_snd,1,0xFE,1,0x818D,Here's the tip,BB.axx
+anncr1_snd,1,0xF6,1,0x818E,He shoots from downtown,PLYR.axx
+shts2,1,0x80,0,0x818E,from down town,SPEECH.axx
+anncr2_snd,1,0xF6,1,0x8190,He shoots from the outside,PLYR.axx
+shts3,1,0x80,0,0x8190,he shoots from the outside,SPEECH.axx
+scrs12,1,0x81,1,0x819B,scores,SPEECH.axx
+scrs16,1,0x81,1,0x819C,boom shakalaka,SPEECH.axx
+scrs9,1,0x81,1,0x819D,sweet touch,SPEECH.axx
+scrs6,1,0x81,1,0x81A0,finger rolls it in,SPEECH.axx
+shts8,1,0x80,0,0x81A3,for two,SPEECH.axx
+airb,1,0x81,1,0x81A4,goes airborne!,PLYRLSEQ.axx
+airb,1,0x81,1,0x81A4,goes airborne!,PLYRDSEQ.axx
+jamsit,1,0x81,1,0x81A4,jams it in,SPEECH.axx
+torim,1,0x81,1,0x81A6,to the rim,PLYRLSEQ.axx
+torim,1,0x81,1,0x81A6,to the rim,PLYRDSEQ.axx
+bookit,1,0x81,1,0x81A6,book it,SPEECH.axx
+hangt,1,0x81,1,0x81A7,hangtime,PLYRLSEQ.axx
+hangt,1,0x81,1,0x81A7,hangtime,PLYRDSEQ.axx
+scrs17,1,0x81,1,0x81A8,razzle dazzle (incredible dunk),SPEECH.axx
+scrsrz,1,0x81,1,0x81A8,razzle dazzle,SPEECH.axx
+intrcpt,1,0x90,1,0x81A9,intercepted!,SPEECH.axx
+intercept,1,0x91,1,0x81A9,Intercepted,PLYR2.axx
+inface,1,0x81,1,0x81AB,in your face,PLYRLSEQ.axx
+inface,1,0x81,1,0x81AB,in your face,PLYRDSEQ.axx
+scrs18,1,0x81,1,0x81AD,is it the shoes?,SPEECH.axx
+scrs19,1,0x81,1,0x81AE,kaboom,SPEECH.axx
+scrs15,1,0x81,1,0x81AF,lays it up,SPEECH.axx
+lookout,1,0x81,1,0x81B0,lookout!,PLYRLSEQ.axx
+lookout,1,0x81,1,0x81B0,lookout!,PLYRDSEQ.axx
+mnstjam,1,0x81,1,0x81B2,monster jam,PLYRLSEQ.axx
+mnstjam,1,0x81,1,0x81B2,monster jam,PLYRDSEQ.axx
+scrs20,1,0x81,1,0x81B2,monster jam,SPEECH.axx
+noway,1,0x90,1,0x81B4,no way!,SPEECH.axx
+reject,1,0x90,1,0x81B6,rejected!,SPEECH.axx
+baddec_snd,1,0x90,1,0x81B7,bad decision		<--change!,PLYR.axx
+showt,1,0x81,1,0x81B7,showtime!,PLYRLSEQ.axx
+baddec_snd,1,0x90,1,0x81B7,bad decision		<--change!,SELECT.axx
+showt,1,0x81,1,0x81B7,showtime!,PLYRDSEQ.axx
+baddec,1,0x81,1,0x81B7,bad decision		<--change!,SPEECH.axx
+scrtied,1,0x90,1,0x81BA,the score is tied,SPEECH.axx
+scrs22,1,0x81,1,0x81BB,slams it,SPEECH.axx
+scrs23,1,0x81,1,0x81BC,stuffs it,SPEECH.axx
+hooksht,1,0x90,1,0x81BD,takes the hook shot	<----check this,SPEECH.axx
+turnovr,1,0x90,1,0x81BF,the turnover!,SPEECH.axx
+thawk,1,0x81,1,0x81C0,tomahawks one home!,PLYRLSEQ.axx
+thawk,1,0x81,1,0x81C0,tomahawks one home!,PLYRDSEQ.axx
+excuse,1,0x90,1,0x81C0,excuse me!,SPEECH.axx
+shts4,1,0x80,1,0x81C1,wild shot,SPEECH.axx
+yes,1,0x81,1,0x81C2,YES!,SPEECH.axx
+ambushed,1,0x90,1,0x81C4,ugly knockdown	(ambushed),SPEECH.axx
+intostands,1,0x70,1,0x81C7,into the stands,PLYR2.axx
+hello,1,0x90,1,0x81C8,hello!,SPEECH.axx
+getout2,1,0x90,1,0x81C9,get that shit outta here,SPEECH.axx
+twopts,1,0x81,1,0x81CA,gets two (two points),SPEECH.axx
+welcm_snd,1,0x90,1,0x81CB,Welcome,SELECT.axx
+altitude_snd,1,0x81,1,0x81CC,Altitude,PLYR3.axx
+downby,1,0x90,1,0x81CD,down by,SPEECH.axx
+tofloor,1,0x90,1,0x81CE,knocked to the floor,SPEECH.axx
+upby,1,0x90,1,0x81CF,up by,SPEECH.axx
+snd_1,1,0x90,1,0x81D0,,SPEECH.axx
+snd_2,1,0x90,1,0x81D1,,SPEECH.axx
+snd_3,1,0x90,1,0x81D2,,SPEECH.axx
+snd_4,1,0x90,1,0x81D3,,SPEECH.axx
+snd_5,1,0x90,1,0x81D4,,SPEECH.axx
+snd_6,1,0x90,1,0x81D5,,SPEECH.axx
+scrs14,1,0x90,1,0x81D6,the nail in the coffin!,SPEECH.axx
+gottasht,1,0x90,1,0x81D7,they've gotta shoot it,SPEECH.axx
+greatsht,1,0x81,1,0x81D8,great shot!,SPEECH.axx
+scrs3,1,0x81,1,0x81DA,finds the hole,SPEECH.axx
+scrs4,1,0x81,1,0x81DC,what a shot,SPEECH.axx
+wideopen,1,0x81,1,0x81DD,wide open,SPEECH.axx
+matchup,1,0xFF,1,0x81DE,tonight's matchup,SPEECH.axx
+scrs5,1,0x81,1,0x81DF,hooks it in,SPEECH.axx
+scrs1,1,0xA1,1,0x81E0,it's good (excited),SPEECH.axx
+scrs10,1,0xA0,0,0x81E1,IT IS....,SPEECH.axx
+scrs11,1,0xA1,1,0x81E2,GOOOOD!!!,SPEECH.axx
+shts6,1,0x80,1,0x81E3,out of range (launches a shot),SPEECH.axx
+shts1,1,0x80,0,0x81E6,shoots for 3,SPEECH.axx
+ohmy,1,0x81,1,0x81EA,OH....MY!!!,PLYRLSEQ.axx
+ohmy,1,0x81,1,0x81EA,OH....MY!!!,PLYRDSEQ.axx
+scrs7,1,0x81,1,0x81EA,oh my!,SPEECH.axx
+ohmy,1,0x81,1,0x81EA,oh my!,PLYR2.axx
+facial,1,0x81,1,0x81EE,delivers the facial!,PLYRLSEQ.axx
+facial,1,0x81,1,0x81EE,delivers the facial!,PLYRDSEQ.axx
+facial_snd,1,0x90,1,0x81EE,Delivers the,PLYR2.axx
+grabreb,1,0x90,1,0x81EF,grabs the rebound,SPEECH.axx
+rainbow_snd,1,0xA0,0,0x81F0,Rainbow,PLYR.axx
+shtsrb,1,0x80,0,0x81F0,rainbow,SPEECH.axx
+nogood,1,0x81,1,0x81F1,NO GOOD!,SPEECH.axx
+nogood,1,0x81,1,0x81F1,NO GOOD!,PLYR2.axx
+rejects,1,0x90,1,0x81F2,rejects the shot,SPEECH.axx
+stolen,1,0x90,1,0x81F3,steals the ball,SPEECH.axx
+stealsb,1,0x90,1,0x81F3,steals the ball,PLYR2.axx
+spectd,1,0x81,1,0x81F5,spectacular dunk,PLYRLSEQ.axx
+spectd,1,0x81,1,0x81F5,spectacular dunk,PLYRDSEQ.axx
+scrs8,1,0x81,1,0x81F5,spectacular dunk,SPEECH.axx
+hescores,1,0x81,1,0x81F6,he scores,SPEECH.axx
+snd_7,1,0x90,1,0x81F7,,SPEECH.axx
+snd_8,1,0x90,1,0x81F8,,SPEECH.axx
+snd_9,1,0x90,1,0x81F9,,SPEECH.axx
+snd_10,1,0x90,1,0x81FA,,SPEECH.axx
+snd_15,1,0x90,1,0x81FB,,SPEECH.axx
+snd_20,1,0x90,1,0x81FC,,SPEECH.axx
+hothand,1,0x90,1,0x81FD,He's got a hot hand,SPEECH.axx
+rackoff,2,0x81,1,0x80A7,Rackup bonus off,RACKUP.axx
+flsh1_snd,2,0xBE,1,0x80A8,,PLYR2.axx
+racksup,2,0x80,0,0x80B3,Rackup bonus sweep up,RACKUP.axx
+rackp1p,2,0x80,1,0x80B4,Rackup P1 gets 1000 pts,RACKUP.axx
+rackp2p,2,0x80,1,0x80B5,^ P2,RACKUP.axx
+stats1,2,0x80,0,0x8100,Rackup stat line snd,RACKUP.axx
+stats2,2,0x80,0,0x8101,^,RACKUP.axx
+stats3,2,0x80,0,0x8102,^,RACKUP.axx
+stats4,2,0x80,0,0x8103,^,RACKUP.axx
+stats5,2,0x80,0,0x8104,^,RACKUP.axx
+stats6,2,0x80,0,0x8105,^,RACKUP.axx
+stats7,2,0x80,0,0x8106,^,RACKUP.axx
+stats8,2,0x80,0,0x8107,^,RACKUP.axx
+stats9,2,0x80,0,0x8108,^,RACKUP.axx
+stats10,2,0x80,0,0x8109,^,RACKUP.axx
+stats11,2,0x80,0,0x810A,^,RACKUP.axx
+stats12,2,0x80,0,0x810B,^,RACKUP.axx
+beep1_snd,3,0xF7,0,0x0080,MENU BAR MOVE SOUND,TEST.axx
+SELECT_SND,3,0xF7,0,0x0084,MENU OPTION SELECT SOUND,TEST.axx
+pass_snd,3,0xA7,0,0x008C,short pass,PLYR.axx
+steal_snd,3,0xF7,1,0x0093,Steal,PLYR.axx
+win_snd,3,0xFF,0,0x00A5,Winner snd,PLYR.axx
+tune1psx_snd,3,0xFF,0,0x0721,team select screen (PSX),SOUNDS.axx
+tuneq1psx_snd,3,0xFF,0,0x0722,Quarter 1 tune (Actually not q1.. psx uses matches.),SOUNDS.axx
+tuneq4psx_snd,3,0xFF,0,0x0722,Quarter 4 tune (Actually not q1.. psx uses matches.),SOUNDS.axx
+tunehalfpsx_snd,3,0xFF,0,0x0724,Half time tune (And between quarters + game over on PSX!) ;plyr.axx,SOUNDS.axx
+tuneq2psx_snd,3,0xFF,0,0x0726,Quarter 2 tune (Actually not q1.. psx uses matches.),SOUNDS.axx
+tuneotpsx_snd,3,0xFF,0,0x0726,"Quarter o.t. tune	;score.axx, attract.axx",SOUNDS.axx
+tuneq3psx_snd,3,0xFF,0,0x0727,Quarter 3 tune (Actually not q1.. psx uses matches.),SOUNDS.axx
+tuneend1psx_snd,3,0xFF,0,0x072A,End quarter 1/3/4/OT tune (from JAM),SOUNDS.axx
+tune1_snd,3,0xFE,0,0x8001,team select screen,SELECT.axx
+tuneq1_snd,3,0xFF,0,0x8002,Quarter 1 tune,BB.axx
+tune2_snd,3,0xFE,0,0x8002,main game play tune,SOUNDS.axx
+tuneend_snd,3,0xFF,0,0x8003,End game time tune,PLYR.axx
+tunehalf_snd,3,0xFF,0,0x8004,Half time tune,PLYR.axx
+tunehalf_snd,3,0xFF,0,0x8004,Half time tune,PLYR3.axx
+ermtune,3,0xF0,0,0x8004,Electrocution tune,RACKUP.axx
+tune1end_snd,3,0xFE,0,0x8004,End team select tune,SELECT.axx
+congrats_snd,3,0xFF,0,0x8004,,SELECT2.axx
+tuneq2_snd,3,0xFF,0,0x8006,Quarter 2 tune,ATTRACT.axx
+tuneq2_snd,3,0xFF,0,0x8006,Quarter 2 tune,SOUNDS.axx
+tuneq2_snd,3,0xFF,0,0x8006,Quarter 2 tune,SCORE.axx
+TUNE4,3,0xFE,0,0x8007,Rackup tune,RACKUP.axx
+tuneq3_snd,3,0xFF,0,0x8007,Quarter 3 tune,ATTRACT.axx
+tuneq3_snd,3,0xFF,0,0x8007,Quarter 3 tune,SOUNDS.axx
+tuneq3_snd,3,0xFF,0,0x8007,Quarter 3 tune,SCORE.axx
+tuneq4_snd,3,0xFF,0,0x8008,Quarter 4 tune,ATTRACT.axx
+tuneq4_snd,3,0xFF,0,0x8008,Quarter 4 tune,SOUNDS.axx
+tuneq4_snd,3,0xFF,0,0x8008,Quarter 4 tune,SCORE.axx
+tuneend_snd,3,0xFF,0,0x8009,End game time tune,ATTRACT.axx
+tuneend1_snd,3,0xFF,0,0x800A,End quarter 1 tune,PLYR.axx
+tuneend1_snd,3,0xFF,0,0x800A,End quarter 1 tune,ATTRACT.axx
+tuneot_snd,3,0xFF,0,0x800B,Quarter o.t. tune,ATTRACT.axx
+tuneot_snd,3,0xFF,0,0x800B,Quarter o.t.,SOUNDS.axx
+tuneot_snd,3,0xFF,0,0x800B,Quarter o.t. tune,SCORE.axx
+tunegc_snd,3,0xFE,0,0x800C,Grand champion play tune,SELECT2.axx
+VOLUMEF,3,0xFE,0,0x8020,,SOUNDS.axx
+VOLUMEE,3,0xFE,0,0x8021,,SOUNDS.axx
+VOLUMED,3,0xFE,0,0x8022,,SOUNDS.axx
+VOLUMEC,3,0xFE,0,0x8023,,SOUNDS.axx
+VOLUMEB,3,0xFE,0,0x8024,,SOUNDS.axx
+VOLUMEA,3,0xFE,0,0x8025,,SOUNDS.axx
+VOLUME9,3,0xFE,0,0x8026,,SOUNDS.axx
+VOLUME8,3,0xFE,0,0x8027,,SOUNDS.axx
+VOLUME7,3,0xFE,0,0x8028,,SOUNDS.axx
+VOLUME6,3,0xFE,0,0x8029,,SOUNDS.axx
+VOLUME5,3,0xFE,0,0x802A,,SOUNDS.axx
+VOLUME4,3,0xFE,0,0x802B,,SOUNDS.axx
+VOLUME3,3,0xFE,0,0x802C,,SOUNDS.axx
+VOLUME2,3,0xFE,0,0x802D,,SOUNDS.axx
+VOLUME1,3,0xFE,0,0x802E,,SOUNDS.axx
+VOLUME0,3,0xFE,0,0x802F,,SOUNDS.axx
+cursor_snd1,3,0xF7,0,0x8080,cursor movement,SELECT.axx
+cursor_snd2,3,0xF7,0,0x8081,,SELECT.axx
+cursor_snd3,3,0xF7,0,0x8082,,SELECT.axx
+cursor_snd4,3,0xF7,0,0x8083,,SELECT.axx
+cursor_snd4,3,0xF7,0,0x8083,,TEST.axx
+select_snd1,3,0xF7,0,0x8084,select option sound,SELECT.axx
+select_snd1,3,0xF7,0,0x8084,select option sound,TEST.axx
+select_snd2,3,0xF7,0,0x8085,,SELECT.axx
+select_snd3,3,0xF7,0,0x8086,,SELECT.axx
+select_snd4,3,0xF7,0,0x8087,,SELECT.axx
+fullgame_snd1,3,0xF7,0,0x8088,fullgame purchase,SELECT.axx
+fullgame_snd2,3,0xF7,0,0x8089,,SELECT.axx
+fullgame_snd3,3,0xF7,0,0x808A,,SELECT.axx
+fullgame_snd4,3,0xF7,0,0x808B,,SELECT.axx
+tick_snd,3,0xF7,0,0x8090,Tick snd,SCORE.axx
+tock_snd,3,0xF7,0,0x8091,Tock snd,SCORE.axx
+UHOH,3,0xDF,0,0x8092,FAILURE OF ANY KIND,TEST.axx
+alert_snd,3,0xF7,0,0x8092,Alert snd,SCORE.axx
+steal_snd,3,0xF7,1,0x8093,Steal,PLYR2.axx
+scroll_snd,3,0xFF,0,0x8097,Scroll snd,SELECT.axx
+infoex_snd,3,0xFF,0,0x8097,Info box exit,SCORE2.axx
+infoex_snd,3,0xFF,0,0x8097,Info box exit,SCORE.axx
+warn_snd,3,0xF7,1,0x80A0,Warning on shot clock,SCORE.axx
+BEEPSND,3,0xFE,0,0x80A2,LOW BEEP,HSTD.axx
+warn2_snd,3,0xF7,1,0x80A3,Warning for info box,SCORE2.axx
+coin_snd,3,0xFF,0,0x80A4,coin in melody snd,SOUNDS.axx
+win_snd,3,0xFF,0,0x80A5,Winner snd/Suckup credits,SELECT.axx
+win_snd,3,0xFF,0,0x80A5,Winner snd/Suckup credits,SCORE.axx
+ting_snd,3,0xFF,0,0x80A6,Scroll snd,ATTRACT.axx
+eat_snd,3,0x1F,0,0x80A7,Suck up credit snd,BB.axx
+flsh2_snd,3,0xBE,1,0x80A9,,PLYR2.axx
+organ1_snd,3,0xFF,0,0x80AE,,BB.axx
+TXTSND1,3,0xF7,0,0x80AE,,RACKUP.axx
+organ1_snd,3,0xFF,0,0x80AE,,SPEECH.axx
+organ2_snd,3,0xFF,0,0x80AF,,BB.axx
+organ2_snd,3,0xFF,0,0x80AF,,SPEECH.axx
+txtssnd,3,0xF7,0,0x80B1,Text shrink,RACKUP.axx
+scrm1_snd,3,0x80,0,0x813D,,SCREAM.axx
+fball_snd,4,0xB0,1,0x0179,Fire ball launch,PLYR.axx
+rackgun,4,0xA0,1,0x8030,Player shoots gun,RACKUP.axx
+fisthit,4,0xA0,1,0x803C,Ahkboob hits desk,RACKUP.axx
+fryexp,4,0x50,1,0x803E,Fry explosion,RACKUP.axx
+fskullb,4,0x60,0,0x8040,Skull bounce,RACKUP.axx
+swish_snd,4,0xA0,1,0x8112,Ball swish,PLYR2.axx
+enfiresnd,4,0x60,0,0x811D,Enemy cannon,D3.axx
+dunk_snd,4,0xA4,1,0x8120,Dunk,PLYR2.axx
+beep2_snd,4,0xF7,1,0x8123,beep tone for diagnostics,SOUNDS.axx
+cntdown_snd,4,0xF5,1,0x8123,buyin cntdwn clang,SOUNDS.axx
+missd1_snd,4,0x90,1,0x8128,Cartoon part of missed dunk,PLYR2.axx
+bounce_snd,4,0x80,1,0x8129,Ball bounce,ATTRACT.axx
+plfiresnd,4,0x50,0,0x8129,Player cannon,D3.axx
+bounce_snd,4,0x80,1,0x8129,Ball bounce,RECORD.axx
+bounce_snd,4,0x80,1,0x8129,Ball bounce,AUDIT.axx
+bounce_snd,4,0x80,1,0x8129,Ball bounce,SELECT.axx
+bounce_snd,4,0x80,1,0x8129,Ball bounce,SCORE2.axx
+bounce_snd,4,0x80,1,0x8129,Ball bounce,SELECT2.axx
+bounce_snd,4,0x80,1,0x8129,Ball bounce,PLYR2.axx
+showtm,4,0xA1,1,0x812C,showtime,SCORE.axx
+plhit_snd,4,0xF5,1,0x8138,Hit backboard,D3.axx
+hitbboard_snd,4,0xF5,1,0x8138,Hit backboard,PLYR2.axx
+miss3_snd,4,0x90,1,0x813A,Ball hits rim,PLYR2.axx
+miss_snd,4,0x90,1,0x813B,Ball hits rim,PLYR2.axx
+cheer3_snd,4,0x84,1,0x814E,Long cheer,SELECT.axx
+cheer3_snd,4,0x84,1,0x814E,Long cheer,PLYR2.axx
+tankexpsnd,4,0xC0,1,0x8153,Tank explosion,D3.axx
+explode_snd,4,0xF9,1,0x8153,Backboard smash,PLYR2.axx
+scrm3_snd,4,0x40,0,0x815E,,BB.axx
+scrm3_snd,4,0x80,0,0x815E,,SCREAM.axx
+sqk1_snd,5,0x84,0,0x0114,Sneaker squeek,PLYR.axx
+sqk2_snd,5,0x84,0,0x0115,,PLYR.axx
+sqk3_snd,5,0x84,0,0x0116,,PLYR.axx
+sqk4_snd,5,0x84,0,0x0117,,PLYR.axx
+swat_snd,5,0x94,1,0x0157,Swat ball (Steals & blocks),PLYR.axx
+fshock,5,0x40,0,0x80BB,Electric chair shocks,RACKUP.axx
+fryexp2,5,0x50,1,0x80D9,^,RACKUP.axx
+cheer1_snd,5,0x84,1,0x8111,Long cheer,PLYR3.axx
+cheer1_snd,5,0x84,1,0x8111,Long cheer,SELECT.axx
+cheer1_snd,5,0x84,1,0x8111,Long cheer,PLYR2.axx
+swipe_snd,5,0x84,0,0x8119,swipe at ball,PLYRSEQ.axx
+land_snd,5,0x89,1,0x811D,Body land on grnd,PLYRSEQ2.axx
+miss2_snd,5,0x90,1,0x8139,Ball hits rim,PLYR2.axx
+scrm1_snd,5,0x40,0,0x813D,,BB.axx
+cheer1_snd,5,0x84,1,0x8144,Long cheer,AUDIT.axx
+heli_snd,5,0xF4,1,0x8154,helicopter,PLYRDSEQ.axx
+swat3_snd,5,0x94,1,0x8155,,PLYR2.axx
+swat_snd,5,0x94,1,0x8157,Swat ball (Steals & blocks),PLYR2.axx
+jet,5,0x81,1,0x8158,jet sound,PLYRLSEQ.axx
+jet,5,0x81,1,0x8158,jet sound,PLYRDSEQ.axx
+scrm4_snd,5,0x40,0,0x815F,<--- check channel on this,BB.axx
+push1_snd,5,0x85,1,0x8160,Push ugh,PLYR2.axx
+push1_snd,5,0x85,1,0x8160,Push ugh,PLYRSEQ2.axx
+fall1_snd,5,0x88,1,0x8164,Fall ugh,PLYRSEQ2.axx
+fall2_snd,5,0x88,1,0x8166,Fall ugh,PLYRSEQ2.axx
+yell,5,0x91,1,0x8167,aaaaaaaaaaaaaaaahhhhhhhhhhh,PLYRLSEQ.axx
+yell,5,0xE1,1,0x8167,aaaaaaaaaaaaaaaahhhhhhhhhhh,PLYRDSEQ.axx
+push3_snd,5,0x85,1,0x816A,Push ugh,PLYRSEQ2.axx
+push2_snd,5,0x85,1,0x816C,Push ugh,PLYRSEQ2.axx
+ungh_snd,5,0x85,1,0x816C,Push ugh,PLYRSEQ2.axx
+tarzan,5,0x91,1,0x8177,tarzan yell!,PLYRLSEQ.axx
+tarzan,5,0x91,1,0x8177,tarzan yell!,PLYRDSEQ.axx
