@@ -54,7 +54,10 @@
 #define MAX_PL       2048
 #define MAX_CMDS       64
 #define OUT_RATE     44100
-#define SND_RATE     31200
+#define SND_RATE     31250
+/* PLS delay values are in audio scheduler frames at 3125/24 Hz (~130.208 fps).
+   Derived from SND length table: e.g. MAIN4 = 2042 frames = 15.683s → 130.208 fps */
+#define PLS_FRAME_HZ (3125.0 / 24.0)
 
 /* ================================================================
    Embedded 8×8 font  (public domain — printable ASCII 0x20–0x7F)
@@ -208,7 +211,8 @@ static int               g_got_freq  = OUT_RATE;
 
 /* Resampled playback buffer (all tracks in current playlist queued) */
 typedef struct { int16_t *data; int len; } SndBuf;
-static SndBuf g_queue[64];
+static SndBuf g_queue[128];
+static int    g_queue_cmd[128];  /* cmd index in playlist for each queue slot */
 static int    g_queue_n   = 0;
 static int    g_queue_cur = 0;   /* index being played */
 static int    g_queue_pos = 0;   /* sample pos in current buf */
@@ -227,7 +231,9 @@ static void audio_cb(void *ud, uint8_t *stream, int len) {
         SndBuf *b = &g_queue[g_queue_cur];
         int avail = b->len - g_queue_pos;
         int n = avail < want ? avail : want;
-        memcpy(out, b->data + g_queue_pos, n * 2);
+        if (b->data)
+            memcpy(out, b->data + g_queue_pos, n * 2);
+        /* else: silence — stream already zeroed by memset above */
         out          += n;
         want         -= n;
         g_queue_pos  += n;
@@ -336,28 +342,86 @@ static void audio_play_playlist(const Playlist *pl) {
     audio_stop();
     int total = 0;
     int cnt = 0;
-    for (int i = 0; i < pl->ncmds && cnt < 64; i++) {
+
+    /* Loop stack: supports nested loops up to 8 deep */
+    int loop_start[8], loop_rem[8], loop_depth = 0;
+
+    /* Track previous PLAY so we can pad its slot when we see the next one */
+    int  prev_cmd_idx = -1;
+    int  prev_audio_n = 0;
+
+    int i = 0;
+    while (i < pl->ncmds && cnt < 128) {
         const PlCmd *c = &pl->cmds[i];
-        if (c->type != CMD_PLAY) continue;
+
+        if (c->type == CMD_LOOPSTART) {
+            if (loop_depth < 8) {
+                loop_start[loop_depth] = i;
+                loop_rem[loop_depth]   = (c->count > 1 ? c->count : 1) - 1;
+                loop_depth++;
+            }
+            i++;
+            continue;
+        }
+
+        if (c->type == CMD_LOOPEND) {
+            if (loop_depth > 0) {
+                loop_depth--;
+                if (loop_rem[loop_depth] > 0) {
+                    loop_rem[loop_depth]--;
+                    loop_depth++;
+                    i = loop_start[loop_depth - 1] + 1; /* jump back into loop */
+                    continue;
+                }
+            }
+            i++;
+            continue;
+        }
+
+        if (c->type != CMD_PLAY) { i++; continue; }
+
+        /* Pad the previous sound's slot: this command's delay_ms is the
+           number of frames the previous sound should occupy before we start. */
+        if (prev_cmd_idx >= 0 && c->delay_ms > 0 && cnt < 128) {
+            int slot_n = (int)(c->delay_ms / PLS_FRAME_HZ * g_got_freq);
+            int pad    = slot_n - prev_audio_n;
+            if (pad > 0) {
+                g_queue[cnt].data = NULL; /* silence */
+                g_queue[cnt].len  = pad;
+                g_queue_cmd[cnt]  = prev_cmd_idx;
+                total += pad;
+                cnt++;
+            }
+        }
+
+        if (cnt >= 128) break;
+
         int n = 0;
         int16_t *d = load_snd(c->filename, &n);
-        if (!d) continue;
-        /* honour loop count (capped at 4 for sanity) */
-        int loops = c->loops > 0 ? c->loops : 1;
+        if (!d) { i++; continue; }
+
+        int loops   = c->loops > 0 ? c->loops : 1;
         if (loops > 4) loops = 4;
-        for (int lp = 0; lp < loops && cnt < 64; lp++) {
-            g_queue[cnt].data = (lp == 0) ? d : NULL; /* shared buf */
+        int audio_n = n * loops;
+
+        for (int lp = 0; lp < loops && cnt < 128; lp++) {
+            g_queue[cnt].data = (lp == 0) ? d : NULL;
             if (lp > 0) {
-                /* duplicate buffer for extra loops */
                 g_queue[cnt].data = (int16_t *)malloc(n * 2);
                 if (g_queue[cnt].data)
                     memcpy(g_queue[cnt].data, d, n * 2);
             }
             g_queue[cnt].len = n;
+            g_queue_cmd[cnt] = i;
             total += n;
             cnt++;
         }
+
+        prev_cmd_idx = i;
+        prev_audio_n = audio_n;
+        i++;
     }
+
     SDL_LockMutex(g_audio_lock);
     g_queue_n        = cnt;
     g_total_samples  = total;
@@ -581,7 +645,7 @@ static void draw_char(int x, int y, char ch,
     for (int row = 0; row < 8; row++) {
         uint8_t bits = bmp[row];
         for (int col = 0; col < 8; col++) {
-            if (bits & (0x80 >> col)) {
+            if (bits & (1 << col)) {
                 if (FS == 1) {
                     SDL_RenderDrawPoint(g_ren, x+col, y+row);
                 } else {
@@ -678,11 +742,10 @@ static void render_left_panel(int mx, int my) {
     draw_str(LPAD, CONTENT_Y + (LH-FH)/2, hdr, 180, 180, 220, 0);
 
     for (int i = 0; i < rows; i++) {
-        int idx = i + g_scroll_pl + 1; /* +1 for header row */
-        int pi  = i + g_scroll_pl;
+        int pi = i + g_scroll_pl;
         if (pi >= g_npl) break;
 
-        int ry = CONTENT_Y + (idx) * LH;
+        int ry = CONTENT_Y + (i + 1) * LH;  /* +1 skips the header row */
         int row_h = LH;
 
         int selected = (pi == g_sel_pl);
@@ -778,6 +841,21 @@ static void render_right_panel(int mx, int my) {
     if (max_sc < 0) max_sc = 0;
     if (g_scroll_rp > max_sc) g_scroll_rp = max_sc;
 
+    /* Which command is currently playing in this playlist? */
+    int playing_cmd = -1;
+    if (g_playing_pl == g_sel_pl) {
+        int qc = g_queue_cur;   /* read outside mutex — display only */
+        if (qc < g_queue_n)
+            playing_cmd = g_queue_cmd[qc];
+        /* auto-scroll to keep playing row visible */
+        if (playing_cmd >= 0) {
+            if (playing_cmd < g_scroll_rp)
+                g_scroll_rp = playing_cmd;
+            else if (playing_cmd >= g_scroll_rp + rows)
+                g_scroll_rp = playing_cmd - rows + 1;
+        }
+    }
+
     for (int i = 0; i < rows; i++) {
         int ci = i + g_scroll_rp;
         if (ci >= pl->ncmds) break;
@@ -785,8 +863,10 @@ static void render_right_panel(int mx, int my) {
 
         int ry = y0 + i * LH;
         int hover = (mx >= rx && mx < rx+rw && my >= ry && my < ry+LH);
+        int is_playing = (ci == playing_cmd);
 
-        if (hover) fill_rect(rx, ry, rw, LH, 20, 22, 48, 255);
+        if (is_playing)  fill_rect(rx, ry, rw, LH,  0, 80, 40, 255);
+        else if (hover)  fill_rect(rx, ry, rw, LH, 20, 22, 48, 255);
 
         /* Icon */
         uint8_t ir=100,ig=120,ib=200;
@@ -801,7 +881,7 @@ static void render_right_panel(int mx, int my) {
 
         /* Delay */
         char delay_s[16];
-        snprintf(delay_s, sizeof(delay_s), "%5dms", c->delay_ms);
+        snprintf(delay_s, sizeof(delay_s), "%5dfr", c->delay_ms);
         draw_str(rx+LPAD+5*FW, ry+(LH-FH)/2, delay_s, 88,88,120, 0);
 
         /* Details */
@@ -815,7 +895,7 @@ static void render_right_panel(int mx, int my) {
                 snprintf(detail,sizeof(detail),"ch%d  vol=%d", c->channel, c->vol);
                 break;
             case CMD_RAMPVOL:
-                snprintf(detail,sizeof(detail),"ch%d  vol=%d  %dms",
+                snprintf(detail,sizeof(detail),"ch%d  vol=%d  %dfr",
                          c->channel, c->vol, c->ramp_ms);
                 break;
             case CMD_LOOPSTART:
@@ -914,14 +994,14 @@ static HitZone hit_test(int mx, int my, int *out_idx) {
     {
         Playlist *pl = &g_pl[g_sel_pl];
 
-        /* header / rename */
-        if (my < CONTENT_Y + LH) return HIT_PL_HEADER;
-
-        /* play-playlist button */
+        /* play-playlist button — check before header so it takes priority */
         int btn_w = 7*FW+LPAD;
         int btn_x = RPANEL_X + RPANEL_W - btn_w - LPAD;
         if (mx >= btn_x && my >= CONTENT_Y+2 && my < CONTENT_Y+LH-2)
             return HIT_BTN_PLAY_PL;
+
+        /* header / rename */
+        if (my < CONTENT_Y + LH) return HIT_PL_HEADER;
 
         /* command rows */
         int y0   = CONTENT_Y + LH + 1;
@@ -1004,8 +1084,12 @@ int main(int argc, char *argv[]) {
                 break;
 
             case SDL_MOUSEWHEEL: {
-                int dy = -e.wheel.y * 3;
-                if (mx < LPANEL_W)
+                int wx, wy;
+                SDL_GetMouseState(&wx, &wy);
+                int wheel_y = e.wheel.y;
+                if (e.wheel.direction == SDL_MOUSEWHEEL_FLIPPED) wheel_y = -wheel_y;
+                int dy = -wheel_y * 3;
+                if (wx < LPANEL_W)
                     g_scroll_pl = SDL_max(0, g_scroll_pl + dy);
                 else
                     g_scroll_rp = SDL_max(0, g_scroll_rp + dy);
