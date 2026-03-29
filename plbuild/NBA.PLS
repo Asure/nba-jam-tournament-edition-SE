@@ -31,11 +31,26 @@ SOUNDCALLS
 	10	immed	4	; Game Over / No Win state
 ;	11	immed	11
 
+; ***
+; PSX CD Music
+; ***
+
+	1825	immed	1825	; PSX Main (0001)
+	1826	immed	1826	; PSX Q1/Q4 (0002)
+	1828	immed	1828	; PSX (0004)
+	1830	immed	1830	; PSX Q2
+	1831	immed	1831    ; PSX Q3
+	1834	immed	1834	; PSX Game Over
+
+
+
 	47	immed	47	; Versus
+
 
 ; ***
 ; Team Names
 ; ***
+
     48 immed 48 
     49 immed 49 
     50 immed 50 
@@ -64,21 +79,9 @@ SOUNDCALLS
     73 immed 73 
     74 immed 74 
 
-  
-
-
-
-
-	1825	immed	1825	; PSX Main (0001)
-	1826	immed	1826	; PSX Q1/Q4 (0002)
-	1828	immed	1828	; PSX (0004)
-	1830	immed	1830	; PSX Q2
-	1831	immed	1831    ; PSX Q3
-	1834	immed	1834	; PSX Game Over
-
-
 ; Sound FX
 ; ***
+
 	128	immed	128	;Cursor sounds
 	129	immed	129
 	130	immed	130
@@ -213,6 +216,174 @@ SOUNDCALLS
 ; Speech
 ; Player names & pass speech. All follow same format mostly.
 ; ***
+; ***
+; Player Name Speech
+; ***
+	16	immed	16	; ARMSTRNG
+	17	immed	17	; BAKER
+	18	immed	18	; BENOIT
+	19	immed	19	; BRADLEY
+	20	immed	20	; CAMPBELL
+	21	immed	21	; CHEANEY
+	22	immed	22	; DAY
+	23	immed	23	; DUMARS
+	24	immed	24	; ELLISON
+	26	immed	26	; HORRY
+	27	immed	27	; LAIMBEER
+	28	immed	28	; HURLEY
+	29	immed	29	; JACKSON
+	30	immed	30	; JORDAN		( CHICAGO )
+	31	immed	31	; MASHBURN
+	99	immed	99	; ROGERS
+	100	immed	100	; SEALY
+	101	immed	101	; SIMMONS
+	102	immed	102	; SMITS
+	103	immed	103	; STARKS
+	104	immed	104	; WEATHERSPOON	( PHILADELPHIA )
+	105	immed	105	; WEBBER
+	106	immed	106	; WILLIS
+	176	immed	176	; 32 RAIDEN
+	177	immed	177	; SKILES
+	178	immed	178	; PIPPEN
+	179	immed	179	; GRANT_HC
+	180	immed	180	; GUGLIOTTA	( WASHINGTON )
+	183	immed	183	; BARKLEY	( PHOENIX )
+	184	immed	184	; MAJERLE
+	185	immed	185	; EWING		( NEW YORK )
+	186	immed	186	; OAKLEY
+	187	immed	187	; WILKINS	( ATLANTA )
+	188	immed	188	; AUGMON
+	190	immed	190	; KEMP		( SEATTLE )
+	191	immed	191	; DREXLER	( PORTLAND )
+	192	immed	192	; PORTER
+	193	immed	193	; ELLIOT
+	194	immed	194	; CROBINSON
+	195	immed	195	; BROWN		( BOSTON )
+	196	immed	196	; MCDAN
+	197	immed	197	; MALONE_K	( UTAH )
+	198	immed	198	; STOCKTON
+	199	immed	199	; MULLIN
+	200	immed	200	; HARDAWAY	( GOLDEN STATE )
+	203	immed	203	; EDWARDS
+	204	immed	204	; LOHAUS		( MILWAUKEE )
+	205	immed	205	; MILLER		( INDIANA )
+	206	immed	206	; SCHREMPF
+	207	immed	207	; WORTHY		( L.A. LAKERS )
+	208	immed	208	; DIVAC
+	209	immed	209	; HARPER_D	( DALLAS )
+	210	immed	210	; MANNING	( L.A. CLIPPERS )
+	212	immed	212	; RICE		( MIAMI )
+	213	immed	213	; SEIKALY
+	214	immed	214	; DAUGHRTY
+	215	immed	215	; PRICE		( CLEVELAND )
+	216	immed	216	; OLAJUWON	( HOUSTON )
+	217	immed	217	; SMITH
+	218	immed	218	; ELLIS
+	219	immed	219	; MUTUMBO	( DENVER )
+	220	immed	220	; WEBB
+	221	immed	221	; TISDALE	( SACRAMENTO )
+	222	immed	222	; LAETNER	( MINNESOTTA )
+	223	immed	223	; PERSON
+	224	immed	224	; COLEMAN	( NEW JERSEY )
+	225	immed	225	; KANDERSON
+	226	immed	226	; HORNACEK
+	227	immed	227	; HAWKINS
+	406	immed	406	; 16 SUBZ
+	407	immed	407	; 50 SCORP
+	421	immed	421	; 51 REPT
+	441	immed	441	; ONEAL
+
+
+
+; Pass speech
+; ***
+; Pass-to Speech
+; ***
+	75	immed	75	; TO EDWARDS	( MILWAUKEE )
+	76	immed	76	; TO SCHREMPF	( INDIANA )
+	77	immed	77	; TO MILLER
+	78	immed	78	; TO DIVAC	( L.A. LAKERS )
+	79	immed	79	; TO WORTHY
+	80	immed	80	; TO MANNING
+	81	immed	81	; TO HARPER_D
+	83	immed	83	; TO SEIKALY	( MIAMI )
+	84	immed	84	; TO RICE
+	85	immed	85	; TO PRICE
+	86	immed	86	; TO DAUGHRTY	( CLEVELAND )
+	87	immed	87	; TO SMITH	( HOUSTON )
+	88	immed	88	; TO OLAJUWON
+	89	immed	89	; TO MUTUMBO
+	90	immed	90	; TO ELLIS	( DENVER )
+	91	immed	91	; TO TISDALE
+	92	immed	92	; TO WEBB	( SACRAMENTO )
+	93	immed	93	; TO PERSON	( MINNESOTTA )
+	94	immed	94	; TO LAETNER
+	95	immed	95	; TO KANDERSON	( NEW JERSEY )
+	96	immed	96	; TO COLEMAN
+	97	immed	97	; TO HAWKINS
+	98	immed	98	; TO HORNACEK	( PHILADELPHIA )
+	228	immed	228	; TO SKILES	( ORLANDO )
+	229	immed	229	; 32 RAIDEN
+	230	immed	230	; TO GRANT_HC	( CHICAGO )
+	231	immed	231	; TO PIPPEN
+	232	immed	232	; TO GUGLIOTA	( WASHINGTON )
+	234	immed	234	; TO GILL
+	235	immed	235	; TO MAJERLE	( PHOENIX )
+	236	immed	236	; TO BARKLEY
+	237	immed	237	; TO OAKLEY	( NEW YORK )
+	238	immed	238	; TO EWING
+	239	immed	239	; TO AUGMON	( ATLANTA )
+	240	immed	240	; TO WILKINS
+	241	immed	241	; TO KEMP
+	243	immed	243	; TO PORTER	( PORTLAND )
+	244	immed	244	; TO DREXLER
+	245	immed	245	; TO CROBINSON
+	246	immed	246	; TO ELLIOT
+	247	immed	247	; TO MCDAN
+	248	immed	248	; TO BROWN	( BOSTON )
+	249	immed	249	; TO STOCKTON	( UTAH )
+	250	immed	250	; TO MALONE_K
+	251	immed	251	; TO HARDAWAY
+	252	immed	252	; TO MULLIN	( GOLDEN STATE )
+	255	immed	255	; TO LOHAUS
+	284	immed	284	; TO MINER
+	286	immed	286	; TO CMORRIS
+	289	immed	289	; TO MOURNING
+	290	immed	290	; TO NANCE
+	293	immed	293	; TO PEELER
+	294	immed	294	; TO PAYTON	( SEATTLE )
+	295	immed	295	; TO RICHMOND
+	298	immed	298	; TO RIDER
+	304	immed	304	; TO ARMSTRNG
+	305	immed	305	; TO BAKER
+	306	immed	306	; TO BENOIT
+	307	immed	307	; TO BRADLEY
+	309	immed	309	; TO RODMAN
+	311	immed	311	; TO ROGERS
+	318	immed	318	; TO CAMPBELL
+	319	immed	319	; TO CHEANEY
+	320	immed	320	; TO DAY
+	321	immed	321	; TO DUMARS
+	322	immed	322	; TO ELLISON
+	326	immed	326	; TO HORRY
+	327	immed	327	; TO LAIMBEER
+	329	immed	329	; TO SEALY
+	332	immed	332	; TO SIMMONS
+	335	immed	335	; TO SMITS
+	337	immed	337	; TO STARKS
+	338	immed	338	; TO WEATHERSPOON
+	353	immed	353	; TO WEBBER
+	354	immed	354	; TO WILLIS
+	378	immed	378	; TO HURLEY
+	379	immed	379	; TO JACKSON
+	380	immed	380	; TO JORDAN
+	381	immed	381	; TO MASHBURN
+	382	immed	382	; TO MASON
+	383	immed	383	; TO MAXWELL
+	417	immed	417	; 16 SUBZ
+	418	immed	418	; 50 SCORP
+	446	immed	446	; TO ONEAL	;Wolf Unit only
+
 
 
 ; **************************************************************************
@@ -1306,86 +1477,7 @@ END
 	0	end
 	end
 
-
-
-
-; ***
-; Player Name Speech
-; ***
-	16	immed	16	; ARMSTRNG
-	17	immed	17	; BAKER
-	18	immed	18	; BENOIT
-	19	immed	19	; BRADLEY
-	20	immed	20	; CAMPBELL
-	21	immed	21	; CHEANEY
-	22	immed	22	; DAY
-	23	immed	23	; DUMARS
-	24	immed	24	; ELLISON
-	26	immed	26	; HORRY
-	27	immed	27	; LAIMBEER
-	28	immed	28	; HURLEY
-	29	immed	29	; JACKSON
-	30	immed	30	; JORDAN		( CHICAGO )
-	31	immed	31	; MASHBURN
-	99	immed	99	; ROGERS
-	100	immed	100	; SEALY
-	101	immed	101	; SIMMONS
-	102	immed	102	; SMITS
-	103	immed	103	; STARKS
-	104	immed	104	; WEATHERSPOON	( PHILADELPHIA )
-	105	immed	105	; WEBBER
-	106	immed	106	; WILLIS
-	176	immed	176	; 32 RAIDEN
-	177	immed	177	; SKILES
-	178	immed	178	; PIPPEN
-	179	immed	179	; GRANT_HC
-	180	immed	180	; GUGLIOTTA	( WASHINGTON )
-	183	immed	183	; BARKLEY	( PHOENIX )
-	184	immed	184	; MAJERLE
-	185	immed	185	; EWING		( NEW YORK )
-	186	immed	186	; OAKLEY
-	187	immed	187	; WILKINS	( ATLANTA )
-	188	immed	188	; AUGMON
-	190	immed	190	; KEMP		( SEATTLE )
-	191	immed	191	; DREXLER	( PORTLAND )
-	192	immed	192	; PORTER
-	193	immed	193	; ELLIOT
-	194	immed	194	; CROBINSON
-	195	immed	195	; BROWN		( BOSTON )
-	196	immed	196	; MCDAN
-	197	immed	197	; MALONE_K	( UTAH )
-	198	immed	198	; STOCKTON
-	199	immed	199	; MULLIN
-	200	immed	200	; HARDAWAY	( GOLDEN STATE )
-	203	immed	203	; EDWARDS
-	204	immed	204	; LOHAUS		( MILWAUKEE )
-	205	immed	205	; MILLER		( INDIANA )
-	206	immed	206	; SCHREMPF
-	207	immed	207	; WORTHY		( L.A. LAKERS )
-	208	immed	208	; DIVAC
-	209	immed	209	; HARPER_D	( DALLAS )
-	210	immed	210	; MANNING	( L.A. CLIPPERS )
-	212	immed	212	; RICE		( MIAMI )
-	213	immed	213	; SEIKALY
-	214	immed	214	; DAUGHRTY
-	215	immed	215	; PRICE		( CLEVELAND )
-	216	immed	216	; OLAJUWON	( HOUSTON )
-	217	immed	217	; SMITH
-	218	immed	218	; ELLIS
-	219	immed	219	; MUTUMBO	( DENVER )
-	220	immed	220	; WEBB
-	221	immed	221	; TISDALE	( SACRAMENTO )
-	222	immed	222	; LAETNER	( MINNESOTTA )
-	223	immed	223	; PERSON
-	224	immed	224	; COLEMAN	( NEW JERSEY )
-	225	immed	225	; KANDERSON
-	226	immed	226	; HORNACEK
-	227	immed	227	; HAWKINS
-	406	immed	406	; 16 SUBZ
-	407	immed	407	; 50 SCORP
-	421	immed	421	; 51 REPT
-	441	immed	441	; ONEAL
-
+;* Player Names *
 
 	playlist 16, 5 ,'Name: ARMSTRNG'
 	0	setvol 5, 100
@@ -1826,94 +1918,7 @@ END
 	end
 
 
-; ***
-; Pass-to Speech
-; ***
-	75	immed	75	; TO EDWARDS	( MILWAUKEE )
-	76	immed	76	; TO SCHREMPF	( INDIANA )
-	77	immed	77	; TO MILLER
-	78	immed	78	; TO DIVAC	( L.A. LAKERS )
-	79	immed	79	; TO WORTHY
-	80	immed	80	; TO MANNING
-	81	immed	81	; TO HARPER_D
-	83	immed	83	; TO SEIKALY	( MIAMI )
-	84	immed	84	; TO RICE
-	85	immed	85	; TO PRICE
-	86	immed	86	; TO DAUGHRTY	( CLEVELAND )
-	87	immed	87	; TO SMITH	( HOUSTON )
-	88	immed	88	; TO OLAJUWON
-	89	immed	89	; TO MUTUMBO
-	90	immed	90	; TO ELLIS	( DENVER )
-	91	immed	91	; TO TISDALE
-	92	immed	92	; TO WEBB	( SACRAMENTO )
-	93	immed	93	; TO PERSON	( MINNESOTTA )
-	94	immed	94	; TO LAETNER
-	95	immed	95	; TO KANDERSON	( NEW JERSEY )
-	96	immed	96	; TO COLEMAN
-	97	immed	97	; TO HAWKINS
-	98	immed	98	; TO HORNACEK	( PHILADELPHIA )
-	228	immed	228	; TO SKILES	( ORLANDO )
-	229	immed	229	; 32 RAIDEN
-	230	immed	230	; TO GRANT_HC	( CHICAGO )
-	231	immed	231	; TO PIPPEN
-	232	immed	232	; TO GUGLIOTA	( WASHINGTON )
-	234	immed	234	; TO GILL
-	235	immed	235	; TO MAJERLE	( PHOENIX )
-	236	immed	236	; TO BARKLEY
-	237	immed	237	; TO OAKLEY	( NEW YORK )
-	238	immed	238	; TO EWING
-	239	immed	239	; TO AUGMON	( ATLANTA )
-	240	immed	240	; TO WILKINS
-	241	immed	241	; TO KEMP
-	243	immed	243	; TO PORTER	( PORTLAND )
-	244	immed	244	; TO DREXLER
-	245	immed	245	; TO CROBINSON
-	246	immed	246	; TO ELLIOT
-	247	immed	247	; TO MCDAN
-	248	immed	248	; TO BROWN	( BOSTON )
-	249	immed	249	; TO STOCKTON	( UTAH )
-	250	immed	250	; TO MALONE_K
-	251	immed	251	; TO HARDAWAY
-	252	immed	252	; TO MULLIN	( GOLDEN STATE )
-	255	immed	255	; TO LOHAUS
-	284	immed	284	; TO MINER
-	286	immed	286	; TO CMORRIS
-	289	immed	289	; TO MOURNING
-	290	immed	290	; TO NANCE
-	293	immed	293	; TO PEELER
-	294	immed	294	; TO PAYTON	( SEATTLE )
-	295	immed	295	; TO RICHMOND
-	298	immed	298	; TO RIDER
-	304	immed	304	; TO ARMSTRNG
-	305	immed	305	; TO BAKER
-	306	immed	306	; TO BENOIT
-	307	immed	307	; TO BRADLEY
-	309	immed	309	; TO RODMAN
-	311	immed	311	; TO ROGERS
-	318	immed	318	; TO CAMPBELL
-	319	immed	319	; TO CHEANEY
-	320	immed	320	; TO DAY
-	321	immed	321	; TO DUMARS
-	322	immed	322	; TO ELLISON
-	326	immed	326	; TO HORRY
-	327	immed	327	; TO LAIMBEER
-	329	immed	329	; TO SEALY
-	332	immed	332	; TO SIMMONS
-	335	immed	335	; TO SMITS
-	337	immed	337	; TO STARKS
-	338	immed	338	; TO WEATHERSPOON
-	353	immed	353	; TO WEBBER
-	354	immed	354	; TO WILLIS
-	378	immed	378	; TO HURLEY
-	379	immed	379	; TO JACKSON
-	380	immed	380	; TO JORDAN
-	381	immed	381	; TO MASHBURN
-	382	immed	382	; TO MASON
-	383	immed	383	; TO MAXWELL
-	417	immed	417	; 16 SUBZ
-	418	immed	418	; 50 SCORP
-	446	immed	446	; TO ONEAL	;Wolf Unit only
-
+** PASS SPEECH **
 
 	playlist 75, 5 ,'Pass: TO EDWARDS	( MILWAUKEE )'
 	0	setvol 5, 100
