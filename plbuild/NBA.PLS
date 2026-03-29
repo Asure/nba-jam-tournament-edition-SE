@@ -1308,6 +1308,523 @@ END
 
 
 
+
+; ***
+; Player Name Speech
+; ***
+	16	immed	16	; ARMSTRNG
+	17	immed	17	; BAKER
+	18	immed	18	; BENOIT
+	19	immed	19	; BRADLEY
+	20	immed	20	; CAMPBELL
+	21	immed	21	; CHEANEY
+	22	immed	22	; DAY
+	23	immed	23	; DUMARS
+	24	immed	24	; ELLISON
+	26	immed	26	; HORRY
+	27	immed	27	; LAIMBEER
+	28	immed	28	; HURLEY
+	29	immed	29	; JACKSON
+	30	immed	30	; JORDAN		( CHICAGO )
+	31	immed	31	; MASHBURN
+	99	immed	99	; ROGERS
+	100	immed	100	; SEALY
+	101	immed	101	; SIMMONS
+	102	immed	102	; SMITS
+	103	immed	103	; STARKS
+	104	immed	104	; WEATHERSPOON	( PHILADELPHIA )
+	105	immed	105	; WEBBER
+	106	immed	106	; WILLIS
+	176	immed	176	; 32 RAIDEN
+	177	immed	177	; SKILES
+	178	immed	178	; PIPPEN
+	179	immed	179	; GRANT_HC
+	180	immed	180	; GUGLIOTTA	( WASHINGTON )
+	183	immed	183	; BARKLEY	( PHOENIX )
+	184	immed	184	; MAJERLE
+	185	immed	185	; EWING		( NEW YORK )
+	186	immed	186	; OAKLEY
+	187	immed	187	; WILKINS	( ATLANTA )
+	188	immed	188	; AUGMON
+	190	immed	190	; KEMP		( SEATTLE )
+	191	immed	191	; DREXLER	( PORTLAND )
+	192	immed	192	; PORTER
+	193	immed	193	; ELLIOT
+	194	immed	194	; CROBINSON
+	195	immed	195	; BROWN		( BOSTON )
+	196	immed	196	; MCDAN
+	197	immed	197	; MALONE_K	( UTAH )
+	198	immed	198	; STOCKTON
+	199	immed	199	; MULLIN
+	200	immed	200	; HARDAWAY	( GOLDEN STATE )
+	203	immed	203	; EDWARDS
+	204	immed	204	; LOHAUS		( MILWAUKEE )
+	205	immed	205	; MILLER		( INDIANA )
+	206	immed	206	; SCHREMPF
+	207	immed	207	; WORTHY		( L.A. LAKERS )
+	208	immed	208	; DIVAC
+	209	immed	209	; HARPER_D	( DALLAS )
+	210	immed	210	; MANNING	( L.A. CLIPPERS )
+	212	immed	212	; RICE		( MIAMI )
+	213	immed	213	; SEIKALY
+	214	immed	214	; DAUGHRTY
+	215	immed	215	; PRICE		( CLEVELAND )
+	216	immed	216	; OLAJUWON	( HOUSTON )
+	217	immed	217	; SMITH
+	218	immed	218	; ELLIS
+	219	immed	219	; MUTUMBO	( DENVER )
+	220	immed	220	; WEBB
+	221	immed	221	; TISDALE	( SACRAMENTO )
+	222	immed	222	; LAETNER	( MINNESOTTA )
+	223	immed	223	; PERSON
+	224	immed	224	; COLEMAN	( NEW JERSEY )
+	225	immed	225	; KANDERSON
+	226	immed	226	; HORNACEK
+	227	immed	227	; HAWKINS
+	406	immed	406	; 16 SUBZ
+	407	immed	407	; 50 SCORP
+	421	immed	421	; 51 REPT
+	441	immed	441	; ONEAL
+
+
+	playlist 16, 5 ,'Name: ARMSTRNG'
+	0	setvol 5, 100
+	0	play	5, 'poarmstrng', 1
+	125	end
+	end
+
+	playlist 17, 5 ,'Name: BAKER'
+	0	setvol 5, 100
+	0	play	5, 'pobaker', 1
+	76	end
+	end
+
+	playlist 18, 5 ,'Name: BENOIT'
+	0	setvol 5, 100
+	0	play	5, 'pobenoit', 1
+	90	end
+	end
+
+	playlist 19, 5 ,'Name: BRADLEY'
+	0	setvol 5, 100
+	0	play	5, 'pobradley', 1
+	100	end
+	end
+
+	playlist 20, 5 ,'Name: CAMPBELL'
+	0	setvol 5, 100
+	0	play	5, 'pocampbell', 1
+	90	end
+	end
+
+	playlist 21, 5 ,'Name: CHEANEY'
+	0	setvol 5, 100
+	0	play	5, 'pocheaney', 1
+	101	end
+	end
+
+	playlist 22, 5 ,'Name: DAY'
+	0	setvol 5, 100
+	0	play	5, 'poday', 1
+	71	end
+	end
+
+	playlist 23, 5 ,'Name: DUMARS'
+	0	setvol 5, 100
+	0	play	5, 'podumars', 1
+	108	end
+	end
+
+	playlist 24, 5 ,'Name: ELLISON'
+	0	setvol 5, 100
+	0	play	5, 'poellison', 1
+	88	end
+	end
+
+	playlist 26, 5 ,'Name: HORRY'
+	0	setvol 5, 100
+	0	play	5, 'pohorry', 1
+	75	end
+	end
+
+	playlist 27, 5 ,'Name: LAIMBEER'
+	0	setvol 5, 100
+	0	play	5, 'polaimbeer', 1
+	120	end
+	end
+
+	playlist 28, 5 ,'Name: HURLEY'
+	0	setvol 5, 100
+	0	play	5, 'pohurley', 1
+	95	end
+	end
+
+	playlist 29, 5 ,'Name: JACKSON'
+	0	setvol 5, 100
+	0	play	5, 'pojackson', 1
+	97	end
+	end
+
+	playlist 30, 5 ,'Name: JORDAN		( CHICAGO )'
+	0	setvol 5, 100
+	0	play	5, 'pojordan', 1
+	75	end
+	end
+
+	playlist 31, 5 ,'Name: MASHBURN'
+	0	setvol 5, 100
+	0	play	5, 'pomashburn', 1
+	102	end
+	end
+
+	playlist 99, 5 ,'Name: ROGERS'
+	0	setvol 5, 100
+	0	play	5, 'porogers', 1
+	106	end
+	end
+
+	playlist 100, 5 ,'Name: SEALY'
+	0	setvol 5, 100
+	0	play	5, 'posealy', 1
+	59	end
+	end
+
+	playlist 101, 5 ,'Name: SIMMONS'
+	0	setvol 5, 100
+	0	play	5, 'posimmons', 1
+	105	end
+	end
+
+	playlist 102, 5 ,'Name: SMITS'
+	0	setvol 5, 100
+	0	play	5, 'posmits', 1
+	79	end
+	end
+
+	playlist 103, 5 ,'Name: STARKS'
+	0	setvol 5, 100
+	0	play	5, 'postarks', 1
+	95	end
+	end
+
+	playlist 104, 5 ,'Name: WEATHERSPOON	( PHILADELPHIA )'
+	0	setvol 5, 100
+	0	play	5, 'poweatherspoon', 1
+	92	end
+	end
+
+	playlist 105, 5 ,'Name: WEBBER'
+	0	setvol 5, 100
+	0	play	5, 'powebber', 1
+	73	end
+	end
+
+	playlist 106, 5 ,'Name: WILLIS'
+	0	setvol 5, 100
+	0	play	5, 'powillis', 1
+	99	end
+	end
+
+	playlist 176, 5 ,'Name: 32 RAIDEN'
+	0	setvol 5, 100
+	0	play	5, 'poraiden', 1
+	67	end
+	end
+
+	playlist 177, 5 ,'Name: SKILES'
+	0	setvol 5, 100
+	0	play	5, 'poskiles', 1
+	120	end
+	end
+
+	playlist 178, 5 ,'Name: PIPPEN'
+	0	setvol 5, 100
+	0	play	5, 'popippen', 1
+	95	end
+	end
+
+	playlist 179, 5 ,'Name: GRANT_HC'
+	0	setvol 5, 100
+	0	play	5, 'pogrant', 1
+	86	end
+	end
+
+	playlist 180, 5 ,'Name: GUGLIOTTA	( WASHINGTON )'
+	0	setvol 5, 100
+	0	play	5, 'pogugliotta', 1
+	131	end
+	end
+
+	playlist 183, 5 ,'Name: BARKLEY	( PHOENIX )'
+	0	setvol 5, 100
+	0	play	5, 'pobarkley', 1
+	89	end
+	end
+
+	playlist 184, 5 ,'Name: MAJERLE'
+	0	setvol 5, 100
+	0	play	5, 'pomajerle', 1
+	94	end
+	end
+
+	playlist 185, 5 ,'Name: EWING		( NEW YORK )'
+	0	setvol 5, 100
+	0	play	5, 'poewing', 1
+	92	end
+	end
+
+	playlist 186, 5 ,'Name: OAKLEY'
+	0	setvol 5, 100
+	0	play	5, 'pooakley', 1
+	100	end
+	end
+
+	playlist 187, 5 ,'Name: WILKINS	( ATLANTA )'
+	0	setvol 5, 100
+	0	play	5, 'powilkins', 1
+	96	end
+	end
+
+	playlist 188, 5 ,'Name: AUGMON'
+	0	setvol 5, 100
+	0	play	5, 'poaugmon', 1
+	82	end
+	end
+
+	playlist 190, 5 ,'Name: KEMP		( SEATTLE )'
+	0	setvol 5, 100
+	0	play	5, 'pokemp', 1
+	76	end
+	end
+
+	playlist 191, 5 ,'Name: DREXLER	( PORTLAND )'
+	0	setvol 5, 100
+	0	play	5, 'podrexler', 1
+	120	end
+	end
+
+	playlist 192, 5 ,'Name: PORTER'
+	0	setvol 5, 100
+	0	play	5, 'poporter', 1
+	86	end
+	end
+
+	playlist 193, 5 ,'Name: ELLIOT'
+	0	setvol 5, 100
+	0	play	5, 'poelliot', 1
+	95	end
+	end
+
+	playlist 194, 5 ,'Name: CROBINSON'
+	0	setvol 5, 100
+	0	play	5, 'porobinson', 1
+	112	end
+	end
+
+	playlist 195, 5 ,'Name: BROWN		( BOSTON )'
+	0	setvol 5, 100
+	0	play	5, 'pobrown', 1
+	94	end
+	end
+
+	playlist 196, 5 ,'Name: MCDAN'
+	0	setvol 5, 100
+	0	play	5, 'pomacdan', 1
+	108	end
+	end
+
+	playlist 197, 5 ,'Name: MALONE_K	( UTAH )'
+	0	setvol 5, 100
+	0	play	5, 'pomalone', 1
+	102	end
+	end
+
+	playlist 198, 5 ,'Name: STOCKTON'
+	0	setvol 5, 100
+	0	play	5, 'postockton', 1
+	77	end
+	end
+
+	playlist 199, 5 ,'Name: MULLIN'
+	0	setvol 5, 100
+	0	play	5, 'pomullin', 1
+	78	end
+	end
+
+	playlist 200, 5 ,'Name: HARDAWAY	( GOLDEN STATE )'
+	0	setvol 5, 100
+	0	play	5, 'pohardaway', 1
+	92	end
+	end
+
+	playlist 203, 5 ,'Name: EDWARDS'
+	0	setvol 5, 100
+	0	play	5, 'poedwards', 1
+	131	end
+	end
+
+	playlist 204, 5 ,'Name: LOHAUS		( MILWAUKEE )'
+	0	setvol 5, 100
+	0	play	5, 'polohaus', 1
+	128	end
+	end
+
+	playlist 205, 5 ,'Name: MILLER		( INDIANA )'
+	0	setvol 5, 100
+	0	play	5, 'pomiller', 1
+	53	end
+	end
+
+	playlist 206, 5 ,'Name: SCHREMPF'
+	0	setvol 5, 100
+	0	play	5, 'poschrempf', 1
+	64	end
+	end
+
+	playlist 207, 5 ,'Name: WORTHY		( L.A. LAKERS )'
+	0	setvol 5, 100
+	0	play	5, 'poworthy', 1
+	125	end
+	end
+
+	playlist 208, 5 ,'Name: DIVAC'
+	0	setvol 5, 100
+	0	play	5, 'podivac', 1
+	128	end
+	end
+
+	playlist 209, 5 ,'Name: HARPER_D	( DALLAS )'
+	0	setvol 5, 100
+	0	play	5, 'poharper-r', 1
+	72	end
+	end
+
+	playlist 210, 5 ,'Name: MANNING	( L.A. CLIPPERS )'
+	0	setvol 5, 100
+	0	play	5, 'pomanning', 1
+	87	end
+	end
+
+	playlist 212, 5 ,'Name: RICE		( MIAMI )'
+	0	setvol 5, 100
+	0	play	5, 'porice', 1
+	65	end
+	end
+
+	playlist 213, 5 ,'Name: SEIKALY'
+	0	setvol 5, 100
+	0	play	5, 'poseikaly', 1
+	82	end
+	end
+
+	playlist 214, 5 ,'Name: DAUGHRTY'
+	0	setvol 5, 100
+	0	play	5, 'podaughrty', 1
+	84	end
+	end
+
+	playlist 215, 5 ,'Name: PRICE		( CLEVELAND )'
+	0	setvol 5, 100
+	0	play	5, 'poprice', 1
+	82	end
+	end
+
+	playlist 216, 5 ,'Name: OLAJUWON	( HOUSTON )'
+	0	setvol 5, 100
+	0	play	5, 'poolajuwon', 1
+	109	end
+	end
+
+	playlist 217, 5 ,'Name: SMITH'
+	0	setvol 5, 100
+	0	play	5, 'posmith', 1
+	59	end
+	end
+
+	playlist 218, 5 ,'Name: ELLIS'
+	0	setvol 5, 100
+	0	play	5, 'poellis', 1
+	75	end
+	end
+
+	playlist 219, 5 ,'Name: MUTUMBO	( DENVER )'
+	0	setvol 5, 100
+	0	play	5, 'pomutombo', 1
+	115	end
+	end
+
+	playlist 220, 5 ,'Name: WEBB'
+	0	setvol 5, 100
+	0	play	5, 'powebber', 1
+	73	end
+	end
+
+	playlist 221, 5 ,'Name: TISDALE	( SACRAMENTO )'
+	0	setvol 5, 100
+	0	play	5, 'potisdale', 1
+	106	end
+	end
+
+	playlist 222, 5 ,'Name: LAETNER	( MINNESOTTA )'
+	0	setvol 5, 100
+	0	play	5, 'polaettner', 1
+	91	end
+	end
+
+	playlist 223, 5 ,'Name: PERSON'
+	0	setvol 5, 100
+	0	play	5, 'poperson', 1
+	75	end
+	end
+
+	playlist 224, 5 ,'Name: COLEMAN	( NEW JERSEY )'
+	0	setvol 5, 100
+	0	play	5, 'pocoleman', 1
+	76	end
+	end
+
+	playlist 225, 5 ,'Name: KANDERSON'
+	0	setvol 5, 100
+	0	play	5, 'poanderson', 1
+	102	end
+	end
+
+	playlist 226, 5 ,'Name: HORNACEK'
+	0	setvol 5, 100
+	0	play	5, 'pohornacek', 1
+	88	end
+	end
+
+	playlist 227, 5 ,'Name: HAWKINS'
+	0	setvol 5, 100
+	0	play	5, 'pohawkins', 1
+	107	end
+	end
+
+	playlist 406, 5 ,'Name: 16 SUBZ'
+	0	setvol 5, 100
+	0	play	5, 'posubzero', 1
+	133	end
+	end
+
+	playlist 407, 5 ,'Name: 50 SCORP'
+	0	setvol 5, 100
+	0	play	5, 'poscorpion', 1
+	116	end
+	end
+
+	playlist 421, 5 ,'Name: 51 REPT'
+	0	setvol 5, 100
+	0	play	5, 'poreptile', 1
+	98	end
+	end
+
+	playlist 441, 5 ,'Name: ONEAL'
+	0	setvol 5, 100
+	0	play	5, 'pooneal', 1
+	121	end
+	end
+
 ; **************************************************************************
 ; * END of playlist and file                                               *
 ; **************************************************************************
