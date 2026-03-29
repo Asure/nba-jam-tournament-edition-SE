@@ -710,6 +710,60 @@ static int  g_edit_len   = 0;
 
 static char g_status[256] = "Ready.  Click a playlist. [Enter]=Play  [F2]=Save  [Esc]=Stop";
 
+/* Context menu state */
+static int g_ctx_visible = 0;   /* 1 = menu is open */
+static int g_ctx_x       = 0;   /* top-left of menu */
+static int g_ctx_y       = 0;
+static int g_ctx_pl      = -1;  /* playlist index the menu was opened on */
+
+/* ================================================================
+   Context menu
+   ================================================================ */
+#define CTX_ITEM_RENAME  0
+#define CTX_NITEMS       1
+
+/* Returns which item index the point (px,py) is over, or -1 */
+static int ctx_hit(int px, int py) {
+    if (!g_ctx_visible) return -1;
+    int iw = 10*FW, ih = LH + 4;
+    if (px < g_ctx_x || px >= g_ctx_x + iw) return -1;
+    int rel = py - (g_ctx_y + 2);
+    if (rel < 0 || rel >= CTX_NITEMS * ih) return -1;
+    return rel / ih;
+}
+
+static void draw_context_menu(int mx, int my) {
+    if (!g_ctx_visible) return;
+    int iw = 10*FW, ih = LH + 4;
+    int mh = CTX_NITEMS * ih + 4;
+
+    /* Shadow */
+    fill_rect(g_ctx_x + 3, g_ctx_y + 3, iw, mh, 0, 0, 0, 180);
+    /* Background */
+    fill_rect(g_ctx_x, g_ctx_y, iw, mh, 30, 30, 50, 255);
+    /* Border */
+    draw_rect_outline(g_ctx_x, g_ctx_y, iw, mh, 80, 80, 160);
+
+    const char *labels[CTX_NITEMS] = { "Rename" };
+    for (int i = 0; i < CTX_NITEMS; i++) {
+        int iy = g_ctx_y + 2 + i * ih;
+        int hover = (ctx_hit(mx, my) == i);
+        if (hover)
+            fill_rect(g_ctx_x + 1, iy, iw - 2, ih, 50, 50, 120, 255);
+        draw_str(g_ctx_x + LPAD, iy + (ih - FH) / 2, labels[i],
+                 hover ? 255 : 200, hover ? 255 : 200, 255, 0);
+    }
+}
+
+static void ctx_begin_rename(int pl_idx) {
+    g_editing = 1;
+    g_edit_pl = pl_idx;
+    strncpy(g_edit_buf, g_pl[pl_idx].name, sizeof(g_edit_buf) - 1);
+    g_edit_buf[sizeof(g_edit_buf) - 1] = '\0';
+    g_edit_len = (int)strlen(g_edit_buf);
+    SDL_StartTextInput();
+}
+
 /* ================================================================
    Rendering
    ================================================================ */
@@ -1084,6 +1138,7 @@ int main(int argc, char *argv[]) {
                 break;
 
             case SDL_MOUSEWHEEL: {
+                g_ctx_visible = 0;
                 int wx, wy;
                 SDL_GetMouseState(&wx, &wy);
                 int wheel_y = e.wheel.y;
@@ -1097,8 +1152,39 @@ int main(int argc, char *argv[]) {
             }
 
             case SDL_MOUSEBUTTONDOWN:
+                if (e.button.button == SDL_BUTTON_RIGHT) {
+                    mx = e.button.x; my = e.button.y;
+                    int idx = -1;
+                    HitZone hz = hit_test(mx, my, &idx);
+                    if (hz == HIT_PL_LIST && idx >= 0) {
+                        g_sel_pl      = idx;
+                        g_ctx_visible = 1;
+                        g_ctx_pl      = idx;
+                        g_ctx_x       = mx;
+                        g_ctx_y       = my;
+                        /* Keep menu inside window */
+                        int iw = 10*FW, mh = CTX_NITEMS*(LH+4)+4;
+                        if (g_ctx_x + iw > WIN_W) g_ctx_x = WIN_W - iw;
+                        if (g_ctx_y + mh > WIN_H) g_ctx_y = WIN_H - mh;
+                    } else {
+                        g_ctx_visible = 0;
+                    }
+                    break;
+                }
                 if (e.button.button == SDL_BUTTON_LEFT) {
                     mx = e.button.x; my = e.button.y;
+
+                    /* Context menu takes priority */
+                    if (g_ctx_visible) {
+                        int item = ctx_hit(mx, my);
+                        g_ctx_visible = 0;
+                        if (item == CTX_ITEM_RENAME && g_ctx_pl >= 0) {
+                            g_sel_pl = g_ctx_pl;
+                            ctx_begin_rename(g_ctx_pl);
+                        }
+                        break;
+                    }
+
                     int idx = -1;
                     HitZone hz = hit_test(mx, my, &idx);
 
@@ -1185,6 +1271,7 @@ int main(int argc, char *argv[]) {
                     }
                 } else {
                     if (e.key.keysym.sym == SDLK_ESCAPE) {
+                        g_ctx_visible = 0;
                         audio_stop();
                         g_playing_pl = -1;
                     } else if (e.key.keysym.sym == SDLK_RETURN) {
@@ -1246,6 +1333,7 @@ int main(int argc, char *argv[]) {
         render_left_panel(mx, my);
         render_right_panel(mx, my);
         render_bottom(mx, my);
+        draw_context_menu(mx, my);
         SDL_RenderPresent(g_ren);
     }
 
