@@ -1918,588 +1918,588 @@ END
 	playlist 75, 5 ,'Pass: TO EDWARDS	( MILWAUKEE )'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'poedwards', 1
+	40	play	5, 'poedwards', 1
 	131	end
 	end
 
 	playlist 76, 5 ,'Pass: TO SCHREMPF	( INDIANA )'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'poschrempf', 1
+	40	play	5, 'poschrempf', 1
 	64	end
 	end
 
 	playlist 77, 5 ,'Pass: TO MILLER'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'pomiller', 1
+	40	play	5, 'pomiller', 1
 	53	end
 	end
 
 	playlist 78, 5 ,'Pass: TO DIVAC	( L.A. LAKERS )'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'podivac', 1
+	40	play	5, 'podivac', 1
 	128	end
 	end
 
 	playlist 79, 5 ,'Pass: TO WORTHY'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'poworthy', 1
+	40	play	5, 'poworthy', 1
 	125	end
 	end
 
 	playlist 80, 5 ,'Pass: TO MANNING'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'pomanning', 1
+	40	play	5, 'pomanning', 1
 	87	end
 	end
 
 	playlist 81, 5 ,'Pass: TO HARPER_D'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'poharper-r', 1
+	40	play	5, 'poharper-r', 1
 	72	end
 	end
 
 	playlist 83, 5 ,'Pass: TO SEIKALY	( MIAMI )'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'poseikaly', 1
+	40	play	5, 'poseikaly', 1
 	82	end
 	end
 
 	playlist 84, 5 ,'Pass: TO RICE'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'porice', 1
+	40	play	5, 'porice', 1
 	65	end
 	end
 
 	playlist 85, 5 ,'Pass: TO PRICE'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'poprice', 1
+	40	play	5, 'poprice', 1
 	82	end
 	end
 
 	playlist 86, 5 ,'Pass: TO DAUGHRTY	( CLEVELAND )'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'podaughrty', 1
+	40	play	5, 'podaughrty', 1
 	84	end
 	end
 
 	playlist 87, 5 ,'Pass: TO SMITH	( HOUSTON )'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'posmith', 1
+	40	play	5, 'posmith', 1
 	59	end
 	end
 
 	playlist 88, 5 ,'Pass: TO OLAJUWON'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'poolajuwon', 1
+	40	play	5, 'poolajuwon', 1
 	109	end
 	end
 
 	playlist 89, 5 ,'Pass: TO MUTUMBO'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'pomutombo', 1
+	40	play	5, 'pomutombo', 1
 	115	end
 	end
 
 	playlist 90, 5 ,'Pass: TO ELLIS	( DENVER )'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'poellis', 1
+	40	play	5, 'poellis', 1
 	75	end
 	end
 
 	playlist 91, 5 ,'Pass: TO TISDALE'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'potisdale', 1
+	40	play	5, 'potisdale', 1
 	106	end
 	end
 
 	playlist 92, 5 ,'Pass: TO WEBB	( SACRAMENTO )'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'powebber', 1
+	40	play	5, 'powebber', 1
 	73	end
 	end
 
 	playlist 93, 5 ,'Pass: TO PERSON	( MINNESOTTA )'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'poperson', 1
+	40	play	5, 'poperson', 1
 	75	end
 	end
 
 	playlist 94, 5 ,'Pass: TO LAETNER'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'polaettner', 1
+	40	play	5, 'polaettner', 1
 	91	end
 	end
 
 	playlist 95, 5 ,'Pass: TO KANDERSON	( NEW JERSEY )'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'poanderson', 1
+	40	play	5, 'poanderson', 1
 	102	end
 	end
 
 	playlist 96, 5 ,'Pass: TO COLEMAN'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'pocoleman', 1
+	40	play	5, 'pocoleman', 1
 	76	end
 	end
 
 	playlist 97, 5 ,'Pass: TO HAWKINS'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'pohawkins', 1
+	40	play	5, 'pohawkins', 1
 	107	end
 	end
 
 	playlist 98, 5 ,'Pass: TO HORNACEK	( PHILADELPHIA )'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'pohornacek', 1
+	40	play	5, 'pohornacek', 1
 	88	end
 	end
 
 	playlist 228, 5 ,'Pass: TO SKILES	( ORLANDO )'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'poskiles', 1
+	40	play	5, 'poskiles', 1
 	120	end
 	end
 
 	playlist 229, 5 ,'Pass: 32 RAIDEN'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'poraiden', 1
+	40	play	5, 'poraiden', 1
 	67	end
 	end
 
 	playlist 230, 5 ,'Pass: TO GRANT_HC	( CHICAGO )'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'pogrant', 1
+	40	play	5, 'pogrant', 1
 	86	end
 	end
 
 	playlist 231, 5 ,'Pass: TO PIPPEN'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'popippen', 1
+	40	play	5, 'popippen', 1
 	95	end
 	end
 
 	playlist 232, 5 ,'Pass: TO GUGLIOTA	( WASHINGTON )'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'pogugliotta', 1
+	40	play	5, 'pogugliotta', 1
 	131	end
 	end
 
 	playlist 234, 5 ,'Pass: TO GILL'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'pogill', 1
+	40	play	5, 'pogill', 1
 	68	end
 	end
 
 	playlist 235, 5 ,'Pass: TO MAJERLE	( PHOENIX )'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'pomajerle', 1
+	40	play	5, 'pomajerle', 1
 	94	end
 	end
 
 	playlist 236, 5 ,'Pass: TO BARKLEY'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'pobarkley', 1
+	40	play	5, 'pobarkley', 1
 	89	end
 	end
 
 	playlist 237, 5 ,'Pass: TO OAKLEY	( NEW YORK )'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'pooakley', 1
+	40	play	5, 'pooakley', 1
 	100	end
 	end
 
 	playlist 238, 5 ,'Pass: TO EWING'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'poewing', 1
+	40	play	5, 'poewing', 1
 	92	end
 	end
 
 	playlist 239, 5 ,'Pass: TO AUGMON	( ATLANTA )'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'poaugmon', 1
+	40	play	5, 'poaugmon', 1
 	82	end
 	end
 
 	playlist 240, 5 ,'Pass: TO WILKINS'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'powilkins', 1
+	40	play	5, 'powilkins', 1
 	96	end
 	end
 
 	playlist 241, 5 ,'Pass: TO KEMP'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'pokemp', 1
+	40	play	5, 'pokemp', 1
 	76	end
 	end
 
 	playlist 243, 5 ,'Pass: TO PORTER	( PORTLAND )'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'poporter', 1
+	40	play	5, 'poporter', 1
 	86	end
 	end
 
 	playlist 244, 5 ,'Pass: TO DREXLER'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'podrexler', 1
+	40	play	5, 'podrexler', 1
 	120	end
 	end
 
 	playlist 245, 5 ,'Pass: TO CROBINSON'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'porobinson', 1
+	40	play	5, 'porobinson', 1
 	112	end
 	end
 
 	playlist 246, 5 ,'Pass: TO ELLIOT'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'poelliot', 1
+	40	play	5, 'poelliot', 1
 	95	end
 	end
 
 	playlist 247, 5 ,'Pass: TO MCDAN'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'pomacdan', 1
+	40	play	5, 'pomacdan', 1
 	108	end
 	end
 
 	playlist 248, 5 ,'Pass: TO BROWN	( BOSTON )'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'pobrown', 1
+	40	play	5, 'pobrown', 1
 	94	end
 	end
 
 	playlist 249, 5 ,'Pass: TO STOCKTON	( UTAH )'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'postockton', 1
+	40	play	5, 'postockton', 1
 	77	end
 	end
 
 	playlist 250, 5 ,'Pass: TO MALONE_K'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'pomalone', 1
+	40	play	5, 'pomalone', 1
 	102	end
 	end
 
 	playlist 251, 5 ,'Pass: TO HARDAWAY'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'pohardaway', 1
+	40	play	5, 'pohardaway', 1
 	92	end
 	end
 
 	playlist 252, 5 ,'Pass: TO MULLIN	( GOLDEN STATE )'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'pomullin', 1
+	40	play	5, 'pomullin', 1
 	78	end
 	end
 
 	playlist 255, 5 ,'Pass: TO LOHAUS'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'polohaus', 1
+	40	play	5, 'polohaus', 1
 	128	end
 	end
 
 	playlist 284, 5 ,'Pass: TO MINER'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'pominer', 1
+	40	play	5, 'pominer', 1
 	91	end
 	end
 
 	playlist 286, 5 ,'Pass: TO CMORRIS'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'pomorris', 1
+	40	play	5, 'pomorris', 1
 	93	end
 	end
 
 	playlist 289, 5 ,'Pass: TO MOURNING'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'pomourning', 1
+	40	play	5, 'pomourning', 1
 	98	end
 	end
 
 	playlist 290, 5 ,'Pass: TO NANCE'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'ponance', 1
+	40	play	5, 'ponance', 1
 	86	end
 	end
 
 	playlist 293, 5 ,'Pass: TO PEELER'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'popeeler', 1
+	40	play	5, 'popeeler', 1
 	93	end
 	end
 
 	playlist 294, 5 ,'Pass: TO PAYTON	( SEATTLE )'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'popayton', 1
+	40	play	5, 'popayton', 1
 	92	end
 	end
 
 	playlist 295, 5 ,'Pass: TO RICHMOND'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'porichmond', 1
+	40	play	5, 'porichmond', 1
 	90	end
 	end
 
 	playlist 298, 5 ,'Pass: TO RIDER'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'porider', 1
+	40	play	5, 'porider', 1
 	91	end
 	end
 
 	playlist 304, 5 ,'Pass: TO ARMSTRNG'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'poarmstrng', 1
+	40	play	5, 'poarmstrng', 1
 	125	end
 	end
 
 	playlist 305, 5 ,'Pass: TO BAKER'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'pobaker', 1
+	40	play	5, 'pobaker', 1
 	76	end
 	end
 
 	playlist 306, 5 ,'Pass: TO BENOIT'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'pobenoit', 1
+	40	play	5, 'pobenoit', 1
 	90	end
 	end
 
 	playlist 307, 5 ,'Pass: TO BRADLEY'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'pobradley', 1
+	40	play	5, 'pobradley', 1
 	100	end
 	end
 
 	playlist 309, 5 ,'Pass: TO RODMAN'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'porodman', 1
+	40	play	5, 'porodman', 1
 	109	end
 	end
 
 	playlist 311, 5 ,'Pass: TO ROGERS'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'porogers', 1
+	40	play	5, 'porogers', 1
 	106	end
 	end
 
 	playlist 318, 5 ,'Pass: TO CAMPBELL'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'pocampbell', 1
+	40	play	5, 'pocampbell', 1
 	90	end
 	end
 
 	playlist 319, 5 ,'Pass: TO CHEANEY'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'pocheaney', 1
+	40	play	5, 'pocheaney', 1
 	101	end
 	end
 
 	playlist 320, 5 ,'Pass: TO DAY'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'poday', 1
+	40	play	5, 'poday', 1
 	71	end
 	end
 
 	playlist 321, 5 ,'Pass: TO DUMARS'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'podumars', 1
+	40	play	5, 'podumars', 1
 	108	end
 	end
 
 	playlist 322, 5 ,'Pass: TO ELLISON'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'poellison', 1
+	40	play	5, 'poellison', 1
 	88	end
 	end
 
 	playlist 326, 5 ,'Pass: TO HORRY'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'pohorry', 1
+	40	play	5, 'pohorry', 1
 	75	end
 	end
 
 	playlist 327, 5 ,'Pass: TO LAIMBEER'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'polaimbeer', 1
+	40	play	5, 'polaimbeer', 1
 	120	end
 	end
 
 	playlist 329, 5 ,'Pass: TO SEALY'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'posealy', 1
+	40	play	5, 'posealy', 1
 	59	end
 	end
 
 	playlist 332, 5 ,'Pass: TO SIMMONS'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'posimmons', 1
+	40	play	5, 'posimmons', 1
 	105	end
 	end
 
 	playlist 335, 5 ,'Pass: TO SMITS'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'posmits', 1
+	40	play	5, 'posmits', 1
 	79	end
 	end
 
 	playlist 337, 5 ,'Pass: TO STARKS'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'postarks', 1
+	40	play	5, 'postarks', 1
 	95	end
 	end
 
 	playlist 338, 5 ,'Pass: TO WEATHERSPOON'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'poweatherspoon', 1
+	40	play	5, 'poweatherspoon', 1
 	92	end
 	end
 
 	playlist 353, 5 ,'Pass: TO WEBBER'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'powebber', 1
+	40	play	5, 'powebber', 1
 	73	end
 	end
 
 	playlist 354, 5 ,'Pass: TO WILLIS'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'powillis', 1
+	40	play	5, 'powillis', 1
 	99	end
 	end
 
 	playlist 378, 5 ,'Pass: TO HURLEY'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'pohurley', 1
+	40	play	5, 'pohurley', 1
 	95	end
 	end
 
 	playlist 379, 5 ,'Pass: TO JACKSON'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'pojackson', 1
+	40	play	5, 'pojackson', 1
 	97	end
 	end
 
 	playlist 380, 5 ,'Pass: TO JORDAN'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'pojordan', 1
+	40	play	5, 'pojordan', 1
 	75	end
 	end
 
 	playlist 381, 5 ,'Pass: TO MASHBURN'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'pomashburn', 1
+	40	play	5, 'pomashburn', 1
 	102	end
 	end
 
 	playlist 382, 5 ,'Pass: TO MASON'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'pomason', 1
+	40	play	5, 'pomason', 1
 	104	end
 	end
 
 	playlist 383, 5 ,'Pass: TO MAXWELL'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'pomaxwell', 1
+	40	play	5, 'pomaxwell', 1
 	103	end
 	end
 
 	playlist 417, 5 ,'Pass: 16 SUBZ'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'posubzero', 1
+	40	play	5, 'posubzero', 1
 	133	end
 	end
 
 	playlist 418, 5 ,'Pass: 50 SCORP'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'poscorpion', 1
+	40	play	5, 'poscorpion', 1
 	116	end
 	end
 
 	playlist 446, 5 ,'Pass: TO ONEAL	;Wolf Unit only'
 	0	setvol 5, 100
 	0	play	5, 'to', 1
-	71	play	5, 'pooneal', 1
+	40	play	5, 'pooneal', 1
 	121	end
 	end
 
