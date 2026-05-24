@@ -33,8 +33,7 @@ SCRNEND .equ	[254,432]	;Bottom right of screen
 SCRNMID	.equ	[128,200]	;Midpoint of screen
 PAGE1YO	.equ	256		;2nd page Y offset
 TSEC	.equ	53		;Ticks per second
-;;HEBLNKINIT .equ	32h		;Initial value for register
-HEBLNKINIT .equ	65h		;Initial value for register
+HEBLNKINIT .equ	32h		;Initial value for register
 
 OWSPD		.equ	18	;Open window speed
 OWSPD2		.equ	25
@@ -72,8 +71,6 @@ ODATA_p	.equ	1c0h	;UHL *Scale table if scaled obj
 OXANI	.equ	1e0h	;SHL X scaled animation pt 16:16
 OMISC	.equ	210h	;UHW Misc data (3D mode Z offset)
 OBSIZ	.equ	220h
-;AMM testing
-OSCALE	.equ	240H	;UHL scale this object (set to 100% in BEGINOBJ)
 *ENDSTRUCT
 
 NOBJ	.equ	450	;Total # objects

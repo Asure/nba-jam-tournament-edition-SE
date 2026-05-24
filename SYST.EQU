@@ -1,5 +1,8 @@
 *THE T/Z-UNIT SYSTEM SPECIFIC EQUATES
 *.Last mod - 11/30/92 12:09
+;Skip ROM checks, straight to DMA/DCS check
+DMADEBUG .equ	0
+
 ;Testing GORO
 GORO	.equ	1
 

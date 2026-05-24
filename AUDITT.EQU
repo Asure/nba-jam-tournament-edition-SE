@@ -170,7 +170,13 @@ ADJFATAL	equ	32
 ADJBABY		equ	33
 ADJPOWER	equ	34
 ADJSHOT		equ	35
-LAST_ADJUST	equ	35
+ADJPSXSND	equ	36
+LAST_ADJUST	equ	36
+
+;ADJSHOT		equ	35
+;ADJVOLUME	equ	37
+;LAST_ADJUST	equ	37
+
 
 ******************************************************************************
 ;end

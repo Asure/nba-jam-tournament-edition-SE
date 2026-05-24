@@ -243,7 +243,7 @@ cqyxnog
 ;	JSRP	drw_ladder		;for ladder debugging * REMOVE *
 	.if	WUNIT
 	.else
-	JSRP	show_copyright2		;bugged on real hw..
+;	JSRP	show_copyright2		;bugged on real hw..
 	.endif
 
 cqyxnog2

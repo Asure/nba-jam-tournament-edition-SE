@@ -2539,13 +2539,12 @@ zetrx	rets
 zetrerr	clr	a6
 	jruc	zetrh
 
-;	.if	WUNIT
-;	.asg	MEGBIT0,SCRNBUF
-;	.asg	MEGBIT1,PALBUF
-;	.else
+
+*******************************
+* Scale screen out (JSRP)
+
 	.asg	SCRATCH+8*256*1024,SCRNBUF
 	.asg	SCRNBUF+8*128*1024,PALBUF
-;	.endif
 
 	.bss	scrnscl		,16
 
@@ -2685,7 +2684,7 @@ aceuinitcode
 
 	move	b2,a0
 	srl	16,a0
-	xori	0100H,a0			;Flip to the page being shown
+	xori	0100H,a0		;Flip to the page being shown
 	sll	12,a0			;*512*8
 	addi	SCRNXP*8,a0		;A0=*Scrn mem
 	PUSH	a0
@@ -2708,18 +2707,10 @@ mirvcslp2	move	*a0+,*a1+,L
 	move	@SYSCOPY,a0
 	.if	WUNIT
 	andni	PALENB,a0
-	move	a0,@SYSCOPY
-	.if	DEBUG
-	andni	LEDON,a0
-	ori	WROMINTCLR,a0
-	.endif
 	.else
 	andni	100000b,a0
+	.endif
 	move	a0,@SYSCOPY
-	.if	DEBUG
-	andni	1000000b,a0
-	.endif
-	.endif
 	move	a0,@SYSCTRL
 
 	PULL	a0
@@ -2738,22 +2729,12 @@ mirvcplp2	move	*a0+,*a1+,L
 	dsj	a3,mirvcplp
 
 	move	@SYSCOPY,a0
-
 	.if	WUNIT
 	ori	PALENB,a0
-	move	a0,@SYSCOPY
-	.if	DEBUG
-	andni	LEDON,a0
-	ori	WROMINTCLR,a0
-	.endif
 	.else
-;	ori	100000b,a0
+	ori	100000b,a0
+	.endif
 	move	a0,@SYSCOPY
-	.if	DEBUG
-	andni	1000000b,a0
-	.endif
-	.endif
-
 	move	a0,@SYSCTRL
 
 	rets
